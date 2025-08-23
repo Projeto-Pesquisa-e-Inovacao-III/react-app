@@ -2,16 +2,25 @@ import { useState } from "react";
 import "./style.css";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import * as userService from "../../../constants/user";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [remember, setRemember] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // Handle login logic here
+    userService
+      .login(email, password)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   return (
@@ -61,12 +70,12 @@ export default function Login() {
               <span>Lembrar-me</span>
             </label>
 
-            <Link>Esqueceu sua senha?</Link>
+            <Link to="/forgot-password">Esqueceu sua senha?</Link>
           </div>
           <button type="submit">Entrar na conta</button>
         </form>
         <span>
-          Não tem uma conta? <Link>Criar uma conta</Link>
+          Não tem uma conta? <Link to="/register">Criar uma conta</Link>
         </span>
       </div>
     </div>
