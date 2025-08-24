@@ -1,4 +1,5 @@
 :root {
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -22,4 +23,6 @@
   --btn-hover-bg: #274668;
 
   --calendar-width: 180px;
+
+
 }

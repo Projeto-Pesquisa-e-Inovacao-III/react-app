@@ -1,11 +1,5 @@
-.new-event-opened {
-    overflow: hidden;
-
-}
-
-.calendar-small {
-    width: 500px;
-    margin: 0 auto;
+.new-event-opened-wrapper-callendar {
+    filter: opacity(0.4);
 }
 
 .disabled-day {
@@ -16,17 +10,22 @@
 }
 
 .container {
-    .new-event-form {
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 16px;
-        border-radius: 4px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 1000;
-        overflow: hidden;
+  .new-event-form {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow: hidden;
+    .calendar-small {
+      width: 500px;
+      min-width: 300px;
+      margin: 0 auto;
     }
+  }
 }

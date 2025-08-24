@@ -1,4 +1,5 @@
 import FullCalendar from "@fullcalendar/react";
+import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
@@ -7,6 +8,8 @@ export default function Calendar() {
     { title: "Reunião", date: "2025-08-15" },
     { title: "Aniversário", date: "2025-08-22" },
   ];
+
+  const actualMonth = new Date().getMonth();
 
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
   const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
@@ -25,41 +28,45 @@ export default function Calendar() {
   }
 
   useEffect(() => {
+    const wrapperCallendar = document.getElementById("wrapper-callendar");
     if (openNewEvent) {
-      document.body.classList.add("new-event-opened");
+      document.body.style.overflow = "hidden";
+      wrapperCallendar?.classList.add("new-event-opened-wrapper-callendar");
     } else {
-      document.body.classList.remove("new-event-opened");
+      document.body.style.overflow = "auto";
+      wrapperCallendar?.classList.remove("new-event-opened-wrapper-callendar");
     }
   }, [openNewEvent]);
 
   return (
-    <div className="container">
-      <FullCalendar
-        plugins={[dayGridPlugin]}
-        initialView="dayGridMonth"
-        events={events}
-        dayCellClassNames={(arg) => {
-          const disabledDays = events.map((event) => event.date);
-          if (disabledDays.includes(arg.date.toISOString().split("T")[0])) {
-            return ["disabled-day"];
-          }
-          return [];
-        }}
-        headerToolbar={{
-          start: "custom1",
-          center: "title",
-          end: "today prev,next",
-        }}
-        customButtons={{
-          custom1: {
-            text: "new event",
-            click: function () {
-              setOpenNewEvent(true);
+    <div className="container-calendar">
+      <div className="wrapper-callendar" id="wrapper-callendar">
+        <FullCalendar
+          plugins={[dayGridPlugin]}
+          initialView="dayGridMonth"
+          events={events}
+          dayCellClassNames={(arg) => {
+            const disabledDays = events.map((event) => event.date);
+            if (disabledDays.includes(arg.date.toISOString().split("T")[0])) {
+              return ["disabled-day"];
+            }
+            return [];
+          }}
+          headerToolbar={{
+            start: "newEvent",
+            center: "title",
+            end: `today prev,next`,
+          }}
+          customButtons={{
+            newEvent: {
+              text: "new event",
+              click: function () {
+                setOpenNewEvent(true);
+              },
             },
-          },
-        }}
-      />
-
+          }}
+        />
+      </div>
       {openNewEvent ? (
         <div className="new-event-form">
           <div className="top-new-event">
@@ -77,7 +84,8 @@ export default function Calendar() {
             <div>
               <div className="calendar-small">
                 <FullCalendar
-                  plugins={[dayGridPlugin]}
+                  selectable={true}
+                  plugins={[dayGridPlugin, InteractionPlugin]}
                   initialView="dayGridMonth"
                   events={events}
                   dayCellClassNames={(arg) => {
@@ -92,10 +100,16 @@ export default function Calendar() {
                     return [];
                   }}
                   headerToolbar={{
-                    start: "",
+                    start: "title",
                     center: "",
-                    end: "",
+                    end: "today prev,next",
                   }}
+                  dateClick={function (info) {
+                    setNewEventDate(info.dateStr);
+                  }}
+                  //   select={function (info) {
+                  //     alert("selected " + info.startStr + " to " + info.endStr);
+                  //   }}
                 />
               </div>
             </div>
