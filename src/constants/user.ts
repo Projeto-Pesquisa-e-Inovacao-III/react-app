@@ -4,10 +4,13 @@ import { UserDTO } from "../models/user";
 import { HOST } from "../system";
 
 export function register(userdata: UserDTO) {
-   return axios.post(`${HOST}/register`, userdata)
+   return axios.post(`${HOST}/usuarios/cadastrar`, userdata)
 }
 
 export function login(email: string, password: string) {
-   return axios.post(`${HOST}/login`, {email: email, password: password})
+   return axios.post(`${HOST}/usuarios/login`, {email: email, password: password})
 }
 
+export function update(userdata: UserDTO) {
+   return axios.put(`${HOST}/usuarios/atualizar/${userdata.id}`, userdata)
+}

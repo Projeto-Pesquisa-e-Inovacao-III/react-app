@@ -1,0 +1,110 @@
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import * as userService from "../../../constants/user";
+import { UserDTO } from "../../../models/user";
+import { User } from 'lucide-react';
+import { IdCard } from 'lucide-react';
+import "./style.css";
+
+export default function Register() {
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [costumerDocument, setCostumerDocument] = useState<string>("");
+    const [showPassword, setShowPassword] = useState<boolean>(false);
+
+
+    function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const userData: UserDTO = {
+            name,
+            email,
+            password,
+            costumerDocument
+        };
+        userService
+            .register(userData)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
+
+    return (
+        <div className="register">
+            <div className="wrapper_register_elements">
+                <div className="welcome_message">
+                    <h1>Bem-vindo de volta</h1>
+                    <p>Entre na sua conta para acessar nossa plataforma</p>
+                </div>
+                <form onSubmit={handleSubmit}>
+                    <div className="row1">
+                        <div className="costumer-name">
+                            <label htmlFor="name">Nome do cliente</label>
+                            <div className="wrapper_inp">
+                                <User className="input-icon" />
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Nome do cliente"
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="costumer-document">
+                            <label htmlFor="costumerDocument">CPF</label>
+                            <div className="wrapper_inp">
+                            <IdCard className="input-icon" />
+                                <input
+                                    type="text"
+                                    name="costumerDocument"
+                                    placeholder="___.___.___-__"
+                                    onChange={(e) => setCostumerDocument(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <label>Email</label>
+                    <div className="wrapper_inp">
+                        <Mail className="input-icon" />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="seu@email.com"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <label>Senha</label>
+                    <div className="wrapper_inp">
+                        <Lock className="input-icon" />
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            placeholder="sua senha"
+                            id="password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="password-toggle"
+                        >
+                            {showPassword ? <EyeOff /> : <Eye />}
+                        </button>
+                    </div>
+                    <div className="config_register">
+                        <Link to="/forgot-password">Esqueceu sua senha?</Link>
+                    </div>
+                    <button type="submit">Cadastrar</button>
+                </form>
+                <span>
+                    Já tem uma conta? <Link to="/login">Entrar</Link>
+                </span>
+            </div>
+        </div>
+    );
+}
+

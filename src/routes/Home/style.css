@@ -1,0 +1,20 @@
+.wrapper-home {
+    display: flex;
+    flex-direction: column;
+
+    .home, .delete {
+        height: 5vh;
+    }
+    .home {
+        a {
+            margin-right: 1rem;
+            color: black;
+            border: 1px solid black;
+            padding: 20px;
+        }
+
+        a:visited {
+            color: black;
+        }
+    }
+}
