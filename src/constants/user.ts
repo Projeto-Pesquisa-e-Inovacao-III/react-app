@@ -14,3 +14,7 @@ export function login(email: string, password: string) {
 export function update(userdata: UserDTO) {
    return axios.put(`${HOST}/usuarios/atualizar/${userdata.id}`, userdata)
 }
+
+export function deleteUser(id: string) {
+   return axios.delete(`${HOST}/usuarios/deletar/${id}`)
+}
