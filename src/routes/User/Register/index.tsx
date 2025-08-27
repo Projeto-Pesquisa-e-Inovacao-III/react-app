@@ -1,11 +1,12 @@
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import { UserDTO } from "../../../models/user";
 import { User } from 'lucide-react';
 import { IdCard } from 'lucide-react';
 import "./style.css";
+import Swal from "sweetalert2";
 
 export default function Register() {
     const [name, setName] = useState<string>("");
@@ -14,6 +15,7 @@ export default function Register() {
     const [costumerDocument, setCostumerDocument] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    const nav = useNavigate()
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -26,10 +28,29 @@ export default function Register() {
         userService
             .register(userData)
             .then((res) => {
-                console.log(res);
+                console.log(res)
+                Swal.fire({
+                    icon: "success",
+                    title: "Cadastro bem sucedido",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+                localStorage.setItem("user-info", JSON.stringify(res.data))
+                setTimeout(() => {
+                    nav("/")
+                }, 3000)
             })
             .catch((err) => {
-                console.error(err);
+                Swal.fire({
+                    icon: "error",
+                    title: "Usuário já cadastrado",
+                    showConfirmButton: true,
+                    confirmButtonColor: "#166ba3ff",
+                    timer: 3000,
+                });
+                console.log(err)
             });
     }
 
@@ -37,8 +58,8 @@ export default function Register() {
         <div className="register">
             <div className="wrapper_register_elements">
                 <div className="welcome_message">
-                    <h1>Bem-vindo de volta</h1>
-                    <p>Entre na sua conta para acessar nossa plataforma</p>
+                    <h1>Bem-vindo</h1>
+                    <p>Cadastre-se para acessar nossa plataforma</p>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="row1">
@@ -57,7 +78,7 @@ export default function Register() {
                         <div className="costumer-document">
                             <label htmlFor="costumerDocument">CPF</label>
                             <div className="wrapper_inp">
-                            <IdCard className="input-icon" />
+                                <IdCard className="input-icon" />
                                 <input
                                     type="text"
                                     name="costumerDocument"
@@ -94,9 +115,6 @@ export default function Register() {
                         >
                             {showPassword ? <EyeOff /> : <Eye />}
                         </button>
-                    </div>
-                    <div className="config_register">
-                        <Link to="/forgot-password">Esqueceu sua senha?</Link>
                     </div>
                     <button type="submit">Cadastrar</button>
                 </form>

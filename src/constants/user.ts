@@ -4,17 +4,22 @@ import { UserDTO } from "../models/user";
 import { HOST } from "../system";
 
 export function register(userdata: UserDTO) {
-   return axios.post(`${HOST}/usuarios/cadastrar`, userdata)
+   return axios.post(`${HOST}/usuarios/cadastro`, {
+      "nome": userdata.name,
+      "email": userdata.email,
+      "senha": userdata.password,
+      "cpf": userdata.costumerDocument
+   })
 }
 
 export function login(email: string, password: string) {
-   return axios.post(`${HOST}/usuarios/login`, {email: email, password: password})
+   return axios.post(`${HOST}/usuarios/login`, { email: email, senha: password })
 }
 
-export function update(userdata: UserDTO) {
-   return axios.put(`${HOST}/usuarios/atualizar/${userdata.id}`, userdata)
+export function update(id: string, userdata: UserDTO) {
+   return axios.put(`${HOST}/usuarios/${id}`, userdata)
 }
 
-export function deleteUser(id: string) {
-   return axios.delete(`${HOST}/usuarios/deletar/${id}`)
+export function softDelete(id: string) {
+   return axios.delete(`${HOST}/usuarios/${id}`)
 }

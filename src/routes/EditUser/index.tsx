@@ -1,36 +1,32 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { UserDTO } from "../../models/user";
 import * as userService from "../../constants/user";
 import "./style.css";
 import { Eye, EyeOff, IdCard, Lock, Mail, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 export default function EditUser() {
-  const tempUser: {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    costumerDocument: string;
-  } = {
-    id: "1",
-    name: "John Doe",
-    email: "johndoe@example.com",
-    password: "password123",
-    costumerDocument: "123.456.789-00",
+  const loggedUser = JSON.parse(localStorage.getItem("user-info") || "{}");
+
+  const user: UserDTO = {
+    id: loggedUser.id,
+    name: loggedUser.nome,
+    email: loggedUser.email,
+    password: loggedUser.senha,
+    costumerDocument: loggedUser.cpf,
   };
 
-  const [name, setName] = useState<string>(tempUser.name);
-  const [email, setEmail] = useState<string>(tempUser.email); // pega se existir no localstorage. se não, pega do tempUser
-  const [password, setPassword] = useState<string>(tempUser.password);
+  const [name, setName] = useState<string>(user.name);
+  const [email, setEmail] = useState<string>(user.email);
+  const [password, setPassword] = useState<string>(user.password);
   const [costumerDocument, setCostumerDocument] = useState<string>(
-    tempUser.costumerDocument
+    user.costumerDocument
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    localStorage.setItem(email, "email");
     const userData: UserDTO = {
       name,
       email,
@@ -38,42 +34,72 @@ export default function EditUser() {
       costumerDocument,
     };
     userService
-      .update(userData)
+      .update(user.id || "", userData)
       .then((res) => {
-        console.log(res);
-        alert("atualizado!");
+        console.log(res)
+        Swal.fire({
+          icon: "success",
+          title: "Usuário atualizado com sucesso",
+          showConfirmButton: false,
+          timer: 3000,
+        });
+        localStorage.setItem("user-info", JSON.stringify(res.data))
       })
       .catch((err) => {
-        console.error(err);
+        Swal.fire({
+          icon: "error",
+          title: "Erro ao atualizar usuário",
+          showConfirmButton: true,
+          confirmButtonColor: "#166ba3ff",
+          timer: 3000,
+        });
+        console.log(err)
       });
   }
 
   function handleDelete(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (window.confirm("Tem certeza que deseja deletar este usuário?")) {
-      userService
-        .deleteUser(tempUser.id)
-        .then((res) => {
-          console.log(res);
-          alert("deletado!");
-        })
-        .catch((err) => {
-          console.error(err);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        userService
+          .softDelete(user.id || "")
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        localStorage.removeItem("user-info");
+        Swal.fire({
+          title: "Deletado!",
+          text: "O usuário foi deletado.",
+          timer: 1500,
+          icon: "success"
         });
-    }
+        window.location.href = "/login";
+      }
+    });
   }
 
   return (
     <div className="update-user">
       <div className="wrapper_update-user_elements">
         <div className="welcome_message">
-          <h1>Bem-vindo de volta</h1>
-          <p>Entre na sua conta para acessar nossa plataforma</p>
+          <h1>Edite suas informações</h1>
+          <p>Atualize os campos abaixo para modificar suas informações.</p>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="row1">
             <div className="costumer-name">
-              <label htmlFor="name">Nome do cliente</label>
+              <label htmlFor="name">Nome</label>
               <div className="wrapper_inp">
                 <User className="input-icon" />
                 <input
