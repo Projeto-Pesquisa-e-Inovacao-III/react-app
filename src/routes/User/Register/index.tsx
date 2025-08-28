@@ -20,10 +20,10 @@ export default function Register() {
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const userData: UserDTO = {
-            name,
-            email,
-            password,
-            costumerDocument
+            nome: name,
+            email: email,
+            senha: password,
+            cpf: costumerDocument
         };
         userService
             .register(userData)

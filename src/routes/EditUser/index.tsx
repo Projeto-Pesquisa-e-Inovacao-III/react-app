@@ -11,41 +11,44 @@ export default function EditUser() {
 
   const user: UserDTO = {
     id: loggedUser.id,
-    name: loggedUser.nome,
+    nome: loggedUser.nome,
     email: loggedUser.email,
-    password: loggedUser.senha,
-    costumerDocument: loggedUser.cpf,
+    senha: loggedUser.senha,
+    cpf: loggedUser.cpf,
   };
 
-  const [name, setName] = useState<string>(user.name);
-  const [email, setEmail] = useState<string>(user.email);
-  const [password, setPassword] = useState<string>(user.password);
-  const [costumerDocument, setCostumerDocument] = useState<string>(
-    user.costumerDocument
+  const [name, setName] = useState<string>(user.nome);
+  const [email, setEmail] = useState<string>(user.email); 
+  const [password, setPassword] = useState<string>(user.senha); // não tem update no backend, mas, já que no futuro terá, achei melhor não apagar. 
+  const [costumerDocument, setCostumerDocument] = useState<string>( // ||
+    user.cpf
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const userData: UserDTO = {
-      name,
-      email,
-      password,
-      costumerDocument,
+      nome: name,
+      email: email,
+      senha: password,
+      cpf: costumerDocument,
     };
     userService
       .update(user.id || "", userData)
       .then((res) => {
         console.log(res)
+        //modal
         Swal.fire({
           icon: "success",
           title: "Usuário atualizado com sucesso",
           showConfirmButton: false,
           timer: 3000,
         });
+        localStorage.removeItem("user-info");
         localStorage.setItem("user-info", JSON.stringify(res.data))
       })
       .catch((err) => {
+        //modal
         Swal.fire({
           icon: "error",
           title: "Erro ao atualizar usuário",
@@ -59,6 +62,7 @@ export default function EditUser() {
 
   function handleDelete(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    //modal
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -78,6 +82,7 @@ export default function EditUser() {
             console.error(err);
           });
         localStorage.removeItem("user-info");
+        //modal
         Swal.fire({
           title: "Deletado!",
           text: "O usuário foi deletado.",

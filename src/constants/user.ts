@@ -5,10 +5,10 @@ import { HOST } from "../system";
 
 export function register(userdata: UserDTO) {
    return axios.post(`${HOST}/usuarios/cadastro`, {
-      "nome": userdata.name,
+      "nome": userdata.nome,
       "email": userdata.email,
-      "senha": userdata.password,
-      "cpf": userdata.costumerDocument
+      "senha": userdata.senha,
+      "cpf": userdata.cpf
    })
 }
 
