@@ -4,10 +4,14 @@ import * as userService from "../../constants/user";
 import "./style.css";
 import { Eye, EyeOff, IdCard, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import * as validation from "../../utils/validacao";
 import Swal from "sweetalert2";
 
 export default function EditUser() {
   const loggedUser = JSON.parse(localStorage.getItem("user-info") || "{}");
+
+  const errors = validation.validatePassword("");
+
 
   const user: UserDTO = {
     id: loggedUser.id,
@@ -18,21 +22,48 @@ export default function EditUser() {
   };
 
   const [name, setName] = useState<string>(user.nome);
-  const [email, setEmail] = useState<string>(user.email); 
+  const [email, setEmail] = useState<string>(user.email);
   const [password, setPassword] = useState<string>(user.senha); // não tem update no backend, mas, já que no futuro terá, achei melhor não apagar. 
   const [costumerDocument, setCostumerDocument] = useState<string>( // ||
     user.cpf
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    let errors = "";
+
     const userData: UserDTO = {
       nome: name,
       email: email,
       senha: password,
       cpf: costumerDocument,
     };
+    const nullOrBlank = validation.isNullOrBlank(userData);
+
+    if (nullOrBlank) {
+      errors += nullOrBlank;
+    } else if (!validation.validateEmail(email).startsWith("Email válido")) {
+      errors += validation.validateEmail(email);
+    } else if (userData.cpf && userData.cpf.length !== 14) {
+      errors += "CPF inválido. Deve ter 14 caracteres.\n";
+    } else if (validation.validatePassword(password).startsWith("password válida") === false) {
+      errors += validation.validatePassword(password);
+    }
+
+    if (errors) {
+      Swal.fire({
+        icon: "error",
+        title: "Erro de validação",
+        text: errors,
+        html: `<pre style="text-align: left; font-size: .85rem;">${errors.replace(/\n/g, '<br>')}</pre>`,
+        confirmButtonColor: "#166ba3ff"
+      });
+      return;
+    }
+
     userService
       .update(user.id || "", userData)
       .then((res) => {
@@ -149,9 +180,14 @@ export default function EditUser() {
               name="password"
               placeholder="sua senha"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                const newPassword = e.target.value;
+                setPassword(newPassword);
+                setShowPasswordValidation(true)
+              }}
+
             />
+
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -159,8 +195,16 @@ export default function EditUser() {
             >
               {showPassword ? <EyeOff /> : <Eye />}
             </button>
+
           </div>
-          <button type="submit">Atualizar</button>
+          {showPasswordValidation && (
+            <div className="password-validation">
+              {errors.split('\n').map((msg, index) => (
+                <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
+              ))}
+            </div>
+          )}
+          <button type="submit">Cadastrar</button>
         </form>
         <form onSubmit={handleDelete}>
           <button

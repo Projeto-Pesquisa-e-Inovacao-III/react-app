@@ -7,6 +7,8 @@ import { User } from 'lucide-react';
 import { IdCard } from 'lucide-react';
 import "./style.css";
 import Swal from "sweetalert2";
+import { cpfMask } from "../../../utils/mascara";
+import * as validation from "../../../utils/validacao";
 
 export default function Register() {
     const [name, setName] = useState<string>("");
@@ -14,17 +16,48 @@ export default function Register() {
     const [password, setPassword] = useState<string>("");
     const [costumerDocument, setCostumerDocument] = useState<string>("");
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
+
+    const errors = validation.validatePassword("");
 
     const nav = useNavigate()
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        let errors = "";
+
+
         const userData: UserDTO = {
             nome: name,
             email: email,
             senha: password,
             cpf: costumerDocument
         };
+
+        const nullOrBlank = validation.isNullOrBlank(userData);
+
+        if (nullOrBlank) {
+            errors += nullOrBlank;
+        } else if (!validation.validateEmail(email).startsWith("Email válido")) {
+            errors += validation.validateEmail(email);
+        } else if (userData.cpf && userData.cpf.length !== 14) {
+            errors += "CPF inválido. Deve ter 14 caracteres.\n";
+        } else if (validation.validatePassword(password).startsWith("password válida") === false) {
+            errors += validation.validatePassword(password);
+        }
+
+        if (errors) {
+            Swal.fire({
+                icon: "error",
+                title: "Erro de validação",
+                text: errors,
+                html: `<pre style="text-align: left; font-size: .85rem;">${errors.replace(/\n/g, '<br>')}</pre>`,
+                confirmButtonColor: "#166ba3ff"
+            });
+            return;
+        }
+
         userService
             .register(userData)
             .then((res) => {
@@ -84,6 +117,7 @@ export default function Register() {
                                     name="costumerDocument"
                                     placeholder="___.___.___-__"
                                     onChange={(e) => setCostumerDocument(e.target.value)}
+                                    onInput={(e) => cpfMask(e)}
                                 />
                             </div>
                         </div>
@@ -106,8 +140,14 @@ export default function Register() {
                             name="password"
                             placeholder="sua senha"
                             id="password"
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => {
+                                const newPassword = e.target.value;
+                                setPassword(newPassword);
+                                setShowPasswordValidation(true)
+                            }}
+
                         />
+
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
@@ -115,7 +155,15 @@ export default function Register() {
                         >
                             {showPassword ? <EyeOff /> : <Eye />}
                         </button>
+
                     </div>
+                    {showPasswordValidation && (
+                        <div className="password-validation">
+                            {errors.split('\n').map((msg, index) => (
+                                    <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
+                            ))}
+                        </div>
+                    )}
                     <button type="submit">Cadastrar</button>
                 </form>
                 <span>
@@ -125,4 +173,6 @@ export default function Register() {
         </div>
     );
 }
+
+
 

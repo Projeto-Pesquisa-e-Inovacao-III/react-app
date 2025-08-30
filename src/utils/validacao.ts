@@ -9,7 +9,7 @@ export function isBlank(value: string): boolean{
 export function isNullOrBlank(user: UserDTO): string{
     let response: string = ""
 
-    Object.entries(user).slice(1).forEach(([field, value]) => {
+    Object.entries(user).slice(0).forEach(([field, value]) => {
         if(value == null || isBlank(value))
             response += `${field} está vazio\n`
         }
@@ -43,8 +43,9 @@ export function validateEmail(email: string): string{
     return response || "Email válido!";
 }
 
-function validatePassword(password: string): string{
+export function validatePassword(password: string): string{
     let response: string = ""
+    console.log(password)
     
     if (!/[a-z]/.test(password)) {
         response += "A password deve conter pelo menos uma letra minúscula.\n"
@@ -62,9 +63,11 @@ function validatePassword(password: string): string{
         response += "A password deve conter pelo menos um caractere especial.\n"
     }
     
-    if (password.length < 12) {
+    if (password.length <= 12) {
         response += "A password deve ter no mínimo 12 caracteres.\n"
     }
+
+    console.log(response)
     
     return response || "password válida!"
 }

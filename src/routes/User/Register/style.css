@@ -20,7 +20,6 @@
 
     .wrapper_register_elements {
         width: 23vw;
-        height: 60vh;
         padding: 1.5rem;
         background-color: #fff;
         text-align: center;
@@ -122,4 +121,12 @@
             }
         }
     }
+}
+
+.strong {
+    color: green;
+}
+
+.weak {
+    color: red;
 }
