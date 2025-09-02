@@ -4,7 +4,7 @@ import { UserDTO } from "../models/user";
 import { HOST } from "../system";
 
 export function register(userdata: UserDTO) {
-   return axios.post(`${HOST}/usuarios/cadastrar`, userdata)
+   return axios.post(`${HOST}/usuarios/cadastro`, userdata)
 }
 
 export function login(email: string, password: string) {

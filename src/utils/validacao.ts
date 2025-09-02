@@ -45,7 +45,6 @@ export function validateEmail(email: string): string{
 
 export function validatePassword(password: string): string{
     let response: string = ""
-    console.log(password)
     
     if (!/[a-z]/.test(password)) {
         response += "A password deve conter pelo menos uma letra minúscula.\n"
