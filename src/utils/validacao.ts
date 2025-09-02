@@ -66,7 +66,5 @@ export function validatePassword(password: string): string{
         response += "A password deve ter no mínimo 12 caracteres.\n"
     }
 
-    console.log(response)
-    
     return response || "password válida!"
 }
