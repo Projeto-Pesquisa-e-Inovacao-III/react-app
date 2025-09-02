@@ -6,6 +6,7 @@ import { Eye, EyeOff, IdCard, Lock, Mail, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as validation from "../../utils/validacao";
 import Swal from "sweetalert2";
+import { cpfMask } from "../../utils/mascara";
 
 export default function EditUser() {
   const loggedUser = JSON.parse(localStorage.getItem("user-info") || "{}");
@@ -155,8 +156,8 @@ export default function EditUser() {
                   type="text"
                   name="costumerDocument"
                   placeholder="___.___.___-__"
-                  value={costumerDocument}
                   onChange={(e) => setCostumerDocument(e.target.value)}
+                  onInput={(e) => cpfMask(e)}
                 />
               </div>
             </div>
