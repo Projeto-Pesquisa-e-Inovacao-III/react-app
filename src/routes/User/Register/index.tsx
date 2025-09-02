@@ -9,6 +9,7 @@ import "./style.css";
 import Swal from "sweetalert2";
 import { cpfMask } from "../../../utils/mascara";
 import * as validation from "../../../utils/validacao";
+import axios from "axios";
 
 export default function Register() {
     const [name, setName] = useState<string>("");
@@ -60,8 +61,8 @@ export default function Register() {
 
         userService
             .register(userData)
-            .then((res) => {
-                console.log(res)
+            .then(async (res) => {
+                await insertUserInDBJson(userData);
                 Swal.fire({
                     icon: "success",
                     title: "Cadastro bem sucedido",
@@ -70,6 +71,7 @@ export default function Register() {
                     allowOutsideClick: false,
                     allowEscapeKey: false
                 });
+
                 localStorage.setItem("user-info", JSON.stringify(res.data))
                 setTimeout(() => {
                     nav("/")
@@ -85,6 +87,11 @@ export default function Register() {
                 });
                 console.log(err)
             });
+    }
+
+    async function insertUserInDBJson(user: UserDTO) {
+        const response = await axios.post("http://localhost:3001/users", user);
+        return response.data;
     }
 
     return (
@@ -160,7 +167,7 @@ export default function Register() {
                     {showPasswordValidation && (
                         <div className="password-validation">
                             {errors.split('\n').map((msg, index) => (
-                                    <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
+                                <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
                             ))}
                         </div>
                     )}
