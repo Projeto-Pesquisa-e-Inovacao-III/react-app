@@ -4,11 +4,11 @@ import { UserDTO } from "../models/user";
 import { HOST } from "../system";
 
 export function register(userdata: UserDTO) {
-   return axios.post(`${HOST}/register`, userdata)
+   return axios.post(`${HOST}/usuarios/cadastrar`, userdata)
 }
 
 export function login(email: string, password: string) {
-   return axios.post(`${HOST}/login`, {email: email, password: password})
+   return axios.post(`${HOST}/usuarios/login`, { email: email, senha: password })
 }
 
 export function update(id: string, userdata: UserDTO) {
@@ -16,5 +16,5 @@ export function update(id: string, userdata: UserDTO) {
 }
 
 export function softDelete(id: string) {
-   return axios.patch(`${HOST}/usuarios/${id}`)
+   return axios.delete(`${HOST}/usuarios/${id}`)
 }

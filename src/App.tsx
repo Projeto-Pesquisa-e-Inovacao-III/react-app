@@ -5,11 +5,14 @@ import Home from "./routes/Home";
 import Register from "./routes/User/Register";
 import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
+import DevDebug from "./components/DevDebug";
 
 function App() {
   return (
-    <div className="container">
-      <BrowserRouter>
+    <BrowserRouter>
+      <div className="container">
+        {/* todo: remove this  */}
+        <DevDebug />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -18,9 +21,10 @@ function App() {
           <Route path="/logout" element={<Logout />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
-      </BrowserRouter>
-    </div>
+      </div>
+    </BrowserRouter>
   );
+
 }
 
 export default App;
