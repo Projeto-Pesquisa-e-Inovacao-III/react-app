@@ -16,5 +16,5 @@ export function update(id: string, userdata: UserDTO) {
 }
 
 export function softDelete(id: string) {
-   return axios.delete(`${HOST}/usuarios/${id}`)
+   return axios.patch(`${HOST}/usuarios/${id}`)
 }
