@@ -49,6 +49,10 @@ export default function CalendarWeek() {
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin]}
           initialView="timeGridWeek"
+          locale={"pt-br"}
+          allDaySlot={false}
+          eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
+          slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
           timeZone="local"
           businessHours={true}
           events={events}
@@ -70,12 +74,12 @@ export default function CalendarWeek() {
       {openNewEvent ? (
         <div className="new-event-form">
           <div className="top-new-event">
-            <h3>Create New Event</h3>
-            <button onClick={() => setOpenNewEvent(false)}>Close</button>
+            <h3>Criar Novo Evento</h3>
+            <button onClick={() => setOpenNewEvent(false)}>Fechar</button>
           </div>
           <form onSubmit={handleNewEvent}>
             <div>
-              <label>Title:</label>
+              <label>Título:</label>
               <input
                 type="text"
                 onChange={(e) => setNewEventTitle(e.target.value)}
@@ -87,6 +91,7 @@ export default function CalendarWeek() {
                   selectable={true}
                   plugins={[dayGridPlugin, InteractionPlugin]}
                   initialView="dayGridMonth"
+                  locale={"pt-br"}
                   events={events}
                   headerToolbar={{
                     start: "title",
