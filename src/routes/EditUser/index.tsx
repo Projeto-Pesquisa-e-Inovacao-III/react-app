@@ -180,6 +180,7 @@ export default function EditUser() {
               name="password"
               placeholder="sua senha"
               id="password"
+              value={password}
               onChange={(e) => {
                 const newPassword = e.target.value;
                 setPassword(newPassword);
