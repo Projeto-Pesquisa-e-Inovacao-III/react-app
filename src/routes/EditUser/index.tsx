@@ -24,10 +24,8 @@ export default function EditUser() {
 
   const [name, setName] = useState<string>(user.nome);
   const [email, setEmail] = useState<string>(user.email);
-  const [password, setPassword] = useState<string>(user.senha); // não tem update no backend, mas, já que no futuro terá, achei melhor não apagar. 
-  const [costumerDocument, setCostumerDocument] = useState<string>( // ||
-    user.cpf
-  );
+  const [password, setPassword] = useState<string>(user.senha);
+  const [costumerDocument, setCostumerDocument] = useState<string>(user.cpf);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
 
@@ -156,6 +154,7 @@ export default function EditUser() {
                   type="text"
                   name="costumerDocument"
                   placeholder="___.___.___-__"
+                  value={costumerDocument}
                   onChange={(e) => setCostumerDocument(e.target.value)}
                   onInput={(e) => cpfMask(e)}
                 />

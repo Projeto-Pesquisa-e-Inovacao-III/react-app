@@ -21,7 +21,7 @@
     .wrapper_update-user_elements {
         width: 23vw;
         padding: 1.5rem;
-        background-color: #fff;
+        background-color: hsl(0, 0%, 100%);
         text-align: center;
         display: flex;
         flex-direction: column;

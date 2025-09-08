@@ -6,6 +6,13 @@
       "email": "asd@aadadsasdda.com",
       "senha": "123456789aaA!",
       "cpf": "999.999.999-99"
+    },
+    {
+      "id": "dcec",
+      "nome": "asd",
+      "email": "asd@asd.com",
+      "senha": "123456789aaA!",
+      "cpf": "231.231.233-21"
     }
   ]
 }
