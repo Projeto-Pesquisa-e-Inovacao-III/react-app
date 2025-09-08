@@ -206,7 +206,7 @@ export default function EditUser() {
               ))}
             </div>
           )}
-          <button type="submit">Atualizar</button>
+          <button type="submit" className="btn-update">Atualizar</button>
         </form>
         <form onSubmit={handleDelete}>
           <button
