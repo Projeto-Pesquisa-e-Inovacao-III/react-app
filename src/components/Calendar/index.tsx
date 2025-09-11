@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import NewEvent from "../NewEvent";
 export default function Calendar() {
   const eventsMock = [
-    { title: "Reunião", date: "2025-08-15" },
-    { title: "Aniversário", date: "2025-08-22" },
+    { title: "Reunião", date: "2025-09-15" },
+    { title: "Aniversário", date: "2025-09-22" },
   ];
 
   const actualMonth = new Date().getMonth();
@@ -59,7 +59,7 @@ export default function Calendar() {
         />
       </div>
       {openNewEvent ? (
-        <NewEvent close={setOpenNewEvent} />
+        <NewEvent close={setOpenNewEvent} insertedEvents={events} insertEvent={setEvents} />
       ) : null}
     </div>
   );

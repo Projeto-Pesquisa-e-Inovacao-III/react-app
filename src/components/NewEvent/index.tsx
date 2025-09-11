@@ -1,36 +1,21 @@
 import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import Button from "@mui/material";
 import "./style.css";
 import { use, useEffect, useState } from "react";
 import CalendarMonthStyled from "../CalendarMonthStyled";
-export default function NewEvent({ close }: { close: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const eventsMock = [
-    { title: "Reunião", date: "2025-08-15" },
-    { title: "Aniversário", date: "2025-08-22" },
-  ];
+
+export default function NewEvent(
+  { close, insertedEvents, insertEvent }: { close: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>> }
+) {
+  const eventsMock = [...insertedEvents];
 
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(true);
-  const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [newEventDate, setNewEventDate] = useState<string>("");
   const [newEventStartHour, setNewEventStartHour] = useState<string>("");
 
-  function handleNewEvent(e: React.FormEvent) {
-    e.preventDefault();
-
-    setNewEventStartHour("08:00:00");
-
-    setNewEventTitle(`${newEventDate} - ${newEventStartHour}`);
-
-
-    if (newEventTitle && newEventDate) {
-      eventsMock.push({ title: newEventTitle, date: newEventDate });
-      console.log("colocou no eventsMock");
-      setOpenNewEvent(false);
-    }
-    setEvents([...events, { title: newEventTitle, date: newEventDate }]);
-  }
 
   useEffect(() => {
     const wrapperCallendar = document.getElementById("wrapper-callendar");
@@ -45,6 +30,32 @@ export default function NewEvent({ close }: { close: React.Dispatch<React.SetSta
   }, [openNewEvent]);
 
 
+  function handleNewEvent(e: React.FormEvent) {
+    e.preventDefault();
+    console.log("newEventDate", newEventDate);
+    setNewEventTitle(`${newEventDate} - ${newEventStartHour}`);
+
+
+    if (newEventTitle && newEventDate) {
+      console.log("colocou no eventsMock");
+      setOpenNewEvent(false);
+    }
+    insertEvent([...insertedEvents, { title: newEventTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]);
+  }
+
+  function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
+    setNewEventStartHour(hour);
+    const button = document.getElementById("btn" + hour.split(":")[0]);
+
+    if (button) {
+      const buttons = document.querySelectorAll('.hour-button');
+      buttons.forEach(btn => btn.classList.remove('btn-selected'));
+
+      button.classList.add('btn-selected');
+    }
+
+  }
+
   return (
     <div className="new-event-form">
 
@@ -57,18 +68,19 @@ export default function NewEvent({ close }: { close: React.Dispatch<React.SetSta
       <div className="wrapper-new-event">
         <div className="calendar-small">
           <CalendarMonthStyled clickedDate={setNewEventDate} />
+          
+        </div>
+        <form onSubmit={handleNewEvent}>
           <div className="hours">
-            <button onClick={() => setNewEventStartHour("08:00:00")}>08:00</button>
-            <button onClick={() => setNewEventStartHour("09:00:00")}>09:00</button>
-            <button onClick={() => setNewEventStartHour("10:00:00")}>10:00</button>
-            <button onClick={() => setNewEventStartHour("11:00:00")}>11:00</button>
+            <button id="btn08" className="hour-button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>
+            <button id="btn09" className="hour-button" onClick={(e) => handleButtonClick(e, "09:00:00")}>09:00</button>
+            <button id="btn10" className="hour-button" onClick={(e) => handleButtonClick(e, "10:00:00")}>10:00</button>
+            <button id="btn11" className="hour-button" onClick={(e) => handleButtonClick(e, "11:00:00")}>11:00</button>
           </div>
 
           {/* temporary */}
           <button type="submit" style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Add Event</button>
 
-        </div>
-        <form onSubmit={handleNewEvent}>
           <div className="input-group">
             <label htmlFor="">Tipo</label>
             <select name="" id="">

@@ -8,3 +8,7 @@
   pointer-events: none;
   opacity: 0.5;
 }
+
+.fc .fc-timegrid-col.fc-day-today {
+	background-color: rgba(15, 71, 177, 0.15);
+}

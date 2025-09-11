@@ -28,6 +28,11 @@
     }
   }
 
+  .btn-selected {
+    background-color: #c50000ff;
+    color: #fff;
+  }
+
   .wrapper-new-event {
     display: flex;
 
