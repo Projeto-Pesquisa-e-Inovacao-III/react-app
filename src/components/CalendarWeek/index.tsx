@@ -5,6 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { useEffect, useState } from "react";
+import NewEvent from "../NewEvent";
 export default function CalendarWeek() {
   const eventsMock = [
     { title: "Reunião", start: "2025-09-06T15:30:00", end: "2025-09-06T16:30:00" },
@@ -72,49 +73,8 @@ export default function CalendarWeek() {
         />
       </div>
       {openNewEvent ? (
-        <div className="new-event-form">
-          <div className="top-new-event">
-            <h3>Criar Novo Evento</h3>
-            <button onClick={() => setOpenNewEvent(false)}>Fechar</button>
-          </div>
-          <form onSubmit={handleNewEvent}>
-            <div>
-              <label>Título:</label>
-              <input
-                type="text"
-                onChange={(e) => setNewEventTitle(e.target.value)}
-              />
-            </div>
-            <div>
-              <div className="calendar-small">
-                <FullCalendar
-                  selectable={true}
-                  plugins={[dayGridPlugin, InteractionPlugin]}
-                  initialView="dayGridMonth"
-                  locale={"pt-br"}
-                  events={events}
-                  headerToolbar={{
-                    start: "title",
-                    center: "",
-                    end: "today prev,next",
-                  }}
-                  dateClick={function (info) {
-                    setNewEventDate(info.dateStr);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="hour">
-              <label>Hour:</label>
-              <input type="button" value="15h30-16h30" onClick={() => { setNewEventStartHour("15:30:00"); setNewEventEndHour("16:30:00"); }} />
-              <input type="button" value="16h30-17h30" onClick={() => { setNewEventStartHour("16:30:00"); setNewEventEndHour("17:30:00"); }} />
-              <input type="button" value="17h30-18h30" onClick={() => { setNewEventStartHour("17:30:00"); setNewEventEndHour("18:30:00"); }} />
-              <input type="button" value="18h30-19h30" onClick={() => { setNewEventStartHour("18:30:00"); setNewEventEndHour("19:30:00"); }} />
-              <input type="button" value="19h30-20h30" onClick={() => { setNewEventStartHour("19:30:00"); setNewEventEndHour("20:30:00"); }} />
-            </div>
-            <button type="submit" disabled={!newEventTitle || !newEventDate || !newEventStartHour || !newEventEndHour}>Add Event</button>
-          </form>
-        </div>
+        <NewEvent close={setOpenNewEvent} />
+
       ) : null}
     </div>
   );

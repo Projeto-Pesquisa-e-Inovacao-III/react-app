@@ -13,7 +13,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Calendar />} />
           <Route path="/week" element={<CalendarWeek />} />
-          <Route path="/month-styled" element={<CalendarMonthStyled />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           {/* <Route path="*" element={<NotFound />} /> */}

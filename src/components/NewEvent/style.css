@@ -1,0 +1,60 @@
+.new-event-opened-wrapper-callendar {
+  filter: opacity(0.4);
+}
+
+.disabled-day {
+  cursor: none;
+  background-color: #ddd !important;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.container {
+  .new-event-form {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow: hidden;
+
+    .calendar-small {
+      width: 60vw;
+    }
+  }
+
+  .wrapper-new-event {
+    display: flex;
+
+    form {
+      width: 30vw;
+    }
+
+    .double-input {
+      flex: 1;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      margin-right: 10px;
+
+      label {
+        margin-bottom: 4px;
+      }
+
+      select,
+      input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+    }
+  }
+}
