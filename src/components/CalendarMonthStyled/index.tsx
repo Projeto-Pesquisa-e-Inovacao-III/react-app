@@ -40,7 +40,7 @@ export default function CalendarMonthStyled() {
 
   return (
     <div className="container-calendar">
-      <div className="wrapper-callendar" id="wrapper-callendar">
+      <div className="wrapper-callendar" id="wrapper-styled-callendar">
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
