@@ -62,8 +62,8 @@ export function validatePassword(password: string): string{
         response += "A password deve conter pelo menos um caractere especial.\n"
     }
     
-    if (password.length <= 12) {
-        response += "A password deve ter no mínimo 12 caracteres.\n"
+    if (password.length <= 8) {
+        response += "A password deve ter no mínimo 8 caracteres.\n"
     }
 
     return response || "password válida!"
