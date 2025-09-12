@@ -98,8 +98,8 @@ export default function EditUser() {
       text: "Você não poderá reverter isso!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Sim, deletar!",
       cancelButtonText: "Cancelar"
     }).then((result) => {
@@ -133,7 +133,7 @@ export default function EditUser() {
           <p>Atualize os campos abaixo para modificar suas informações.</p>
         </div>
         <form onSubmit={handleSubmit}>
-          <div className="row1">
+          <div className="row1 mg-15" >
             <div className="costumer-name">
               <label htmlFor="name">Nome</label>
               <div className="wrapper_inp">

@@ -58,7 +58,7 @@ export default function Login() {
           <p>Entre na sua conta para acessar nossa plataforma</p>
         </div>
         <form onSubmit={handleSubmit}>
-          <label>Email</label>
+          <label className="mg-15">Email</label>
           <div className="wrapper_inp">
             <Mail className="mail-icon" />
             <input
@@ -86,7 +86,7 @@ export default function Login() {
               {showPassword ? <EyeOff /> : <Eye />}
             </button>
           </div>
-          <div className="config_login">
+          {/* <div className="config_login">
             <label>
               <input
                 type="checkbox"
@@ -98,10 +98,10 @@ export default function Login() {
             </label>
 
             <Link to="/forgot-password">Esqueceu sua senha?</Link>
-          </div>
-          <button type="submit">Entrar na conta</button>
+          </div> */}
+          <button className="mg-15" type="submit">Entrar na conta</button>
         </form>
-        <span>
+        <span className="mg-15">
           Não tem uma conta? <Link to="/register">Criar uma conta</Link>
         </span>
       </div>
