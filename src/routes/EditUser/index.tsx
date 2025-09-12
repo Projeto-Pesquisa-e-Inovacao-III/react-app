@@ -108,6 +108,7 @@ export default function EditUser() {
           .softDelete(user.id || "")
           .then((res) => {
             console.log(res);
+            window.location.href = "/login";
           })
           .catch((err) => {
             console.error(err);
@@ -120,7 +121,6 @@ export default function EditUser() {
           timer: 1500,
           icon: "success"
         });
-        window.location.href = "/login";
       }
     });
   }
