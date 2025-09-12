@@ -4,8 +4,14 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
 import NewEvent from "../NewEvent";
+interface CalendarProps {
+  title: string;
+  date: string;
+  start?: string;
+  end?: string;
+}
 export default function Calendar() {
-  const eventsMock = [
+  const eventsMock: CalendarProps[] = [
     { title: "Reunião", date: "2025-09-15" },
     { title: "Aniversário", date: "2025-09-22" },
   ];
@@ -37,7 +43,7 @@ export default function Calendar() {
           initialView="dayGridMonth"
           events={events}
           dayCellClassNames={(arg) => {
-            const disabledDays = events.map((event) => event.date);
+            const disabledDays = events.map((event) => event.date || event.start?.split("T")[0]);
             if (disabledDays.includes(arg.date.toISOString().split("T")[0])) {
               return ["disabled-day"];
             }

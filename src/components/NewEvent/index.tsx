@@ -30,20 +30,28 @@ export default function NewEvent(
   }, [openNewEvent]);
 
 
+  useEffect
+    (() => {
+      console.log("events", insertedEvents);
+    }, [insertedEvents]);
+
   function handleNewEvent(e: React.FormEvent) {
     e.preventDefault();
-    console.log("newEventDate", newEventDate);
+
     setNewEventTitle(`${newEventDate} - ${newEventStartHour}`);
+    const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
+    setNewEventTitle(calculatedTitle);
 
-
-    if (newEventTitle && newEventDate) {
+    if (newEventTitle || calculatedTitle && newEventDate) {
       console.log("colocou no eventsMock");
       setOpenNewEvent(false);
     }
-    insertEvent([...insertedEvents, { title: newEventTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]);
+    insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
   }
 
   function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
+    event.preventDefault();
+    console.log("clicou no botão da hora", hour);
     setNewEventStartHour(hour);
     const button = document.getElementById("btn" + hour.split(":")[0]);
 
@@ -68,14 +76,14 @@ export default function NewEvent(
       <div className="wrapper-new-event">
         <div className="calendar-small">
           <CalendarMonthStyled clickedDate={setNewEventDate} />
-          
+
         </div>
         <form onSubmit={handleNewEvent}>
           <div className="hours">
-            <button id="btn08" className="hour-button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>
-            <button id="btn09" className="hour-button" onClick={(e) => handleButtonClick(e, "09:00:00")}>09:00</button>
-            <button id="btn10" className="hour-button" onClick={(e) => handleButtonClick(e, "10:00:00")}>10:00</button>
-            <button id="btn11" className="hour-button" onClick={(e) => handleButtonClick(e, "11:00:00")}>11:00</button>
+            <button id="btn08" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>
+            <button id="btn09" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "09:00:00")}>09:00</button>
+            <button id="btn10" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "10:00:00")}>10:00</button>
+            <button id="btn11" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "11:00:00")}>11:00</button>
           </div>
 
           {/* temporary */}

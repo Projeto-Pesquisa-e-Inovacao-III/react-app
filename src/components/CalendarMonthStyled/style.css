@@ -60,7 +60,7 @@
 }
 
 #wrapper-styled-callendar .fc-day-today {
-  background: none !important;
+  background: none;
 }
 
 #wrapper-styled-callendar .fc-day-today .fc-daygrid-day-number {
