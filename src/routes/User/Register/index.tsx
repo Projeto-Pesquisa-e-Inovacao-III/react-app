@@ -2,7 +2,6 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
-import { UserDTO } from "../../../models/user";
 import { User } from 'lucide-react';
 import { IdCard } from 'lucide-react';
 import "./style.css";
@@ -10,6 +9,7 @@ import Swal from "sweetalert2";
 import { cpfMask } from "../../../utils/mascara";
 import * as validation from "../../../utils/validacao";
 import axios from "axios";
+import type { UserDTO } from "../../../models/user";
 
 export default function Register() {
     const [name, setName] = useState<string>("");

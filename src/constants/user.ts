@@ -1,7 +1,7 @@
 
 import axios from "axios";
-import { UserDTO } from "../models/user";
 import { HOST } from "../system";
+import type { UserDTO } from "../models/user";
 
 export function register(userdata: UserDTO) {
    return axios.post(`${HOST}/usuarios/cadastro`, userdata)

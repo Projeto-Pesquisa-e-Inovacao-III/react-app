@@ -1,4 +1,4 @@
-import { UserDTO } from "../models/user";
+import type { UserDTO } from "../models/user";
 
 export function isBlank(value: string): boolean{
     const emptyFieldRegex: RegExp = /^\s*$/;
