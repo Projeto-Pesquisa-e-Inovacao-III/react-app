@@ -1,12 +1,11 @@
-import { use, useState } from "react";
-import { UserDTO } from "../../models/user";
+import { useState } from "react";
 import * as userService from "../../constants/user";
 import "./style.css";
 import { Eye, EyeOff, IdCard, Lock, Mail, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import * as validation from "../../utils/validacao";
 import Swal from "sweetalert2";
 import { cpfMask } from "../../utils/mascara";
+import type { UserDTO } from "../../models/user";
 
 export default function EditUser() {
   const loggedUser = JSON.parse(localStorage.getItem("user-info") || "{}");
