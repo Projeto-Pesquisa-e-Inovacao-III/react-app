@@ -8,7 +8,6 @@ import "./style.css";
 import Swal from "sweetalert2";
 import { cpfMask } from "../../../utils/mascara";
 import * as validation from "../../../utils/validacao";
-import axios from "axios";
 import type { UserDTO } from "../../../models/user";
 
 export default function Register() {
@@ -62,7 +61,6 @@ export default function Register() {
         userService
             .register(userData)
             .then(async (res) => {
-                await insertUserInDBJson(userData);
                 Swal.fire({
                     icon: "success",
                     title: "Cadastro bem sucedido",
@@ -87,11 +85,6 @@ export default function Register() {
                 });
                 console.log(err)
             });
-    }
-
-    async function insertUserInDBJson(user: UserDTO) {
-        const response = await axios.post("http://localhost:3001/users", user);
-        return response.data;
     }
 
     return (
