@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./style.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
@@ -10,16 +11,42 @@ export default function Login() {
   const [remember, setRemember] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const nav = useNavigate()
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // Handle login logic here
     userService
       .login(email, password)
       .then((res) => {
-        console.log(res);
+        console.log(res)
+        const isUserActive = res.data.ativo;
+        if (isUserActive) {
+          Swal.fire({
+            icon: "success",
+            title: "Login bem sucedido",
+            showConfirmButton: false,
+            timer: 3000,
+            allowOutsideClick: false,
+            allowEscapeKey: false
+          });
+          localStorage.setItem("user-info", JSON.stringify(res.data))
+          setTimeout(() => {
+            nav("/")
+          }, 3000)
+        } else {
+          return Promise.reject(new Error("Usuário inativo"))
+        }
       })
       .catch((err) => {
-        console.error(err);
+        Swal.fire({
+          icon: "error",
+          title: "Email/senha incorreto",
+          showConfirmButton: true,
+          confirmButtonColor: "#166ba3ff",
+          timer: 3000,
+        });
+        console.log(err)
       });
   }
 
@@ -31,7 +58,7 @@ export default function Login() {
           <p>Entre na sua conta para acessar nossa plataforma</p>
         </div>
         <form onSubmit={handleSubmit}>
-          <label>Email</label>
+          <label className="mg-15">Email</label>
           <div className="wrapper_inp">
             <Mail className="mail-icon" />
             <input
@@ -59,7 +86,7 @@ export default function Login() {
               {showPassword ? <EyeOff /> : <Eye />}
             </button>
           </div>
-          <div className="config_login">
+          {/* <div className="config_login">
             <label>
               <input
                 type="checkbox"
@@ -71,10 +98,10 @@ export default function Login() {
             </label>
 
             <Link to="/forgot-password">Esqueceu sua senha?</Link>
-          </div>
-          <button type="submit">Entrar na conta</button>
+          </div> */}
+          <button className="mg-15" type="submit">Entrar na conta</button>
         </form>
-        <span>
+        <span className="mg-15">
           Não tem uma conta? <Link to="/register">Criar uma conta</Link>
         </span>
       </div>
