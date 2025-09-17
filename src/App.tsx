@@ -5,7 +5,6 @@ import Home from "./routes/Home";
 import Register from "./routes/User/Register";
 import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
-import DevDebug from "./components/DevDebug";
 
 function App() {
   return (

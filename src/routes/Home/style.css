@@ -16,18 +16,25 @@
     }
 }
 
-.bg-blue {
-    background-color: #313D5A;
+.default-padding {
     padding: 20px;
     margin: 40px 0;
-    color: white;
+
 
     img {
         max-width: 100%;
+        width: 100%;
         height: auto;
         display: block;
         margin-bottom: 20px;
     }
+}
+
+.bg-blue {
+    background-color: #313D5A;
+    
+    color: white;
+
 }
 
 .home-about {
@@ -82,6 +89,22 @@
 
 .home-frequently-asked {
     margin-top: 0 !important;
+    color: black;
 
-    
+    .wrapper-asks {
+        background-color: #fff;
+        padding: 20px;
+    border-radius: 8px;
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    }
+
+}
+
+
+.css-1808mag-MuiPaper-root-MuiAccordion-root.Mui-expanded {
+    margin: 0 !important;
 }
