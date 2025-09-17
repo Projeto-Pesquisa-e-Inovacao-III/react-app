@@ -1,0 +1,52 @@
+header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+width: 100%;
+border-bottom: 1px solid #ccc;
+    .burger {
+        display: none;
+    }
+
+    .nav-mobile {
+        display: none;
+    }
+
+}
+
+
+@media screen and (max-width: 468px) {
+    header {
+        position: relative;
+        .burger {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        .nav-mobile {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 48px;
+            left: 0;
+            width: 100%;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            z-index: 1000;
+
+            a {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+                text-align: center;
+                text-decoration: none;
+                &:last-child {
+                    border-bottom: none;
+                }
+                &:first-child {
+                    border-top: none;
+                }
+            }
+        }
+    }
+}

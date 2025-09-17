@@ -12,7 +12,7 @@ function App() {
     <BrowserRouter>
       <div className="container">
         {/* todo: remove this  */}
-        <DevDebug />
+        {/* <DevDebug /> */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />

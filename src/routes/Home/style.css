@@ -1,0 +1,87 @@
+.wrapper-main-home {
+    .main-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #F36057;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+
+    h1 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+    }
+}
+
+.bg-blue {
+    background-color: #313D5A;
+    padding: 20px;
+    margin: 40px 0;
+    color: white;
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+.home-about {
+
+
+    .about-text {
+        color: #fff;
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    }
+}
+
+.home-cta {
+    margin-top: 40px;
+
+    h1 {
+        font-size: 28px;
+        color: #F36057;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        border-bottom: 5px solid #F36057;
+    }
+
+    h2 {
+        color: #313D5A;
+        font-size: 24px;
+        margin: 20px 0;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+}
+
+.home-plans {
+    .home-plan-card {
+        h2 {
+            margin: 36px 0;
+        }
+    }
+    margin-bottom: 0 !important;
+}
+
+.home-frequently-asked {
+    margin-top: 0 !important;
+
+    
+}
