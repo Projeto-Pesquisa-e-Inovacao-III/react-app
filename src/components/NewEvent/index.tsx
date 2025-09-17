@@ -1,7 +1,3 @@
-import FullCalendar from "@fullcalendar/react";
-import InteractionPlugin from "@fullcalendar/interaction";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import Button from "@mui/material";
 import "./style.css";
 import { use, useEffect, useState } from "react";
 import CalendarMonthStyled from "../CalendarMonthStyled";
@@ -9,7 +5,6 @@ import CalendarMonthStyled from "../CalendarMonthStyled";
 export default function NewEvent(
   { close, insertedEvents, insertEvent }: { close: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>> }
 ) {
-  const eventsMock = [...insertedEvents];
 
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(true);
   const [newEventTitle, setNewEventTitle] = useState<string>("");
