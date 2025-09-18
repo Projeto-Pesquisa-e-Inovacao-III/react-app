@@ -26,7 +26,6 @@
         width: 100%;
         height: auto;
         display: block;
-        margin-bottom: 20px;
     }
 }
 
@@ -89,6 +88,7 @@
 
 .home-frequently-asked {
     margin-top: 0 !important;
+    margin-bottom: 0 !important;
     color: black;
 
     .wrapper-asks {
@@ -104,7 +104,32 @@
 
 }
 
-
 .css-1808mag-MuiPaper-root-MuiAccordion-root.Mui-expanded {
     margin: 0 !important;
+}
+
+@media (max-width: 1920px) {
+    .wrapper-main-home {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+        
+
+        .wrapper-main-home-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 500px;
+            text-align: left;
+            margin-left: 16px;
+
+            h1 {
+                font-size: 36px;
+            }
+
+            .main-btn {
+                width: 70%;
+            }
+        }
+    }
 }

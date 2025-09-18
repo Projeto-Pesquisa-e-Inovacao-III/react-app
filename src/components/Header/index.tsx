@@ -6,8 +6,10 @@ export default function Header() {
 
   const [burgerActive, setBurgerActive] = useState(false);
 
+  
+
   return (
-    <header>
+    <header className="default-padding">
       <div className="header-logo">
         <img src="https://placehold.co/90x40" alt="logo" />
       </div>
@@ -15,6 +17,20 @@ export default function Header() {
       <div className="burger" onClick={() => setBurgerActive(!burgerActive)}>
         <img src="https://placehold.co/30x30" alt="" />
       </div>
+
+      {
+        !burgerActive && (
+          <div className="links-desktop">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+
+            <button>Login</button>
+            <button className="btn-primary">Sign Up</button>
+          </div>
+        )
+      }
 
       {
         burgerActive && (

@@ -1,23 +1,87 @@
 header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    margin: 0 !important;
+
     .burger {
         display: none;
+    }
+
+    .header-logo {
+        img {
+            margin: 0 !important;
+        }
+
     }
 
     .nav-mobile {
         display: none;
     }
 
+    .links-desktop {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            padding: 16px 32px;
+            border: none;
+            background-color: #F36057;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &:hover {
+                background-color: #0056b3;
+            }
+        }
+    }
 }
 
 
-@media screen and (max-width: 468px) {
+
+@media (max-width: 468px) {
+    
+}
+
+
+@media (max-width: 640px) {
+
+}
+
+
+
+
+
+/* md */
+
+
+@media (max-width: 768px) {
     header {
+        margin: 0 !important;
         position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+
+        .links-desktop {
+            display: none;
+        }
+
+        img {
+            margin: 0 !important;
+        }
+
         .burger {
             display: flex;
             flex-direction: column;
@@ -26,9 +90,10 @@ border-bottom: 1px solid #ccc;
 
         .nav-mobile {
             display: flex;
+            align-items: center;
             flex-direction: column;
             position: absolute;
-            top: 48px;
+            top: 60px;
             left: 0;
             width: 100%;
             background-color: #fff;
@@ -40,13 +105,40 @@ border-bottom: 1px solid #ccc;
                 border-bottom: 1px solid #ccc;
                 text-align: center;
                 text-decoration: none;
+
                 &:last-child {
                     border-bottom: none;
                 }
+
                 &:first-child {
                     border-top: none;
                 }
             }
         }
     }
+}
+
+
+
+
+
+/* lg */
+
+
+@media (max-width: 1024px) {
+
+
+}
+
+
+
+/* xl */
+@media (max-width: 1280px) {
+
+}
+/* 2xl */
+@media (max-width: 1536px) {
+}
+/* 3xl */
+@media (max-width: 1920px) {
 }

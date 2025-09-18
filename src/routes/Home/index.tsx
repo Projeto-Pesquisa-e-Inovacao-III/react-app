@@ -5,8 +5,17 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronDown } from "lucide-react";
 import Typography from "@mui/material/Typography";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+
+  const [displayMainImage, setDisplayMainImage] = useState(true);
+
+  useEffect(() => {
+
+    window.innerWidth <= 768 ? setDisplayMainImage(true) : setDisplayMainImage(false);
+    console.log(window.innerWidth);
+  }, [window.innerWidth]);
   return (
     <>
       <Header />
@@ -17,10 +26,20 @@ export default function Home() {
               Bem-vindo ao csf Treinamentos
             </h1>
             <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
-          </div>
 
-          <img src="https://placehold.co/330x330" alt="" />
+            {displayMainImage && (
+              <div className="main-img">
+                <img src="https://placehold.co/330x330" alt="" />
+              </div>
+            )}
           <button className="main-btn">Lorem, ipsum.</button>
+
+          </div>
+          {!displayMainImage && (
+            <div className="main-img">
+              <img src="https://placehold.co/600x530" alt="" />
+            </div>
+          )}
         </section>
 
         <section className="home-about bg-blue default-padding">
@@ -113,6 +132,10 @@ export default function Home() {
             </Accordion>
           </div>
         </section>
+
+        <footer>
+
+        </footer>
       </div>
     </>
   );
