@@ -3,18 +3,37 @@ import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
-import NewEvent from "../NewEvent";
-export default function CalendarMonthStyled({ clickedDate }: { clickedDate: React.Dispatch<React.SetStateAction<string>> }) {
+
+type Props = {
+  clickedDate: React.Dispatch<React.SetStateAction<string>>;
+  createdEvents?: { title: string; start: string; end: string }[];
+};
+
+
+export default function CalendarMonthStyled({ clickedDate, createdEvents }: Props) {
+
+  const databaseEvents = createdEvents?.map((event: { title: string; start: string; end: string }) => {
+    const dateStr = event.start.split("T")[0];
+    return { title: event.title, date: dateStr };
+  });
+
   const eventsMock = [
     { title: "Reunião", date: "2025-09-15" },
     { title: "Aniversário", date: "2025-09-22" },
   ];
+
 
   const actualMonth = new Date().getMonth() + 1;
 
   const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
   const [newEventDate, setNewEventDate] = useState<string>("");
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
+
+  useEffect(() => {
+    if (databaseEvents && databaseEvents.length > 0) {
+      setEvents(databaseEvents);
+    }
+  }, []);
 
   useEffect(() => {
     clickedDate(newEventDate);
@@ -26,7 +45,7 @@ export default function CalendarMonthStyled({ clickedDate }: { clickedDate: Reac
         <FullCalendar
           plugins={[dayGridPlugin, InteractionPlugin]}
           initialView="dayGridMonth"
-          events={events}
+          events={createdEvents ? events : eventsMock}
           locale={"pt-br"}
           dayHeaderFormat={{ weekday: 'long' }}
           datesSet={function (info) {
@@ -39,11 +58,11 @@ export default function CalendarMonthStyled({ clickedDate }: { clickedDate: Reac
 
           }}
           dayCellClassNames={(arg) => {
-            const disabledDays = events.map((event) => event.date);
+            const disabledDays = events?.map((event) => event.date);
 
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            if (disabledDays.includes(dateStr)) {
+            if (disabledDays?.includes(dateStr)) {
               return ["disabled-day"];
             }
 

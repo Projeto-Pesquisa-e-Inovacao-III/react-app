@@ -6,18 +6,42 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { use, useEffect, useState } from "react";
 import NewEvent from "../NewEvent";
+import { checkDebugConnection } from "../CheckConnection/CheckConnection";
+import { getEvents } from "../../constants/calendar";
+import type { CalendarDTO } from "../../models/calendar";
 export default function CalendarWeek() {
-  const eventsMock = [
-    { title: "Reunião", start: "2025-09-11T15:30:00", end: "2025-09-11T16:30:00" },
-    { title: "Aniversário", start: "2025-11-06T16:30:00", end: "2025-11-06T17:30:00" },
-  ];
+
 
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
-  const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
+  const [events, setEvents] = useState<any>();
+
+  const eventsMock = [
+    { title: "Reunião", start: "2025-09-15T10:00:00", end: "2025-09-15T11:00:00" },
+    { title: "Aniversário", start: "2025-09-22T12:00:00", end: "2025-09-22T13:00:00" },
+  ];
 
   useEffect(() => {
+    async function checkConnection() {
+      const isDatabaseConnected = await checkDebugConnection();
+      if (isDatabaseConnected) {
+        console.log("Conexão com o banco de dados bem-sucedida.");
+        getEvents().then((response) => {
+          console.log(response)
+          const databaseEvents = response.data.content.map((event: { title: string; dateTime: string }) => {
+            const [date, time] = event.dateTime.split("T");
+            return { title: event.title, start: `${date}T${time}`, end: `${date}T09:00:00` }; // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+          });
+          console.log("Eventos do banco de dados:", databaseEvents);
+          setEvents(databaseEvents);
+        });
+      }
+    }
+    checkConnection();
     console.log("events", events);
-  }, [events]);
+    if(!events) {
+      setEvents(eventsMock);
+    }
+  }, []);
 
   return (
     <div className="container-calendar">

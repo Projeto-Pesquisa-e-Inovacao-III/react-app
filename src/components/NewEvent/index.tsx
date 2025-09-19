@@ -1,6 +1,8 @@
 import "./style.css";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CalendarMonthStyled from "../CalendarMonthStyled";
+import { createEvent } from "../../constants/calendar";
+import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 
 export default function NewEvent(
   { close, insertedEvents, insertEvent }: { close: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>> }
@@ -13,13 +15,10 @@ export default function NewEvent(
 
 
   useEffect(() => {
-    const wrapperCallendar = document.getElementById("wrapper-callendar");
     if (openNewEvent) {
       document.body.style.overflow = "hidden";
-      wrapperCallendar?.classList.add("new-event-opened-wrapper-callendar");
     } else {
       document.body.style.overflow = "auto";
-      wrapperCallendar?.classList.remove("new-event-opened-wrapper-callendar");
       close(false);
     }
   }, [openNewEvent]);
@@ -30,18 +29,37 @@ export default function NewEvent(
       console.log("events", insertedEvents);
     }, [insertedEvents]);
 
-  function handleNewEvent(e: React.FormEvent) {
+  async function handleNewEvent(e: React.FormEvent) {
     e.preventDefault();
 
-    setNewEventTitle(`${newEventDate} - ${newEventStartHour}`);
+    //debugging - check if backend is reachable
+    const isDatabaseConnected = await checkDebugConnection();
+    console.log("isDatabaseConnected", isDatabaseConnected);
+
     const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
     setNewEventTitle(calculatedTitle);
+
+
+    if (isDatabaseConnected) {
+      console.log("tentando salvar no banco");
+      console.log(isDatabaseConnected)
+      await createEvent({ title: calculatedTitle, dateTime: `${newEventDate}T${newEventStartHour}` })
+        .then(response => {
+          console.log("Evento salvo com sucesso:", response.data);
+          console.log("seguindo para inserir na lista")
+        }).catch(error => {
+          console.error("Erro ao salvar evento:", error);
+        });
+    }
 
     if (newEventTitle || calculatedTitle && newEventDate) {
       console.log("colocou no eventsMock");
       setOpenNewEvent(false);
     }
-    insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+    if (insertedEvents) {
+
+      insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+    }
   }
 
   function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
@@ -70,7 +88,7 @@ export default function NewEvent(
 
       <div className="wrapper-new-event">
         <div className="calendar-small">
-          <CalendarMonthStyled clickedDate={setNewEventDate} />
+          <CalendarMonthStyled clickedDate={setNewEventDate} createdEvents={insertedEvents} />
 
         </div>
         <form onSubmit={handleNewEvent}>
@@ -84,7 +102,7 @@ export default function NewEvent(
           {/* temporary */}
           <button type="submit" style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Add Event</button>
 
-          <div className="input-group">
+          {/* <div className="input-group">
             <label htmlFor="">Tipo</label>
             <select name="" id="">
               <option value="personal">Personal</option>
@@ -125,7 +143,7 @@ export default function NewEvent(
           <div className="input-group">
             <label>Complemento:</label>
             <input type="text" />
-          </div>
+          </div> */}
         </form>
       </div>
     </div>
