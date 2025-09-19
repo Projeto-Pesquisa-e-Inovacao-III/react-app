@@ -8,10 +8,8 @@ export default function DevDebug() {
                 DEV DEBUG
             </div>
             <div className="home">
-                <Link to="/login">Login</Link>
-                <Link to="/register">Cadastro</Link>
-                <Link to="/edit-user">Editar usuário</Link>
-                <Link to="/logout">Sair</Link>
+                <Link to="/week">Semana</Link>
+                <Link to="/">Normal</Link>
             </div>
         </div>
     );

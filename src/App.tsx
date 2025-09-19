@@ -6,13 +6,16 @@ import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
 import Calendar from "./components/Calendar";
 import CalendarWeek from "./components/CalendarWeek";
+import DevDebug from "./components/DevDebug";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="container">
         {/* todo: remove this  */}
+        <DevDebug />
         <Routes>
+
           <Route path="/" element={<Calendar />} />
           <Route path="/week" element={<CalendarWeek />} />
           <Route path="/login" element={<Login />} />

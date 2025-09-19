@@ -12,6 +12,8 @@ export default function NewEvent(
   const [newEventTitle, setNewEventTitle] = useState<string>("");
   const [newEventDate, setNewEventDate] = useState<string>("");
   const [newEventStartHour, setNewEventStartHour] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("personal");
+  const [selectedLocation, setSelectedLocation] = useState<string>("casa");
 
 
   useEffect(() => {
@@ -102,48 +104,59 @@ export default function NewEvent(
           {/* temporary */}
           <button type="submit" style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Add Event</button>
 
-          {/* <div className="input-group">
+          <div className="input-group">
             <label htmlFor="">Tipo</label>
-            <select name="" id="">
+            <select name="" id="" value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
               <option value="personal">Personal</option>
               <option value="consultoria">Consultoria</option>
-              <option value="outro">outro</option>
+              <option value="outro">Outro</option>
             </select>
           </div>
+
           <div className="input-group">
             <label htmlFor="">Local</label>
-            <select name="" id="">
+            <select name="" id="" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
               <option value="casa">Casa</option>
               <option value="academia">Academia</option>
               <option value="outro">Outro</option>
             </select>
           </div>
-          <div className="input-group double-input">
-            <div>
-              <label>CEP:</label>
-              <input type="text" />
-            </div>
-            <div>
-              <label>Cidade:</label>
-              <input type="text" />
-            </div>
-          </div>
-          <div className="input-group double-input">
-            <div>
-              <label>Endereço:</label>
-              <input
-                type="text"
-              />
-            </div>
-            <div>
-              <label>Número:</label>
-              <input type="text" style={{ width: "20%" }} />
-            </div>
-          </div>
-          <div className="input-group">
-            <label>Complemento:</label>
-            <input type="text" />
-          </div> */}
+
+          {
+            selectedLocation === "casa" ? (
+              <>
+                <div className="input-group">
+
+                  <div className="input-group double-input">
+                    <div>
+                      <label>CEP:</label>
+                      <input type="text" />
+                    </div>
+                    <div>
+                      <label>Cidade:</label>
+                      <input type="text" />
+                    </div>
+                  </div>
+                  <div className="input-group double-input">
+                    <div>
+                      <label>Endereço:</label>
+                      <input
+                        type="text"
+                      />
+                    </div>
+                    <div>
+                      <label>Número:</label>
+                      <input type="text" style={{ width: "20%" }} />
+                    </div>
+                  </div>
+                  <div className="input-group">
+                    <label>Complemento:</label>
+                    <input type="text" />
+                  </div>
+                </div>
+              </>
+            ) : null
+          }
         </form>
       </div>
     </div>
