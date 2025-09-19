@@ -4,7 +4,7 @@ header {
     align-items: center;
     width: 100%;
     border-bottom: 1px solid #ccc;
-    margin: 0 !important;
+    margin: 0 auto!important;
 
     .burger {
         display: none;
@@ -141,4 +141,9 @@ header {
 }
 /* 3xl */
 @media (max-width: 1920px) {
+    header {
+        margin: 0 auto!important;
+        max-width: 1536px;
+        width: 100%;
+    }
 }

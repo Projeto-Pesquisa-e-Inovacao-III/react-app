@@ -31,16 +31,16 @@
 
 .bg-blue {
     background-color: #313D5A;
-    
+
     color: white;
 
 }
 
 .home-about {
-
-
     .about-text {
         color: #fff;
+        display: flex;
+        flex-direction: column;
 
         h2 {
             font-size: 24px;
@@ -50,7 +50,7 @@
         p {
             font-size: 16px;
             max-width: 600px;
-            margin: 0 auto;
+
         }
     }
 }
@@ -83,6 +83,7 @@
             margin: 36px 0;
         }
     }
+
     margin-bottom: 0 !important;
 }
 
@@ -94,7 +95,7 @@
     .wrapper-asks {
         background-color: #fff;
         padding: 20px;
-    border-radius: 8px;
+        border-radius: 8px;
 
         h2 {
             font-size: 24px;
@@ -108,12 +109,44 @@
     margin: 0 !important;
 }
 
+@media (min-width: 768px) {
+    .home-about {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-around;
+
+        .about-img {
+            max-width: 600px;
+            width: 100%;
+            margin-right: 20px;
+        }
+
+
+        .about-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            h1 {
+                font-size: 44px;
+            }
+
+            p {
+                font-size: 26px;
+                max-width: 700px;
+                width: 100%;
+            }
+        }
+    }
+
+}
+
 @media (max-width: 1920px) {
     .wrapper-main-home {
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-around;
-        
+
 
         .wrapper-main-home-text {
             display: flex;

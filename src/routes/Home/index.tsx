@@ -32,7 +32,7 @@ export default function Home() {
                 <img src="https://placehold.co/330x330" alt="" />
               </div>
             )}
-          <button className="main-btn">Lorem, ipsum.</button>
+            <button className="main-btn">Lorem, ipsum.</button>
 
           </div>
           {!displayMainImage && (
@@ -43,9 +43,12 @@ export default function Home() {
         </section>
 
         <section className="home-about bg-blue default-padding">
-          <img src="https://placehold.co/330x330" alt="" />
+          <div className="about-img">
+            <img src="https://placehold.co/330x330" alt="" />
+          </div>
+
           <div className="about-text">
-            <h2>Quem sou?</h2>
+            <h1>Quem sou?</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea labore eaque deserunt cumque libero tempora nam recusandae nobis doloremque sunt! Dolorum, quisquam. Atque, praesentium recusandae.</p>
           </div>
         </section>
