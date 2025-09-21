@@ -39,14 +39,33 @@ export default function Login() {
         }
       })
       .catch((err) => {
-        Swal.fire({
+        if (err.message === "Usuário inativo") {
+          return Swal.fire({
+            icon: "error",
+            title: "Usuário inativo",
+            showConfirmButton: true,
+            confirmButtonColor: "#166ba3ff",
+          });
+        }
+
+        if (err.response && err.response.status === 401) {
+          return Swal.fire({
+            icon: "error",
+            title: "Email/senha incorreto",
+            showConfirmButton: true,
+            confirmButtonColor: "#166ba3ff",
+          });
+        }
+
+        console.log(err)
+
+        return Swal.fire({
           icon: "error",
-          title: "Email/senha incorreto",
+          title: "Erro ao efetuar login",
+          text: "Por favor, tente novamente mais tarde.",
           showConfirmButton: true,
           confirmButtonColor: "#166ba3ff",
-          timer: 3000,
-        });
-        console.log(err)
+        })
       });
   }
 

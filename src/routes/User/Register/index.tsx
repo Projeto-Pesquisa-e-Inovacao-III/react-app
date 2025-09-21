@@ -76,13 +76,22 @@ export default function Register() {
                 }, 3000)
             })
             .catch((err) => {
+                if (err.status == 500) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Usuário já cadastrado",
+                        showConfirmButton: true,
+                        confirmButtonColor: "#166ba3ff",
+                        timer: 3000,
+                    });
+                }
+
                 Swal.fire({
                     icon: "error",
-                    title: "Usuário já cadastrado",
-                    showConfirmButton: true,
-                    confirmButtonColor: "#166ba3ff",
+                    title: "Erro ao cadastrar usuário",
                     timer: 3000,
                 });
+
                 console.log(err)
             });
     }
