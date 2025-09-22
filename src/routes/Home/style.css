@@ -121,7 +121,6 @@
         }
 
         .about-img {
-            max-width: 500px;
             width: 100%;
             margin-right: 20px;
             flex: 1;
