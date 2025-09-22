@@ -1,0 +1,115 @@
+.home-cta-text {
+    border-bottom: 5px solid #F36057;
+    color: #F36057;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+    width: 100%;
+    display: flex;
+    
+    h1 {
+        font-size: 4em;
+        max-width: 880px;
+    }
+}
+
+
+@media (max-width: 1920px) {
+    .wrapper-content {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .home-cta {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+
+        .wrapper-content-cta {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            h1 {
+                font-size: 4em;
+                max-width: 880px;
+            }
+
+            .reverse {
+                flex-direction: row-reverse;
+            }
+
+            .default-card-style {
+                display: flex;
+                justify-content: space-around;
+
+            }
+
+            .home-cta-card {
+                width: 100%;
+
+                .card-content {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: flex-start;
+                    max-width: 600px;
+
+                    h2 {
+                        font-size: 24px;
+                    }
+
+                    img {
+                        max-width: 200px;
+                        height: auto;
+                        margin-left: 20px;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+
+    .wrapper-content-cta {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        h1 {
+            font-size: 4em;
+            max-width: 880px;
+        }
+
+        .reverse {
+            flex-direction: row-reverse;
+        }
+
+        .default-card-style {
+            display: block !important;
+        }
+
+        .home-cta-card {
+            width: 100%;
+
+            .card-content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: flex-start;
+                max-width: 600px;
+
+                h2 {
+                    font-size: 24px;
+                }
+
+                img {
+                    max-width: 200px;
+                    height: auto;
+                    margin-left: 20px;
+                }
+            }
+        }
+    }
+
+}

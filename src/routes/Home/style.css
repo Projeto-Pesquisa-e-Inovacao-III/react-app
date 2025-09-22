@@ -37,10 +37,14 @@
 }
 
 .home-about {
+    display: flex;
+    justify-content: center;
+
     .about-text {
         color: #fff;
         display: flex;
         flex-direction: column;
+        justify-content: center;
 
         h2 {
             font-size: 24px;
@@ -57,14 +61,6 @@
 
 .home-cta {
     margin-top: 40px;
-
-    h1 {
-        font-size: 28px;
-        color: #F36057;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-        border-bottom: 5px solid #F36057;
-    }
 
     h2 {
         color: #313D5A;
@@ -109,39 +105,78 @@
     margin: 0 !important;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
+
     .home-about {
         display: flex;
-        flex-direction: row-reverse;
-        justify-content: space-around;
+        justify-content: center;
+
+        .wrapper-content {
+            .wrapper-content-about {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+        }
 
         .about-img {
-            max-width: 600px;
+            max-width: 500px;
             width: 100%;
             margin-right: 20px;
+            flex: 1;
         }
 
 
         .about-text {
             display: flex;
+            flex: 1;
             flex-direction: column;
             justify-content: center;
+            max-width: 600px;
 
             h1 {
-                font-size: 44px;
+                font-size: 36px;
             }
 
             p {
-                font-size: 26px;
                 max-width: 700px;
                 width: 100%;
             }
         }
     }
 
+
+    .home-cta {
+        h1 {
+            font-size: 2em !important;
+            max-width: 880px !important;
+        }
+    }
 }
 
+
 @media (max-width: 1920px) {
+    .wrapper-content {
+        max-width: 1400px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+
+        .wrapper-content-main,
+        .wrapper-content-about {
+            width: 100%;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-around;
+
+            h1 {
+                font-size: 36px;
+            }
+        }
+    }
+
     .wrapper-main-home {
         display: flex;
         flex-direction: row-reverse;

@@ -6,6 +6,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronDown } from "lucide-react";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
+import Card from "../../components/Cards";
 
 export default function Home() {
 
@@ -21,58 +22,54 @@ export default function Home() {
       <Header />
       <div className="container-home">
         <section className="wrapper-main-home default-padding">
-          <div className="wrapper-main-home-text">
-            <h1>
-              Bem-vindo ao csf Treinamentos
-            </h1>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
+          <div className="wrapper-content">
+            <div className="wrapper-content-main">
+              <div className="wrapper-main-home-text">
+                <h1>
+                  Bem-vindo ao csf Treinamentos
+                </h1>
+                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
 
-            {displayMainImage && (
-              <div className="main-img">
-                <img src="https://placehold.co/330x330" alt="" />
+                {displayMainImage && (
+                  <div className="main-img">
+                    <img src="https://placehold.co/330x330" alt="" />
+                  </div>
+                )}
+                <button className="main-btn">Lorem, ipsum.</button>
+
               </div>
-            )}
-            <button className="main-btn">Lorem, ipsum.</button>
-
-          </div>
-          {!displayMainImage && (
-            <div className="main-img">
-              <img src="https://placehold.co/600x530" alt="" />
+              {!displayMainImage && (
+                <div className="main-img">
+                  <img src="https://placehold.co/600x530" alt="" />
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </section>
 
         <section className="home-about bg-blue default-padding">
-          <div className="about-img">
-            <img src="https://placehold.co/330x330" alt="" />
-          </div>
+          <div className="wrapper-content">
+            <div className="wrapper-content-about">
+              <div className="about-img">
+                <img src="https://placehold.co/500x500" alt="" />
+              </div>
 
-          <div className="about-text">
-            <h1>Quem sou?</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea labore eaque deserunt cumque libero tempora nam recusandae nobis doloremque sunt! Dolorum, quisquam. Atque, praesentium recusandae.</p>
+              <div className="about-text">
+                <h1>Quem sou?</h1>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea labore eaque deserunt cumque libero tempora nam recusandae nobis doloremque sunt! Dolorum, quisquam. Atque, praesentium recusandae.</p>
+              </div>
+            </div>
           </div>
         </section>
 
         <section className="home-cta default-padding">
-          <div className="home-cta-card">
-            <h1>Bora treinar com quem se importa</h1>
-            <h2>Muito além do físico: um treinador que cuida de você</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!</p>
-            <img src="https://placehold.co/330x440" alt="" />
+          <div className="home-cta-text wrapper-content">
+            <h1>Bora treinar com quem entende e se importa</h1>
           </div>
-
-          <div className="home-cta-card">
-            <h2>Um guia para a saúde em todas as idades</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!</p>
-            <img src="https://placehold.co/330x440" alt="" />
-          </div>
-
-          <div className="home-cta-card">
-            <h2>Cuidando da sua saúde e inspirando sua família a fazer o mesmo</h2>
-            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!</p>
-            <img src="https://placehold.co/330x440" alt="" />
-          </div>
-        </section>
+          <Card title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
+          <Card title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" />
+          <Card title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
+        </section >
 
         <section className="home-plans bg-blue default-padding">
           <h2>Nossos Planos</h2>
@@ -139,7 +136,7 @@ export default function Home() {
         <footer>
 
         </footer>
-      </div>
+      </div >
     </>
   );
 }
