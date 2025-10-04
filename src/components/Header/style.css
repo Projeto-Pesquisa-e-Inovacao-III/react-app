@@ -4,7 +4,7 @@ header {
     align-items: center;
     width: 100%;
     border-bottom: 1px solid #ccc;
-    margin: 0 auto!important;
+    margin: 0 auto !important;
 
     .burger {
         display: none;
@@ -49,14 +49,10 @@ header {
 
 
 
-@media (max-width: 468px) {
-    
-}
+@media (max-width: 468px) {}
 
 
-@media (max-width: 640px) {
-
-}
+@media (max-width: 640px) {}
 
 
 
@@ -67,7 +63,6 @@ header {
 
 @media (max-width: 768px) {
     header {
-        margin: 0 !important;
         position: relative;
         display: flex;
         justify-content: space-between;
@@ -125,25 +120,20 @@ header {
 /* lg */
 
 
-@media (max-width: 1024px) {
-
-
-}
+@media (max-width: 1024px) {}
 
 
 
 /* xl */
-@media (max-width: 1280px) {
+@media (max-width: 1280px) {}
 
-}
 /* 2xl */
-@media (max-width: 1536px) {
-}
+@media (max-width: 1536px) {}
+
 /* 3xl */
 @media (max-width: 1920px) {
     header {
-        margin: 0 auto!important;
-        max-width: 1536px;
+        margin: 0 auto !important;
         width: 100%;
     }
 }

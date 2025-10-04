@@ -1,15 +1,8 @@
 .home-cta-text {
-    border-bottom: 5px solid #F36057;
-    color: #F36057;
-    text-transform: uppercase;
     margin-bottom: 25px;
     width: 100%;
     display: flex;
     
-    h1 {
-        font-size: 4em;
-        max-width: 880px;
-    }
 }
 
 
