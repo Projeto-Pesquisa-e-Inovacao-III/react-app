@@ -1,14 +1,7 @@
+import type { CardServices } from "../../../constants/homeProps";
 import "./style.css"
 
-type Props = {
-    title: string;
-    content: string;
-    image: string;
-    isReverse?: boolean;
-    isCarrousel?: boolean;
-}
-
-export default function Card({ title, content, image, isReverse, isCarrousel }: Props) {
+export default function Card({ title, content, image, isReverse, isCarrousel }: CardServices) {
     return (
         <div>
             <div>
@@ -18,7 +11,7 @@ export default function Card({ title, content, image, isReverse, isCarrousel }: 
                         <p className="mb-5">{content}</p>
                     </div>
                     <div className="card-img">
-                        <img src={image} alt="" />
+                        <img className="w-full" src={image} alt="" />
                     </div>
                 </div>
             </div>

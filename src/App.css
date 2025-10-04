@@ -15,8 +15,12 @@
     background-color: var(--color-gigant-orange);
   }
 
-  .bg-blue-velvet {
-    background-color: var(--blue-velvet);
+  .bg-oxford-blue {
+    background-color: var(--oxford-blue);
+  }
+
+  .text-oxford-blue {
+    color: var(--oxford-blue);
   }
 
   .bg-indigo {

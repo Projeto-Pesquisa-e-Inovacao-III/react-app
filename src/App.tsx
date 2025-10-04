@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Login from "./routes/User/Login";
-import Home from "./routes/Home";
+import Home from "./routes/Home/index";
 import Register from "./routes/User/Register";
 import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
@@ -9,7 +9,7 @@ import Logout from "./routes/User/Logout";
 function App() {
   return (
     <BrowserRouter>
-      <div className="container">
+      <div>
         {/* todo: remove this  */}
         {/* <DevDebug /> */}
         <Routes>
