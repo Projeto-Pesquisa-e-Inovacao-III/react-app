@@ -1,6 +1,6 @@
 import Header from "../../components/Header";
 import Accordion from '@mui/material/Accordion';
-import "./style.css"
+// import "./style.css"
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { ChevronDown } from "lucide-react";
@@ -36,7 +36,7 @@ export default function Home() {
                     <img src="https://placehold.co/330x330" alt="" />
                   </div>
                 )}
-                <button className="mt-3 min-h-12 w-3/4 text-white rounded-md" style={{ backgroundColor: "var(--background-blue-500)" }}>Lorem, ipsum.</button>
+                <button className="bg-blue-velvet mt-3 min-h-12 w-3/4 text-white rounded-md">Lorem, ipsum.</button>
 
               </div>
               {!displayMainImage && (
@@ -49,7 +49,7 @@ export default function Home() {
         </section>
 
 {/* about */}
-        <section className="flex justify-center home-about p-5" style={{ backgroundColor: "var(--background-blue-500)" }}>
+        <section className="bg-blue-velvet flex justify-center home-about p-5">
           <div className="wrapper-content">
             <div className="wrapper-content-about">
               <div className="about-img">
@@ -73,16 +73,16 @@ export default function Home() {
           <Card title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
         </section >
 
-        <section className=" p-5 pt-10 mt-10 mb-10 home-plans" style={{ backgroundColor: "var(--indigo-500)" }}>
+        <section className="bg-indigo p-5 pt-10 mt-10">
           <h2 className="text-white text-3xl">Nossos Planos!</h2>
-          <PlansCard title="Plano X" content="Descrição do Plano X" image="https://placehold.co/330x440" price={<p>R$ 99,90</p>} />
-          <PlansCard title="Plano Y" content="Descrição do Plano Y" image="https://placehold.co/330x440" price={<p>R$ 149,90</p>} />
-          <PlansCard title="Plano Z" content="Descrição do Plano Z" image="https://placehold.co/330x440" price={<p>R$ 199,90</p>} />
+          <PlansCard title="Plano X" content="Descrição do Plano X" image="https://placehold.co/330x440" price="R$ 99,90" />
+          <PlansCard title="Plano Y" content="Descrição do Plano Y" image="https://placehold.co/330x440" price="R$ 149,90" />
+          <PlansCard title="Plano Z" content="Descrição do Plano Z" image="https://placehold.co/330x440" price="R$ 199,90" />
         </section>
 
-        <section className="home-frequently-asked p-5" style={{ backgroundColor: "var(--background-blue-500)" }}>
+        <section className="bg-blue-velvet home-frequently-asked p-5">
           <div className="wrapper-asks">
-            <h2>Perguntas Frequentes</h2>
+            <h2 className="text-white text-2xl mb-5">Perguntas Frequentes</h2>
 
             <Accordion>
               <AccordionSummary

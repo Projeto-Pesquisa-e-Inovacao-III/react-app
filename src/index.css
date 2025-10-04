@@ -22,14 +22,9 @@
   --btn-border: none;
   --btn-border-radius: 4px;
 
-  --background-blue-500: #051128;
-  --indigo-500: #093A5D;
+  --blue-velvet: #051128;
+  --indigo: #093A5D;
 
-
+  --color-gigant-orange: #f26430;
 }
 
-
-@theme {
-  --color-gigant-orange: oklch(oklch(67.548% 0.18647 39.177));
-
-}

@@ -9,3 +9,18 @@
     scroll-behavior: smooth;
   }
 }
+
+@layer components {
+  .bg-gigant-orange {
+    background-color: var(--color-gigant-orange);
+  }
+
+  .bg-blue-velvet {
+    background-color: var(--blue-velvet);
+  }
+
+  .bg-indigo {
+    background-color: var(--indigo);
+  }
+
+}
