@@ -9,8 +9,8 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
             <div className="ml-20 mr-20">
                 <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
                 <div className="flex justify-center mt-10">
-                    <button className={`border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
-                    <button className={`border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
+                    <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
+                    <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>
                 <div className={`${isMobile ? "grid grid-cols-1" : "grid grid-cols-3"} gap-8`}>
                     {isPackagesSelected ? (

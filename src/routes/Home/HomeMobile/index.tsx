@@ -1,10 +1,4 @@
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import { ChevronDown } from "lucide-react";
-import Typography from "@mui/material/Typography";
 import Card from "../../../components/Home/Cards/CardServicesMobile";
-import PlansCard from "../../../components/Home/PlansCard";
 import HeaderMobile from "../../../components/Home/Header/HeaderMobile";
 import PlansSection from '../../../components/Home/PlansSection';
 import FAQSection from '../../../components/Home/FAQSection';
