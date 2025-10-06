@@ -1,10 +1,10 @@
 import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 
-export default function FAQSection() {
+export default function FAQSection({ isMobile = false }: { isMobile: boolean }) {
     return (
         <section className="bg-indigo pt-10 pb-10 p-5">
-            <div className="bg-white rounded-lg p-10 ml-20 mr-20">
+            <div className={`bg-white rounded-lg p-10 ${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-black text-2xl mb-5">Perguntas Frequentes</h2>
 
                 <Accordion>

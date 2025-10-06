@@ -6,7 +6,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
 
     return (
         <section className="bg-indigo p-5 pt-10 pb-10 mt-10">
-            <div className="ml-20 mr-20">
+            <div className={`${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
                 <div className="flex justify-center mt-10">
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>

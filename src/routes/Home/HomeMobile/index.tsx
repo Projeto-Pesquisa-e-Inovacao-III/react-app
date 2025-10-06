@@ -19,7 +19,7 @@ export default function HomeMobile() {
 
               <p className="mb-8">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
               <div>
-                <img className="w-full" src="https://placehold.co/330x330" alt="" />
+                <img className="w-full" src="/Home/bgImage.png" alt="" />
               </div>
             </div>
             <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md">Lorem, ipsum.</button>
@@ -41,8 +41,8 @@ export default function HomeMobile() {
         </section>
 
         <section className="mt-10 mb-10 p-5">
-          <div className="border-b-4 uppercase border-amber-600 wrapper-content ">
-            <h1 className="text-4xl text-black">Bora treinar com quem entende e se importa</h1>
+          <div className="border-b-4 uppercase">
+            <h1 className="ml-auto mr-auto mt-0 mb-0 border-b-4 text-6xl text-left text-oxford-blue font-bebas leading-none">Bora treinar com quem entende e se importa</h1>
           </div>
           <Card title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
           <Card title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" />
@@ -51,7 +51,7 @@ export default function HomeMobile() {
 
         <PlansSection isMobile={true} />
 
-        <FAQSection />
+        <FAQSection isMobile={true} />
 
         <Footer />
 
