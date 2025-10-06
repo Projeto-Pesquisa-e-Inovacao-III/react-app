@@ -54,7 +54,7 @@ export default function HomeDesktop() {
 
                 <PlansSection isMobile={false} />
 
-                <FAQSection />
+                <FAQSection isMobile={false} />
 
                 <Footer />
             </div >

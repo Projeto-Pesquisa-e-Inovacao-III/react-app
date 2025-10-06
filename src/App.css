@@ -26,6 +26,10 @@
     background-color: var(--indigo);
   }
 
+  .text-indigo {
+    color: var(--indigo);
+  }
+
   .font-poppins {
     font-family: var(--font-poppins);
   }

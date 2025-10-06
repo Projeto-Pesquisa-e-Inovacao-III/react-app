@@ -22,7 +22,7 @@ export default function HomeMobile() {
                 <img className="w-full" src="/Home/bgImage.png" alt="" />
               </div>
             </div>
-            <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md">Lorem, ipsum.</button>
+            <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md text-poppins font-semibold text-lg">Entre em contato</button>
           </>
         </section>
 
@@ -44,9 +44,9 @@ export default function HomeMobile() {
           <div className="border-b-4 uppercase">
             <h1 className="ml-auto mr-auto mt-0 mb-0 border-b-4 text-6xl text-left text-oxford-blue font-bebas leading-none">Bora treinar com quem entende e se importa</h1>
           </div>
-          <Card title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
-          <Card title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" />
-          <Card title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/500x500" isReverse={true} />
+          <Card title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/400x500" isReverse={true} />
+          <Card title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/400x500" />
+          <Card title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/400x500" isReverse={true} />
         </section >
 
         <PlansSection isMobile={true} />
