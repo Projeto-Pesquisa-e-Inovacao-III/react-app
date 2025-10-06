@@ -19,7 +19,7 @@ export default function HomeMobile() {
 
               <p className="mb-8">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
               <div>
-                <img className="w-full" src="/Home/bgImage.png" alt="" />
+                <img className="w-full" src="/Home/bgImageMobile.png" alt="" />
               </div>
             </div>
             <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md text-poppins font-semibold text-lg">Entre em contato</button>
