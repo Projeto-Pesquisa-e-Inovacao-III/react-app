@@ -10,7 +10,7 @@ export default function HomeMobile() {
     <>
       <HeaderMobile />
       <div>
-        <section className={"p-5 mt-5 mb-5"}>
+        <section id="main-section-mobile" className={"p-5 mt-5 mb-5"}>
           <>
             <div>
               <h1 className={"text-3xl font-bold mb-3 uppercase"}>
@@ -27,7 +27,7 @@ export default function HomeMobile() {
         </section>
 
         {/* about */}
-        <section className="bg-oxford-blue flex justify-center home-about pt-10 pb-10 p-5">
+        <section id="about-section-mobile" className="bg-oxford-blue flex justify-center home-about pt-10 pb-10 p-5">
           <div>
             <div>
               <img className="w-full" src="https://placehold.co/500x500" alt="" />
@@ -40,7 +40,7 @@ export default function HomeMobile() {
           </div>
         </section>
 
-        <section className="mt-10 mb-10 p-5">
+        <section id="services-section-mobile" className="mt-10 mb-10 p-5">
           <div className="border-b-4 uppercase">
             <h1 className="ml-auto mr-auto mt-0 mb-0 border-b-4 text-6xl text-left text-oxford-blue font-bebas leading-none">Bora treinar com quem entende e se importa</h1>
           </div>

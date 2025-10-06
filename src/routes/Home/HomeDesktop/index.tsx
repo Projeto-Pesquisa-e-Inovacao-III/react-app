@@ -14,7 +14,7 @@ export default function HomeDesktop() {
     return (
         <>
             <HeaderDesktop />
-            <div>
+            <div id="main-section">
                 {/* main */}
                 <section className={"flex flex-col justify-center p-5 h-dvh  bg-[url('/Home/bgImage.png')] bg-cover bg-center"}>
                     <div className="w-fit flex flex-col justify-center items-start gap-5 mt-64 ml-20 mr-20">
@@ -26,7 +26,7 @@ export default function HomeDesktop() {
                 </section>
 
                 {/* about */}
-                <section className="bg-oxford-blue flex justify-center p-5 pb-20 pt-20">
+                <section id="about-section" className="bg-oxford-blue flex justify-center p-5 pb-20 pt-20">
                     <div className="font-poppins w-full flex ml-20 mr-20">
                         <div>
                             <img className="w-full" src="https://placehold.co/500x500" alt="" />
@@ -41,7 +41,7 @@ export default function HomeDesktop() {
                     </div>
                 </section>
 
-                <section className="mt-10 mb-10 p-5">
+                <section id="services-section" className="mt-10 mb-10 p-5">
                     <div className="ml-20 mr-20">
                         <div className="flex justify-center items-center uppercase border-amber-600 wrapper-content mb-10">
                             <h1 className="ml-auto mr-auto mt-0 mb-0 text-center border-b-8 text-8xl line-clamp-1 text-oxford-blue font-bebas leading-none">Bora treinar com quem entende e se importa</h1>

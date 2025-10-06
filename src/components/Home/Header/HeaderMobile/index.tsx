@@ -48,10 +48,13 @@ export default function HeaderMobile() {
 
         {burgerActive && (
           <nav className="flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
-            <a href="#">Inicio</a>
-            <a href="#">Quem sou?</a>
-            <a href="#">Bora treinar!</a>
-            <a href="#">Pacote de Consultoria</a>
+            <a href="#main-section-mobile">Inicio</a>
+            <a href="#about-section-mobile">Quem sou?</a>
+            <a href="#services-section-mobile">Bora treinar!</a>
+            <a href="#plans-section">Pacotes de Consultoria</a>
+
+            <a href="/login" className="p-3 text-white h-full rounded-md">Login</a>
+            <a href="/register" className=" p-3 bg-white text-black h-full rounded-md">Cadastro</a>
           </nav>
         )}
       </header>

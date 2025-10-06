@@ -7,8 +7,7 @@ interface PlansCardProps {
 
 export default function PlansCard({ title, content, price, benefits }: PlansCardProps) {
   return (
-    <div className="">
-      <h2 className="text-white text-2xl uppercase mt-9 mb-9">{title}</h2>
+    <div className="h-fit">
       <div className="rounded-lg shadow-2xl bg-white p-5 w-full h-96 max-h-10/12">
         {/* title */}
         <div className="bg-indigo p-5 rounded-md text-white text-xl">
