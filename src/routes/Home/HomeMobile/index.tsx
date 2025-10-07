@@ -2,7 +2,7 @@ import Card from "../../../components/Home/Cards/CardServicesMobile";
 import HeaderMobile from "../../../components/Home/Header/HeaderMobile";
 import PlansSection from '../../../components/Home/PlansSection';
 import FAQSection from '../../../components/Home/FAQSection';
-import Footer from '../../../components/Home/Footer';
+import FooterMobile from "../../../components/Home/Footer/FooterMobile";
 
 export default function HomeMobile() {
   console.log("Home renderizou");
@@ -53,7 +53,7 @@ export default function HomeMobile() {
 
         <FAQSection isMobile={true} />
 
-        <Footer />
+        <FooterMobile />
 
       </div >
     </>

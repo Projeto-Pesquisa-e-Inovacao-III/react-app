@@ -1,9 +1,22 @@
 import LinksCol from "./LinksCol";
 
-export default function Footer() {
+export default function FooterMobile() {
     return (
-        <footer className="pl-25 pr-25 w-full flex justify-between items-center bg-black p-5 text-white text-center">
-            <div className="flex justify-center items-center mt-3">
+        <footer className="pl-25 pr-25 w-full flex flex-col justify-between items-center bg-black p-5 text-white text-center">
+
+            <div className="flex flex-row justify-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
+            </div>
+
+            <div id="pages" className="grid grid-cols-2 gap-16 text-lg mb-5">
+                <LinksCol />
+                <LinksCol />
+                <LinksCol />
+                <LinksCol />
+            </div>
+
+
+            <div className="flex justify-center items-center mt-3 flex-col">
                 <svg width="111" height="52" viewBox="0 0 111 52" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_3441_14934)">
                         <path d="M70.9181 0.364906L90.7415 0.364014L90.7453 7.05251C86.3483 7.0261 81.9513 7.02902 77.5543 7.06136C77.5181 8.84131 77.5445 10.6293 77.543 12.4101L77.5634 12.7155C77.9172 12.9134 87.0175 12.7801 88.3604 12.7978C88.3672 13.4719 88.3604 14.1469 88.3604 14.821L70.9317 14.804L70.9181 0.364906Z" fill="white" />
@@ -40,19 +53,8 @@ export default function Footer() {
                         </clipPath>
                     </defs>
                 </svg>
-                <p className="w-96 ml-10 text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. A, nesciunt.</p>
+                <p className="w-96 mt-5 text-lg text-gray-400">Lorem ipsum dolor sit amet consectetur adipisicing elit. A, nesciunt.</p>
             </div>
-
-            <div id="pages" className="flex gap-16 text-lg">
-                <LinksCol />
-                <LinksCol />
-                <LinksCol />
-            </div>
-
-            <div className="flex flex-row justify-center mb-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
-            </div>
-
 
             {/* <p>&copy; 2024 CSF Treinamentos. Todos os direitos reservados.</p> */}
 

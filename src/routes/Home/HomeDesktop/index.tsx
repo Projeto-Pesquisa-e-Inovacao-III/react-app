@@ -1,13 +1,8 @@
-import { Accordion, AccordionDetails, AccordionSummary, Typography } from "@mui/material";
-import Card from "../../../components/Home/Cards/CardServicesMobile";
-import PlansCard from "../../../components/Home/PlansCard";
-import { ChevronDown } from "lucide-react";
 import HeaderDesktop from "../../../components/Home/Header/HeaderDesktop";
 import CardServicesDesktop from "../../../components/Home/Cards/CardServicesDesktop";
-import { useState } from "react";
 import PlansSection from "../../../components/Home/PlansSection";
 import FAQSection from "../../../components/Home/FAQSection";
-import Footer from "../../../components/Home/Footer";
+import FooterDesktop from "../../../components/Home/Footer/FooterDesktop";
 
 export default function HomeDesktop() {
 
@@ -56,7 +51,7 @@ export default function HomeDesktop() {
 
                 <FAQSection isMobile={false} />
 
-                <Footer />
+                <FooterDesktop />
             </div >
         </>
     );

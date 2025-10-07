@@ -53,8 +53,8 @@ export default function HeaderMobile() {
             <a href="#services-section-mobile">Bora treinar!</a>
             <a href="#plans-section">Pacotes de Consultoria</a>
 
-            <a href="/login" className="p-3 text-white h-full rounded-md">Login</a>
-            <a href="/register" className=" p-3 bg-white text-black h-full rounded-md">Cadastro</a>
+            <a href="/login" className="h-full rounded-md">Login</a>
+            <a href="/register" className=" bg-white text-black h-full rounded-md">Cadastro</a>
           </nav>
         )}
       </header>
