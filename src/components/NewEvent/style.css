@@ -22,6 +22,15 @@
     transform: translate(-50%, -50%);
     z-index: 1000;
     overflow: hidden;
+    font-family: "Poppins", sans-serif;
+
+    .top-new-event {
+      h1 {
+        padding: 20px 0;
+        font-size: 36px;
+        font-weight: lighter;
+      }
+    }
 
     .calendar-small {
       width: 60vw;

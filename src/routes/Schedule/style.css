@@ -1,0 +1,95 @@
+.user-view-schedule {
+    height: 100vh;
+
+    .view-schedule {
+        display: flex;
+        gap: 60px;
+        padding: 40px;
+
+        .schedule-page-calendar {
+            background-color: white;
+            padding: 20px;
+            flex: 2;
+        }
+
+        .schedule-page-user-actions {
+            flex: 1;
+
+            .btn-sched {
+                padding: 20px 30px;
+
+                background-color: var(--btn-bg);
+                color: white;
+                border-radius: 6px;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                gap: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 8vw;
+                text-align: center;
+            }
+
+            .schedule-view {
+                display: flex;
+                background-color: white;
+                padding: 20px;
+                margin-top: 20px;
+
+                .left {
+                    width: 100%;
+
+                    .user-personal {
+                        font-size: 24px;
+                        font-weight: lighter;
+                    }
+
+                    .schedule-page-user {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin: 20px 0;
+
+                        img {
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .btn-actions {
+                        display: flex;
+                        gap: 15px;
+                    }
+                }
+
+                .border-division {
+                    border-left: 1px solid black;
+                    margin: 0 20px;
+                }
+
+                .right {
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+
+                }
+            }
+        }
+
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+}

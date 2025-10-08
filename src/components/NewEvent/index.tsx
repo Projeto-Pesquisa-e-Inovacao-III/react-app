@@ -5,7 +5,7 @@ import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 
 export default function NewEvent(
-  { close, insertedEvents, insertEvent }: { close: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>> }
+  { close, insertedEvents, insertEvent, title = "Novo Evento" }: { close: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
 ) {
 
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(true);
@@ -83,7 +83,7 @@ export default function NewEvent(
     <div className="new-event-form">
 
       <div className="top-new-event">
-        <h3>Create New Event</h3>
+        <h1>{title}</h1>
         {/* temporary */}
         <button onClick={() => setOpenNewEvent(false)} style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>CLOSE</button>
       </div>
