@@ -6,8 +6,8 @@ import NewEvent from "../../components/NewEvent";
 
 export default function ViewSchedule() {
     const eventsMock = [
-        { title: "Reunião", start: "2025-09-15T10:00:00", end: "2025-09-15T11:00:00" },
-        { title: "Aniversário", start: "2025-09-22T12:00:00", end: "2025-09-22T13:00:00" },
+        { title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
+        { title: "Aniversário", date: "2025-10-22", hour: "12:00:00" },
     ];
 
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
@@ -19,7 +19,7 @@ export default function ViewSchedule() {
                 <UserHeaderDesktop />
                 <div className="view-schedule">
                     <div className="schedule-page-calendar">
-                        <ViewCalendarMonthStyled />
+                        <ViewCalendarMonthStyled events={events} />
                     </div>
                     <div className="schedule-page-user-actions">
                         <div>

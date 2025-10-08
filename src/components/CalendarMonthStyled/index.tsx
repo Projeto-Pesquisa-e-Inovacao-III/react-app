@@ -6,22 +6,20 @@ import { useEffect, useState } from "react";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
-  createdEvents?: { title: string; start: string; end: string }[];
+  createdEvents?: { title: string; date: string; hour: string }[];
 };
 
 
 export default function CalendarMonthStyled({ clickedDate, createdEvents }: Props) {
 
-  const databaseEvents = createdEvents?.map((event: { title: string; start: string; end: string }) => {
-    const dateStr = event.start.split("T")[0];
-    return { title: event.title, date: dateStr };
+  const databaseEvents = createdEvents?.map((event: { title: string; date: string; hour: string }) => {
+    return { title: event.title, date: event.date };
   });
 
   const eventsMock = [
     { title: "Reunião", date: "2025-09-15" },
     { title: "Aniversário", date: "2025-09-22" },
   ];
-
 
   const actualMonth = new Date().getMonth() + 1;
 
@@ -45,7 +43,7 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents }: Prop
         <FullCalendar
           plugins={[dayGridPlugin, InteractionPlugin]}
           initialView="dayGridMonth"
-          events={createdEvents ? events : eventsMock}
+          // events={createdEvents ? events : eventsMock}
           locale={"pt-br"}
           dayHeaderFormat={{ weekday: 'long' }}
           datesSet={function (info) {
@@ -62,6 +60,7 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents }: Prop
 
             const dateStr = arg.date.toISOString().split("T")[0];
 
+            console.log("dateStr", dateStr);
             if (disabledDays?.includes(dateStr)) {
               return ["disabled-day"];
             }
