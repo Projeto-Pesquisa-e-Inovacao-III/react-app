@@ -59,7 +59,9 @@ export default function NewEvent(
     }
     if (insertedEvents) {
 
-      insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+      // insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+      insertEvent([...insertedEvents, { title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+      // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
     }
   }
 
