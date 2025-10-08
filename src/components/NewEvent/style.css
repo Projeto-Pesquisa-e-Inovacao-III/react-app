@@ -104,6 +104,7 @@
           select {
             width: 15vw;
             background-color: #fff;
+            color: black;
           }
 
           select,
@@ -139,7 +140,7 @@
         }
 
         .input-number {
-          width: 40% !important;
+          width: 25% !important;
         }
       }
     }

@@ -37,6 +37,9 @@
         font-size: 18px;
         display: flex;
         gap: 8px;
+        img:first-child {
+            border-radius: 50%;
+        }
 
         a {
             padding: 12px;

@@ -4,6 +4,7 @@ import CalendarMonthStyled from "../CalendarMonthStyled";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import SuccessModal from "../Modal/SucessModal";
+import axios from "axios";
 
 export default function NewEvent(
   { close, openModal, insertedEvents, insertEvent, title = "Novo Evento" }: { close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
@@ -16,6 +17,13 @@ export default function NewEvent(
   const [selectedType, setSelectedType] = useState<string>("personal");
   const [selectedLocation, setSelectedLocation] = useState<string>("casa");
 
+  const [postalCode, setPostalCode] = useState<string>("");
+  const [address, setAddress] = useState<any>(null);
+  const [city, setCity] = useState<string>("");
+  const [number, setNumber] = useState<string>("");
+  const [complement, setComplement] = useState<string>("");
+
+
   useEffect(() => {
     if (openNewEvent) {
       document.body.style.overflow = "hidden";
@@ -25,6 +33,22 @@ export default function NewEvent(
     }
   }, [openNewEvent]);
 
+
+  useEffect(() => {
+    // ViaCEP API integration
+    if (postalCode.length === 8) {
+      //CEP has 8 digits
+      axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
+        .then(response => {
+          console.log("Endereço encontrado:", response.data);
+          setAddress(`${response.data.logradouro} - ${response.data.bairro}`);
+          setCity(response.data.localidade);
+        })
+        .catch(error => {
+          console.error("Erro ao buscar endereço:", error);
+        });
+    }
+  }, [postalCode]);
 
   async function handleNewEvent(e: React.FormEvent) {
     e.preventDefault();
@@ -53,7 +77,7 @@ export default function NewEvent(
       console.log("colocou no eventsMock");
       openModal(true);
       setOpenNewEvent(false);
-      
+
     }
     if (insertedEvents) {
 
@@ -62,7 +86,7 @@ export default function NewEvent(
       // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
     }
 
-    
+
 
   }
 
@@ -132,8 +156,8 @@ export default function NewEvent(
                     <div className="input-group-address">
                       <div className="input-group double-input">
                         {/*Change all this to good templates*/}
-                        <input type="text" placeholder="CEP" />
-                        <input type="text" placeholder="Cidade" className="disabled" disabled />
+                        <input type="text" placeholder="CEP" onChange={(e) => setPostalCode(e.target.value)} />
+                        <input type="text" placeholder="Cidade" className="disabled" disabled value={city || ""} />
                       </div>
                       <div className="input-group double-input">
                         <input
@@ -141,11 +165,12 @@ export default function NewEvent(
                           placeholder="Endereço"
                           className="input-address disabled"
                           disabled
+                          value={address || ""}
                         />
-                        <input className="input-number" type="text" placeholder="Número" />
+                        <input className="input-number" type="text" placeholder="N°" value={number || ""} onChange={(e) => setNumber(e.target.value)} />
                       </div>
                       <div className="input-group input-group-max">
-                        <input type="text" placeholder="Complemento" />
+                        <input type="text" placeholder="Complemento" value={complement || ""} onChange={(e) => setComplement(e.target.value)} />
                       </div>
                     </div>
                   </>

@@ -4,7 +4,9 @@ import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import "./style.css"
 import NewEvent from "../../components/NewEvent";
 import SuccessModal from "../../components/Modal/SucessModal";
+import UserScheduleCard from "../../components/UserScheduleCard";
 
+// todo: check friday if cards will be mocked, backend or prototipe
 export default function ViewSchedule() {
     const eventsMock = [
         { title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
@@ -30,23 +32,7 @@ export default function ViewSchedule() {
                                 Agendar
                             </button>
                         </div>
-                        <div className="schedule-view">
-                            <div className="left">
-                                <span className="user-personal">Personal</span>
-                                <div className="schedule-page-user">
-                                    <img src="https://placehold.co/60x60/png" alt="" />
-                                    <span>Nome</span>
-                                </div>
-                                <div className="btn-actions">
-                                    <button className="btn-sched">Reagendar</button>
-                                    <button className="btn-sched">Cancelar</button>
-                                </div>
-                            </div>
-                            <span className="border-division"></span>
-                            <div className="right">
-                                <span>17 Setembro 12h30</span>
-                            </div>
-                        </div>
+                        <UserScheduleCard />
                     </div>
                 </div>
             </div>
