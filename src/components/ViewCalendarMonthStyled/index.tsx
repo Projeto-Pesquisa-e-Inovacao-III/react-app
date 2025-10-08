@@ -21,7 +21,6 @@ export default function ViewCalendarMonthStyled({ events }: { events?: { title: 
           datesSet={function (info) {
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
-            console.log("Mês atual do calendário:", month);
           }}
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];

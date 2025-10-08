@@ -3,6 +3,7 @@ import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import "./style.css"
 import NewEvent from "../../components/NewEvent";
+import SuccessModal from "../../components/Modal/SucessModal";
 
 export default function ViewSchedule() {
     const eventsMock = [
@@ -12,6 +13,7 @@ export default function ViewSchedule() {
 
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
     const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
+    const [openSuccessModal, setOpenSuccessModal] = useState<boolean>(false);
 
     return (
         <>
@@ -51,9 +53,17 @@ export default function ViewSchedule() {
             {openNewEvent ? (
                 <>
                     <div className="overlay"></div>
-                    <NewEvent close={setOpenNewEvent} insertedEvents={events} insertEvent={setEvents} title="Agendar horário" />
+                    <NewEvent close={setOpenNewEvent} openModal={setOpenSuccessModal} insertedEvents={events} insertEvent={setEvents} title="Agendar horário" />
                 </>
             ) : null}
+
+            {
+                openSuccessModal ? (
+                    <>
+                        <SuccessModal closeThen={setOpenSuccessModal} title="Agendamento Feito Com Sucesso" content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar" />
+                    </>
+                ) : null
+            }
         </>
     );
 }

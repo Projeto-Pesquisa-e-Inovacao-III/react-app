@@ -15,7 +15,7 @@
 
   --muted-foreground: #757575;
   --link-text: #2e5580;
-  
+
   --btn-bg: #2e5580;
   --btn-color: white;
   --btn-border: none;
@@ -25,4 +25,16 @@
   --calendar-width: 180px;
 
 
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+  opacity: 1;
 }

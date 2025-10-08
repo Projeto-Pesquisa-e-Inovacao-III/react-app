@@ -49,7 +49,6 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents }: Prop
           datesSet={function (info) {
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
-            console.log("Mês atual do calendário:", month);
           }}
           dateClick={function (info) {
             setNewEventDate(info.dateStr);
@@ -60,7 +59,6 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents }: Prop
 
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            console.log("dateStr", dateStr);
             if (disabledDays?.includes(dateStr)) {
               return ["disabled-day"];
             }
