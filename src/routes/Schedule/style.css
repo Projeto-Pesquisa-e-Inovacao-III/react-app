@@ -15,22 +15,7 @@
         .schedule-page-user-actions {
             flex: 1;
 
-            .btn-sched {
-                padding: 20px 30px;
 
-                background-color: var(--btn-bg);
-                color: white;
-                border-radius: 6px;
-                border: none;
-                cursor: pointer;
-                font-size: 16px;
-                gap: 20px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 8vw;
-                text-align: center;
-            }
 
             .schedule-view {
                 display: flex;
@@ -92,4 +77,21 @@
     z-index: 999;
     transition: opacity 0.3s ease;
     opacity: 1;
+}
+
+.btn-sched {
+    padding: 15px 30px;
+
+    background-color: var(--btn-bg);
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 8vw;
+    text-align: center;
 }

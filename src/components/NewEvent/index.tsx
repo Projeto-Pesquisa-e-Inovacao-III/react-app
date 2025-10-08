@@ -15,7 +15,6 @@ export default function NewEvent(
   const [selectedType, setSelectedType] = useState<string>("personal");
   const [selectedLocation, setSelectedLocation] = useState<string>("casa");
 
-
   useEffect(() => {
     if (openNewEvent) {
       document.body.style.overflow = "hidden";
@@ -71,7 +70,7 @@ export default function NewEvent(
     const button = document.getElementById("btn" + hour.split(":")[0]);
 
     if (button) {
-      const buttons = document.querySelectorAll('.hour-button');
+      const buttons = document.querySelectorAll('.btn-sched');
       buttons.forEach(btn => btn.classList.remove('btn-selected'));
 
       button.classList.add('btn-selected');
@@ -85,80 +84,75 @@ export default function NewEvent(
       <div className="top-new-event">
         <h1>{title}</h1>
         {/* temporary */}
-        <button onClick={() => setOpenNewEvent(false)} style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>CLOSE</button>
+        {/* <button onClick={() => setOpenNewEvent(false)} style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>CLOSE</button> */}
+        <svg onClick={() => setOpenNewEvent(false)} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
       </div>
 
       <div className="wrapper-new-event">
         <div className="calendar-small">
           <CalendarMonthStyled clickedDate={setNewEventDate} createdEvents={insertedEvents} />
-
-        </div>
-        <form onSubmit={handleNewEvent}>
           <div className="hours">
-            <button id="btn08" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>
-            <button id="btn09" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "09:00:00")}>09:00</button>
-            <button id="btn10" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "10:00:00")}>10:00</button>
-            <button id="btn11" className="hour-button" type="button" onClick={(e) => handleButtonClick(e, "11:00:00")}>11:00</button>
+            {/* falar com o pedro/jp se dá pra simplificar isso */}
+            <button id="btn08" className="btn-sched" type="button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>
+            <button id="btn09" className="btn-sched" type="button" onClick={(e) => handleButtonClick(e, "09:00:00")}>09:00</button>
+            <button id="btn10" className="btn-sched" type="button" onClick={(e) => handleButtonClick(e, "10:00:00")}>10:00</button>
+            <button id="btn11" className="btn-sched" type="button" onClick={(e) => handleButtonClick(e, "11:00:00")}>11:00</button>
           </div>
+        </div>
+        <form className="input-infos-form" onSubmit={handleNewEvent}>
 
-          {/* temporary */}
-          <button type="submit" style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>Add Event</button>
 
-          <div className="input-group">
-            <label htmlFor="">Tipo</label>
-            <select name="" id="" value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
-              <option value="personal">Personal</option>
-              <option value="consultoria">Consultoria</option>
-              <option value="outro">Outro</option>
-            </select>
-          </div>
 
-          <div className="input-group">
-            <label htmlFor="">Local</label>
-            <select name="" id="" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
-              <option value="casa">Casa</option>
-              <option value="academia">Academia</option>
-              <option value="outro">Outro</option>
-            </select>
-          </div>
+          <div className="wrapper-inputs">
+            <div className="input-group">
+              <label htmlFor="">Tipo</label>
+              <select name="" id="" value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
+                <option value="personal">Personal</option>
+                <option value="consultoria">Consultoria</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
 
-          {
-            selectedLocation === "casa" ? (
-              <>
-                <div className="input-group">
+            <div className="input-group">
+              <label htmlFor="">Local</label>
+              <select name="" id="" value={selectedLocation} onChange={(e) => setSelectedLocation(e.target.value)}>
+                <option value="casa">Casa</option>
+                <option value="academia">Academia</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
 
-                  <div className="input-group double-input">
-                    <div>
-                      <label>CEP:</label>
-                      <input type="text" />
+            {
+              selectedLocation === "casa" ? (
+                <>
+                  <div className="input-group-address">
+                    <div className="input-group double-input">
+                      {/*Change all this to good templates*/}
+                      <input type="text" placeholder="CEP" />
+                      <input type="text" placeholder="Cidade" className="disabled" disabled />
                     </div>
-                    <div>
-                      <label>Cidade:</label>
-                      <input type="text" />
-                    </div>
-                  </div>
-                  <div className="input-group double-input">
-                    <div>
-                      <label>Endereço:</label>
+                    <div className="input-group double-input">
                       <input
                         type="text"
+                        placeholder="Endereço"
+                        className="input-address disabled"
+                        disabled
                       />
+                      <input className="input-number" type="text" placeholder="Número" />
                     </div>
-                    <div>
-                      <label>Número:</label>
-                      <input type="text" style={{ width: "20%" }} />
+                    <div className="input-group input-group-max">
+                      <input type="text" placeholder="Complemento" />
                     </div>
                   </div>
-                  <div className="input-group">
-                    <label>Complemento:</label>
-                    <input type="text" />
-                  </div>
-                </div>
-              </>
-            ) : null
-          }
+                </>
+              ) : null
+            }
+          </div>
+          <div className="submit-button">
+            <button className="btn-sched" type="submit">Agendar</button>
+          </div>
         </form>
       </div>
-    </div>
+    </div >
   );
 }

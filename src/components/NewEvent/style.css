@@ -13,7 +13,7 @@
   .new-event-form {
     background-color: white;
     border: 1px solid #ccc;
-    padding: 16px;
+    padding: 20px;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     position: absolute;
@@ -25,49 +25,122 @@
     font-family: "Poppins", sans-serif;
 
     .top-new-event {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+
+      svg {
+        cursor: pointer;
+      }
+
       h1 {
         padding: 20px 0;
         font-size: 36px;
         font-weight: lighter;
+        text-transform: uppercase;
       }
     }
 
     .calendar-small {
       width: 60vw;
+
+      .hours {
+        display: flex;
+        gap: 50px;
+      }
     }
   }
 
   .btn-selected {
-    background-color: #c50000ff;
+    transition: background-color 0.2s;
+    background-color: rgb(0, 125, 228);
     color: #fff;
   }
 
   .wrapper-new-event {
     display: flex;
+    gap: 30px;
 
     form {
       width: 30vw;
     }
 
-    .double-input {
-      flex: 1;
-    }
 
-    .input-group {
+    .input-infos-form {
       display: flex;
-      align-items: center;
-      margin-right: 10px;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+      padding: 0 60px;
 
-      label {
-        margin-bottom: 4px;
+      .submit-button {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
       }
 
-      select,
-      input {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 16px;
+      .wrapper-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .double-input {
+          flex: 1;
+          width: 100%;
+
+          input {
+            width: 100%;
+          }
+        }
+
+
+        .input-group {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+          width: 20vw;
+
+          select {
+            width: 15vw;
+            background-color: #fff;
+          }
+
+          select,
+          input {
+            padding: 16px;
+            border: 1px solid #b1b1b194;
+            border-radius: 6px;
+            font-size: 16px;
+          }
+
+          .disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+          }
+        }
+
+
+        .input-group-address {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+          .input-group {
+            width: 100%;
+          }
+        }
+
+        .input-group-max {
+          width: 100%;
+
+          input {
+            width: 100%;
+          }
+        }
+
+        .input-number {
+          width: 40% !important;
+        }
       }
     }
   }
