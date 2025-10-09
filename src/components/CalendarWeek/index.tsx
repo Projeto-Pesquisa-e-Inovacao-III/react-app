@@ -5,7 +5,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { use, useEffect, useState } from "react";
-import NewEvent from "../NewEvent";
+import NewEvent from "../NewEvent/NewEventDesktop/NewEventDesktop";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import { getEvents } from "../../constants/calendar";
 import type { CalendarDTO } from "../../models/calendar";

@@ -1,0 +1,85 @@
+.user-view-schedule-mobile {
+    height: 100vh;
+
+    .view-schedule-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+        padding: 40px;
+
+        .schedule-page-calendar-mobile {
+            background-color: white;
+            padding: 20px;
+            flex: 2;
+        }
+
+        .schedule-page-user-actions-mobile {
+            flex: 1;
+
+
+
+            .schedule-view {
+                display: flex;
+                background-color: white;
+                padding: 20px;
+                margin-top: 20px;
+
+                .left {
+                    width: 100%;
+
+                    .user-personal {
+                        font-size: 24px;
+                        font-weight: lighter;
+                    }
+
+                    .schedule-page-user {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin: 20px 0;
+
+                        img {
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .btn-actions {
+                        display: flex;
+                        gap: 15px;
+                    }
+                }
+
+                .border-division {
+                    border-left: 1px solid black;
+                    margin: 0 20px;
+                }
+
+                .right {
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+
+                }
+            }
+        }
+
+    }
+}
+
+
+.btn-sched-mobile {
+    padding: 15px 10px;
+    background-color: var(--btn-bg);
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}

@@ -1,0 +1,151 @@
+.new-event-opened-wrapper-callendar {
+  filter: opacity(0.4);
+}
+
+.disabled-day {
+  cursor: none;
+  background-color: #ddd !important;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.container {
+  .new-event-form-mobile {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 65.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+    width: 100%;
+
+    .top-new-event-mobile {
+      display: flex;
+      justify-content: space-between;
+
+      svg {
+        cursor: pointer;
+      }
+
+      h1 {
+        font-size: 26px;
+        font-weight: lighter;
+        text-transform: uppercase;
+        padding-bottom: 20px;
+      }
+    }
+
+    .calendar-small-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      .hours {
+        display: flex;
+        gap: 50px;
+        overflow: scroll;
+      }
+    }
+  }
+
+  .btn-selected {
+    transition: background-color 0.2s;
+    background-color: rgb(0, 125, 228);
+    color: #fff;
+  }
+
+  .wrapper-new-event-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    form {
+      width: 30vw;
+    }
+
+
+    .input-infos-form-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      justify-content: space-between;
+      width: 100%;
+
+      .submit-button {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+      }
+
+      .wrapper-inputs-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .double-input {
+          flex: 1;
+          width: 100%;
+
+          input {
+            width: 100%;
+          }
+        }
+
+
+        .input-group {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 20px;
+
+          select {
+            width: 70%;
+            background-color: #fff;
+            color: black;
+          }
+
+          select,
+          input {
+            padding: 16px;
+            border: 1px solid #b1b1b194;
+            border-radius: 6px;
+            font-size: 16px;
+          }
+
+          .disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+          }
+        }
+
+
+        .input-group-address {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
+
+          .input-group {
+            width: 100%;
+          }
+        }
+
+        .input-group-max {
+          width: 100%;
+
+          input {
+            width: 100%;
+          }
+        }
+
+        .input-number {
+          width: 25% !important;
+        }
+      }
+    }
+  }
+}

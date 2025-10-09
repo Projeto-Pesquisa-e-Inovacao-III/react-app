@@ -10,8 +10,8 @@ export default function UserScheduleCard() {
                     <span>Nome</span>
                 </div>
                 <div className="btn-actions">
-                    <button className="btn-sched">Reagendar</button>
-                    <button className="btn-sched">Cancelar</button>
+                    <button className="btn-sched-mobile">Reagendar</button>
+                    <button className="btn-sched-mobile">Cancelar</button>
                 </div>
             </div>
             <span className="border-division"></span>

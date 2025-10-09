@@ -3,7 +3,7 @@ import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
-import NewEvent from "../NewEvent";
+import NewEvent from "../NewEvent/NewEventDesktop/NewEventDesktop";
 interface CalendarProps {
   title: string;
   date: string;

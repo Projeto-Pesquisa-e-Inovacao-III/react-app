@@ -10,7 +10,7 @@ type Props = {
 };
 
 
-export default function CalendarMonthStyled({ clickedDate, createdEvents }: Props) {
+export default function CalendarMonthStyledDesktop({ clickedDate, createdEvents }: Props) {
 
   const databaseEvents = createdEvents?.map((event: { title: string; date: string; hour: string }) => {
     return { title: event.title, date: event.date };
@@ -45,7 +45,7 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents }: Prop
           initialView="dayGridMonth"
           // events={createdEvents ? events : eventsMock}
           locale={"pt-br"}
-          dayHeaderFormat={{ weekday: 'long' }}
+          dayHeaderFormat={{ weekday: 'short' }}
           datesSet={function (info) {
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);

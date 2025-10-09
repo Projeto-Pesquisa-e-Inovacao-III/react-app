@@ -1,12 +1,12 @@
 import "./style.css";
 import { useEffect, useState } from "react";
-import CalendarMonthStyled from "../CalendarMonthStyled";
-import { createEvent } from "../../constants/calendar";
-import { checkDebugConnection } from "../CheckConnection/CheckConnection";
-import SuccessModal from "../Modal/SucessModal";
+import CalendarMonthStyledDesktop from "../../CalendarMonthStyled/CalendarMonthStyledDesktop/CalendarMonthStyledDesktop";
+import { createEvent } from "../../../constants/calendar";
+import { checkDebugConnection } from "../../CheckConnection/CheckConnection";
+import SuccessModal from "../../Modal/SucessModal";
 import axios from "axios";
 
-export default function NewEvent(
+export default function NewEventDesktop(
   { close, openModal, insertedEvents, insertEvent, title = "Novo Evento" }: { close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
 ) {
 
@@ -118,7 +118,7 @@ export default function NewEvent(
 
         <div className="wrapper-new-event">
           <div className="calendar-small">
-            <CalendarMonthStyled clickedDate={setNewEventDate} createdEvents={insertedEvents} />
+            <CalendarMonthStyledDesktop clickedDate={setNewEventDate} createdEvents={insertedEvents} />
             <div className="hours">
               {/* falar com o pedro/jp se dá pra simplificar isso */}
               <button id="btn08" className="btn-sched" type="button" onClick={(e) => handleButtonClick(e, "08:00:00")}>08:00</button>

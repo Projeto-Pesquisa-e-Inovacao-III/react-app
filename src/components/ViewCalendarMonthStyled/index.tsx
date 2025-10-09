@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
 
-export default function ViewCalendarMonthStyled({ events }: { events?: { title: string; date: string; hour: string }[] }) {
+export default function ViewCalendarMonthStyled({ events, isMobile }: { events?: { title: string; date: string; hour: string }[]; isMobile?: boolean }) {
 
   const actualMonth = new Date().getMonth() + 1;
 
@@ -17,7 +17,7 @@ export default function ViewCalendarMonthStyled({ events }: { events?: { title: 
           plugins={[dayGridPlugin, InteractionPlugin]}
           initialView="dayGridMonth"
           locale={"pt-br"}
-          dayHeaderFormat={{ weekday: 'long' }}
+          dayHeaderFormat={{ weekday: `${isMobile ? 'short' : 'long'}` }}
           datesSet={function (info) {
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
@@ -45,7 +45,7 @@ export default function ViewCalendarMonthStyled({ events }: { events?: { title: 
           headerToolbar={{
 
             start: "title",
-            end: `${selectedMonth >= actualMonth ? "today " : ""}${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
+            end: `${selectedMonth >= actualMonth ? `${isMobile ? '' : 'today '}` : ""}${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
           }}
           height={"auto"}
 
