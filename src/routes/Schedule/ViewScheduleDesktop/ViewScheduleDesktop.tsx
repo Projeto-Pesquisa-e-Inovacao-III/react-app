@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./style.css"
 import NewEvent from "../../../components/NewEvent/NewEventDesktop/NewEventDesktop";
-import SuccessModal from "../../../components/Modal/SucessModal";
+import SuccessModal from "../../../components/Modal/SucessModalDesktop";
 import UserScheduleCard from "../../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../../components/ViewCalendarMonthStyled";
 import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop";

@@ -28,9 +28,13 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
 
             return (
               <div style={{ textAlign: 'center' }}>
-                <div>{arg.dayNumberText.replace(/[^\d]/g, '')}</div> 
+                <div>{arg.dayNumberText}</div>
                 {hasEvent && (
                   <div style={{
+                    position: 'absolute',
+                    bottom: '-10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
                     width: '8px',
                     height: '8px',
                     backgroundColor: '#1e40af',

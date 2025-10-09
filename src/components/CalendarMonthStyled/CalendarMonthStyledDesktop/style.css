@@ -75,24 +75,30 @@
   border-radius: 5px;
 }
 
-#wrapper-styled-callendar .fc-col-header-cell-cushion::first-letter, .fc-toolbar-title::first-letter {
+#wrapper-styled-callendar .fc-col-header-cell-cushion::first-letter,
+.fc-toolbar-title::first-letter {
   text-transform: capitalize;
 }
-
-#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky > * {
-	background: transparent;
-	position: sticky;
-	z-index: 3;
-}
+/* 
+#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky>* {
+  background: transparent;
+  position: sticky;
+  z-index: 3;
+} */
 
 #wrapper-styled-callendar .fc .fc-scrollgrid-section table {
   height: 50px;
 }
 
-#wrapper-styled-callendar .fc-theme-standard td, .fc-theme-standard .fc-scrollgrid {
+#wrapper-styled-callendar .fc-theme-standard td,
+.fc-theme-standard .fc-scrollgrid {
   border: none;
 }
 
 #wrapper-styled-callendar .fc .fc-toolbar-title {
   margin-left: 15px;
+}
+
+#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky>* {
+  position: relative !important;
 }

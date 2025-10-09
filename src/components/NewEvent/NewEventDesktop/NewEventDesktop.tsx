@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import CalendarMonthStyledDesktop from "../../CalendarMonthStyled/CalendarMonthStyledDesktop/CalendarMonthStyledDesktop";
 import { createEvent } from "../../../constants/calendar";
 import { checkDebugConnection } from "../../CheckConnection/CheckConnection";
-import SuccessModal from "../../Modal/SucessModal";
+import SuccessModal from "../../Modal/SucessModalDesktop";
 import axios from "axios";
 
 export default function NewEventDesktop(

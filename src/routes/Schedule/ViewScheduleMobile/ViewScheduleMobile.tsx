@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import "./style.css"
 import NewEvent from "../../../components/NewEvent/NewEventDesktop/NewEventDesktop";
-import SuccessModal from "../../../components/Modal/SucessModal";
+import SuccessModal from "../../../components/Modal/SucessModalDesktop";
 import UserScheduleCard from "../../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../../components/ViewCalendarMonthStyled";
 import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop";
 import NewEventMobile from "../../../components/NewEvent/NewEventMobile/NewEventMobile";
+import SuccessModalMobile from "../../../components/Modal/SucessModalMobile";
 
 // todo: check friday if cards will be mocked, backend or prototipe
 export default function ViewScheduleMobile() {
@@ -17,6 +18,10 @@ export default function ViewScheduleMobile() {
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
     const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
     const [openSuccessModal, setOpenSuccessModal] = useState<boolean>(false);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [openSuccessModal]);
 
     return (
         <>
@@ -45,7 +50,7 @@ export default function ViewScheduleMobile() {
             {
                 openSuccessModal ? (
                     <>
-                        <SuccessModal closeThen={setOpenSuccessModal} title="Agendamento Feito Com Sucesso" content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar" />
+                        <SuccessModalMobile closeThen={setOpenSuccessModal} title="Agendamento Feito Com Sucesso" content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar" />
                     </>
                 ) : null
             }

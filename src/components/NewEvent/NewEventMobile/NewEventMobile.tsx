@@ -77,7 +77,7 @@ export default function NewEventMobile(
             console.log("colocou no eventsMock");
             openModal(true);
             setOpenNewEvent(false);
-
+            close(false)
         }
         if (insertedEvents) {
 
@@ -110,6 +110,12 @@ export default function NewEventMobile(
             <div className="new-event-form-mobile">
 
                 <div className="top-new-event-mobile">
+                    <div className="go-back-mobile" onClick={() => { close(false); }}>
+                        <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5" stroke="black" />
+                        </svg>
+                        <span>Voltar</span>
+                    </div>
                     <h1>{title}</h1>
                     {/* temporary */}
                     {/* <button onClick={() => setOpenNewEvent(false)} style={{ marginTop: "12px", padding: "8px 16px", backgroundColor: "#c50000ff", color: "#fff", border: "none", borderRadius: "4px", cursor: "pointer" }}>CLOSE</button> */}

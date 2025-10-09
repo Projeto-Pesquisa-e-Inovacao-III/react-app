@@ -11,22 +11,25 @@
 
 .container {
   .new-event-form-mobile {
+    position: fixed;
     background-color: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 65.5%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    transform: none;
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    overflow-y: auto;
     z-index: 1000;
-    overflow: hidden;
-    font-family: "Poppins", sans-serif;
-    width: 100%;
+    padding: 16px;
 
     .top-new-event-mobile {
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
 
       svg {
@@ -39,15 +42,33 @@
         text-transform: uppercase;
         padding-bottom: 20px;
       }
+
+      .go-back-mobile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        span {
+          margin-left: 8px;
+          font-size: 16px;
+          font-weight: 500;
+        }
+
+        svg {
+          margin-top: 2.3px;
+        }
+      }
     }
 
     .calendar-small-mobile {
       display: flex;
       flex-direction: column;
       gap: 30px;
+
       .hours {
-        display: flex;
-        gap: 50px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
         overflow: scroll;
       }
     }
