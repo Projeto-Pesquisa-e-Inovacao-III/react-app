@@ -69,16 +69,5 @@
 
 
 .btn-sched-mobile {
-    padding: 15px 10px;
-    background-color: var(--btn-bg);
-    color: white;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    gap: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+    padding: 15px 10px !important;
 }

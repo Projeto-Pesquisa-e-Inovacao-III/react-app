@@ -7,6 +7,7 @@ import ViewCalendarMonthStyled from "../../../components/ViewCalendarMonthStyled
 import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop";
 import NewEventMobile from "../../../components/NewEvent/NewEventMobile/NewEventMobile";
 import SuccessModalMobile from "../../../components/Modal/SucessModalMobile";
+import UserHeaderMobile from "../../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 
 // todo: check friday if cards will be mocked, backend or prototipe
 export default function ViewScheduleMobile() {
@@ -32,13 +33,14 @@ export default function ViewScheduleMobile() {
                     </div>
                     <div className="schedule-page-user-actions-mobile">
                         <div>
-                            <button className="btn-sched-mobile" onClick={() => setOpenNewEvent(true)}>
+                            <button className="btn-sched btn-sched-mobile" onClick={() => setOpenNewEvent(true)}>
                                 Agendar
                             </button>
                         </div>
                         <UserScheduleCard />
                     </div>
                 </div>
+                <UserHeaderMobile />
             </div>
             {openNewEvent ? (
                 <>
