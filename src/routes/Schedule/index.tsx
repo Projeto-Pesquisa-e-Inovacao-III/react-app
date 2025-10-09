@@ -18,6 +18,7 @@ export default function ViewSchedule() {
 
     return (
         <>
+        
             {isMobile ? <ViewScheduleMobile /> : <ViewScheduleDesktop />}
         </>
     );

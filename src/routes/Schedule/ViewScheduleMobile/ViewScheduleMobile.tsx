@@ -24,6 +24,10 @@ export default function ViewScheduleMobile() {
         window.scrollTo(0, 0);
     }, [openSuccessModal]);
 
+    useEffect(() => {
+        console.log(events);
+    }, [eventsMock]);
+
     return (
         <>
             <div className="user-view-schedule-mobile" >
@@ -37,7 +41,9 @@ export default function ViewScheduleMobile() {
                                 Agendar
                             </button>
                         </div>
-                        <UserScheduleCard />
+                        {events.map((event, index) => (
+                            <UserScheduleCard key={index} date={`${(event.date).split("-").reverse()[0]} de ${(new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(new Date(event.date)))}`} hour={`${(event.hour).replace(":", "h").split(":")[0]}`} />
+                        ))}
                     </div>
                 </div>
                 <UserHeaderMobile />

@@ -1,6 +1,4 @@
 .user-view-schedule {
-    height: 100vh;
-
     .view-schedule {
         display: flex;
         gap: 60px;

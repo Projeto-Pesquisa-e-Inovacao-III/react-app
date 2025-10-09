@@ -1,6 +1,6 @@
 import "./style.css"
 
-export default function UserScheduleCard() {
+export default function UserScheduleCard({date, hour}: {date: string, hour: string}) {
     return (
         <div className="schedule-view">
             <div className="left">
@@ -16,7 +16,7 @@ export default function UserScheduleCard() {
             </div>
             <span className="border-division"></span>
             <div className="right">
-                <span>17 Setembro 12h30</span>
+                <span>{date} {hour}</span>
             </div>
         </div>
     );

@@ -33,7 +33,10 @@ export default function ViewScheduleDesktop() {
                                 Agendar
                             </button>
                         </div>
-                        <UserScheduleCard />
+
+                        {events.map((event, index) => (
+                            <UserScheduleCard key={index} date={`${(event.date).split("-").reverse()[0]} de ${(new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(new Date(event.date)))}`} hour={`${(event.hour).replace(":", "h").split(":")[0]}`} />
+                        ))}
                     </div>
                 </div>
             </div>
