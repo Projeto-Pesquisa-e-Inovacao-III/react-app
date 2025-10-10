@@ -71,8 +71,7 @@ export default function NewEvent(
                 });
         }
 
-        if (newEventTitle || calculatedTitle && newEventDate) {
-            console.log("colocou no eventsMock");
+        if ((newEventTitle || calculatedTitle) && newEventDate) {
             openModal(true);
             close(false)
         }

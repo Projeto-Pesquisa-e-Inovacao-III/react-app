@@ -7,7 +7,7 @@ import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserH
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
-import SuccessModal from "../../components/Modal/SucessModal";
+import SuccessModal from "../../components/Modal/SuccessModal";
 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
@@ -63,7 +63,7 @@ export default function ViewSchedule() {
 
                         {events.map((event, index) => (
                             <UserScheduleCard
-                                key={index}
+                                key={`${event.title}-${index}`}
                                 date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
                                 hour={`${event.hour.replace(":", "h").split(":")[0]}`}
                             />
