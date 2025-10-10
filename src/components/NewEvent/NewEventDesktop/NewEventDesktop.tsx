@@ -53,6 +53,16 @@ export default function NewEventDesktop(
   async function handleNewEvent(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!newEventDate || !newEventStartHour) {
+      alert("Por favor, selecione uma data e horário para o evento.");
+      return;
+    }
+
+    if (!postalCode || postalCode.length < 8 || !address || !city || !number) {
+      alert("Por favor, insira um endereço válido.");
+      return;
+    }
+
     //debugging - check if backend is reachable
     const isDatabaseConnected = await checkDebugConnection();
     console.log("isDatabaseConnected", isDatabaseConnected);

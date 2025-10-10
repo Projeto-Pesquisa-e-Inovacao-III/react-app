@@ -7,7 +7,7 @@ import axios from "axios";
 import CalendarMonthStyledMobile from "../../CalendarMonthStyled/CalendarMonthStyledMobile/CalendarMonthStyledMobile";
 
 export default function NewEventMobile(
-    { close, openModal, insertedEvents, insertEvent, title = "Novo Evento" }: { close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
+    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento" }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
 ) {
 
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(true);
@@ -52,6 +52,16 @@ export default function NewEventMobile(
 
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
+
+        if (!newEventDate || !newEventStartHour) {
+            alert("Por favor, selecione uma data e horário para o evento.");
+            return;
+        }
+
+        if (!postalCode || postalCode.length < 8 || !address || !city || !number) {
+            alert("Por favor, insira um endereço válido.");
+            return;
+        }
 
         //debugging - check if backend is reachable
         const isDatabaseConnected = await checkDebugConnection();
@@ -107,8 +117,7 @@ export default function NewEventMobile(
 
     return (
         <>
-            <div className="new-event-form-mobile">
-
+            <div className={isMobile ? "new-event-form-mobile" : "new-event-form"}>
                 <div className="top-new-event-mobile">
                     <div className="go-back-mobile" onClick={() => { close(false); }}>
                         <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -68,7 +68,7 @@
     background: black;
     color: white !important;
     border-radius: 50%;
-    padding: 3px 10px;
+    padding: 3px 6px;
   }
 
   #wrapper-styled-callendar .fc-daygrid-day:hover {
