@@ -1,9 +1,8 @@
 import FullCalendar from "@fullcalendar/react";
-import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useState } from "react";
-import NewEvent from "../NewEvent/NewEventDesktop/NewEventDesktop";
+import NewEvent from "../NewEvent";
 interface CalendarProps {
   title: string;
   date: string;
@@ -16,12 +15,8 @@ export default function Calendar() {
     { title: "Aniversário", date: "2025-09-22" },
   ];
 
-  const actualMonth = new Date().getMonth();
-
   const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
   const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
-  const [newEventTitle, setNewEventTitle] = useState<string>("");
-  const [newEventDate, setNewEventDate] = useState<string>("");
 
 
   useEffect(() => {

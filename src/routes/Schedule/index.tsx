@@ -1,27 +1,17 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "./style.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
-import NewEventMobile from "../../components/NewEvent/NewEventMobile/NewEventMobile";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
-import NewEventDesktop from "../../components/NewEvent/NewEventDesktop/NewEventDesktop";
-import SuccessModal from "../../components/Modal/SucessModalDesktop";
-import SuccessModalMobile from "../../components/Modal/SucessModalMobile";
+import NewEvent from "../../components/NewEvent";
+import { useMediaQuery } from "@mui/material";
+import SuccessModal from "../../components/Modal/SucessModal";
 
 // todo: check friday if cards will be mocked, backend or prototipe
 export default function ViewSchedule() {
-    const [isMobile, setIsMobile] = useState<boolean>(false);
-
-    useEffect(() => {
-        function handleResize() {
-            setIsMobile(window.innerWidth <= 1024);
-        }
-        window.addEventListener("resize", handleResize);
-        handleResize();
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    const isMobile = useMediaQuery("(max-width:1024px)");
 
     const eventsMock = [
         { title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
@@ -37,9 +27,6 @@ export default function ViewSchedule() {
     }, [openSuccessModal, isMobile]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-    const NewEvent = isMobile ? NewEventMobile : NewEventDesktop;
-    const SuccessModalComp = isMobile ? SuccessModalMobile : SuccessModal;
-
 
     return (
         <>
@@ -90,7 +77,9 @@ export default function ViewSchedule() {
             {openNewEvent && (
                 <>
                     <div className="overlay"></div>
+
                     <NewEvent
+                        isMobile={isMobile}
                         close={setOpenNewEvent}
                         openModal={setOpenSuccessModal}
                         insertedEvents={events}
@@ -101,7 +90,8 @@ export default function ViewSchedule() {
             )}
 
             {openSuccessModal && (
-                <SuccessModalComp
+                <SuccessModal
+                    isMobile={isMobile}
                     closeThen={setOpenSuccessModal}
                     title="Agendamento Feito Com Sucesso"
                     content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
