@@ -79,12 +79,6 @@
 .fc-toolbar-title::first-letter {
   text-transform: capitalize;
 }
-/* 
-#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky>* {
-  background: transparent;
-  position: sticky;
-  z-index: 3;
-} */
 
 #wrapper-styled-callendar .fc .fc-scrollgrid-section table {
   height: 50px;

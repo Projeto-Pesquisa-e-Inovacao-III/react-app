@@ -22,17 +22,6 @@ export default function NewEvent(
     const [number, setNumber] = useState<string>("");
     const [complement, setComplement] = useState<string>("");
 
-
-    // useEffect(() => {
-    //     if (openNewEvent) {
-    //         document.body.style.overflow = "hidden";
-    //     } else {
-    //         document.body.style.overflow = "auto";
-    //         close(false);
-    //     }
-    // }, [openNewEvent]);
-
-
     useEffect(() => {
         // ViaCEP API integration
         if (postalCode.length === 8) {
@@ -88,10 +77,7 @@ export default function NewEvent(
             close(false)
         }
         if (insertedEvents) {
-
-            // insertEvent([...insertedEvents, { title: calculatedTitle, start: `${newEventDate}T${newEventStartHour}`, end: `${newEventDate}T09:00:00` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
-            insertEvent([...insertedEvents, { title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]); // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
-            // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
+            insertEvent([...insertedEvents, { title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
         }
 
 

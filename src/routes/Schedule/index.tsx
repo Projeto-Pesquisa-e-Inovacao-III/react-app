@@ -9,7 +9,6 @@ import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SucessModal";
 
-// todo: check friday if cards will be mocked, backend or prototipe
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
