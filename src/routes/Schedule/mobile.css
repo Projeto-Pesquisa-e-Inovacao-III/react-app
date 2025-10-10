@@ -66,3 +66,26 @@
 
     }
 }
+
+@media (max-width: 400px) {
+    .schedule-view {
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    .border-division {
+        border: 1px solid black;
+        margin: 20px 0 !important;
+    }
+
+    .right {
+        text-align: center !important;
+
+        span {
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+        }
+    }
+}
