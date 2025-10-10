@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -29,4 +30,23 @@
 
   --font-poppins: 'Poppins', sans-serif;
   --font-bebas: 'Bebas Neue', cursive;
+
+  --calendar-width: 180px;
+
+  --bg-blue: #093A5D;
+
+
+
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+  opacity: 1;
 }

@@ -1,0 +1,53 @@
+.schedule-view {
+    display: flex;
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+
+    .left {
+        width: 100%;
+
+        .user-personal {
+            font-size: 24px;
+            font-weight: lighter;
+        }
+
+        .schedule-page-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+
+            img {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+            }
+        }
+
+        .btn-actions {
+            display: flex;
+            gap: 15px;
+        }
+    }
+
+    .border-division {
+        border-left: 1px solid black;
+        margin: 0 15px;
+    }
+
+    .right {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        text-transform: capitalize;
+
+    }
+}
+
+@media (max-width: 1024px) {
+
+    .btn-sched {
+        padding: 15px 20px;
+    }
+}
