@@ -1,0 +1,91 @@
+.user-view-schedule-mobile {
+    .view-schedule-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        padding: 20px;
+
+        .schedule-page-calendar-mobile {
+            background-color: white;
+            padding: 20px;
+            flex: 2;
+        }
+
+        .schedule-page-user-actions-mobile {
+            flex: 1;
+
+
+
+            .schedule-view {
+                display: flex;
+                background-color: white;
+                padding: 20px;
+                margin-top: 20px;
+
+                .left {
+                    width: 100%;
+
+                    .user-personal {
+                        font-size: 24px;
+                        font-weight: lighter;
+                    }
+
+                    .schedule-page-user {
+                        display: flex;
+                        align-items: center;
+                        gap: 15px;
+                        margin: 20px 0;
+
+                        img {
+                            width: 60px;
+                            height: 60px;
+                            border-radius: 50%;
+                        }
+                    }
+
+                    .btn-actions {
+                        display: flex;
+                        gap: 15px;
+                    }
+                }
+
+                .border-division {
+                    border-left: 1px solid black;
+                    margin: 0 20px;
+                    margin-right: 3dvw;
+                }
+
+                .right {
+                    display: flex;
+                    align-items: center;
+                    text-align: center;
+
+                }
+            }
+        }
+
+    }
+}
+
+@media (max-width: 400px) {
+    .schedule-view {
+        display: flex;
+        flex-direction: column;
+
+    }
+
+    .border-division {
+        border: 1px solid black;
+        margin: 20px 0 !important;
+    }
+
+    .right {
+        text-align: center !important;
+
+        span {
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+        }
+    }
+}

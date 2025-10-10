@@ -1,0 +1,71 @@
+.user-header-desktop {
+    width: 100%;
+    background-color: var(--bg-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+    color: white;
+
+    nav {
+        font-family: "Poppins", sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 0;
+        margin-bottom: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+
+        a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+
+    .auth-links {
+        font-size: 18px;
+        display: flex;
+        gap: 8px;
+
+        img:first-child {
+            border-radius: 50%;
+        }
+
+        a {
+            padding: 12px;
+            height: 100%;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .login-link {
+            color: white;
+
+            &:hover {
+                background-color: white;
+            }
+        }
+
+        .register-link {
+            background-color: white;
+            color: black;
+
+            &:hover {
+                background-color: white;
+                transform: translateY(-2px);
+            }
+        }
+    }
+}
