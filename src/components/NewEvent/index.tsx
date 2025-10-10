@@ -1,4 +1,4 @@
-import "./style.css";
+import "./mobile.css";
 import "./desktop.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -225,7 +225,7 @@ export default function NewEvent(
                                             value={city || ""}
                                         />
                                     </div>
-                                    <div className="input-group double-input">
+                                    <div className="input-group input-group-max">
                                         <input
                                             type="text"
                                             placeholder="Endereço"
@@ -233,6 +233,8 @@ export default function NewEvent(
                                             disabled
                                             value={address || ""}
                                         />
+                                    </div>
+                                    <div className="input-group double-input">
                                         <input
                                             className="input-number"
                                             type="text"
@@ -240,8 +242,6 @@ export default function NewEvent(
                                             value={number || ""}
                                             onChange={(e) => setNumber(e.target.value)}
                                         />
-                                    </div>
-                                    <div className="input-group input-group-max">
                                         <input
                                             type="text"
                                             placeholder="Complemento"
