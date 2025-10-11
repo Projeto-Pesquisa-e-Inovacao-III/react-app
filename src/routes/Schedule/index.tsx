@@ -15,17 +15,23 @@ export default function ViewSchedule() {
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-10-22", hour: "12:00:00" },
+        { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
     ];
+    const [events, setEvents] = useState(eventsMock);
 
     const [openNewEvent, setOpenNewEvent] = useState(false);
-    const [events, setEvents] = useState(eventsMock);
+    const [openReschedule, setOpenReschedule] = useState(false);
+
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
-    const [openCancelModal, setOpenCancelModal] = useState(false);
+    const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
+
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+
 
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
+        console.log(openSuccessModal)
+        console.log(openCancelModal)
     }, [openSuccessModal, openCancelModal, isMobile]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
@@ -112,6 +118,7 @@ export default function ViewSchedule() {
                                     date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
                                     hour={`${event.hour.replace(":", "h").split(":")[0]}`}
                                     handleCancel={setOpenCancelModal}
+                                    handleReschedule={setOpenReschedule}
                                 />
                             </div>
                         ))}
@@ -131,6 +138,23 @@ export default function ViewSchedule() {
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Agendar horário"
+                        buttonTitle="Agendar"
+                    />
+                </>
+            )}
+
+            {openReschedule && (
+                <>
+                    <div className="overlay"></div>
+                    <NewEvent
+                        isMobile={isMobile}
+                        close={setOpenReschedule}
+                        openModal={setOpenSuccessModal}
+                        insertedEvents={events}
+                        insertEvent={setEvents}
+                        title="Reagendar horário"
+                        buttonTitle="Reagendar"
+                        rescheduleId={selectedEventId}
                     />
                 </>
             )}
@@ -159,6 +183,8 @@ export default function ViewSchedule() {
                     id={selectedEventId}
                     events={events}
                     setEvents={setEvents}
+                    callSuccess={true}
+                    callSuccessModal={setOpenSuccessModal}
                 />
             )}
         </>

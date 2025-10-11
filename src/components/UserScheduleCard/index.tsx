@@ -1,6 +1,6 @@
 import "./style.css"
 
-export default function UserScheduleCard({ date, hour, handleCancel }: { date: string, hour: string, handleCancel: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function UserScheduleCard({ date, hour, handleCancel, handleReschedule }: { date: string, hour: string, handleCancel: React.Dispatch<React.SetStateAction<boolean>>, handleReschedule: React.Dispatch<React.SetStateAction<boolean>> }) {
     return (
         <div className="schedule-view">
             <div className="left">
@@ -10,7 +10,7 @@ export default function UserScheduleCard({ date, hour, handleCancel }: { date: s
                     <span>Nome</span>
                 </div>
                 <div className="btn-actions">
-                    <button className="btn-sched btn-sched-mobile">Reagendar</button>
+                    <button className="btn-sched btn-sched-mobile" onClick={() => handleReschedule(true)}>Reagendar</button>
                     <button className="btn-sched btn-sched-mobile" onClick={() => handleCancel(true)}>Cancelar</button>
                 </div>
             </div>
