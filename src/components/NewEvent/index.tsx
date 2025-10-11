@@ -76,7 +76,7 @@ export default function NewEvent(
             close(false)
         }
         if (insertedEvents) {
-            insertEvent([...insertedEvents, { title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
+            insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
         }
 
 
