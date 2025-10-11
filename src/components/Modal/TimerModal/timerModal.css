@@ -1,0 +1,43 @@
+.modal-event-created,
+.modal-event-created-mobile {
+
+    .content-modal {
+        text-align: start;
+        white-space: pre-line;
+    }
+
+    .buttons-group-modal {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+
+
+
+
+    }
+}
+
+
+.modal-event-created-mobile {
+
+    padding: 20px !important;
+
+    .buttons-group-modal-mobile {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+.btn-sched-red {
+    background-color: var(--bg-orange);
+    color: black;
+}
+
+.btn-sched-disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}

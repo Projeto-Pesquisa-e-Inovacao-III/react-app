@@ -1,5 +1,5 @@
-import "./sucessModalMobile.css";
-import "./sucessModal.css";
+import "./successModalMobile.css";
+import "./successModal.css";
 
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 

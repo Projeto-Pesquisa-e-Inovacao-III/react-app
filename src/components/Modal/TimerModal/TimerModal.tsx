@@ -1,0 +1,58 @@
+import { useEffect, useState } from 'react';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+import "./timerModal.css"
+import DeleteEvent from './DeleteEvent';
+import type { EventDTO } from '../../../models/calendar';
+
+export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>> }) {
+    const [mounted, setMounted] = useState(false)
+
+    //vlw pedrão
+    function unmount() {
+        document.body.style.overflow = 'auto'; //enable scrolling on unmount
+    }
+
+    useEffect(() => {
+        console.log("mounted")
+        setMounted(true);
+        document.body.style.overflow = 'hidden'; //disable scrolling on mount
+    }, [])
+
+    function handleCloseModal() {
+        unmount();
+        closeThen(false);
+    }
+
+    const [enableButton, setEnableButton] = useState(false);
+
+    return (
+        <>
+            <div className="overlay"></div>
+            <div className={`modal-event-created${isMobile ? "-mobile" : ""}`}>
+                <h2>{title || "Cancelar!"}</h2>
+                <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
+                <CountdownCircleTimer
+                    isPlaying
+                    duration={5}
+                    colors="#093A5D"
+                    size={50}
+                    strokeWidth={3}
+                    onComplete={() => {
+                        setEnableButton(true);
+                    }}
+
+                >
+                    {({ remainingTime }) => remainingTime}
+                </CountdownCircleTimer>
+                <DeleteEvent
+                    isMobile={isMobile}
+                    enableButton={enableButton}
+                    handleCloseModal={handleCloseModal}
+                    id={id}
+                    events={events}
+                    setEvents={setEvents}
+                />
+            </div>
+        </>
+    );
+}
