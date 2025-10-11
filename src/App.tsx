@@ -5,6 +5,7 @@ import Register from "./routes/User/Register";
 import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
 import ViewSchedule from "./routes/Schedule";
+import LoginDesktop from "./routes/User/Login";
 function App() {
 
 
@@ -12,7 +13,7 @@ function App() {
     <BrowserRouter>
       <div className="container">
         <Routes>
-          <Route path="/" element={<ViewSchedule />} />
+          <Route path="/" element={<LoginDesktop />} />
           <Route path="/schedule" element={<ViewSchedule />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
