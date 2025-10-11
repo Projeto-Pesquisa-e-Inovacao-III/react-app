@@ -10,7 +10,7 @@
     opacity: 0.5;
   }
 
-  .selected-day {
+  .selected-day, .fc-highlight {
     background-color: #2e2e2e !important;
     color: white !important;
     border-radius: 5px;
@@ -107,5 +107,6 @@
       margin: 0 !important;
     }
   }
-}
 
+
+}

@@ -1,16 +1,20 @@
 import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "./style.css";
-import { useEffect, useState } from "react";
+import "./mobile.css";
+import "./desktop.css";
+import { use, useEffect, useRef, useState } from "react";
+import type { EventDTO } from "../../models/calendar";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
-  createdEvents?: { title: string; date: string; hour: string }[];
+  createdEvents?: EventDTO[];
+  eventToReschedule?: EventDTO | null;
+  isMobile: boolean;
 };
 
 
-export default function CalendarMonthStyledDesktop({ clickedDate, createdEvents }: Props) {
+export default function CalendarMonthStyled({ clickedDate, createdEvents, eventToReschedule, isMobile }: Props) {
 
   const databaseEvents = createdEvents?.map((event: { title: string; date: string; hour: string }) => {
     return { title: event.title, date: event.date };
@@ -21,11 +25,9 @@ export default function CalendarMonthStyledDesktop({ clickedDate, createdEvents 
     { title: "Aniversário", date: "2025-09-22" },
   ];
 
-  const actualMonth = new Date().getMonth() + 1;
-
   const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
   const [newEventDate, setNewEventDate] = useState<string>("");
-  const [selectedMonth, setSelectedMonth] = useState<number>(0);
+  const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
     if (databaseEvents && databaseEvents.length > 0) {
@@ -37,48 +39,39 @@ export default function CalendarMonthStyledDesktop({ clickedDate, createdEvents 
     clickedDate(newEventDate);
   }, [newEventDate]);
 
+  useEffect(() => {
+    const calendarApi = calendarRef.current?.getApi();
+    calendarApi?.select(eventToReschedule?.date || "");
+    setNewEventDate(eventToReschedule?.date || "");
+  }, []);
+
   return (
-    <div className="container-calendar">
+    <div className={`container-calendar${isMobile ? "-mobile" : ""}`}>
       <div className="wrapper-callendar" id="wrapper-styled-callendar">
         <FullCalendar
+          ref={calendarRef}
           plugins={[dayGridPlugin, InteractionPlugin]}
           initialView="dayGridMonth"
-          // events={createdEvents ? events : eventsMock}
-          locale={"pt-br"}
+          locale="pt-br"
           dayHeaderFormat={{ weekday: 'short' }}
-          datesSet={function (info) {
-            const month = info.start.getMonth() + 2;
-            setSelectedMonth(month);
-          }}
-          dateClick={function (info) {
-            setNewEventDate(info.dateStr);
-
-          }}
+          dateClick={(info) => setNewEventDate(info.dateStr)}
           dayCellClassNames={(arg) => {
-            const disabledDays = events?.map((event) => event.date);
-
+            const disabledDays = events.map((e) => e.date);
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            if (disabledDays?.includes(dateStr)) {
+            if (disabledDays.includes(dateStr) && dateStr !== eventToReschedule?.date)
               return ["disabled-day"];
-            }
-
-            if (dateStr == newEventDate) {
+            if (dateStr === newEventDate)
               return ["selected-day"];
-            }
-
             return [];
-
           }}
           headerToolbar={{
-
-            start: "title",
-            end: `${selectedMonth >= actualMonth ? "today " : ""}${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
+            start: isMobile ? "" : "title",
+            end: isMobile ? "prev,next" : "today prev,next",
           }}
-          height={"auto"}
-
+          height="auto"
         />
       </div>
-    </div >
+    </div>
   );
 }

@@ -3,8 +3,9 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import "./timerModal.css"
 import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
+import SuccessModal from '../SuccessModal/SuccessModal';
 
-export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>> }) {
+export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccess, callSuccessModal }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>; callSuccess?: boolean; callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const [mounted, setMounted] = useState(false)
 
     //vlw pedrão
@@ -16,6 +17,10 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
         console.log("mounted")
         setMounted(true);
         document.body.style.overflow = 'hidden'; //disable scrolling on mount
+
+        if (callSuccess && callSuccessModal) {
+            callSuccessModal(true);
+        }
     }, [])
 
     function handleCloseModal() {
@@ -33,7 +38,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                 <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer
                     isPlaying
-                    duration={5}
+                    duration={1}
                     colors="#093A5D"
                     size={50}
                     strokeWidth={3}
