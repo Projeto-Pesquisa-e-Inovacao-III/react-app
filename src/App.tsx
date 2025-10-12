@@ -5,6 +5,7 @@ import EditUser from "./routes/EditUser";
 import Logout from "./routes/User/Logout";
 import ViewSchedule from "./routes/Schedule";
 import Login from "./routes/User/Login";
+import ForgotPassword from "./routes/User/ForgotPassword";
 function App() {
 
 
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Register />} />
           <Route path="/schedule" element={<ViewSchedule />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/edit-user" element={<EditUser />} />

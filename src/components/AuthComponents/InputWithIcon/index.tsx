@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 type Props = {
     type: string;
     placeholder: string;
-    onInputChange: React.Dispatch<React.SetStateAction<string>>;
+    onInputChange?: React.Dispatch<React.SetStateAction<string>>;
     icon: React.ReactNode;
     isPassword?: boolean;
 }
@@ -20,7 +20,7 @@ export default function InputWithIcon({ type, placeholder, onInputChange, icon, 
             <input
                 type={isPassword && showPassword ? "text" : type}
                 placeholder={placeholder}
-                onChange={(e) => onInputChange(e.target.value)}
+                onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
             />
             {isPassword && (
                 <button

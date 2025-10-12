@@ -14,6 +14,7 @@ import InputWithIcon from "../../../components/AuthComponents/InputWithIcon";
 import InputRowTriple from "../../../components/AuthComponents/InputRowTriple";
 import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton";
+import Button from "../../../components/Button";
 
 
 // jesus, what a mess
@@ -196,7 +197,7 @@ export default function Register() {
                                 ))}
                             </div>
                         )}
-                        <button type="submit">Cadastrar</button>
+                        <Button type="submit" title="Cadastrar" />
                     </form>
                     <span>
                         Já tem uma conta? <Link to="/login">Faça login</Link>
