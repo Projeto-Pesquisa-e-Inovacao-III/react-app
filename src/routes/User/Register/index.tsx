@@ -163,16 +163,18 @@ export default function Register() {
 
                         <div className="wrapper-password-input">
                             <InputWithIcon
-                                type="text"
-                                placeholder="CPF"
-                                onInputChange={setCustomerDocument}
+                                type="password"
+                                placeholder="Senha"
+                                onInputChange={setPassword}
                                 icon={<IdCard />}
+                                isPassword={true}
                             />
                             <InputWithIcon
-                                type="text"
-                                placeholder="CPF"
-                                onInputChange={setCustomerDocument}
+                                type="password"
+                                placeholder="Confirmar Senha"
+                                onInputChange={setConfirmPassword}
                                 icon={<IdCard />}
+                                isPassword={true}
                             />
                         </div>
 
