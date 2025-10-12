@@ -23,6 +23,10 @@ export default function NewEvent(
     const eventToReschedule = insertedEvents?.find(event => event.id === rescheduleId);
 
     useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
+
+    useEffect(() => {
         // ViaCEP API integration
         if (postalCode.length === 8) {
             //CEP has 8 digits
@@ -72,7 +76,7 @@ export default function NewEvent(
 
         if (calculatedTitle && newEventDate) {
             openModal(true);
-            close(false)
+            handleClose();
         }
         if (insertedEvents) {
             insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
@@ -82,6 +86,13 @@ export default function NewEvent(
 
     }
 
+    function handleClose() {
+        document.body.style.overflow = 'auto';
+        close(false);
+    }
+
+    // jesus... christ.... what a nightmare
+    // todo: refactor this mess; create a separate component for the hour buttons, manage selected state with React state instead of DOM manipulation
     function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
         event.preventDefault();
         console.log("clicou no botão da hora", hour);
@@ -103,7 +114,7 @@ export default function NewEvent(
                 <div className={`top-new-event${isMobile ? "-mobile" : ""}`}>
                     {isMobile ? (
                         <>
-                            <div className="go-back-mobile" onClick={() => close(false)}>
+                            <div className="go-back-mobile" onClick={handleClose}>
                                 <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
                                     <path
                                         d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
@@ -119,7 +130,7 @@ export default function NewEvent(
                         <>
                             <h1>{title}</h1>
                             <svg
-                                onClick={() => close(false)}
+                                onClick={handleClose}
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
                                 height="24"

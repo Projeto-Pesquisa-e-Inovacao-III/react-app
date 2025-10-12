@@ -3,20 +3,19 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import "./timerModal.css"
 import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
-import SuccessModal from '../SuccessModal/SuccessModal';
 
 export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccess, callSuccessModal }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>; callSuccess?: boolean; callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> }) {
     const [mounted, setMounted] = useState(false)
 
     //vlw pedrão
     function unmount() {
-        document.body.style.overflow = 'auto'; //enable scrolling on unmount
+        document.body.style.overflow = 'auto';
     }
 
     useEffect(() => {
         console.log("mounted")
         setMounted(true);
-        document.body.style.overflow = 'hidden'; //disable scrolling on mount
+        document.body.style.overflow = 'hidden';
 
         if (callSuccess && callSuccessModal) {
             callSuccessModal(true);

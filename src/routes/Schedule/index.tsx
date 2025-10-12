@@ -10,6 +10,7 @@ import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 
+//todo: when 'back button' is clicked at appointment cancel, a success modal appears. fix that; 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
@@ -27,6 +28,7 @@ export default function ViewSchedule() {
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
+    const [cancelButton, setCancelButton] = useState<boolean>(false);
 
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
