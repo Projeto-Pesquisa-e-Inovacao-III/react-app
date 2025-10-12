@@ -3,7 +3,22 @@
   background-color: var(--bg-blue-darker);
   font-family: "Poppins", sans-serif;
 
-  .left-section-logo-login {
+  .go-back-login {
+    padding: 30px;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    a {
+      color: #000 !important;
+      display: flex;
+      align-items: center;
+      gap: 10px !important;
+      text-decoration: none !important;
+    }
+  }
+
+  .section-logo-login {
     padding: 30px 60px;
     display: flex;
     justify-content: center;
@@ -23,14 +38,12 @@
     border-top-left-radius: 16px;
     border-bottom-left-radius: 16px;
     background-color: white;
+    position: relative;
 
     a {
       color: var(--link-text);
-      text-decoration: none;
+      text-decoration: underline;
 
-      &:hover {
-        text-decoration: underline;
-      }
     }
 
     .wrapper_login_elements {
@@ -59,85 +72,76 @@
           flex-direction: column;
           gap: 2rem;
 
-          .wrapper_inp {
-            position: relative;
-
-            .mail-icon,
-            .lock-icon {
-              position: absolute;
-              left: 0.75rem;
-              top: 50%;
-              transform: translateY(-50%);
-              color: var(--muted-foreground);
-              height: 1rem;
-              width: 1rem;
-            }
-
-            .password-toggle {
-              position: absolute;
-              right: 0.75rem;
-              top: 50%;
-              transform: translateY(-50%);
-              color: var(--muted-foreground);
-              transition: all 0.3s ease;
-              background: none;
-              border: none;
-              cursor: pointer;
-              padding: 0;
-            }
-          }
-        }
-
-        input[type="email"],
-        input[type="text"],
-        input[type="password"] {
-          padding: 12px 16px 12px 40px;
-          background-color: transparent;
-          color: black;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          width: 100%;
-          font-size: .95rem;
-        }
-
-        input[type="checkbox"] {
-          background-color: transparent;
-        }
-
-        button {
-          padding: 10px;
-          background-color: var(--bg-blue);
-          color: var(--btn-color);
-          border: var(--btn-border);
-          border-radius: var(--btn-border-radius);
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: var(--btn-hover-bg);
+          .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
           }
         }
       }
 
-      .config_login {
-        display: flex;
-        justify-content: space-between;
 
-        span {
-          margin-left: 10px;
-        }
-
-        a {
-          text-decoration: underline;
-        }
+      input[type="checkbox"] {
+        background-color: transparent;
       }
 
-      .btn-submit-login-page {
-        width: 100%;
-        font-size: 1rem;
-        font-weight: 500;
-        margin-top: 30px;
+      button {
+        padding: 10px;
+        background-color: var(--bg-blue);
+        color: var(--btn-color);
+        border: var(--btn-border);
+        border-radius: var(--btn-border-radius);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: var(--btn-hover-bg);
+        }
+      }
+    }
+
+    .config_login {
+      display: flex;
+      justify-content: space-between;
+
+      span {
+        margin-left: 10px;
+      }
+
+      a {
+        text-decoration: underline;
+      }
+    }
+
+    .btn-submit-login-page {
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 30px;
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .container-login {
+    flex-direction: column;
+
+    .login {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+
+      .wrapper_login_elements {
+        width: 80vw;
       }
     }
   }
+
 }
