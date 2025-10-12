@@ -13,7 +13,12 @@ import InputRowDouble from "../../../components/AuthComponents/InputRowDouble";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon";
 import InputRowTriple from "../../../components/AuthComponents/InputRowTriple";
 import { useMediaQuery } from "@mui/material";
+import GoBackButton from "../../../components/GoBackButton";
 
+
+// jesus, what a mess
+// thank god is only frontend for now
+// todo: validation, mask  
 export default function Register() {
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
@@ -21,7 +26,6 @@ export default function Register() {
     const [customerDocument, setCustomerDocument] = useState<string>("");
     const [phone, setPhone] = useState<string>("");
     const [gender, setGender] = useState<string>("");
-    const [showPassword, setShowPassword] = useState<boolean>(false);
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
 
@@ -98,6 +102,8 @@ export default function Register() {
 
     return (
         <div className="register">
+            <GoBackButton to="/" />
+
             <div className={`wrapper_register_elements ${isMobile ? "wrapper_register_elements-mobile" : ""}`}>
                 <div className="register_elements">
                     <div className={`welcome_message${isMobile ? "-mobile" : ""}`}>
@@ -166,14 +172,14 @@ export default function Register() {
                                 type="password"
                                 placeholder="Senha"
                                 onInputChange={setPassword}
-                                icon={<IdCard />}
+                                icon={<Lock />}
                                 isPassword={true}
                             />
                             <InputWithIcon
                                 type="password"
                                 placeholder="Confirmar Senha"
                                 onInputChange={setConfirmPassword}
-                                icon={<IdCard />}
+                                icon={<Lock />}
                                 isPassword={true}
                             />
                         </div>

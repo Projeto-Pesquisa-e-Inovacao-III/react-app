@@ -3,20 +3,7 @@
   background-color: var(--bg-blue-darker);
   font-family: "Poppins", sans-serif;
 
-  .go-back-login {
-    padding: 30px;
-    position: absolute;
-    top: 0;
-    left: 0;
 
-    a {
-      color: #000 !important;
-      display: flex;
-      align-items: center;
-      gap: 10px !important;
-      text-decoration: none !important;
-    }
-  }
 
   .section-logo-login {
     padding: 30px 60px;
@@ -86,6 +73,8 @@
           }
         }
       }
+
+
 
 
       input[type="checkbox"] {
