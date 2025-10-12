@@ -1,7 +1,9 @@
 import "./style.css"
 
-export default function Button({type}: {type: "submit" | "button"}) {
+export default function Button({ type, title }: { type: "submit" | "button", title: string }) {
     return (
-        <button className={`btn-generic ${type}`} type={type}>Entrar</button>
+        <div className="btn-generic">
+            <button className={`${type}`} type={type}>{title}</button>
+        </div>
     )
 }

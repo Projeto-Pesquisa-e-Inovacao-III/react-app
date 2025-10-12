@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton";
+import Button from "../../../components/Button";
 
 // todo: create button component, fix font family  
 export default function Login() {
@@ -92,25 +93,26 @@ export default function Login() {
       )}
       <div className="login">
         <GoBackButton to="/" />
-          <div className="wrapper_login_elements">
-            <div className="welcome_message">
-              <h1>Bem-vindo</h1>
-            </div>
-            <form onSubmit={handleSubmit}>
-              <div className="wrapper-inputs-login-page">
-                <InputWithIcon type={"email"} placeholder={"seu@email.com"} onInputChange={setEmail} icon={<Mail />} />
-                <InputWithIcon type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={setPassword} icon={<Lock />} />
-
-              </div>
-              <div className="config_login">
-                <Link to="/forgot-password">Esqueceu sua senha?</Link>
-              </div>
-              <button className="btn-submit-login-page" type="submit">Entrar</button>
-            </form>
-            <span className="mg-15">
-              Não tem uma conta? <Link to="/register">Criar uma conta</Link>
-            </span>
+        <div className="wrapper_login_elements">
+          <div className="welcome_message">
+            <h1>Bem-vindo</h1>
           </div>
+          <form onSubmit={handleSubmit}>
+            <div className="wrapper-inputs-login-page">
+              <InputWithIcon type={"email"} placeholder={"seu@email.com"} onInputChange={setEmail} icon={<Mail />} />
+              <InputWithIcon type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={setPassword} icon={<Lock />} />
+
+            </div>
+            <div className="config_login">
+              <Link to="/forgot-password">Esqueceu sua senha?</Link>
+            </div>
+            <Button type="submit" title="Entrar" />
+
+          </form>
+          <span className="mg-15">
+            Não tem uma conta? <Link to="/register">Criar uma conta</Link>
+          </span>
+        </div>
       </div>
     </div>
   );

@@ -1,14 +1,13 @@
   .go-back-login {
-    padding: 30px;
-    position: absolute;
-    top: 0;
-    left: 0;
+      position: absolute;
+      top: 30px;
+      left: 30px;
 
-    a {
-      color: #000 !important;
-      display: flex;
-      align-items: center;
-      gap: 10px !important;
-      text-decoration: none !important;
-    }
+      a {
+          color: #000 !important;
+          display: flex;
+          align-items: center;
+          gap: 10px !important;
+          text-decoration: none !important;
+      }
   }

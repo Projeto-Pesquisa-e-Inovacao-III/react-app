@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import "./style.css"
-export default function GoBackButton({to}: {to: string}) {
+export default function GoBackButton({to}: {to?: string}) {
     return (
         <div className="go-back-login">
             <Link to={to}>

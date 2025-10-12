@@ -175,20 +175,6 @@
                     background-color: transparent;
                 }
 
-                button {
-                    padding: 10px;
-                    background-color: var(--btn-bg);
-                    color: var(--btn-color);
-                    border: var(--btn-border);
-                    border-radius: var(--btn-border-radius);
-                    cursor: pointer;
-                    transition: background-color 0.3s ease;
-
-                    &:hover {
-                        background-color: var(--btn-hover-bg);
-                    }
-                }
-
                 .terms {
                     display: flex;
                     justify-content: center;
