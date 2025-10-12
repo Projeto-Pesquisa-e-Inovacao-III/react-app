@@ -1,0 +1,32 @@
+.double-row-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .first-block,
+    .second-block {
+        .wrapper_inp {
+            margin-top: 0.7rem;
+            position: relative;
+        }
+
+        flex: 1;
+    }
+
+    .input-icon {
+        display: flex;
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-foreground);
+        height: 1rem;
+        width: 1rem;
+
+        svg {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+}

@@ -10,9 +10,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -21,6 +23,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -42,4 +45,22 @@
 
 .mg-15 {
   margin-top: 15px;
+}
+
+.wrapper_inp {
+  background-color: #f3f3f3;
+  border-radius: 8px;
+
+  input[type="email"],
+  input[type="text"],
+  input[type="password"],
+  select {
+    padding: 20px 16px 20px 40px;
+    background-color: transparent;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1rem;
+  }
 }
