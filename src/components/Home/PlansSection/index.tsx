@@ -5,7 +5,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
 
     return (
-        <section id="plans-section" className="bg-indigo p-5 pt-10 pb-10 mt-10">
+        <section id="plans-section" className={`bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
             <div className={`${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
                 <div className="flex justify-center mt-10  mb-10">

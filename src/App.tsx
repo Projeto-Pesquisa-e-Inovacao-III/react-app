@@ -12,18 +12,16 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="container">
-        <Routes>
-          <Route path="/" element={<Register />} />
-          <Route path="/schedule" element={<ViewSchedule />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/edit-user" element={<EditUser />} />
-          <Route path="/logout" element={<Logout />} />
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/schedule" element={<ViewSchedule />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/edit-user" element={<EditUser />} />
+        <Route path="/logout" element={<Logout />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
+      </Routes>
     </BrowserRouter>
   );
 

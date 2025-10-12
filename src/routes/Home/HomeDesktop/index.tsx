@@ -36,14 +36,16 @@ export default function HomeDesktop() {
                     </div>
                 </section>
 
-                <section id="services-section" className="mt-10 mb-10 p-5">
+                {/* <section id="services-section" className="bg-oxford-blue p-5"> */}
+                <section id="services-section" className="mt-10 p-5">
                     <div className="ml-20 mr-20">
                         <div className="flex justify-center items-center uppercase border-amber-600 wrapper-content mb-10">
-                            <h1 className="ml-auto mr-auto mt-0 mb-0 text-center border-b-8 text-8xl line-clamp-1 text-oxford-blue font-bebas leading-none">Bora treinar com quem entende e se importa</h1>
+                            {/* <h1 className="ml-auto mr-auto mt-0 mb-0 text-center border-b-8 text-8xl line-clamp-1 text-white font-bebas leading-none">Bora treinar com quem entende e se importa</h1> */}
+                            <h1 className="ml-auto mr-auto mt-0 mb-0 text-center border-b-8 text-8xl line-clamp-1 font-bebas leading-none">Bora treinar com quem entende e se importa</h1>
                         </div>
-                        <CardServicesDesktop title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" isReverse={true} />
-                        <CardServicesDesktop title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" />
-                        <CardServicesDesktop title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" isReverse={true} />
+                        <CardServicesDesktop bgColor="bg-indigo" title="Muito além do físico: um treinador que cuida de você" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" isReverse={true} />
+                        <CardServicesDesktop bgColor="bg-lapis-lazuli" title="Um guia para a saúde em todas as idades" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" />
+                        <CardServicesDesktop bgColor="bg-indigo" title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo" content="Lorem ipsum, dolor sit amet consectetur adipisicing elit. Perferendis voluptatum, beatae nihil dicta suscipit expedita rerum aliquid libero eum voluptates voluptate deleniti unde ullam ex!" image="https://placehold.co/650x430" isReverse={true} />
                     </div>
                 </section >
 

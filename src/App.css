@@ -26,6 +26,9 @@
     background-color: var(--indigo);
   }
 
+  .bg-lapis-lazuli {
+    background-color: var(--lapis-lazuli);
+  }
 
   .text-indigo {
     color: var(--indigo);

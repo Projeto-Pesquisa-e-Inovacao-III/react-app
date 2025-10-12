@@ -4,4 +4,5 @@ export type CardServices = {
     image: string;
     isReverse?: boolean;
     isCarrousel?: boolean;
+    bgColor: string;
 }
