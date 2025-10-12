@@ -2,15 +2,13 @@ import "./mobile.css";
 import "./desktop.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import CalendarMonthStyledMobile from "../CalendarMonthStyled/CalendarMonthStyledMobile/CalendarMonthStyledMobile";
 import { createEvent } from "../../constants/calendar";
-import CalendarMonthStyledDesktop from "../CalendarMonthStyled/CalendarMonthStyledDesktop/CalendarMonthStyledDesktop";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
+import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
 
 export default function NewEvent(
-    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento" }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string }
+    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string; buttonTitle?: string; rescheduleId?: number | null }
 ) {
-    const [newEventTitle, setNewEventTitle] = useState<string>("");
     const [newEventDate, setNewEventDate] = useState<string>("");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
     const [selectedType, setSelectedType] = useState<string>("personal");
@@ -21,6 +19,8 @@ export default function NewEvent(
     const [city, setCity] = useState<string>("");
     const [number, setNumber] = useState<string>("");
     const [complement, setComplement] = useState<string>("");
+
+    const eventToReschedule = insertedEvents?.find(event => event.id === rescheduleId);
 
     useEffect(() => {
         // ViaCEP API integration
@@ -56,7 +56,6 @@ export default function NewEvent(
         console.log("isDatabaseConnected", isDatabaseConnected);
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
-        setNewEventTitle(calculatedTitle);
 
 
         if (isDatabaseConnected) {
@@ -71,12 +70,12 @@ export default function NewEvent(
                 });
         }
 
-        if ((newEventTitle || calculatedTitle) && newEventDate) {
+        if (calculatedTitle && newEventDate) {
             openModal(true);
             close(false)
         }
         if (insertedEvents) {
-            insertEvent([...insertedEvents, { title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
+            insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
         }
 
 
@@ -112,7 +111,9 @@ export default function NewEvent(
                                     />
                                 </svg>
                                 <span>Voltar</span>
+
                             </div>
+                            <h1>{title}</h1>
                         </>
                     ) : (
                         <>
@@ -138,24 +139,19 @@ export default function NewEvent(
 
                 <div className={`wrapper-new-event${isMobile ? "-mobile" : ""}`}>
                     <div className={`calendar-small${isMobile ? "-mobile" : ""}`}>
-                        {isMobile ? (
-                            <CalendarMonthStyledMobile
-                                clickedDate={setNewEventDate}
-                                createdEvents={insertedEvents}
-                            />
-                        ) : (
-                            <CalendarMonthStyledDesktop
-                                clickedDate={setNewEventDate}
-                                createdEvents={insertedEvents}
-                            />
-                        )}
+                        <CalendarMonthStyled
+                            clickedDate={setNewEventDate}
+                            createdEvents={insertedEvents}
+                            eventToReschedule={eventToReschedule}
+                            isMobile={isMobile}
+                        />
 
                         <div className="hours">
                             {["08", "09", "10", "11"].map((h) => (
                                 <button
                                     key={h}
                                     id={`btn${h}`}
-                                    className="btn-sched"
+                                    className={`btn-sched ${eventToReschedule?.hour === `${h}:00:00` ? "btn-selected" : ""}`}
                                     type="button"
                                     onClick={(e) => handleButtonClick(e, `${h}:00:00`)}
                                 >
@@ -240,7 +236,7 @@ export default function NewEvent(
 
                         <div className="submit-button">
                             <button className="btn-sched" type="submit">
-                                Agendar
+                                {buttonTitle || "Agendar"}
                             </button>
                         </div>
                     </form>

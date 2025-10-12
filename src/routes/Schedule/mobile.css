@@ -1,9 +1,18 @@
 .user-view-schedule-mobile {
+
+    .logo-header-mobile {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        justify-content: center;
+    }
+
     .view-schedule-mobile {
         display: flex;
         flex-direction: column;
         gap: 30px;
         padding: 20px;
+        padding-top: 0;
 
         .schedule-page-calendar-mobile {
             background-color: white;

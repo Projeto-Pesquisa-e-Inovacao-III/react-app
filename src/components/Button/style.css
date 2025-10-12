@@ -1,0 +1,21 @@
+.btn-generic {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    button {
+        width: 100%;
+        padding: 20px;
+        font-size: 1rem;
+        background-color: var(--bg-blue);
+        color: var(--btn-color);
+        border: var(--btn-border);
+        border-radius: var(--btn-border-radius);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        max-width: 500px;
+
+        &:hover {
+            background-color: var(--btn-hover-bg);
+        }
+    }
+}

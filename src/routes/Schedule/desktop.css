@@ -1,4 +1,6 @@
 .user-view-schedule {
+    height: 100vh;
+
     .view-schedule {
         display: flex;
         gap: 60px;
@@ -8,13 +10,10 @@
             background-color: white;
             padding: 20px;
             flex: 2;
-            height: fit-content;
         }
 
         .schedule-page-user-actions {
             flex: 1;
-
-
 
             .schedule-view {
                 display: flex;

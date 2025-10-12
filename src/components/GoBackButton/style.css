@@ -1,0 +1,13 @@
+  .go-back-login {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+
+      a {
+          color: #000 !important;
+          display: flex;
+          align-items: center;
+          gap: 10px !important;
+          text-decoration: none !important;
+      }
+  }
