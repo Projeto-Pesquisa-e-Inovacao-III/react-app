@@ -12,18 +12,19 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>
-                <div className={`${isMobile ? "grid grid-cols-1" : "grid grid-cols-3"} gap-8 h-full`}>
+                <div className={`${isMobile ? "grid grid-cols-1" : "grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] "} gap-8 h-full`}>
                     {isPackagesSelected ? (
                         <>
-                            <PlansCard title="Plano X" content="Descrição do Plano X" price="R$ 99,90" benefits={["Benefício 1", "Benefício 2"]} />
-                            <PlansCard title="Plano Y" content="Descrição do Plano Y" price="R$ 149,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3"]} />
-                            <PlansCard title="Plano Z" content="Descrição do Plano Z" price="R$ 199,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4"]} />
+                            <PlansCard months="1 mês" content="Pacote Mensal" price="R$ 200,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;"]} />
+                            <PlansCard months="3 meses" content="Pacote Trimestral" price="R$ 500,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (3 aulas)."]} />
+                            <PlansCard months="6 meses" content="Pacote Semestral" price="R$ 700,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (6 aulas).", "Dicas de Suplementação."]} />
+                            <PlansCard months="12 meses" content="Pacote Anual" price="R$ 2.400,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (12 aulas).", "Dicas de Suplementação.", "Indicação de Nutricionistas."]} />
                         </>
                     ) : (
                         <>
-                            <PlansCard title="Adicional X" content="Descrição do Adicional X" price="R$ 29,90" benefits={["Benefício 1", "Benefício 2"]} />
-                            <PlansCard title="Adicional Y" content="Descrição do Adicional Y" price="R$ 49,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3"]} />
-                            <PlansCard title="Adicional Z" content="Descrição do Adicional Z" price="R$ 69,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4"]} />
+                            <PlansCard months="Adicional X" content="Descrição do Adicional X" price="R$ 29,90" benefits={["Benefício 1", "Benefício 2"]} />
+                            <PlansCard months="Adicional Y" content="Descrição do Adicional Y" price="R$ 49,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3"]} />
+                            <PlansCard months="Adicional Z" content="Descrição do Adicional Z" price="R$ 69,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4"]} />
                         </>
                     )}
                 </div>

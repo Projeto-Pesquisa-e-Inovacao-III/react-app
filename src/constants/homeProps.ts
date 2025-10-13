@@ -5,4 +5,5 @@ export type CardServices = {
     isReverse?: boolean;
     isCarrousel?: boolean;
     bgColor: string;
+    isMobile?: boolean;
 }

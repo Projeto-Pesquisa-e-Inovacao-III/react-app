@@ -14,6 +14,10 @@
     background-color: var(--color-gigant-orange);
   }
 
+  .text-gigant-orange {
+    color: var(--color-gigant-orange);
+  }
+
   .bg-oxford-blue {
     background-color: var(--oxford-blue);
   }
