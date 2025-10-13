@@ -1,5 +1,5 @@
-import { Eye, EyeOff, Lock, Mail, Phone } from "lucide-react";
 import { useState } from "react";
+import { Eye, EyeOff, Lock, Mail, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import { User } from 'lucide-react';
@@ -110,8 +110,8 @@ export default function Register() {
                     <div className={`welcome_message${isMobile ? "-mobile" : ""}`}>
                         <h1>Inscreva-se</h1>
                         <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
-                        <div className="border-division"></div>
                     </div>
+                    <div className="border-division"></div>
 
 
                     <form onSubmit={handleSubmit}>

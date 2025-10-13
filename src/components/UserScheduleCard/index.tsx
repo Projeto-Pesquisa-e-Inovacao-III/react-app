@@ -1,3 +1,4 @@
+import SmallerButton from "../SmallerButton";
 import "./style.css"
 
 export default function UserScheduleCard({ date, hour, handleCancel, handleReschedule }: { date: string, hour: string, handleCancel: React.Dispatch<React.SetStateAction<boolean>>, handleReschedule: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -10,8 +11,8 @@ export default function UserScheduleCard({ date, hour, handleCancel, handleResch
                     <span>Nome</span>
                 </div>
                 <div className="btn-actions">
-                    <button className="btn-sched btn-sched-mobile" onClick={() => handleReschedule(true)}>Reagendar</button>
-                    <button className="btn-sched btn-sched-mobile" onClick={() => handleCancel(true)}>Cancelar</button>
+                    <SmallerButton type="button" title="Reagendar" handleButtonClick={() => handleReschedule(true)} />
+                    <SmallerButton type="button" title="Cancelar" handleButtonClick={() => handleCancel(true)} />
                 </div>
             </div>
             <span className="border-division"></span>

@@ -9,6 +9,7 @@
     font-weight: 600;
     position: sticky;
     bottom: 0;
+    z-index: 100;
 
 
     .header-icons-mobile {

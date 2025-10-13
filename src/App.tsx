@@ -13,7 +13,7 @@ function App() {
     <BrowserRouter>
       <div className="container">
         <Routes>
-          <Route path="/" element={<Register />} />
+          <Route path="/" element={<ViewSchedule />} />
           <Route path="/schedule" element={<ViewSchedule />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/login" element={<Login />} />
