@@ -28,7 +28,8 @@
     }
 
     .wrapper_register_elements {
-        height: 100vh;
+        min-height: 100vh;
+        height: auto;
         width: 23px;
         padding: 3rem 1.5rem;
         flex: 2;
@@ -53,14 +54,11 @@
             .border-division {
                 border: dashed 1px #ddd;
                 height: 1px;
-                margin: 1rem 0;
+                margin: .5rem 0;
+
             }
 
-            .border-division:nth-of-type(1) {
-                margin-bottom: 0;
-            }
-
-            .border-division:nth-last-of-type(3) {
+            .border-division:last-of-type {
                 margin: .5rem 0;
             }
 

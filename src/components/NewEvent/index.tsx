@@ -5,6 +5,7 @@ import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
+import SmallerButton from "../SmallerButton";
 
 export default function NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string; buttonTitle?: string; rescheduleId?: number | null }
@@ -20,7 +21,13 @@ export default function NewEvent(
     const [number, setNumber] = useState<string>("");
     const [complement, setComplement] = useState<string>("");
 
+    const [selectedButton, setSelectedButton] = useState<string>("");
+
     const eventToReschedule = insertedEvents?.find(event => event.id === rescheduleId);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
 
     useEffect(() => {
         // ViaCEP API integration
@@ -28,12 +35,10 @@ export default function NewEvent(
             //CEP has 8 digits
             axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
                 .then(response => {
-                    console.log("Endereço encontrado:", response.data);
                     setAddress(`${response.data.logradouro} - ${response.data.bairro}`);
                     setCity(response.data.localidade);
                 })
                 .catch(error => {
-                    console.error("Erro ao buscar endereço:", error);
                 });
         }
     }, [postalCode]);
@@ -72,7 +77,7 @@ export default function NewEvent(
 
         if (calculatedTitle && newEventDate) {
             openModal(true);
-            close(false)
+            handleClose();
         }
         if (insertedEvents) {
             insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
@@ -82,19 +87,13 @@ export default function NewEvent(
 
     }
 
-    function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
-        event.preventDefault();
-        console.log("clicou no botão da hora", hour);
+    function handleClose() {
+        document.body.style.overflow = 'auto';
+        close(false);
+    }
+
+    function handleButtonClick(hour: string) {
         setNewEventStartHour(hour);
-        const button = document.getElementById("btn" + hour.split(":")[0]);
-
-        if (button) {
-            const buttons = document.querySelectorAll('.btn-sched');
-            buttons.forEach(btn => btn.classList.remove('btn-selected'));
-
-            button.classList.add('btn-selected');
-        }
-
     }
 
     return (
@@ -103,7 +102,7 @@ export default function NewEvent(
                 <div className={`top-new-event${isMobile ? "-mobile" : ""}`}>
                     {isMobile ? (
                         <>
-                            <div className="go-back-mobile" onClick={() => close(false)}>
+                            <div className="go-back-mobile" onClick={handleClose}>
                                 <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
                                     <path
                                         d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
@@ -119,7 +118,7 @@ export default function NewEvent(
                         <>
                             <h1>{title}</h1>
                             <svg
-                                onClick={() => close(false)}
+                                onClick={handleClose}
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
                                 height="24"
@@ -147,17 +146,13 @@ export default function NewEvent(
                         />
 
                         <div className="hours">
-                            {["08", "09", "10", "11"].map((h) => (
-                                <button
-                                    key={h}
-                                    id={`btn${h}`}
-                                    className={`btn-sched ${eventToReschedule?.hour === `${h}:00:00` ? "btn-selected" : ""}`}
-                                    type="button"
-                                    onClick={(e) => handleButtonClick(e, `${h}:00:00`)}
-                                >
-                                    {h}:00
-                                </button>
-                            ))}
+                            <SmallerButton type="button" title="08:00" value="08:00:00" selected={newEventStartHour === "08:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="09:00" value="09:00:00" selected={newEventStartHour === "09:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="10:00" value="10:00:00" selected={newEventStartHour === "10:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="11:00" value="11:00:00" selected={newEventStartHour === "11:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
                         </div>
                     </div>
 
@@ -235,9 +230,7 @@ export default function NewEvent(
                         </div>
 
                         <div className="submit-button">
-                            <button className="btn-sched" type="submit">
-                                {buttonTitle || "Agendar"}
-                            </button>
+                            <SmallerButton type="submit" title={buttonTitle || "Agendar"} eventToReschedule={eventToReschedule} />
                         </div>
                     </form>
                 </div>

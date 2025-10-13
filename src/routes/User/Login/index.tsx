@@ -9,7 +9,7 @@ import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton";
 import Button from "../../../components/Button";
 
-// todo: create button component, fix font family  
+// todo: fix font family  
 export default function Login() {
 
   const isMobile = useMediaQuery('(max-width: 1024px)');

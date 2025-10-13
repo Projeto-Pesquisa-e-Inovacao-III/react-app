@@ -9,6 +9,7 @@ import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
+import SmallerButton from "../../components/SmallerButton";
 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
@@ -27,18 +28,11 @@ export default function ViewSchedule() {
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
-
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
-        console.log(openSuccessModal)
-        console.log(openCancelModal)
     }, [openSuccessModal, openCancelModal, isMobile]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-
-    useEffect(() => {
-        console.log("events updated:", events);
-    }, [events]);
 
     return (
         <>
@@ -88,28 +82,24 @@ export default function ViewSchedule() {
                     </div>
                     <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
                         <div>
-                            <button
-                                className={`btn-sched${isMobile ? " btn-sched-mobile" : ""}`}
-                                onClick={() => setOpenNewEvent(true)}
-                            >
-                                {!isMobile && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                    >
-                                        <path d="M5 12h14" />
-                                        <path d="M12 5v14" />
-                                    </svg>
-                                )}
-                                Agendar
-                            </button>
+                            <SmallerButton
+                                type="button"
+                                icon={isMobile ? undefined : (<svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M5 12h14" />
+                                    <path d="M12 5v14" />
+                                </svg>)}
+                                title={`Agendar`}
+                                handleButtonClick={() => setOpenNewEvent(true)} />
                         </div>
 
                         {events.map((event, index) => (
