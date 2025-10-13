@@ -1,0 +1,95 @@
+.card-container-mobile {
+    flex: 1 1 180px;
+    min-width: 140px;
+    max-width: 280px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 12px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+    .card-title-mobile {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+        text-align: center;
+        color: #222;
+    }
+
+    .card-subtitle-mobile {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #000000;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+
+    .card-paragraph-mobile {
+        font-size: 0.95rem;
+        color: #444;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .card-btn-mobile {
+        padding: 8px 20px;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: none;
+        background: #0a3557;
+        color: #fff;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+        min-width: 0;
+        max-width: 100%;
+        min-height: 180px;
+        padding: 20px 6px;
+
+        .card-title-mobile {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+        .card-subtitle-mobile {
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+        .card-paragraph-mobile {
+            font-size: 0.8rem;
+            margin-bottom: 7px;
+        }
+        .card-btn-mobile {
+            font-size: 0.85rem;
+            padding: 7px 12px;
+        }
+    }
+    @media (max-width: 400px) {
+        min-width: 0;
+        max-width: 100%;
+        min-height: 180px;
+        padding: 8px 4px;
+
+        .card-title-mobile {
+            font-size: 0.8rem;
+            margin-bottom: 2px;
+        }
+        .card-subtitle-mobile {
+            font-size: 0.7rem;
+            margin-bottom: 4px;
+        }
+        .card-paragraph-mobile {
+            font-size: 0.65rem;
+            margin-bottom: 5px;
+        }
+        .card-btn-mobile {
+            font-size: 0.7rem;
+            padding: 6px 10px;
+        }
+    }
+}

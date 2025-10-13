@@ -1,0 +1,74 @@
+.session-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    background-color: #fff;
+    max-width: 400px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    gap: 16px;
+}
+
+.session-card-left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.session-card-status {
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+}
+
+.session-card-type {
+    font-size: 14px;
+    color: #666;
+}
+
+.session-card-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.session-card-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.session-card-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #000;
+}
+
+.session-card-divider {
+    width: 1px;
+    background-color: #ccc;
+    height: 60px;
+    margin: 0 12px;
+}
+
+.session-card-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.session-card-date {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.session-card-time {
+    font-size: 14px;
+    color: #333;
+}
