@@ -13,7 +13,6 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
     }
 
     useEffect(() => {
-        console.log("mounted")
         setMounted(true);
         document.body.style.overflow = 'hidden';
 

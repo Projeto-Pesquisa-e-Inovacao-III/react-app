@@ -7,11 +7,6 @@ export default function ChangePasswordStep() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  useEffect(() => {
-    console.log("New Password:", newPassword);
-    console.log("Confirm Password:", confirmPassword);
-  }, [newPassword, confirmPassword]);
-
   return (
     <>
       <div className="welcome_message">

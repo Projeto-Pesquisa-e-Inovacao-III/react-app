@@ -30,15 +30,9 @@ export default function ViewSchedule() {
 
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
-        console.log(openSuccessModal)
-        console.log(openCancelModal)
     }, [openSuccessModal, openCancelModal, isMobile]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-
-    useEffect(() => {
-        console.log("events updated:", events);
-    }, [events]);
 
     return (
         <>

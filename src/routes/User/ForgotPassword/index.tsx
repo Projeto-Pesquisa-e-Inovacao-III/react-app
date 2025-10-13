@@ -18,8 +18,6 @@ export default function ForgotPassword() {
 
   function handleStep(e: React.MouseEvent<HTMLElement>, isIncrease: boolean) {
     e.preventDefault();
-    console.log("step", step);
-    console.log("prevstep", step - 1);
 
     if(step != 3) {
       setStep((prevStep) => (isIncrease ? prevStep + 1 : prevStep - 1));

@@ -35,12 +35,10 @@ export default function NewEvent(
             //CEP has 8 digits
             axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
                 .then(response => {
-                    console.log("Endereço encontrado:", response.data);
                     setAddress(`${response.data.logradouro} - ${response.data.bairro}`);
                     setCity(response.data.localidade);
                 })
                 .catch(error => {
-                    console.error("Erro ao buscar endereço:", error);
                 });
         }
     }, [postalCode]);
@@ -94,12 +92,8 @@ export default function NewEvent(
         close(false);
     }
 
-    // jesus... christ.... what a nightmare
-    // todo: refactor this mess; create a separate component for the hour buttons, manage selected state with React state instead of DOM manipulation
     function handleButtonClick(hour: string) {
-        console.log("clicou no botão da hora", hour);
         setNewEventStartHour(hour);
-
     }
 
     return (

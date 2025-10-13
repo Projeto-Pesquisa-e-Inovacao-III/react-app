@@ -6,7 +6,6 @@ import { useEffect } from "react";
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
     function handleCloseModal() {
-        console.log("closing modal");
         document.body.style.overflow = 'auto';
         closeThen(false);
     }
