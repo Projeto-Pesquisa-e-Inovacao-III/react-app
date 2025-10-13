@@ -17,9 +17,6 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
         setMounted(true);
         document.body.style.overflow = 'hidden';
 
-        if (callSuccess && callSuccessModal) {
-            callSuccessModal(true);
-        }
     }, [])
 
     function handleCloseModal() {
@@ -55,6 +52,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                     id={id}
                     events={events}
                     setEvents={setEvents}
+                    callSuccessModal={callSuccessModal}
                 />
             </div>
         </>

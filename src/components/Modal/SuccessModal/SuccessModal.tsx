@@ -1,13 +1,19 @@
 import "./successModalMobile.css";
 import "./successModal.css";
+import SmallerButton from "../../SmallerButton";
+import { useEffect } from "react";
 
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
     function handleCloseModal() {
         console.log("closing modal");
-        
+        document.body.style.overflow = 'auto';
         closeThen(false);
     }
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+    }, []);
 
     return (
         <>
@@ -19,7 +25,8 @@ export default function SuccessModal({ isMobile, closeThen, title, content }: { 
                     <rect x="0.5" width="51" height="51" rx="25.5" fill="#22C55E" />
                     <path d="M19.625 25.5L23.875 29.75L32.375 21.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <button className="btn-sched" onClick={handleCloseModal}>Fechar</button>
+
+                <SmallerButton type="button" title="Fechar" handleButtonClick={handleCloseModal} />
 
             </div>
         </>

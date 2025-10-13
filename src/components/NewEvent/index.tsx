@@ -5,6 +5,7 @@ import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
+import SmallerButton from "../SmallerButton";
 
 export default function NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string; buttonTitle?: string; rescheduleId?: number | null }
@@ -19,6 +20,8 @@ export default function NewEvent(
     const [city, setCity] = useState<string>("");
     const [number, setNumber] = useState<string>("");
     const [complement, setComplement] = useState<string>("");
+
+    const [selectedButton, setSelectedButton] = useState<string>("");
 
     const eventToReschedule = insertedEvents?.find(event => event.id === rescheduleId);
 
@@ -93,18 +96,9 @@ export default function NewEvent(
 
     // jesus... christ.... what a nightmare
     // todo: refactor this mess; create a separate component for the hour buttons, manage selected state with React state instead of DOM manipulation
-    function handleButtonClick(event: React.MouseEvent<HTMLButtonElement>, hour: string) {
-        event.preventDefault();
+    function handleButtonClick(hour: string) {
         console.log("clicou no botão da hora", hour);
         setNewEventStartHour(hour);
-        const button = document.getElementById("btn" + hour.split(":")[0]);
-
-        if (button) {
-            const buttons = document.querySelectorAll('.btn-sched');
-            buttons.forEach(btn => btn.classList.remove('btn-selected'));
-
-            button.classList.add('btn-selected');
-        }
 
     }
 
@@ -158,17 +152,13 @@ export default function NewEvent(
                         />
 
                         <div className="hours">
-                            {["08", "09", "10", "11"].map((h) => (
-                                <button
-                                    key={h}
-                                    id={`btn${h}`}
-                                    className={`btn-sched ${eventToReschedule?.hour === `${h}:00:00` ? "btn-selected" : ""}`}
-                                    type="button"
-                                    onClick={(e) => handleButtonClick(e, `${h}:00:00`)}
-                                >
-                                    {h}:00
-                                </button>
-                            ))}
+                            <SmallerButton type="button" title="08:00" value="08:00:00" selected={newEventStartHour === "08:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="09:00" value="09:00:00" selected={newEventStartHour === "09:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="10:00" value="10:00:00" selected={newEventStartHour === "10:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+
+                            <SmallerButton type="button" title="11:00" value="11:00:00" selected={newEventStartHour === "11:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
                         </div>
                     </div>
 
@@ -246,9 +236,7 @@ export default function NewEvent(
                         </div>
 
                         <div className="submit-button">
-                            <button className="btn-sched" type="submit">
-                                {buttonTitle || "Agendar"}
-                            </button>
+                            <SmallerButton type="submit" title={buttonTitle || "Agendar"} eventToReschedule={eventToReschedule} />
                         </div>
                     </form>
                 </div>

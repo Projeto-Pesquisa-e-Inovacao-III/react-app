@@ -8,7 +8,7 @@ import Button from "../../../components/Button";
 import CodeStep from "./CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep";
 
-// todo: create button component, fix font family  
+// todo: fix font family  
 export default function ForgotPassword() {
 
   const isMobile = useMediaQuery('(max-width: 1024px)');
