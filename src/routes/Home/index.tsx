@@ -1,18 +1,42 @@
-import { useEffect, useState } from "react";
-import HomeMobile from "./HomeMobile";
-import HomeDesktop from "./HomeDesktop";
 import { useMediaQuery } from "@mui/material";
+import MainSection from "../../components/Home/MainSection";
+import AboutSection from "../../components/Home/AboutSection";
+import ServicesSection from "../../components/Home/ServicesSection";
+import PlansSection from "../../components/Home/PlansSection";
+import FAQSection from "../../components/Home/FAQSection";
+import Footer from "../../components/Home/Footer/Footer";
+import HeaderMobile from "../../components/Home/Header/HeaderMobile";
+import HeaderDesktop from "../../components/Home/Header/HeaderDesktop";
 
 //todo: update images; 
 // remake header mobile; 
-// need to see if really need to use two different components for mobile and desktop. I could use only one and use media query to change styles and layout;
 export default function Home() {
     const isMobile = useMediaQuery('(max-width:1024px)');
 
+    const Header = isMobile ? HeaderMobile : HeaderDesktop;
+
     return (
         <>
-            {isMobile ? <HomeMobile /> : <HomeDesktop />}
+            <Header />
+            <div id="main-section">
+                {/* main */}
+                <MainSection isMobile={isMobile} />
 
+                {/* about */}
+                <AboutSection isMobile={isMobile} />
+
+                {/* services */}
+                <ServicesSection isMobile={isMobile} />
+
+                {/* plans */}
+                <PlansSection isMobile={isMobile} />
+
+                {/* FAQ */}
+                <FAQSection isMobile={isMobile} />
+
+                {/* footer */}
+                <Footer isMobile={isMobile} />
+            </div >
         </>
     );
 }
