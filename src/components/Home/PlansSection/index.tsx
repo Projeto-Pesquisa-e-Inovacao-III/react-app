@@ -15,16 +15,16 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                 <div className={`${isMobile ? "grid grid-cols-1" : "grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] "} gap-8 h-full`}>
                     {isPackagesSelected ? (
                         <>
-                            <PlansCard months="1 mês" content="Pacote Mensal" price="R$ 200,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;"]} />
-                            <PlansCard months="3 meses" content="Pacote Trimestral" price="R$ 500,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (3 aulas)."]} />
-                            <PlansCard months="6 meses" content="Pacote Semestral" price="R$ 700,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (6 aulas).", "Dicas de Suplementação."]} />
-                            <PlansCard months="12 meses" content="Pacote Anual" price="R$ 2.400,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (12 aulas).", "Dicas de Suplementação.", "Indicação de Nutricionistas."]} />
+                            <PlansCard description="1 mês" content="Pacote Mensal" price="R$ 200,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;"]} />
+                            <PlansCard description="3 meses" content="Pacote Trimestral" price="R$ 500,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (3 aulas)."]} />
+                            <PlansCard description="6 meses" content="Pacote Semestral" price="R$ 700,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (6 aulas).", "Dicas de Suplementação."]} />
+                            <PlansCard description="12 meses" content="Pacote Anual" price="R$ 2.400,00" benefits={["Treino personalizado;", "Anamnese;", "Feedback Diário;", "1 aula grátis com o personal a cada mês   (12 aulas).", "Dicas de Suplementação.", "Indicação de Nutricionistas."]} />
                         </>
                     ) : (
                         <>
-                            <PlansCard months="Adicional X" content="Descrição do Adicional X" price="R$ 29,90" benefits={["Benefício 1", "Benefício 2"]} />
-                            <PlansCard months="Adicional Y" content="Descrição do Adicional Y" price="R$ 49,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3"]} />
-                            <PlansCard months="Adicional Z" content="Descrição do Adicional Z" price="R$ 69,90" benefits={["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4"]} />
+                            <PlansCard description="As aulas com personal são cobradas separadamente da consultoria." content="Aulas com Personal" price="R$ 120" benefits={["Treinos individuais com personal na academia, com duração de 1 hora a aula."]} />
+                            <PlansCard description="As aulas com personal são cobradas separadamente da consultoria." content="Personal Residencial" price="R$ 200" benefits={["Atendimento personalizado em sua residência, com duração de 1 hora por aula."]} />
+                            <PlansCard description="As aulas com personal são cobradas separadamente da consultoria." content="Aula Funcional" price="R$ 100" benefits={["Treinos coletivos focados em condicionamento físico e resistência com 30 minutos de aula."]} />
                         </>
                     )}
                 </div>

@@ -3,9 +3,10 @@ import PlansSection from "../../../components/Home/PlansSection";
 import FAQSection from "../../../components/Home/FAQSection";
 import CardServices from "../../../components/Home/Cards/CardServices";
 import Footer from "../../../components/Home/Footer/Footer";
+import AboutSection from "../../../components/Home/AboutSection";
+import ButtonHome from "../../../components/Home/ButtonHome";
 
 export default function HomeDesktop() {
-
     return (
         <>
             <HeaderDesktop />
@@ -16,26 +17,14 @@ export default function HomeDesktop() {
                         <h1 className={"text-5xl w-[53.2%] font-poppins font-bold uppercase text-center text-white"}>
                             Bem-vindo a csf Treinamentos
                         </h1>
-                        <button className="bg-white w-[53.2%] mt-10 min-h-12 text-black font-semibold rounded-md cursor-pointer">Entre em contato</button>
+                        {/* <button className="bg-white w-[53.2%] mt-10 min-h-12 text-black font-semibold rounded-md cursor-pointer">Entre em contato</button> */}
+                        <ButtonHome to="https://http.cat/404" title="Entre em contato" />
                     </div>
                 </section>
 
                 {/* about */}
-                <section id="about-section" className="bg-oxford-blue flex justify-center p-5 pb-20 pt-20">
-                    <div className="font-poppins w-full flex ml-20 mr-20">
-                        <div>
-                            <img className="w-full" src="https://placehold.co/500x500" alt="" />
-                        </div>
+                <AboutSection isMobile={false} />
 
-                        <div className="ml-20 text-white flex flex-col justify-evenly w-2xl max-w-3xl">
-                            <h1 className="text-3xl font-bold mb-5 mt-3 uppercase">Quem sou?</h1>
-                            <p className="text-2xl w-fit whitespace-pre-line">Sou <span className="text-gigant-orange font-semibold">Fabio Bernardes</span>, professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento.</p>
-                            <p className="text-2xl w-fit">Além de <span className="text-gigant-orange font-semibold">profissional</span>, sou marido e pai, e entendo na prática os desafios de conciliar uma rotina agitada com o <span className="text-gigant-orange font-semibold">cuidado da saúde</span>. É por isso que minha consultoria foi desenvolvida para se adaptar aos seus objetivos.</p>
-                            <button className="bg-white mt-3 min-h-12 w-96 text-black font-semibold rounded-md cursor-pointer">Conheça os planos</button>
-
-                        </div>
-                    </div>
-                </section>
 
                 {/* <section id="services-section" className="bg-oxford-blue p-5"> */}
                 <section id="services-section" className="mt-10 p-5">

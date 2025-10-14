@@ -1,21 +1,20 @@
 import Button from "../../Button";
 
 interface PlansCardProps {
-  months: string;
+  description?: string;
   content: string;
   price: string;
   benefits?: string[];
 }
 
-export default function PlansCard({ months, content, price, benefits }: PlansCardProps) {
+export default function PlansCard({ description, content, price, benefits }: PlansCardProps) {
   return (
     <div className="">
-      <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-[90vh] flex flex-col justify-between">
-        {/* months */}
+      <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-full flex flex-col justify-between">
         <div >
           <div className="bg-indigo p-5 rounded-md text-white text-xl">
             {content}
-            <p className="text-sm mt-3">{months}</p>
+            <p className="text-sm mt-3">{description}</p>
           </div>
 
           <div className="">
@@ -45,7 +44,7 @@ export function CardLine({ benefits }: { benefits?: string[] }) {
         <path d="M17 1L6 12L1 7" stroke="#25B700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
       {benefits && benefits.map((benefit, index) => (
-        <p className="ml-2" key={benefit + index}>{benefit}</p>
+        <p className="ml-2 w-full" key={benefit + index}>{benefit}</p>
       ))}
 
     </div>

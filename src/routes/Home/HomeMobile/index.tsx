@@ -3,9 +3,9 @@ import PlansSection from '../../../components/Home/PlansSection';
 import FAQSection from '../../../components/Home/FAQSection';
 import CardServices from "../../../components/Home/Cards/CardServices";
 import Footer from "../../../components/Home/Footer/Footer";
+import AboutSection from "../../../components/Home/AboutSection";
 
 export default function HomeMobile() {
-  console.log("Home renderizou");
   return (
     <>
       <HeaderMobile />
@@ -17,9 +17,9 @@ export default function HomeMobile() {
                 Bem-vindo ao csf Treinamentos
               </h1>
 
-              <p className="mb-8">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quaerat enim deserunt nisi excepturi </p>
+              <p className="mb-8">A Consultoria Saúde Fitness é especializada em oferecer atendimento personalizado em academias, residências e também ao ar livre para pessoas todas as idades.</p>
               <div>
-                <img className="w-full" src="/Home/bgImageMobile.png" alt="" />
+                <img className="w-full" src="/Home/bgImageMobileMain.png" alt="" />
               </div>
             </div>
             <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md text-poppins font-semibold text-lg">Entre em contato</button>
@@ -27,18 +27,7 @@ export default function HomeMobile() {
         </section>
 
         {/* about */}
-        <section id="about-section-mobile" className="bg-oxford-blue flex justify-center home-about pt-10 pb-10 p-5">
-          <div>
-            <div>
-              <img className="w-full" src="https://placehold.co/500x500" alt="" />
-            </div>
-
-            <div className="text-white flex flex-col justify-center">
-              <h1 className="text-3xl font-bold mb-5 mt-3">Quem sou?</h1>
-              <p className="text-lg">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea labore eaque deserunt cumque libero tempora nam recusandae nobis doloremque sunt! Dolorum, quisquam. Atque, praesentium recusandae.</p>
-            </div>
-          </div>
-        </section>
+        <AboutSection isMobile={true} />
 
         <section id="services-section-mobile" className="mt-10 mb-10 p-5">
           <div className="border-b-4 uppercase">

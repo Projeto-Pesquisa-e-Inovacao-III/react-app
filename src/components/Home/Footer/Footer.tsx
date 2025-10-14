@@ -63,7 +63,7 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
                     </defs>
                 </svg>
                 <p className={`${isMobile ? "mt-3 text-sm" : "w-96 ml-10 text-lg"}`}>
-                    @CSF Treinamentos 2025 todos os direitos reservados.
+                    &copy; CSF Treinamentos 2025 todos os direitos reservados.
                 </p>
             </div>}
 
