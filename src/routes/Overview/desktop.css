@@ -1,11 +1,16 @@
 .user-view-schedule {
-    height: 100vh;
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    background-color: #E5E7EB;
+
     .container-content {
-        background-color: #E5E7EB;
         display: flex;
         gap: 60px;
         padding: 40px;
         min-height: 100vh;
+        justify-content: center;
 
         .schedule-page-calendar {
             background-color: white;
@@ -98,7 +103,7 @@
 .overview-right-column {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    max-width: 350px;
     gap: 20px;
 }
 

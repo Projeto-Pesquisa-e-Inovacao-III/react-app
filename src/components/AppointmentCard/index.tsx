@@ -1,7 +1,7 @@
 import './desktop.css'
 import './mobile.css'
 
-type AppointmentCard = {
+type Index = {
     status: 'Pendente' | 'Confirmado' | 'Cancelado';
     name: string;
     photoUrl: string;
@@ -10,7 +10,7 @@ type AppointmentCard = {
     isMobile?: boolean;
 };
 
-export function AppointmentCard (props: AppointmentCard) {
+export function AppointmentCard (props: Index) {
     const { isMobile = false } = props;
     return (
         <div className={`session-card${isMobile ? '-mobile' : ''}`}>
@@ -23,7 +23,8 @@ export function AppointmentCard (props: AppointmentCard) {
                 </div>
             </div>
             <div className={`session-card-divider${isMobile ? '-mobile' : ''}`} />
-            <div className={`session-card-right${isMobile ? '-mobile' : ''}`}>
+            <div
+                className={`session-card-right${isMobile ? '-mobile' : ''}`}>
                 <p className="session-card-date">{props.date}</p>
                 <p className="session-card-time">{props.time}</p>
             </div>
