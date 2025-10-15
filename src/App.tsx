@@ -6,6 +6,7 @@ import Logout from "./routes/User/Logout";
 import ViewSchedule from "./routes/Schedule";
 import Login from "./routes/User/Login";
 import ForgotPassword from "./routes/User/ForgotPassword";
+import ListUsers from "./routes/ListUsers"
 function App() {
 
 
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/edit-user" element={<EditUser />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/users" element={<ListUsers />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </div>
