@@ -9,6 +9,7 @@ import ForgotPassword from "./routes/User/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule";
 import {Overview} from "./routes/Overview";
 import Dashboard from "./routes/Dashboard/dashboard";
+import ListUsers from "./routes/ListUsers"
 function App() {
 
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/edit-user" element={<EditUser />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/users" element={<ListUsers />} />
           <Route path="/personal/check-schedule" element={<CheckSchedule/>}/>
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
