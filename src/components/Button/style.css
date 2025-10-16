@@ -17,5 +17,35 @@
         &:hover {
             background-color: var(--btn-hover-bg);
         }
-    }
+        
+        &.btn-check-schedule {
+            background-color: var(--bg-blue);
+            max-width: 100px;
+            font-size: 14px;
+            font-weight:bold;
+            &:hover {
+                background-color: #051128;
+            }
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &.accept {
+                background-color: var(--bg-green);
+                &:hover {
+                    background-color: #16a34a;
+                }
+            }
+
+            &.reschedule {
+                background-color: var(--bg-orange);
+                &:hover {
+                    background-color: #e8590c;
+                }
+ 
+            }
+
+        }
+        
 }
+
