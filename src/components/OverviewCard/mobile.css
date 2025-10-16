@@ -1,6 +1,6 @@
 .card-container-mobile {
     flex: 1 1 180px;
-    min-width: 140px;
+    min-width: 180px;
     max-width: 280px;
     min-height: 280px;
     display: flex;
@@ -13,7 +13,7 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 
     .card-title-mobile {
-        font-size: 1.25rem;
+        font-size: 1.0rem;
         font-weight: 700;
         margin-bottom: 4px;
         text-align: center;
@@ -21,7 +21,7 @@
     }
 
     .card-subtitle-mobile {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: #000000;
         margin-bottom: 8px;

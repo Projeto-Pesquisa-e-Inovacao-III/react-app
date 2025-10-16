@@ -1,7 +1,7 @@
 import "./style.css"
 
 
-export default function UserHeaderDesktop() {
+export function UserHeaderDesktop() {
 
   return (
     <>

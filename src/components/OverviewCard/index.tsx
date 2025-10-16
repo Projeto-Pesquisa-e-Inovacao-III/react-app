@@ -10,7 +10,7 @@ type OverviewCardProps = {
     isMobile?: boolean;
 };
 
-export function Index(props: OverviewCardProps) {
+export function OverviewCard(props: OverviewCardProps) {
     const { isMobile = false } = props;
 
     return (

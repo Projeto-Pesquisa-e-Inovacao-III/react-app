@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import {UserHeaderDesktop} from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { useMediaQuery } from "@mui/material";
-import { Index } from "../../components/OverviewCard";
+import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";
+import {LogoHeaderMobile} from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
-import {LogoHeaderMobile} from "../../components/LogoHeaderMobile";
-
 export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
@@ -20,17 +19,13 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     ];
 
     const [events] = useState(eventsMock);
-    const [cards] = useState(cardsArray);
+    const cards= cardsArray;
 
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
         : cards.filter(card => card.typeUser === "usuario");
 
     const [appointmentCards] = useState(appointmentCardsData);
-
-    useEffect(() => {
-        if (isMobile) window.scrollTo(0, 0);
-    }, [isMobile]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
     return (
@@ -44,7 +39,6 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                 {!isMobile && <Header />}
                 <div className={`container-content${isMobile ? "-mobile" : ""}`}>
                     <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
-                        <h1>Início</h1>
                         {isMobile && (
                             <div
                                 className={`overview-right-column schedule-page-user-actions-mobile`}
@@ -56,7 +50,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                                 }}
                             >
                                 {filteredCards.map((card, index) => (
-                                    <Index
+                                    <OverviewCard
                                         key={index}
                                         title={card.title}
                                         subtitle={card.subtitle}
@@ -91,14 +85,8 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                     {!isMobile && (
                         <div
                             className={`overview-right-column schedule-page-user-actions`}
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: "20px",
-                                width: "100%",
-                            }}
                         >{filteredCards.map((card, index) => (
-                            <Index
+                            <OverviewCard
                                 key={index}
                                 title={card.title}
                                 subtitle={card.subtitle}
