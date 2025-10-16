@@ -12,7 +12,7 @@ export function CheckSchedule() {
     
     return(
         <> 
-        {!isMobile && <Header />}
+        {!isMobile && <Header type="personal" />}
         <div className="container-check-schedule">
             <div className="title-filter">
                 <h1>Solicitações de Agendamentos</h1>
@@ -32,7 +32,7 @@ export function CheckSchedule() {
             </div>
             
         </div>
-        {isMobile && <Header />}
+        {isMobile && <Header type="personal" />}
         </>
     )
 }
