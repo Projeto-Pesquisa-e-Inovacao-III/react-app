@@ -38,6 +38,8 @@
 
   .mini-disabled-day {
     cursor: none;
+    background-color: #bebebe;
+    border-radius: 3px;
     pointer-events: none;
     opacity: 0.5;
   }

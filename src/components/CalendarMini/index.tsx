@@ -17,8 +17,8 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
     });
 
     const eventsMock = [
-        { title: "Reunião", date: "2025-09-15" },
-        { title: "Aniversário", date: "2025-09-22" },
+        { title: "Reunião", date: "2025-10-15" },
+        { title: "Aniversário", date: "2025-10-22" },
     ];
 
     const actualMonth = new Date().getMonth() + 1;
@@ -43,7 +43,6 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
                 <FullCalendar
                     plugins={[dayGridPlugin, InteractionPlugin]}
                     initialView="dayGridMonth"
-                    events={createdEvents ? events : eventsMock}
                     locale={"pt-br"}
                     dayHeaderFormat={{ weekday: "short" }}
                     datesSet={(info) => {
@@ -73,13 +72,14 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
                         center: "title",
                         end: `${selectedMonth === 13 ? "" : "next"}`,
                     }}
+
                     height="100%"
                     expandRows={true}
                     fixedWeekCount={false}
                     dayMaxEvents={true}
                     views={{
                         dayGridMonth: {
-                            showNonCurrentDates: false  
+                            showNonCurrentDates: false
                         }
                     }}
                 />
