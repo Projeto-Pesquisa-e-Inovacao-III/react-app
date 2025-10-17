@@ -44,6 +44,10 @@
     opacity: 0.5;
   }
 
+  .fc .fc-daygrid-day-number {
+    padding: 4px 6px;
+  }
+
   .mini-selected-day {
     background-color: #2e2e2e !important;
     color: white !important;
