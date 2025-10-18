@@ -3,13 +3,14 @@ import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import {UserHeaderDesktop} from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";
-import {LogoHeaderMobile} from "../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
@@ -19,7 +20,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     ];
 
     const [events] = useState(eventsMock);
-    const cards= cardsArray;
+    const cards = cardsArray;
 
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
@@ -33,7 +34,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
             <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
                 {isMobile && (
                     <div className="logo-header-mobile">
-                        <LogoHeaderMobile/>
+                        <LogoHeaderMobile />
                     </div>
                 )}
                 {!isMobile && <Header />}

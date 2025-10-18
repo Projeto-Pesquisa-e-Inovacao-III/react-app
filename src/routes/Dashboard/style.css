@@ -1,0 +1,36 @@
+.wrapper-dashboard-personal {
+    .mobile {
+        padding: 20px !important;
+    }
+    .wrapper-elements-dashboard {
+        padding: 20px;
+        padding-left: 100px;
+        padding-right: 100px;
+        min-height: 100vh;
+        height: auto;
+
+        .text-dashboard-personal {
+            margin-bottom: 20px;
+
+            h3 {
+                font-size: 1.2rem;
+                color: #7c7c7c;
+                font-weight: 500;
+            }
+        }
+
+        .kpis-dashboard-personal-mobile {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+        }
+
+        .kpis-dashboard-personal {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 26px;
+        }
+    }
+}
