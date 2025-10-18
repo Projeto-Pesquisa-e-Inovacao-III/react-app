@@ -14,7 +14,7 @@ export function CardFilterCheckSchedule(){
                 <option value="rejeitado">Rejeitado</option>
             </select>
             <div className="divButtonFilter">
-                  <Button type="button" title="Filtrar" classNameVariable="btn-check-schedule" />
+                  <Button type="button" title="Filtrar" classNameVariable="btn-check-schedule" onClick={() => {}} />
             </div>
           
         </div>

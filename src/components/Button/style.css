@@ -21,14 +21,15 @@
         &.btn-check-schedule {
             background-color: var(--bg-blue);
             max-width: 100px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-size: 14px;
             font-weight:bold;
             &:hover {
                 background-color: #051128;
             }
-            display: flex;
-            justify-content: center;
-            align-items: center;
 
             &.accept {
                 background-color: var(--bg-green);
@@ -42,7 +43,13 @@
                 &:hover {
                     background-color: #e8590c;
                 }
- 
+
+            &.reschedule-modal {
+                height: 40px;
+                width: 90px;
+                &:hover {
+                    background-color: #051128;
+                }
             }
 
         }

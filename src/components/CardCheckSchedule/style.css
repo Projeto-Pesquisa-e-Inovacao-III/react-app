@@ -22,7 +22,7 @@
         flex-direction: row;
         gap: 8px;
         height: 150px;
-        width: 326px;
+        width: 100%;
         padding: 8px 20px;
         border-bottom: 2px solid #737374;
         .titleName{
@@ -77,4 +77,24 @@
     .card{
         width: 366px;
     }
+}
+
+
+@media (max-width: 350px) {
+
+    .buttons{
+        flex-wrap: wrap;
+        height: 100%!important;
+    }
+
+
+    .high{
+        height: fit-content!important;
+        gap: 5px;
+    }
+    .card{
+        height: fit-content;
+        width: 100%;
+    }
+
 }
