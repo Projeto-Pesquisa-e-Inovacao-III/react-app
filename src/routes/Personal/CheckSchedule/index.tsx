@@ -6,6 +6,7 @@ import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/Che
 import { useMediaQuery } from "@mui/material";
 import "./style.css"
 import { useState } from "react";
+import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 
 
 
@@ -13,7 +14,8 @@ export function CheckSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
     const [openModal, setOpenModal] = useState<boolean>(false);
-
+    const [openModalAccept, setModalAccept] = useState<boolean>(false);
+    const [openModalDecline, setModalDecline] = useState<boolean>(false);
     
      
     return(
@@ -33,6 +35,10 @@ export function CheckSchedule() {
         </div>
         {isMobile && <Header type="personal" />}
         {openModal && <CheckScheduleModal closeThen={setOpenModal} />}
+        {openModalAccept && <TimerModal isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" /> }
+
+
+        {openModalDecline && }
         </>
     )
 }

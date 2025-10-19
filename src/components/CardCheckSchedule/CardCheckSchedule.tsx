@@ -1,7 +1,10 @@
 import Button from "../Button";
 import "./style.css"
 
-export function CardCheckSchedule({RescheduleClick, }: {RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>> }) {
+export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, DeclineScheculeClick }: {
+    RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    AcceptScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>   }) {
 
     
     function handleRescheduleClick() {
@@ -9,11 +12,12 @@ export function CardCheckSchedule({RescheduleClick, }: {RescheduleClick?: React.
     }
 
     function handleAcceptClick() {
-        // Lógica para aceitar o agendamento
+        acceptScheduleClick?.(true)
+        
     }
 
     function handleDeclineClick() {
-        // Lógica para recusar o agendamento
+        declineScheculeClick?.(true)
     }
 
     return(
