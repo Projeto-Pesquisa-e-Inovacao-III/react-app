@@ -1,0 +1,14 @@
+.buttons-group-modal,
+buttons-group-modal-mobile {
+    .btn-sched-disabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+
+
+    .btn-sched-red {
+        background-color: var(--bg-orange);
+        color: black;
+    }
+
+}

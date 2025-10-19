@@ -4,7 +4,19 @@ import "./timerModal.css"
 import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
 
-export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccess, callSuccessModal }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>; callSuccess?: boolean; callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> }) {
+type TimerModalProps = {
+    isMobile: boolean;
+    closeThen: React.Dispatch<React.SetStateAction<boolean>>;
+    title?: string;
+    content?: string;
+    id?: number | null;
+    events?: EventDTO[];
+    setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>;
+    callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
+    buttonTitle?: string;
+}
+
+export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle }: TimerModalProps) {
     const [mounted, setMounted] = useState(false)
 
     //vlw pedrão
@@ -33,7 +45,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                 <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer
                     isPlaying
-                    duration={1}
+                    duration={5}
                     colors="#093A5D"
                     size={50}
                     strokeWidth={3}
@@ -52,6 +64,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                     events={events}
                     setEvents={setEvents}
                     callSuccessModal={callSuccessModal}
+                    buttonTitle={buttonTitle}
                 />
             </div>
         </>

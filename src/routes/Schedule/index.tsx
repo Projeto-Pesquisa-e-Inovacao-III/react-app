@@ -4,12 +4,12 @@ import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
+import { UserHeaderDesktop } from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
@@ -173,7 +173,7 @@ export default function ViewSchedule() {
                     id={selectedEventId}
                     events={events}
                     setEvents={setEvents}
-                    callSuccess={true}
+                    buttonTitle="Cancelar agendamento"
                     callSuccessModal={setOpenSuccessModal}
                 />
             )}
