@@ -31,13 +31,3 @@
         gap: 20px;
     }
 }
-
-.btn-sched-red {
-    background-color: var(--bg-orange);
-    color: black;
-}
-
-.btn-sched-disabled {
-    background-color: gray;
-    cursor: not-allowed;
-}
