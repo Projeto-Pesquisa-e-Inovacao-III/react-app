@@ -3,7 +3,7 @@ import "./style.css"
 
 export default function KPICards({ isMobile, value, description, icon, title, isFull }: { isMobile: boolean; value: string; description?: string; icon: React.ReactNode; title?: string; isFull?: boolean }) {
     return (
-        <div className={`${isFull ? "kpi-card-dashboard full" : "kpi-card-dashboard"}`}>
+        <div className={`${isFull ? "kpi-card-dashboard full" : "kpi-card-dashboard"} ${isMobile && isFull ? "kpi-mobile" : ""}`}>
             <Card>
                 <CardContent>
                     <div className={`wrapper-details-kpi-dashboard`}>

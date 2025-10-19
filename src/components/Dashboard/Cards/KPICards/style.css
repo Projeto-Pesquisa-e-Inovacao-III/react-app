@@ -3,10 +3,9 @@
 
     .icon-kpi-dashboard {
         background-color: #acacac;
-        border-radius: 8px;
+        border-radius: 50%;
         width: 36px;
         height: 36px;
-        font-size: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -35,7 +34,9 @@
 
 }
 
+
 .full {
+    
     .css-1lt5qva-MuiCardContent-root:last-child {
         gap: 10px;
         display: flex;
@@ -49,6 +50,9 @@
     }
 }
 
+.kpi-mobile {
+    margin-top: 16px;
+}
 
 @media (min-width: 1024px) {
     .kpi-item {

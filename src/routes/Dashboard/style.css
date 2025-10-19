@@ -1,13 +1,17 @@
 .wrapper-dashboard-personal {
-    .mobile {
+    .dash-mobile {
         padding: 20px !important;
     }
+
     .wrapper-elements-dashboard {
         padding: 20px;
         padding-left: 100px;
         padding-right: 100px;
         min-height: 100vh;
         height: auto;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
 
         .text-dashboard-personal {
             margin-bottom: 20px;
@@ -32,5 +36,26 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 26px;
         }
+    }
+}
+
+.wrapper-charts-dashboard-personal {
+    display: flex;
+    gap: 20px;
+    padding: 0 !important;
+    height: auto;
+
+    .chart-bar-personal {
+        flex: 1;
+        background-color: #fff;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 50vh;
+        width: 100%;
+    }
+
+    .dash-mobile {
+        flex-direction: column;
     }
 }
