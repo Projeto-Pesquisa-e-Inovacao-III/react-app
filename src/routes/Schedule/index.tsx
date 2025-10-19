@@ -9,7 +9,6 @@ import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import { UserHeaderDesktop } from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
