@@ -3,6 +3,12 @@
         padding: 20px !important;
     }
 
+    .wrapper-dashboard-personal-logo-mobile {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
     .wrapper-elements-dashboard {
         padding: 20px;
         padding-left: 100px;
@@ -57,5 +63,14 @@
 
     .dash-mobile {
         flex-direction: column;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .wrapper-charts-dashboard-personal {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
     }
 }

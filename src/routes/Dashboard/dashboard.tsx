@@ -5,6 +5,7 @@ import KPICards from "../../components/Dashboard/Cards/KPICards/KPICards";
 import "./style.css"
 import { useMediaQuery } from "@mui/material";
 import Chart from "../../components/Dashboard/Charts/Chart";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
 export const description = "A bar chart"
 
@@ -26,6 +27,10 @@ export default function Dashboard() {
         <>
             {!isMobile && <UserHeaderDesktop />}
             <div className="wrapper-dashboard-personal">
+                {isMobile && <div className="wrapper-dashboard-personal-logo-mobile">
+                    <LogoHeaderMobile />
+                </div>
+                }
                 <div className={`wrapper-elements-dashboard ${isMobile && "dash-mobile"}`}>
                     <div className="text-dashboard-personal">
                         <h1>Desempenho</h1>
