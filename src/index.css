@@ -1,12 +1,12 @@
 :root {
 
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Poppins;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: #000000;
-  background-color: #eeeeee;
+  background-color: #E5E7EB;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -27,6 +27,9 @@
   --bg-blue: #093A5D;
   --bg-blue-darker: #051128;
   --bg-orange: #F26430;
+
+  --gray: #F5F5F5;
+  --bg-green: #4BB543;
 
 }
 
