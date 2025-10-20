@@ -1,10 +1,21 @@
 import Button from "../Button";
 import "./style.css"
 
-export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, DeclineScheculeClick }: {
+type dataCardProps = {
+    id?: number;
+    clientName?: string;
+    age?: number;
+    phone?: string;
+    local?: string;
+    address?: string;
+}
+
+export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, cardData }: {
     RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     AcceptScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
-    DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>   }) {
+    DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    cardData: dataCardProps
+}) {
 
     
     function handleRescheduleClick() {
@@ -29,14 +40,14 @@ export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, Decline
                     <img className="imgCard" src="https://placehold.co/60x60/png" alt="" />
                 </div>
                 <div className="content">
-                    <h1 className="titleName">Carlos Oliveira</h1>
+                    <h1 className="titleName">{cardData.clientName}</h1>
                     <div className="name-age-row">
-                        <span>Nome: José Alencar</span>
-                        <span>Idade: 30 anos</span>
+                        <span>Nome: {cardData.clientName}</span>
+                        <span>Idade: {cardData.age} anos</span>
                     </div>
-                    <span>Celular: (11) 98765-4321</span>
-                    <span>Local: Casa</span>
-                    <span>Endereço: Rua das Flores, 123</span>
+                    <span>Celular: {cardData.phone}</span>
+                    <span>Local: {cardData.local}</span>
+                    <span>Endereço: {cardData.address}</span>
                 </div>
             </div>
             <div className="buttons">

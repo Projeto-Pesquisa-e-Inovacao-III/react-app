@@ -4,7 +4,7 @@ import Button from "../../Button";
 import MiniCalendar from "../../MiniCalendar/MiniCalendar";
 
 
-export default function CheckScheduleModal({closeThen, isMobile, openSuccess}: { closeThen: React.Dispatch<React.SetStateAction<boolean>>, isMobile: boolean, openSuccess: ()=> void }) {
+export default function CheckScheduleModal({closeThen, isMobile, openSuccess, }: { closeThen: React.Dispatch<React.SetStateAction<boolean>>, isMobile: boolean, openSuccess: ()=> void }) {
 
     const [openCalendar, setOpenCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState("")

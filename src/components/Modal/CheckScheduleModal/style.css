@@ -129,7 +129,8 @@
     
     .modal-check-schedule {
         width: 100%;
-
+        height: 100%;
+        overflow-y: auto;
         .line-form-modal{
             flex-direction: column;
             align-self: start;
