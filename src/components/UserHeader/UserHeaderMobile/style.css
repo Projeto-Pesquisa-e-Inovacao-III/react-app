@@ -1,4 +1,5 @@
-.user-header-mobile, .header-personal-mobile {
+.user-header-mobile,
+.header-personal-mobile {
     width: 100%;
     height: 60px;
     background-color: var(--bg-blue);
@@ -17,12 +18,20 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
         span {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             margin-top: 2px;
+            max-width: 75px;
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            text-overflow: ellipsis;
         }
     }
 }
-.header-personal-mobile{
-    grid-template-columns: repeat(5, 1fr)!important;
+
+.header-personal-mobile {
+    grid-template-columns: repeat(5, 1fr) !important;
+    text-align: center;
 }

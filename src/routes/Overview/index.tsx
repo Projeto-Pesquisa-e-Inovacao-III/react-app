@@ -36,7 +36,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                         <LogoHeaderMobile />
                     </div>
                 )}
-                {!isMobile && <Header />}
+                {!isMobile && <Header type={isPrestador ? "personal" : "usuario"} />}
                 <div className={`container-content${isMobile ? "-mobile" : ""}`}>
                     <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
                         {isMobile && (
@@ -99,7 +99,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                         </div>
                     )}
                 </div>
-                {isMobile && <Header />}
+                {isMobile && <Header type={isPrestador ? "personal" : "usuario"} />}
             </div>
         </>
     );

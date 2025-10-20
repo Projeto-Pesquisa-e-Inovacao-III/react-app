@@ -48,10 +48,10 @@ export default function UserHeaderDesktop({ type }: UserType) {
         <nav>
           {type === 'personal'?(
             <>
-          <a href="#main-section">Inicio</a>
-          <a href="#about-section">Agenda</a>
+          <a href="/">Inicio</a>
+          <a href="/schedule">Agenda</a>
           <a href="#services-section">Solicitações</a>
-          <a href="">Dashboard</a>
+          <a href="/dashboard">Dashboard</a>
           <a href="">Assinatura</a>
           <a href="">Usuários</a>
           </>

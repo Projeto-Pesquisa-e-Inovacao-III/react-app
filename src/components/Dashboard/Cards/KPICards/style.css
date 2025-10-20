@@ -4,11 +4,12 @@
     .icon-kpi-dashboard {
         background-color: #acacac;
         border-radius: 50%;
-        width: 36px;
-        height: 36px;
+        width: min-content;
+        height: fit-content;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 10px;
     }
 
     .wrapper-details-kpi-dashboard {
@@ -36,7 +37,7 @@
 
 
 .full {
-    
+
     .css-1lt5qva-MuiCardContent-root:last-child {
         gap: 10px;
         display: flex;

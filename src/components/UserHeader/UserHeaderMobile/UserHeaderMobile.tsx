@@ -55,7 +55,7 @@ export default function UserHeaderMobile({ type }: UserType) {
                     <path d="M19.5 13C20.0523 13 20.5 12.5523 20.5 12C20.5 11.4477 20.0523 11 19.5 11C18.9477 11 18.5 11.4477 18.5 12C18.5 12.5523 18.9477 13 19.5 13Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M5.5 13C6.05228 13 6.5 12.5523 6.5 12C6.5 11.4477 6.05228 11 5.5 11C4.94772 11 4.5 11.4477 4.5 12C4.5 12.5523 4.94772 13 5.5 13Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-            } pageTitle="Opções"/>
+            } pageTitle="Mais opções"/>
 
             </>)
 
