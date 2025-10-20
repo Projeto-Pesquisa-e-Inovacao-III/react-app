@@ -12,7 +12,7 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                     }`}
             >
                 <div className={`${isMobile ? 'w-full mb-5' : ''}`}>
-                    <img className="w-full" src="https://placehold.co/500x500" alt="" />
+                    <img className="w-full" src="/Home/imageAbout.png" alt="" />
                 </div>
 
                 <div
