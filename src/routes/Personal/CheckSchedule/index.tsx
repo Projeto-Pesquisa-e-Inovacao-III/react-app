@@ -17,12 +17,16 @@ export function CheckSchedule() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
     const [openModalDecline, setModalDecline] = useState<boolean>(false);
-    const [callSuccess, setCallSucess] = useState<boolean>(false);
+    const [openSuccessReschedule, setSuccessReschedule] = useState<boolean>(false);
+    const [openSuccessAcceptModal, setOpenSuccessAcceptModal] = useState<boolean>(false);
+    const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
 
     function handleCallSucessReschedule(){
-        setCallSucess(true)
+        setSuccessReschedule(true)
         setOpenModal(false)
     }
+
+
 
     return(
         <> 
@@ -40,15 +44,12 @@ export function CheckSchedule() {
             </div>
         </div>
         {isMobile && <Header type="personal" />}
-        {openModal && <CheckScheduleModal closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
-        {openModalAccept && <TimerModal isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento"/> }
-        {openModalDecline && <TimerModal isMobile={isMobile}  closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento"/>}
-        {callSuccess && <SuccessModal isMobile={isMobile} closeThen={setCallSucess} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente"/>}
-        
-
-    
-
-
+        {openModal && <CheckScheduleModal  closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
+        {openModalAccept && <TimerModal  callSuccessModal={setOpenSuccessAcceptModal} isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento"/> }
+        {openModalDecline && <TimerModal  callSuccessModal={setOpenSuccessDeclineModal}  isMobile={isMobile}  closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento"/>}
+        {openSuccessReschedule && <SuccessModal isMobile={isMobile} closeThen={setSuccessReschedule} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente"/>}
+        {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
+        {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
         </>
     )
 }

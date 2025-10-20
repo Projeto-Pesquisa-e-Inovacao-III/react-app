@@ -45,7 +45,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                 <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer
                     isPlaying
-                    duration={5}
+                    duration={1}
                     colors="#093A5D"
                     size={50}
                     strokeWidth={3}
