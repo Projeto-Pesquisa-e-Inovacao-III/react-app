@@ -1,6 +1,3 @@
-/* Routes/Packages/mobile.css */
-
-/* Define a área de conteúdo principal na rota de pacotes */
 .packages-title-container {
     text-align: center; 
     margin: 15px 20px 0 20px; 
@@ -14,17 +11,13 @@
     margin-top: 15px; 
 }
 
-/* Este é o container (Wrapper) que lista os PackageCards */
+
 .packages-list-wrapper-mobile {
-    /* O display: flex é fundamental para que o gap funcione */
+    
     display: flex; 
-    /* Faz os cartões ficarem um embaixo do outro */
     flex-direction: column; 
-    /* Centraliza os cartões (eixo horizontal/transversal) */
     align-items: center; 
-    /* Adiciona espaçamento entre os cartões (20px de distância entre eles) */
     gap: 20px; 
     width: 100%;
-    /* Adiciona padding interno para não grudar nas laterais da tela */
     padding: 10px 20px 30px 20px; 
 }
