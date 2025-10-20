@@ -1,0 +1,34 @@
+import type { EventDTO } from "../../../../models/calendar";
+import SmallerButton from "../../../SmallerButton";
+
+type DeleteEventProps = {
+    isMobile: boolean;
+    enableButton: boolean;
+    handleCloseModal: () => void;
+    id?: number | null;
+    events?: EventDTO[];
+    setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>;
+    callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
+    buttonTitle?: string;
+}
+
+export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
+    function handleAcceptEvent() {
+        if (id !== undefined && events && setEvents) {
+            setEvents(events.filter(event => event.id !== id));
+            if (callSuccessModal) {
+                callSuccessModal(true);
+            }
+            handleCloseModal();
+        }
+    }
+
+    return (
+        <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
+            <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-green"}`} onClick={handleAcceptEvent}>
+                {buttonTitle || "Cancelar Evento"}
+            </button>
+            <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />
+        </div>
+    )
+}
