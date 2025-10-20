@@ -3,7 +3,7 @@ import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import {UserHeaderDesktop} from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";

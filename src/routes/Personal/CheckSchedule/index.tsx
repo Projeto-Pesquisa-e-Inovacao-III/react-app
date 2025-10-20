@@ -7,6 +7,7 @@ import { useMediaQuery } from "@mui/material";
 import "./style.css"
 import { useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 
 
 
@@ -16,8 +17,13 @@ export function CheckSchedule() {
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
     const [openModalDecline, setModalDecline] = useState<boolean>(false);
-    
-     
+    const [callSuccess, setCallSucess] = useState<boolean>(false);
+
+    function handleCallSucessReschedule(){
+        setCallSucess(true)
+        setOpenModal(false)
+    }
+
     return(
         <> 
         {!isMobile && <Header type="personal" />}
@@ -30,15 +36,19 @@ export function CheckSchedule() {
             </div>
 
             <div className="cards-check-schedule">
-                <CardCheckSchedule RescheduleClick={setOpenModal} />
+                <CardCheckSchedule RescheduleClick={setOpenModal} AcceptScheduleClick={setModalAccept} DeclineScheculeClick={setModalDecline} />
             </div>
         </div>
         {isMobile && <Header type="personal" />}
-        {openModal && <CheckScheduleModal closeThen={setOpenModal} />}
-        {openModalAccept && <TimerModal isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" /> }
+        {openModal && <CheckScheduleModal closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
+        {openModalAccept && <TimerModal isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento"/> }
+        {openModalDecline && <TimerModal isMobile={isMobile}  closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento"/>}
+        {callSuccess && <SuccessModal isMobile={isMobile} closeThen={setCallSucess} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente"/>}
+        
+
+    
 
 
-        {openModalDecline && }
         </>
     )
 }

@@ -12,12 +12,13 @@ export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, Decline
     }
 
     function handleAcceptClick() {
-        acceptScheduleClick?.(true)
+
+        AcceptScheduleClick?.(true)
         
     }
 
     function handleDeclineClick() {
-        declineScheculeClick?.(true)
+        DeclineScheculeClick?.(true)
     }
 
     return(
@@ -39,9 +40,9 @@ export function CardCheckSchedule({RescheduleClick, AcceptScheduleClick, Decline
                 </div>
             </div>
             <div className="buttons">
-                <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" />
+                <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" onClick={handleAcceptClick} />
                 <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" onClick={handleRescheduleClick} />
-                <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" />
+                <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" onClick={handleDeclineClick} />
             </div>
 
         </div>

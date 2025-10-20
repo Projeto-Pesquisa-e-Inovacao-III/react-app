@@ -1,14 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import Button from "../../Button";
+import MiniCalendar from "../../MiniCalendar/MiniCalendar";
 
-export default function CheckScheduleModal({closeThen }: { closeThen: React.Dispatch<React.SetStateAction<boolean>> }) {
+
+export default function CheckScheduleModal({closeThen, isMobile, openSuccess}: { closeThen: React.Dispatch<React.SetStateAction<boolean>>, isMobile: boolean, openSuccess: ()=> void }) {
+
+    const [openCalendar, setOpenCalendar] = useState(false)
+    const [selectedDate, setSelectedDate] = useState("")
+
 
     
+    function handleOpenCalendar() {
+        setOpenCalendar(true)
+    }
+
     function handleCloseModal() {
         document.body.style.overflow = 'auto';
         closeThen(false);
     }
+
+    function handleCloseCalendar() {
+        setOpenCalendar(false)
+    }
+
+
+
+    useEffect(() => {
+        if (selectedDate) {
+            setOpenCalendar(false)
+        }
+    }, [selectedDate])
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -32,7 +54,14 @@ export default function CheckScheduleModal({closeThen }: { closeThen: React.Disp
                     </div>
                     <div className="line-form-modal">
                         <p className="text-form-modal">Data:</p>
-                        <input className="input-modal" type="date" placeholder="Data" />
+                        <input 
+                            className="input-modal" 
+                            type="text" 
+                            placeholder="Selecione a data" 
+                            value={selectedDate}
+                            onClick={handleOpenCalendar}
+                            readOnly
+                        />
                     </div>
                     <div className="line-form-modal">
                         <p className="text-form-modal">Horario:</p>
@@ -43,10 +72,29 @@ export default function CheckScheduleModal({closeThen }: { closeThen: React.Disp
                         <textarea className="textarea-motivo " placeholder="Descreva o motivo do reagendamento"></textarea>
                     </div>
                     <div className="line-button">
-                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule-modal" />
+                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule-modal" onClick={openSuccess} />
                     </div>
                 </div>
-               
+                
+               {openCalendar && (
+                <>
+                    <div className="calendar-overlay" onClick={handleCloseCalendar}></div>
+                    <div className="mini-calendar">
+                        <svg 
+                            className="calendar-exit-icon" 
+                            width="20" 
+                            height="20" 
+                            viewBox="0 0 22 22" 
+                            fill="none" 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            onClick={handleCloseCalendar}
+                        >
+                            <path d="M2 20L11 11M20 2L11 11M11 11L20 20M11 11L2 2" stroke="#858D9D" strokeWidth="3"/>
+                        </svg>
+                        <MiniCalendar clickedDate={setSelectedDate} />
+                    </div>
+                </>
+               )}
             </div>
         </>
     );
