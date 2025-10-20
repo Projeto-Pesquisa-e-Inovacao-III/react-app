@@ -1,4 +1,3 @@
-import "./style.css"
 import type { EventDTO } from "../../../../models/calendar";
 import SmallerButton from "../../../SmallerButton";
 
@@ -13,17 +12,17 @@ type DeleteEventProps = {
     buttonTitle?: string;
 }
 
-export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
-    function handleDeleteEvent() {
+export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
+    function handleAcceptEvent() {
 
             callSuccessModal?.(true);
-
             handleCloseModal();
+        
     }
 
     return (
         <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
-            <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-red"}`} onClick={handleDeleteEvent}>
+            <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-green"}`} onClick={handleAcceptEvent}>
                 {buttonTitle || "Cancelar Evento"}
             </button>
             <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />

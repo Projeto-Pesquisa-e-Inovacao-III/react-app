@@ -1,5 +1,5 @@
 .buttons-group-modal,
-buttons-group-modal-mobile {
+.buttons-group-modal-mobile {
     .btn-sched-disabled {
         background-color: gray;
         cursor: not-allowed;
@@ -8,7 +8,10 @@ buttons-group-modal-mobile {
 
     .btn-sched-red {
         background-color: var(--bg-orange);
-        color: black;
+    }
+
+    .btn-sched-green {
+        background-color: var(--bg-green);
     }
 
 }

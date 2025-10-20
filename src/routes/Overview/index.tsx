@@ -3,14 +3,13 @@ import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
