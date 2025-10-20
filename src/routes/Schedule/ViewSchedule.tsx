@@ -12,7 +12,7 @@ import SmallerButton from "../../components/SmallerButton";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
-// todo: when rescheduling an event, the event should be removed from the current date and added to the new date (a new event is being created, but the old one is not removed)
+//todo: when rescheduling, success modal should say "Reagendamento feito com sucesso"
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
@@ -86,8 +86,6 @@ export default function ViewSchedule() {
 
             {openNewEvent && (
                 <>
-                    <div className="overlay"></div>
-
                     <NewEvent
                         isMobile={isMobile}
                         close={setOpenNewEvent}
@@ -102,7 +100,6 @@ export default function ViewSchedule() {
 
             {openReschedule && (
                 <>
-                    <div className="overlay"></div>
                     <NewEvent
                         isMobile={isMobile}
                         close={setOpenReschedule}
@@ -111,6 +108,7 @@ export default function ViewSchedule() {
                         insertEvent={setEvents}
                         title="Reagendar horário"
                         buttonTitle="Reagendar"
+                        isReschedule={true}
                         rescheduleId={selectedEventId}
                     />
                 </>
@@ -124,6 +122,8 @@ export default function ViewSchedule() {
                     content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
                 />
             )}
+
+
 
             {openCancelModal && (
                 <TimerModal
