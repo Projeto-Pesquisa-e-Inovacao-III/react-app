@@ -14,13 +14,10 @@ type DeleteEventProps = {
 
 export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
     function handleAcceptEvent() {
-        if (id !== undefined && events && setEvents) {
-            setEvents(events.filter(event => event.id !== id));
-            if (callSuccessModal) {
-                callSuccessModal(true);
-            }
+
+            callSuccessModal?.(true);
             handleCloseModal();
-        }
+        
     }
 
     return (

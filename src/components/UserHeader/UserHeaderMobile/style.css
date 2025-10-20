@@ -1,4 +1,4 @@
-.user-header-mobile {
+.user-header-mobile, .header-personal-mobile {
     width: 100%;
     height: 60px;
     background-color: var(--bg-blue);
@@ -22,4 +22,7 @@
             margin-top: 2px;
         }
     }
+}
+.header-personal-mobile{
+    grid-template-columns: repeat(5, 1fr)!important;
 }

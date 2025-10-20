@@ -9,8 +9,7 @@ import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import { UserHeaderDesktop } from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
 // todo: when rescheduling an event, the event should be removed from the current date and added to the new date (a new event is being created, but the old one is not removed)
 export default function ViewSchedule() {
