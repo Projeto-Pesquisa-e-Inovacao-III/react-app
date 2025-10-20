@@ -1,8 +1,5 @@
-.h3-mobile{
+.users-table-container-mobile{
     width: 90%;
-    padding-top: 1%;
-    padding-bottom: 2%;
-    border-bottom: 1px solid rgb(189, 189, 189);
 }
 
 .card-mobile{
@@ -12,7 +9,15 @@
     background-color: white;
     padding: 10px;
     padding-inline: 5%;
-    width: 90%;
+    width: 100%;
     border: 1px solid #cecdcd;
     margin-bottom: 1.5%;
+}
+
+.user-data-full-mobile{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5%;
+    width: 50%;
 }
