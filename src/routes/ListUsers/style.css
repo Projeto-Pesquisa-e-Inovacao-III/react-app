@@ -1,0 +1,15 @@
+.list-user-container{
+    margin-top: 2%;
+    margin-left: 8%;
+    
+    p{
+        color: #4B5563;
+    }
+}
+
+.header-mobile {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+

@@ -9,7 +9,7 @@ import ForgotPassword from "./routes/User/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule";
 import {Overview} from "./routes/Overview";
 import Dashboard from "./routes/Dashboard/dashboard";
-import ListUsers from "./routes/ListUsers"
+import ListUsers from "./routes/ListUsers/ListUsers"
 function App() {
 
 

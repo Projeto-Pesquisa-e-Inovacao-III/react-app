@@ -1,0 +1,41 @@
+.users-table-container{
+    background-color: white;
+    padding: 10px;
+    padding-inline: 25px;
+    width: 80%;
+    border-radius: 5px;
+}
+
+.users-table-header{
+    margin-bottom: 2%;
+}
+
+.h3{
+    width: 100%;
+    padding-top: 1%;
+    padding-bottom: 2%;
+    border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+.table{
+    width: 100%;
+    
+    tr{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2%;
+    }
+}
+
+
+.td-user{
+    display: flex;
+    align-items: center;
+    gap: 5%;
+    width: 50%;
+}
+
+.user-image{
+    border-radius: 50%;
+}
