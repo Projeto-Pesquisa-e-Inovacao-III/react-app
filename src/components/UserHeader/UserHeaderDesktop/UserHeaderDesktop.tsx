@@ -1,7 +1,10 @@
 import "./style.css"
 
+type UserType = {
+  type: "personal" | "student"
+}
 
-export default function UserHeaderDesktop() {
+export default function UserHeaderDesktop({ type }: UserType) {
 
   return (
     <>
@@ -43,10 +46,24 @@ export default function UserHeaderDesktop() {
           </defs>
         </svg>
         <nav>
+          {type === 'personal'?(
+            <>
+          <a href="/">Inicio</a>
+          <a href="/schedule">Agenda</a>
+          <a href="#services-section">Solicitações</a>
+          <a href="/dashboard">Dashboard</a>
+          <a href="">Assinatura</a>
+          <a href="">Usuários</a>
+          </>
+          ):(
+          <>
           <a href="#main-section">Inicio</a>
           <a href="#about-section">Agenda</a>
           <a href="#services-section">Planos</a>
           <a href="#plans-section">Histórico de planos</a>
+          </>
+          )
+        }
         </nav>
 
         <div className="auth-links">

@@ -2,7 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function ViewCalendarMonthStyled({ events, isMobile }: { events?: { title: string; date: string; hour: string }[]; isMobile?: boolean }) {
 

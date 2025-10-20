@@ -6,7 +6,7 @@
 
   color-scheme: light dark;
   color: #000000;
-  background-color: #eeeeee;
+  background-color: #E5E7EB;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,6 +29,8 @@
   --bg-orange: #F26430;
 
   --gray: #F5F5F5;
+  --bg-green: #4BB543;
+
 }
 
 .overlay {
