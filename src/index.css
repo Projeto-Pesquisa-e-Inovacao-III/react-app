@@ -1,6 +1,6 @@
 :root {
 
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Poppins;
   line-height: 1.5;
   font-weight: 400;
 
@@ -28,6 +28,7 @@
   --bg-blue-darker: #051128;
   --bg-orange: #F26430;
 
+  --gray: #F5F5F5;
   --bg-green: #4BB543;
 
 }
