@@ -1,0 +1,117 @@
+@media (min-width: 1024px) {
+
+    .packages-title-container {
+        margin-top: 40px; 
+        margin-left: 50px; 
+        margin-right: 50px; 
+        padding: 0 0 20px 0; 
+        text-align: center; 
+    }
+
+    .packages-title-container h1 {
+        font-size: 35px; 
+        font-weight: 600;
+        color: #333;
+        margin-top: 50px;
+    }
+
+    .packages-list-wrapper-desktop {
+        display: flex; 
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px; 
+        width: auto;
+        padding: 20px 50px 40px 50px; 
+    }
+
+    .card-container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        width: calc(33.333% - 20px); 
+        max-width: 380px; 
+        min-width: 300px; 
+        height: fit-content;
+        display: flex;
+        flex-direction: column; 
+        align-items: flex-start; 
+        text-align: left;
+    }
+
+    .card-variant-consultoria {
+        min-height: 580px; 
+    }
+
+    .card-variant-adicional {
+        min-height: 500px; 
+    }
+
+
+    .card-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .card-subtitle {
+        font-size: 15px;
+        color: #777;
+        line-height: 1.5;
+        margin-bottom: 40px;
+        min-height: 40px;
+    }
+
+    .card-price-section {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 25px;
+    }
+    
+    .card-price-section .card-price-value {
+        font-size: 36px; 
+        font-weight: 800;
+        color: #000;
+        margin-right: 8px;
+    }
+
+    .card-price-section .card-duration {
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+    }
+
+
+    .card-benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 4px 0;
+        flex-grow: 1; 
+    }
+    
+    .card-benefits-list .benefit-item {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+
+    .card-btn {
+        background-color: var(--bg-blue);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 20px; 
+        font-size: 1rem;
+        cursor: pointer;
+        width: 100%;
+        margin-top: auto; 
+    }
+
+    .card-btn:hover {
+        background-color: #023c7a;
+    }
+}

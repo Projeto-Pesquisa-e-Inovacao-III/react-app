@@ -7,6 +7,7 @@ import ViewSchedule from "./routes/Schedule";
 import Login from "./routes/User/Login";
 import ForgotPassword from "./routes/User/ForgotPassword";
 import {Overview} from "./routes/Overview";
+import {Packages} from "./routes/Packages"; 
 function App() {
 
 
@@ -22,11 +23,13 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/edit-user" element={<EditUser />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/packages" element={<Packages />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>
       </div>
     </BrowserRouter>
   );
+  
 
 }
 
