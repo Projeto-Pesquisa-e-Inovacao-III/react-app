@@ -1,9 +1,5 @@
 .users-table-container{
-    background-color: white;
-    padding: 10px;
-    padding-inline: 25px;
-    width: 80%;
-    border-radius: 5px;
+    width: 90%;
 }
 
 .users-table-header{
@@ -17,23 +13,28 @@
     border-bottom: 1px solid rgb(189, 189, 189);
 }
 
-.table{
+.card{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 1.5%;
+    padding-inline: 2%;
     width: 100%;
-    
-    tr{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2%;
-    }
+    border: 1px solid #cecdcd;
+    margin-bottom: 1.5%;
 }
 
-
-.td-user{
+.user-data-full{
     display: flex;
     align-items: center;
     gap: 5%;
     width: 50%;
+}
+
+.user-data{
+    display: flex;
+    flex-direction: column;
 }
 
 .user-image{
