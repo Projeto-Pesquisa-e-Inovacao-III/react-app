@@ -1,6 +1,8 @@
 .wrapper_inp {
     position: relative;
     display: flex;
+    flex-direction: column;
+    background: none;
 
     .input-icon {
         display: flex;
@@ -20,12 +22,16 @@
 
     input {
         padding: 12px 16px 12px 40px;
-        background-color: transparent;
+        background-color: #f3f3f3 !important;
         color: black;
         border: 1px solid #ccc;
         border-radius: 4px;
         width: 100%;
         font-size: .95rem;
+    }
+
+    label {
+        font-size: 14px;
     }
 
 }

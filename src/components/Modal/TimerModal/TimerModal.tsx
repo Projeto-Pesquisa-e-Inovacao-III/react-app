@@ -3,8 +3,22 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import "./timerModal.css"
 import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
+import AcceptEvent from './AcceptEvent';
 
-export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccess, callSuccessModal }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string; id?: number | null; events?: EventDTO[]; setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>; callSuccess?: boolean; callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> }) {
+type TimerModalProps = {
+    isMobile: boolean;
+    closeThen: React.Dispatch<React.SetStateAction<boolean>>;
+    title?: string;
+    content?: string;
+    id?: number | null;
+    events?: EventDTO[];
+    setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>;
+    callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
+    buttonTitle?: string;
+    isDelete?: boolean;
+}
+
+export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle, isDelete }: TimerModalProps) {
     const [mounted, setMounted] = useState(false)
 
     //vlw pedrão
@@ -44,15 +58,30 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                 >
                     {({ remainingTime }) => remainingTime}
                 </CountdownCircleTimer>
-                <DeleteEvent
-                    isMobile={isMobile}
-                    enableButton={enableButton}
-                    handleCloseModal={handleCloseModal}
-                    id={id}
-                    events={events}
-                    setEvents={setEvents}
-                    callSuccessModal={callSuccessModal}
-                />
+                {isDelete ? (
+                    <DeleteEvent
+                        isMobile={isMobile}
+                        enableButton={enableButton}
+                        handleCloseModal={handleCloseModal}
+                        id={id}
+                        events={events}
+                        setEvents={setEvents}
+                        callSuccessModal={callSuccessModal}
+                        buttonTitle={buttonTitle}
+                    />
+                ) : (
+                    <AcceptEvent
+                        isMobile={isMobile}
+                        enableButton={enableButton}
+                        handleCloseModal={handleCloseModal}
+                        id={id}
+                        events={events}
+                        setEvents={setEvents}
+                        callSuccessModal={callSuccessModal}
+                        buttonTitle={buttonTitle}
+                    />
+                )}
+
             </div>
         </>
     );
