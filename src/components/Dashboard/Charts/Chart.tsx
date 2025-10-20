@@ -1,6 +1,16 @@
-import { Bar, BarChart, CartesianGrid, Label, Legend, Line, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-export default function Chart({ data, type, title }: { data: any[]; type: 'bar' | 'line'; title?: string }) {
+type Props = {
+    data: any[];
+    type: 'bar' | 'line';
+    title?: string;
+};
+
+export default function Chart({ data, type, title }: Props) {
+    //here you may choose the appropriate chart component based on the 'type' prop
+    //the chart config is almost the same for both types. what changes is the actual chart component used (BarChart or LineChart) 
+    const ChartComponent = type === 'line' ? LineChart : BarChart;
+
     return (
         <div className="chart-bar-personal">
 
@@ -9,7 +19,7 @@ export default function Chart({ data, type, title }: { data: any[]; type: 'bar' 
             </h3>
 
             <ResponsiveContainer>
-                <BarChart data={data} margin={{ top: 30, right: 30, left: 20, bottom: 25 }}>
+                <ChartComponent data={data} margin={{ top: 30, right: 30, left: 20, bottom: 25 }}>
                     <CartesianGrid vertical={false} stroke="#e0e0e0" />
                     <XAxis
                         dataKey="month"
@@ -43,6 +53,7 @@ export default function Chart({ data, type, title }: { data: any[]; type: 'bar' 
                             strokeWidth={2}
                         />
                     )}
+
                     {type === 'bar' && (
                         <Bar
                             dataKey="servicos"
@@ -51,7 +62,7 @@ export default function Chart({ data, type, title }: { data: any[]; type: 'bar' 
                             radius={[4, 4, 0, 0]}
                         />
                     )}
-                </BarChart>
+                </ChartComponent>
             </ResponsiveContainer>
         </div>
     );
