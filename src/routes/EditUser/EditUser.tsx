@@ -10,7 +10,8 @@ import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/Use
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 
 export default function EditUser() {
-  const isMobile = useMediaQuery("(max-width:768px)"); 
+  const isMobile = useMediaQuery("(max-width:768px)");
+  const userImage: string = "";
   return (
     <>
       {!isMobile &&  <UserHeaderDesktop />}
@@ -25,12 +26,16 @@ export default function EditUser() {
       
       <div className="profile-section">
         <WhiteContainer title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+          {userImage ? 
           <UserImg
-            Source="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/bead4a5e-3a81-4227-8a70-2895683aa346/d38veke-854f019d-7f89-4493-97a1-12acc3bfb9cf.jpg/v1/fill/w_900,h_675,q_75,strp/derp_herp_cat_by_crusnik_o2-d38veke.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwic3ViIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl0sIm9iaiI6W1t7InBhdGgiOiIvZi9iZWFkNGE1ZS0zYTgxLTQyMjctOGE3MC0yODk1NjgzYWEzNDYvZDM4dmVrZS04NTRmMDE5ZC03Zjg5LTQ0OTMtOTdhMS0xMmFjYzNiZmI5Y2YuanBnIiwid2lkdGgiOiI8PTkwMCIsImhlaWdodCI6Ijw9Njc1In1dXX0.oxTavFYtSgHX9VKNdtfltu8QKMPX3se3pKrpnqm0Crk"
-            Alt="Foto do usuário"
+            Source={""}
             Height={216}
             Width={216}
+            Alt=""
           />
+          : 
+          <User width={216} height={216} />
+          }
           <div className="atualizar-foto-container">
             <Button title="Atualizar Foto" type="button" />
           </div>
