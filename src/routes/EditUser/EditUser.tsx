@@ -7,6 +7,7 @@ import GoBackButton from "../../components/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 
 export default function EditUser() {
   const isMobile = useMediaQuery("(max-width:768px)"); 
@@ -42,36 +43,36 @@ export default function EditUser() {
             id="nome"
             type="text"
             placeholder="Digite seu nome"
-            icon={<></>}
+            icon={<User />}
             label="Primeiro Nome"
           ></InputWithIcon>
           <InputWithIcon
             id="sobreNome"
             type="text"
             placeholder="Digite seu sobrenome"
-            icon={<></>}
+            icon={<User />}
             label="Último Nome"
           ></InputWithIcon>
           <InputWithIcon
             id="cpf"
             type="text"
             placeholder="Digite seu CPF"
-            icon={<></>}
+            icon={<IdCard />}
             label="CPF"
-          ></InputWithIcon>
-          <InputWithIcon
-            id="genero"
-            type="text"
-            placeholder="Digite seu gênero"
-            icon={<></>}
-            label="Gênero"
           ></InputWithIcon>
           <InputWithIcon
             id="telefone"
             type="text"
             placeholder="Digite seu telefone"
-            icon={<></>}
+            icon={<Phone />}
             label="Telefone"
+          ></InputWithIcon>
+          <InputWithIcon
+            id="genero"
+            type="text"
+            placeholder="Digite seu gênero"
+            icon={<User />}
+            label="Gênero"
           ></InputWithIcon>
         </WhiteContainer>
       </div>
@@ -82,14 +83,14 @@ export default function EditUser() {
             id="email"
             type="email"
             placeholder="Digite seu email"
-            icon={<></>}
+            icon={<Mail />}
             label="Email"
           ></InputWithIcon>
           <InputWithIcon
             id="senha"
             type="password"
             placeholder="*************"
-            icon={<></>}
+            icon={<LockKeyhole />}
             label="Senha"
           ></InputWithIcon>
         </WhiteContainer>
