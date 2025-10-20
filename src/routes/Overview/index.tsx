@@ -7,7 +7,7 @@ import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/Use
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";
-import {LogoHeaderMobile} from "../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
 export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
@@ -19,7 +19,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     ];
 
     const [events] = useState(eventsMock);
-    const cards= cardsArray;
+    const cards = cardsArray;
 
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
@@ -33,10 +33,10 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
             <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
                 {isMobile && (
                     <div className="logo-header-mobile">
-                        <LogoHeaderMobile/>
+                        <LogoHeaderMobile />
                     </div>
                 )}
-                {!isMobile && <Header />}
+                {!isMobile && <Header type={isPrestador ? "personal" : "student"} />}
                 <div className={`container-content${isMobile ? "-mobile" : ""}`}>
                     <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
                         {isMobile && (
@@ -99,7 +99,7 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                         </div>
                     )}
                 </div>
-                {isMobile && <Header />}
+                {isMobile && <Header type={isPrestador ? "personal" : "student"} />}
             </div>
         </>
     );

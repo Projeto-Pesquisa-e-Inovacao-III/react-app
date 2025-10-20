@@ -10,6 +10,7 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
 // todo: when rescheduling an event, the event should be removed from the current date and added to the new date (a new event is being created, but the old one is not removed)
 export default function ViewSchedule() {
@@ -41,7 +42,7 @@ export default function ViewSchedule() {
                 {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
                 </div>}
-                {!isMobile && <Header />}
+                {!isMobile && <Header type="student" />}
                 <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
                     <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
                         <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
@@ -80,7 +81,7 @@ export default function ViewSchedule() {
                         ))}
                     </div>
                 </div>
-                {isMobile && <Header />}
+                {isMobile && <Header type="student" />}
             </div>
 
             {openNewEvent && (

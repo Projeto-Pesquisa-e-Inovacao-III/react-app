@@ -8,6 +8,7 @@ import Login from "./routes/User/Login";
 import ForgotPassword from "./routes/User/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule";
 import {Overview} from "./routes/Overview";
+import Dashboard from "./routes/Dashboard/dashboard";
 function App() {
 
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<ViewSchedule />} />
           <Route path="/home" element={<Overview />} />
           <Route path="/schedule" element={<ViewSchedule />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
