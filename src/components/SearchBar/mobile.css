@@ -1,8 +1,8 @@
-.search-bar{
+.search-bar-mobile{
     background-color: white;
     padding: 10px;
-    padding-inline: 2.5%;
-    width: 50%;
+    padding-inline: 5%;
+    width: 90%;
     border-radius: 5px;
     box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
 }

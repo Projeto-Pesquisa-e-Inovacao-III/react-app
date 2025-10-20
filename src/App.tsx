@@ -6,7 +6,7 @@ import Logout from "./routes/User/Logout";
 import ViewSchedule from "./routes/Schedule";
 import Login from "./routes/User/Login";
 import ForgotPassword from "./routes/User/ForgotPassword";
-import ListUsers from "./routes/ListUsers"
+import ListUsers from "./routes/ListUsers/ListUsers"
 function App() {
 
 
