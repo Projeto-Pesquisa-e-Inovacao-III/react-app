@@ -24,6 +24,9 @@
             flex: 1;
 
 
+            .adjust-button-w-schedule {
+                width: 30%;
+            }
 
             .schedule-view {
                 display: flex;

@@ -1,14 +1,26 @@
 import "./mobile.css";
 import "./desktop.css";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
 
+type NewEventProps = {
+    isMobile: boolean;
+    close: React.Dispatch<React.SetStateAction<boolean>>;
+    openModal: React.Dispatch<React.SetStateAction<boolean>>;
+    insertedEvents: any[];
+    insertEvent: React.Dispatch<React.SetStateAction<any[]>>;
+    title?: string;
+    buttonTitle?: string;
+    isReschedule?: boolean;
+    rescheduleId?: number | null;
+};
+
 export default function NewEvent(
-    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId }: { isMobile: boolean; close: React.Dispatch<React.SetStateAction<boolean>>; openModal: React.Dispatch<React.SetStateAction<boolean>>; insertedEvents: any[]; insertEvent: React.Dispatch<React.SetStateAction<any[]>>; title?: string; buttonTitle?: string; rescheduleId?: number | null }
+    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule }: NewEventProps
 ) {
     const [newEventDate, setNewEventDate] = useState<string>("");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
@@ -21,24 +33,26 @@ export default function NewEvent(
     const [number, setNumber] = useState<string>("");
     const [complement, setComplement] = useState<string>("");
 
-    const [selectedButton, setSelectedButton] = useState<string>("");
-
-    const eventToReschedule = insertedEvents?.find(event => event.id === rescheduleId);
+    let eventToReschedule = insertedEvents?.find(event => event?.id === rescheduleId);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
     }, []);
 
     useEffect(() => {
-        // ViaCEP API integration
+        console.log("newEventStartHour ", newEventStartHour);
+    }, [newEventStartHour]);
+
+
+    useEffect(() => {
         if (postalCode.length === 8) {
-            //CEP has 8 digits
             axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
                 .then(response => {
                     setAddress(`${response.data.logradouro} - ${response.data.bairro}`);
                     setCity(response.data.localidade);
                 })
                 .catch(error => {
+                    console.error("Erro ao buscar endereço pelo CEP:", error);
                 });
         }
     }, [postalCode]);
@@ -51,10 +65,8 @@ export default function NewEvent(
             return;
         }
 
-        if (!postalCode || postalCode.length < 8 || !address || !city || !number) {
-            alert("Por favor, insira um endereço válido.");
-            return;
-        }
+
+
 
         //debugging - check if backend is reachable
         const isDatabaseConnected = await checkDebugConnection();
@@ -79,7 +91,16 @@ export default function NewEvent(
             openModal(true);
             handleClose();
         }
-        if (insertedEvents) {
+
+        if (isReschedule) {
+            const updateEvent = insertedEvents.map(event => {
+                return event.id === rescheduleId ? { ...event, date: newEventDate, hour: newEventStartHour } : event;
+            });
+
+            insertEvent(updateEvent);
+        }
+
+        if (!isReschedule && insertedEvents) {
             insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
         }
 
@@ -98,6 +119,7 @@ export default function NewEvent(
 
     return (
         <>
+            <div className="overlay"></div>
             <div className={`new-event-form${isMobile ? "-mobile" : ""}`}>
                 <div className={`top-new-event${isMobile ? "-mobile" : ""}`}>
                     {isMobile ? (
@@ -141,18 +163,27 @@ export default function NewEvent(
                         <CalendarMonthStyled
                             clickedDate={setNewEventDate}
                             createdEvents={insertedEvents}
-                            eventToReschedule={eventToReschedule}
+                            eventToReschedule={eventToReschedule?.date}
                             isMobile={isMobile}
                         />
 
                         <div className="hours">
-                            <SmallerButton type="button" title="08:00" value="08:00:00" selected={newEventStartHour === "08:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="09:00" value="09:00:00" selected={newEventStartHour === "09:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="10:00" value="10:00:00" selected={newEventStartHour === "10:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="11:00" value="11:00:00" selected={newEventStartHour === "11:00:00"} eventToReschedule={eventToReschedule} handleButtonClick={handleButtonClick} />
+                            <div className={`button-hour-new-event ${newEventStartHour === "08:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "09:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "10:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "11:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
                         </div>
                     </div>
 
@@ -230,7 +261,7 @@ export default function NewEvent(
                         </div>
 
                         <div className="submit-button">
-                            <SmallerButton type="submit" title={buttonTitle || "Agendar"} eventToReschedule={eventToReschedule} />
+                            <SmallerButton type="submit" title={buttonTitle || "Agendar"} />
                         </div>
                     </form>
                 </div>

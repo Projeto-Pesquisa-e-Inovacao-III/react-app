@@ -4,6 +4,10 @@
     justify-content: center;
     align-items: center;
     position: relative;
+
+    .wrapper_inp {
+        width: 100%;
+    }
 }
 
 .search-icon {
@@ -18,7 +22,7 @@
 
 .search-input {
     width:100%;
-    padding: 8px 12px 8px 40px; /* espaço para o ícone à esquerda */
+    padding: 8px 12px 8px 40px;
     border: 1px solid #bfcad6;
     border-radius: 6px;
     font-size: 16px;
