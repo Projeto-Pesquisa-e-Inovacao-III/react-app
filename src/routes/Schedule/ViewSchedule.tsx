@@ -48,7 +48,7 @@ export default function ViewSchedule() {
                         <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
                     </div>
                     <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
-                        <div>
+                        <div className="adjust-button-w-schedule">
                             <SmallerButton
                                 type="button"
                                 icon={isMobile ? undefined : (<svg

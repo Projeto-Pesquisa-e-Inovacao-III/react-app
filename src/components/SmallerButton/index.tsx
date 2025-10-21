@@ -16,7 +16,7 @@ export default function SmallerButton({ type, icon, title, value, selected, hand
     }, [selected]);
     return (
         <button
-            className={`btn-sched ${selected ? "btn-selected" : ""}`}
+            className={`btn-sched`}
             type={type}
             onClick={() => handleButtonClick?.(value ?? "")}
         >

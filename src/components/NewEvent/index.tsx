@@ -168,17 +168,22 @@ export default function NewEvent(
                         />
 
                         <div className="hours">
-                            <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
-                                handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
-                                handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
-                                handleButtonClick={handleButtonClick} />
-
-                            <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
-                                handleButtonClick={handleButtonClick} />
+                            <div className={`button-hour-new-event ${newEventStartHour === "08:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "09:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "10:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
+                            <div className={`button-hour-new-event ${newEventStartHour === "11:00:00" ? "button-hour-new-event-selected" : ""}`}>
+                                <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                    handleButtonClick={handleButtonClick} />
+                            </div>
                         </div>
                     </div>
 
