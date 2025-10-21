@@ -29,7 +29,7 @@ export default function UsersTable(props){
 
             {users.filter(user => user.name.toLowerCase().includes(props.input.toLowerCase()))
                 .map((user, index) => (
-                    <div key={index} className={`card${isMobile ? "-mobile" : ""}`}>
+                    <div key={index} className={`users-table-card${isMobile ? "-mobile" : ""}`}>
                         <div className={`user-data-full${isMobile ? "-mobile" : ""}`}>
                             <img
                                 className="user-image"
