@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
 
   font-family: Poppins;
@@ -20,11 +22,20 @@
   --btn-color: white;
   --btn-border: none;
   --btn-border-radius: 4px;
-  --btn-hover-bg: #274668;
+
+  --oxford-blue: #051128;
+  --indigo: #093A5D;
+  --lapis-lazuli: #0C6291;
+
+  --color-gigant-orange: #f26430;
+
+  --font-poppins: 'Poppins', sans-serif;
+  --font-bebas: 'Bebas Neue', cursive;
 
   --calendar-width: 180px;
 
   --bg-blue: #093A5D;
+  --btn-hover-bg: #2c6888;
   --bg-blue-darker: #051128;
   --bg-orange: #F26430;
 

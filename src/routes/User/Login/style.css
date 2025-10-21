@@ -45,7 +45,7 @@
 
       .welcome_message {
         h1 {
-
+          font-size: 2em;
           font-weight: 500;
         }
       }
@@ -53,7 +53,6 @@
       form {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
         text-align: left;
 
         .wrapper-inputs-login-page {
@@ -73,6 +72,10 @@
             cursor: pointer;
             padding: 0;
           }
+        }
+
+        .btn-generic{
+          margin-top: 2rem;
         }
       }
 
