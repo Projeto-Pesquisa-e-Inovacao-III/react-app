@@ -1,10 +1,22 @@
-import type { JSX } from "react";
+import { useEffect, type JSX } from "react";
 import "./style.css";
-// eventToReschedule is when user wants to reschedule an event, so the button that matches the hour of that event should be highlighted
-export default function SmallerButton({ type, icon, title, value, selected, eventToReschedule, handleButtonClick }: { type?: "button" | "submit"; icon?: JSX.Element; title: string; value?: string; selected?: boolean; eventToReschedule?: any; handleButtonClick?: (value: string) => void }) {
+type SmallerButtonProps = {
+    type?: "button" | "submit";
+    icon?: JSX.Element;
+    title: string;
+    value?: string;
+    selected?: boolean;
+    handleButtonClick?: (value: string) => void;
+};
+export default function SmallerButton({ type, icon, title, value, selected, handleButtonClick }: SmallerButtonProps) {
+    useEffect(() => {
+        if (selected && handleButtonClick) {
+            handleButtonClick(value ?? "");
+        }
+    }, [selected]);
     return (
         <button
-            className={`btn-sched ${eventToReschedule?.hour === title ? "btn-selected" : ""} ${selected ? "btn-selected" : ""}`}
+            className={`btn-sched`}
             type={type}
             onClick={() => handleButtonClick?.(value ?? "")}
         >

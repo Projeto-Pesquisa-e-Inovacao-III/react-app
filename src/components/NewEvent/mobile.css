@@ -70,6 +70,16 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 20px;
         overflow: scroll;
+
+        .button-hour-new-event {
+          width: 100%;
+        }
+
+        .button-hour-new-event-selected {
+          button {
+            background-color: rgb(0, 125, 228) !important;
+          }
+        }
       }
     }
   }
@@ -98,7 +108,7 @@
       width: 100%;
 
       .submit-button {
-        width: 100%;
+        width: 30%;
         display: flex;
         justify-content: flex-start;
       }

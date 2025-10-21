@@ -1,12 +1,12 @@
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { useMediaQuery } from "@mui/material";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import { UserHeaderDesktop } from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { PackageCard } from "../../components/PackageCard";
 import { packagesMock } from "./mocks/packagesMock"; 
 import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import "./mobile.css"
 import "./desktop.css"
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
 export function Packages() {
     const isMobile = useMediaQuery("(max-width:1024px)");

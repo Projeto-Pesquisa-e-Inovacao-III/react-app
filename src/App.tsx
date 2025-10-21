@@ -3,7 +3,7 @@ import "./App.css";
 import Register from "./routes/User/Register";
 import EditUser from "./routes/EditUser/EditUser";
 import Logout from "./routes/User/Logout";
-import ViewSchedule from "./routes/Schedule";
+import ViewSchedule from "./routes/Schedule/ViewSchedule";
 import Login from "./routes/User/Login";
 import ForgotPassword from "./routes/User/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule";
