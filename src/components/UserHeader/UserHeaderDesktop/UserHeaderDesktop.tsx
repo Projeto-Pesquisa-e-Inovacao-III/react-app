@@ -50,16 +50,16 @@ export default function UserHeaderDesktop({ type }: UserType) {
             <>
           <a href="/">Inicio</a>
           <a href="/schedule">Agenda</a>
-          <a href="#services-section">Solicitações</a>
+          <a href="/personal/check-schedule">Solicitações</a>
           <a href="/dashboard">Dashboard</a>
-          <a href="">Assinatura</a>
-          <a href="">Usuários</a>
+          <a href="/packages">Assinatura</a>
+          <a href="/users">Usuários</a>
           </>
           ):(
           <>
-          <a href="#main-section">Inicio</a>
-          <a href="#about-section">Agenda</a>
-          <a href="#services-section">Planos</a>
+          <a href="/home-personal">Inicio</a>
+          <a href="/schedule">Agenda</a>
+          <a href="/packages">Planos</a>
           <a href="#plans-section">Histórico de planos</a>
           </>
           )
