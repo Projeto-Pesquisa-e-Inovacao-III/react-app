@@ -4,14 +4,13 @@ import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import {UserHeaderDesktop} from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
 //todo: when rescheduling, success modal should say "Reagendamento feito com sucesso"
 export default function ViewSchedule() {
