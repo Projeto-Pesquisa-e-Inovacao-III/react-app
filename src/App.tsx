@@ -19,22 +19,26 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 // safari support
 // confirmar senha in register is broken (mobile)
 // change file names
+// fix card at schedule (mobile)
 
-//institucioonal 
-// preços mais caros devem vir primeiro (institucional)
-// fabio mais para a direita (institucional)
-// botoes centralizados pacotes (institucional)
+// institucional/prototipo:
+// preços mais caros devem vir primeiro
+// fabio mais para a direita
+// botoes centralizados pacotes
 // texto no inicio deve apresentar que site também são para idosos
 // botoes centralizados no mobile
 
-// tela logado
+// tela logado:
 // datas formatadas no home 
 // packages icon and text should be at the same text
 
 // arquitetura:
 // quem gera logs?
+// glacier
+// internet
+// servidor aplicacao tomcat
 
-//teste de usuabilidade:
+// teste de usuabilidade:
 // colocar resultados dos testes
 
 
