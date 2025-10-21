@@ -9,56 +9,54 @@
   opacity: 0.5;
 }
 
-.container {
-  .new-event-form {
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    overflow: auto;
-    max-height: 92vh;
-    max-width: 90vw;
-    font-family: "Poppins", sans-serif;
+.new-event-form {
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  overflow: auto;
+  max-height: 92vh;
+  max-width: 90vw;
+  font-family: "Poppins", sans-serif;
+}
+
+.top-new-event {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+
+  svg {
+    cursor: pointer;
   }
 
-  .top-new-event {
+  h1 {
+    padding: 20px 0;
+    font-size: 36px;
+    font-weight: lighter;
+    text-transform: uppercase;
+  }
+}
+
+.calendar-small {
+  width: 60vw;
+
+  .hours {
     display: flex;
-    justify-content: space-between;
-    padding: 20px;
+    gap: 50px;
 
-    svg {
-      cursor: pointer;
+    .button-hour-new-event {
+      width: 100%;
     }
 
-    h1 {
-      padding: 20px 0;
-      font-size: 36px;
-      font-weight: lighter;
-      text-transform: uppercase;
-    }
-  }
-
-  .calendar-small {
-    width: 60vw;
-
-    .hours {
-      display: flex;
-      gap: 50px;
-
-      .button-hour-new-event {
-        width: 100%;
-      }
-
-      .button-hour-new-event-selected {
-        button {
-          background-color: rgb(0, 125, 228) !important;
-        }
+    .button-hour-new-event-selected {
+      button {
+        background-color: rgb(0, 125, 228) !important;
       }
     }
   }
