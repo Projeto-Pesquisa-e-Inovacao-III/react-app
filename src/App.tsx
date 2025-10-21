@@ -10,6 +10,7 @@ import { CheckSchedule } from "./routes/Personal/CheckSchedule";
 import {Overview} from "./routes/Overview";
 import {Packages} from "./routes/Packages"; 
 import Dashboard from "./routes/Dashboard/dashboard";
+import ListUsers from "./routes/ListUsers/ListUsers"
 function App() {
 
 
@@ -30,6 +31,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/edit-user" element={<EditUser />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/users" element={<ListUsers />} />
           <Route path="/packages" element={<Packages />} />
           <Route path="/personal/check-schedule" element={<CheckSchedule/>}/>
           {/* <Route path="*" element={<NotFound />} /> */}

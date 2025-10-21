@@ -1,0 +1,23 @@
+.users-table-container-mobile{
+    width: 90%;
+}
+
+.users-table-card-mobile{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 10px;
+    padding-inline: 5%;
+    width: 100%;
+    border: 1px solid #cecdcd;
+    margin-bottom: 1.5%;
+}
+
+.user-data-full-mobile{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5%;
+    width: 50%;
+}
