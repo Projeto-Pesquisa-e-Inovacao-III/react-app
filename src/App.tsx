@@ -15,15 +15,12 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 
 // To do list:
 // safari support // deixa baixo
-// header mobile is a fucking svg instead of a fucking Link. 
+// header mobile is a fucking svg instead of a fucking Link. fix it 
 // when rescheduling, success modal should say "Reagendamento feito com sucesso"
 
 // institucional/prototipo:
-// preços mais caros devem vir primeiro
-// fabio mais para a direita
-// botoes centralizados pacotes
-// texto no inicio deve apresentar que site também são para idosos
-// botoes centralizados no mobile
+// fabio mais para a direita // suave ajeita
+// texto no inicio deve apresentar que site também são para idosos (mobile) // decidir texto com os caras
 
 // tela logado:
 // datas formatadas no home // isso o joao vai fazer

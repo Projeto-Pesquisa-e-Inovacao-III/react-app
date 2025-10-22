@@ -29,7 +29,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                         />
                     </div>
 
-                    <button className="bg-oxford-blue mt-3 min-h-12 w-3/4 text-white rounded-md font-poppins font-semibold text-lg">
+                    <button className="mx-auto mt-5 bg-oxford-blue min-h-12 w-3/4 text-white rounded-md font-poppins font-semibold text-lg">
                         Entre em contato
                     </button>
                 </>
