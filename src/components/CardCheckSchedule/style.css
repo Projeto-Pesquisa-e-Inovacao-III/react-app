@@ -1,5 +1,5 @@
-.card{
-    background-color:aliceblue;
+.card {
+    background-color: aliceblue;
     width: 100%;
     border-radius: 12px;
     padding: 10px 20px;
@@ -10,14 +10,15 @@
     align-items: center;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
-    .buttons{
+    .buttons {
         display: flex;
         flex-direction: row;
         height: 40px;
         width: max-content;
         gap: 10px;
     }
-    .high{
+
+    .high {
         display: flex;
         flex-direction: row;
         gap: 8px;
@@ -25,23 +26,27 @@
         width: 100%;
         padding: 8px 20px;
         border-bottom: 2px solid #737374;
-        .titleName{
+
+        .titleName {
             font-size: 18px;
             font-weight: semi-bold;
         }
 
-        span{
+        span {
             font-size: 14px;
-        };
+        }
 
-        .content{
+        ;
+
+        .content {
             display: flex;
             flex-direction: column;
-            justify-content: center; 
-            align-items: flex-start;    
+            justify-content: center;
+            align-items: flex-start;
             height: 100%;
             width: 100%;
-            .name-age-row{
+
+            .name-age-row {
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
@@ -49,7 +54,7 @@
                 width: 100%;
             }
 
-            .small-name{
+            .small-name {
                 font-size: 14px;
                 font-weight: semi-bold;
             }
@@ -58,9 +63,10 @@
         .photograph {
             display: flex;
             flex-direction: column;
-            justify-content: center; 
-            align-items: center;    
+            justify-content: center;
+            align-items: center;
             height: 100%;
+
             .imgCard {
                 align-self: center;
                 width: 42px;
@@ -68,33 +74,42 @@
             }
         }
     }
-    
-    
+
+
 }
 
-@media (min-width: 500px) {
+@media (max-width: 1024px) {
 
-    .card{
-        width: 366px;
+    .card {
+        width: 60% !important;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .card {
+        width: 100% !important;
     }
 }
 
 
 @media (max-width: 350px) {
 
-    .buttons{
+    .buttons {
         flex-wrap: wrap;
-        height: 100%!important;
+        height: 100% !important;
     }
 
 
-    .high{
-        height: fit-content!important;
+    .high {
+        height: fit-content !important;
         gap: 5px;
     }
-    .card{
+
+    .card {
         height: fit-content;
         width: 100%;
     }
+
 
 }

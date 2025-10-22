@@ -1,11 +1,11 @@
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import KPICards from "../../components/Dashboard/Cards/KPICards/KPICards";
+import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import UserHeaderMobile from "../../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
+import KPICards from "../../../components/Dashboard/Cards/KPICards/KPICards";
 
 import "./style.css"
 import { useMediaQuery } from "@mui/material";
-import Chart from "../../components/Dashboard/Charts/Chart";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import Chart from "../../../components/Dashboard/Charts/Chart";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
 
 export const description = "A bar chart"
 

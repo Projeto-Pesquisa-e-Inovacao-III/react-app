@@ -4,7 +4,7 @@ import Button from "../../components/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import GoBackButton from "../../components/GoBackButton";
-import InputWithIcon from "../../components/AuthComponents/InputWithIcon";
+import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";

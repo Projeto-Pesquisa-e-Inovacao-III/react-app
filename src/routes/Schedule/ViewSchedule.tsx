@@ -12,7 +12,6 @@ import SmallerButton from "../../components/SmallerButton";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
-//todo: when rescheduling, success modal should say "Reagendamento feito com sucesso"
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 

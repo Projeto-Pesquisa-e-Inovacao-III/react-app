@@ -1,6 +1,6 @@
 import "./style.css";
 import { Search } from "lucide-react";
-import InputWithIcon from "../AuthComponents/InputWithIcon";
+import InputWithIcon from "../AuthComponents/InputWithIcon/InputWithIcon";
 
 export function SearchBar({search, setSearch}) {
     return (

@@ -1,25 +1,22 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Login from "./routes/User/Login";
-import Home from "./routes/Home/index";
-import Register from "./routes/User/Register";
+import Login from "./routes/User/Login/Login";
+import Home from "./routes/Home/Home";
+import Register from "./routes/User/Register/Register";
 import EditUser from "./routes/EditUser/EditUser";
-import Logout from "./routes/User/Logout";
+import Logout from "./routes/User/Logout/Logout";
 import ViewSchedule from "./routes/Schedule/ViewSchedule";
-import ForgotPassword from "./routes/User/ForgotPassword";
-import { CheckSchedule } from "./routes/Personal/CheckSchedule";
-import { Overview } from "./routes/Overview";
-import { Packages } from "./routes/Packages";
-import Dashboard from "./routes/Dashboard/dashboard";
+import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
+import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
+import { Overview } from "./routes/Overview/Overview";
+import { Packages } from "./routes/Packages/Packages";
+import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 
-// todo: font wheight at title in users (mobile)
-// font-size at title in dashboard
-// decrease padding at check-schedule (mobile)
-// safari support
-// confirmar senha in register is broken (mobile)
-// change file names
-// fix card at schedule (mobile)
+// To do list:
+// safari support // deixa baixo
+// header mobile is a fucking svg instead of a fucking Link. 
+// when rescheduling, success modal should say "Reagendamento feito com sucesso"
 
 // institucional/prototipo:
 // preços mais caros devem vir primeiro
@@ -29,8 +26,8 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 // botoes centralizados no mobile
 
 // tela logado:
-// datas formatadas no home 
-// packages icon and text should be at the same text
+// datas formatadas no home // isso o joao vai fazer
+// packages icon and text should be at the same text // suave
 
 // arquitetura:
 // quem gera logs?

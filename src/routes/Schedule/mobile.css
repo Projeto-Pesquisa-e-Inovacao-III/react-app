@@ -39,7 +39,8 @@
 
                     .user-personal {
                         font-size: 24px;
-                        font-weight: lighter;
+                        font-weight: 300;
+
                     }
 
                     .schedule-page-user {
@@ -71,6 +72,10 @@
                     display: flex;
                     align-items: center;
                     text-align: center;
+
+                    span {
+                        width: 15vw;
+                    }
 
                 }
             }

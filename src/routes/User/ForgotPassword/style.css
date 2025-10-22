@@ -125,6 +125,9 @@
 
     .wrapper_forgot-password_elements-mobile {
       width: 100% !important;
+      .welcome_message {
+        margin-top: 30px;
+      }
     }
 
     .config_login {

@@ -24,6 +24,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
             <input
                 id={`${id}-input`}
                 type={isPassword && showPassword ? "text" : type}
+                className={`${isPassword ? `password-input` : ``}`}
                 placeholder={placeholder}
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
             />
