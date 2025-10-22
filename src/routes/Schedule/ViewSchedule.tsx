@@ -26,12 +26,14 @@ export default function ViewSchedule() {
 
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
     const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
+    const [openSuccessModalReschedule, setOpenSuccessModalReschedule] = useState(false);
+
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
-    }, [openSuccessModal, openCancelModal, isMobile]);
+    }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
 
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
 
@@ -102,7 +104,7 @@ export default function ViewSchedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={setOpenReschedule}
-                        openModal={setOpenSuccessModal}
+                        openModal={setOpenSuccessModalReschedule}
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Reagendar horário"
@@ -122,7 +124,14 @@ export default function ViewSchedule() {
                 />
             )}
 
-
+            {openSuccessModalReschedule && (
+                <SuccessModal
+                    isMobile={isMobile}
+                    closeThen={setOpenSuccessModalReschedule}
+                    title="Reagendamento Feito Com Sucesso"
+                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
+                />
+            )}
 
             {openCancelModal && (
                 <TimerModal

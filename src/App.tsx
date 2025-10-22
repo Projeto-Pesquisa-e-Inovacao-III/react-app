@@ -15,8 +15,8 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 
 // To do list:
 // safari support // deixa baixo
-// header mobile is a fucking svg instead of a fucking Link. fix it 
-// when rescheduling, success modal should say "Reagendamento feito com sucesso"
+  // when rescheduling, success modal should say "Reagendamento feito com sucesso"
+// talk to Joao about home. how can we show to alex both pages quickly? same thing with 'packages' page!
 
 // institucional/prototipo:
 // fabio mais para a direita // suave ajeita
