@@ -6,10 +6,9 @@ import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
-export default function ListUsers({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+export default function ListUsers({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
     hasHeader(true);
-    type("personal");
 
     const [pesquisa, setPesquisa] = useState("")
 

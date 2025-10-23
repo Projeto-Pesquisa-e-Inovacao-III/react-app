@@ -3,18 +3,15 @@ import "./desktop.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
-export default function ViewSchedule({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-    type("student");
 
     hasHeader(true);
     const eventsMock = [

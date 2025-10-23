@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop";
 import "./style.css"
+import ChangeTypeDevDebug from "../../ChangeTypeDevDebug";
+import type React from "react";
 
 type UserType = {
+  typeState: React.Dispatch<React.SetStateAction<"personal" | "student">>;
   type: "personal" | "student"
 }
 
-export default function UserHeaderDesktop({ type }: UserType) {
+export default function UserHeaderDesktop({ typeState, type }: UserType) {
+
 
   return (
     <>
@@ -38,6 +42,9 @@ export default function UserHeaderDesktop({ type }: UserType) {
           <img src="https://placehold.co/30x60/png" alt="" />
 
         </div>
+
+        <ChangeTypeDevDebug changeTypeTo={typeState} />
+
       </header>
     </>
   );

@@ -10,10 +10,9 @@ import { AppointmentCard } from "../../components/AppointmentCard";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
-export function Overview({ isPrestador = true, hasHeader, type }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-    type(isPrestador ? "personal" : "student");
-
+    
     hasHeader(true);
 
     const eventsMock = [

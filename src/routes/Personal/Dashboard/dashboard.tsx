@@ -19,12 +19,9 @@ const chartData = [
 ]
 
 
-export default function Dashboard({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+export default function Dashboard({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     hasHeader(true);
 
-    type("personal");
-
-    
     const isMobile = useMediaQuery('(max-width:1024px)');
 
 

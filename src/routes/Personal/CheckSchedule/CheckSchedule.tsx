@@ -10,9 +10,8 @@ import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
-export function CheckSchedule({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     hasHeader(true);
-    type("personal");
     const isMobile = useMediaQuery("(max-width:1024px)");
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
