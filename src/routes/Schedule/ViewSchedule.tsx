@@ -12,9 +12,11 @@ import SmallerButton from "../../components/SmallerButton";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
-export default function ViewSchedule() {
+export default function ViewSchedule({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
+    type("student");
 
+    hasHeader(true);
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
         { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
@@ -35,15 +37,12 @@ export default function ViewSchedule() {
         if (isMobile) window.scrollTo(0, 0);
     }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
 
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-
     return (
         <>
             <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
                 {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
                 </div>}
-                {!isMobile && <Header type="student" />}
                 <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
                     <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
                         <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
@@ -82,7 +81,6 @@ export default function ViewSchedule() {
                         ))}
                     </div>
                 </div>
-                {isMobile && <Header type="student" />}
             </div>
 
             {openNewEvent && (

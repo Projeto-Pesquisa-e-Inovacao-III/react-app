@@ -11,12 +11,12 @@ import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
-export default function EditUser() {
+export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
   const isMobile = useMediaQuery("(max-width:1024px)");
   const userImage: string = "";
+  hasHeader(true);
   return (
     <>
-      {!isMobile && <UserHeaderDesktop type="student" />}
       {isMobile && <div className="logo-header-mobile">
         <LogoHeaderMobile />
       </div>}
@@ -111,7 +111,6 @@ export default function EditUser() {
           <Button title="Editar Perfil" type="button" />
         </div>
       </div>
-      {isMobile && <UserHeaderMobile type="student" />}
     </>
   );
 }

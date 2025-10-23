@@ -1,23 +1,20 @@
 import UsersTable from "../../components/UsersTable/UsersTable";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import "./style.css"
 import "./mobile.css"
 import { useMediaQuery } from "@mui/material";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
-export default function ListUsers() {
+export default function ListUsers({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
+    hasHeader(true);
+    type("personal");
 
     const [pesquisa, setPesquisa] = useState("")
 
     return (
         <>
-            {!isMobile && <Header type="personal" />}
             {isMobile && <div className="logo-header-mobile">
                 <LogoHeaderMobile />
             </div>}
@@ -31,7 +28,6 @@ export default function ListUsers() {
                 <br />
                 <UsersTable input={pesquisa} />
             </div>
-            {isMobile && <div className="header-mobile"><Header type="personal" /></div>}
         </>
     )
 }

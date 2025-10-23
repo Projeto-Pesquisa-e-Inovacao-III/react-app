@@ -12,6 +12,8 @@ import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
+import Layout from "./components/Layout";
+import { useState } from "react";
 
 // todo list:
 // safari support // deixa baixo
@@ -25,6 +27,8 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 // datas formatadas no home // isso o joao vai fazer
 
 function App() {
+  const [hasHeader, setHasHeader] = useState(true);
+  const [type, setType] = useState<"student" | "personal">("student");
 
 
   return (
@@ -33,21 +37,24 @@ function App() {
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Overview />} />
-          <Route path="/schedule" element={<ViewSchedule />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/edit-user" element={<EditUser />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/users" element={<ListUsers />} />
-          <Route path="/packages" element={<Packages />} />
-          <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Routes>
+        <Layout hasHeader={hasHeader} type={type}>
+          <Routes>
+            <Route path="/" element={<Home hasHeader={setHasHeader}/>} />
+            <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader} type={setType}/>} />
+            <Route path="/packages" element={<Packages hasHeader={setHasHeader} />} />
+
+            <Route path="/home" element={<Overview hasHeader={setHasHeader} type={setType} />} />
+            <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} type={setType} />} />
+            <Route path="/users" element={<ListUsers hasHeader={setHasHeader} type={setType} />} />
+            <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
+            <Route path="/personal/check-schedule" element={<CheckSchedule hasHeader={setHasHeader} type={setType} />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/logout" element={<Logout />} />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </>
   );

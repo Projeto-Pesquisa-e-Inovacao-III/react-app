@@ -6,17 +6,15 @@ import { packagesMock } from "./mocks/packagesMock";
 import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import "./mobile.css"
 import "./desktop.css"
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
-export function Packages() {
+export function Packages({hasHeader}: {hasHeader: React.Dispatch<React.SetStateAction<boolean>>}) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
+    hasHeader(true);
 
     const handleBuyClick = (packageTitle: string) => {
         alert(`Você clicou para comprar o pacote: ${packageTitle}`);
     }
-
 
     return (
         <>
@@ -26,7 +24,6 @@ export function Packages() {
                         <LogoHeaderMobile />
                     </div>
                 )}
-                {!isMobile && <Header />}
             </div>
             
             <div className="packages-title-container">
@@ -70,7 +67,6 @@ export function Packages() {
                 ))}
             </div>
 
-            {isMobile && <Header />}
         </>
     )
 }

@@ -1,7 +1,5 @@
 import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
-import UserHeaderMobile from "../../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import { useMediaQuery } from "@mui/material";
 import "./style.css"
@@ -12,9 +10,10 @@ import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
-export function CheckSchedule() {
+export function CheckSchedule({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+    hasHeader(true);
+    type("personal");
     const isMobile = useMediaQuery("(max-width:1024px)");
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
     const [openModalDecline, setModalDecline] = useState<boolean>(false);
@@ -98,7 +97,6 @@ export function CheckSchedule() {
 
     return (
         <>
-            {!isMobile && <Header type="personal" />}
             {isMobile && <div className="logo-header-mobile">
                 <LogoHeaderMobile />
             </div>}
@@ -122,7 +120,6 @@ export function CheckSchedule() {
                     ))}
                 </div>
             </div>
-            {isMobile && <Header type="personal" />}
             {openModal && <CheckScheduleModal closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
             {openModalAccept && <TimerModal callSuccessModal={setOpenSuccessAcceptModal} isMobile={isMobile} closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
             {openModalDecline && <TimerModal callSuccessModal={setOpenSuccessDeclineModal} isMobile={isMobile} closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}

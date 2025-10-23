@@ -19,13 +19,17 @@ const chartData = [
 ]
 
 
-export default function Dashboard() {
+export default function Dashboard({ hasHeader, type }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>>, type: React.Dispatch<React.SetStateAction<"student" | "personal">> }) {
+    hasHeader(true);
+
+    type("personal");
+
+    
     const isMobile = useMediaQuery('(max-width:1024px)');
 
 
     return (
         <>
-            {!isMobile && <UserHeaderDesktop type="personal" />}
             <div className="wrapper-dashboard-personal">
                 {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
@@ -49,7 +53,6 @@ export default function Dashboard() {
                         <Chart data={chartData} type="line" title="Ganhos Mensais" />
                     </div>
                 </div>
-                {isMobile && <UserHeaderMobile type="personal" />}
             </div>
         </>
     )
