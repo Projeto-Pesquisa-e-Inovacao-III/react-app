@@ -27,7 +27,7 @@ export default function Dashboard() {
         <>
             {!isMobile && <UserHeaderDesktop type="personal" />}
             <div className="wrapper-dashboard-personal">
-                {isMobile && <div className="wrapper-dashboard-personal-logo-mobile">
+                {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
                 </div>
                 }

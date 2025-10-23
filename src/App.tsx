@@ -13,9 +13,8 @@ import { Packages } from "./routes/Packages/Packages";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 
-// To do list:
+// todo list:
 // safari support // deixa baixo
-  // when rescheduling, success modal should say "Reagendamento feito com sucesso"
 // talk to Joao about home. how can we show to alex both pages quickly? same thing with 'packages' page!
 
 // institucional/prototipo:
@@ -24,17 +23,6 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 
 // tela logado:
 // datas formatadas no home // isso o joao vai fazer
-// packages icon and text should be at the same text // suave
-
-// arquitetura:
-// quem gera logs?
-// glacier
-// internet
-// servidor aplicacao tomcat
-
-// teste de usuabilidade:
-// colocar resultados dos testes
-
 
 function App() {
 

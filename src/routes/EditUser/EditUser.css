@@ -8,15 +8,17 @@
     .wrapper_inp {
       width: 100%;
     }
+
     .input-icon {
-        left: 0.65rem;
-        top: 62%;
-        height: 1.5rem;
-        width: 1.5rem;
+      left: 0.65rem;
+      top: 62%;
+      height: 1.5rem;
+      width: 1.5rem;
     }
   }
 
-  @media (min-width: 768px) {
+
+  @media (min-width: 1025px) {
     padding: 32px 90px;
     gap: 25px;
     grid-template-columns: 3fr 1fr;
@@ -29,14 +31,15 @@
     .profile-section {
       max-width: 364px;
       max-height: 369px;
+
       .button {
         padding: 15px;
       }
     }
 
     h2 {
-        font-size: 36px;
-        font-weight: 400;
+      font-size: 36px;
+      font-weight: 400;
     }
 
     .white-container {
@@ -46,6 +49,7 @@
     .footer {
       .btn-generic {
         width: 320px;
+
         button {
           padding: 18px;
         }
@@ -66,25 +70,30 @@
       #nome {
         grid-area: nome;
       }
+
       #sobreNome {
         grid-area: sobreNome;
       }
+
       #cpf {
         grid-area: cpf;
       }
+
       #genero {
         grid-area: genero;
       }
+
       #telefone {
         grid-area: telefone;
       }
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
+
+
     grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "header header"
+    grid-template-areas: "header header"
       "profile profile"
       "personal personal"
       "login login"
@@ -104,6 +113,7 @@
       width: 100%;
       max-width: 153px;
       max-height: 45px;
+
       .button {
         padding: 13px;
       }
@@ -113,19 +123,20 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+
       .dashLine {
         border: none;
         height: 3px;
-        background-image: linear-gradient(
-          to right,
-          rgb(175, 175, 175) 50%,
-          transparent 50%
-        );
+        background-image: linear-gradient(to right,
+            rgb(175, 175, 175) 50%,
+            transparent 50%);
         background-size: 20px 2px;
         background-repeat: repeat-x;
       }
+
       .btn-generic {
         width: 148px;
+
         button {
           padding: 15px;
         }
@@ -136,16 +147,21 @@
   .goBack-container {
     grid-area: header;
   }
+
   .profile-section {
     grid-area: profile;
   }
+
   .personal-info {
     grid-area: personal;
   }
+
   .login-info {
     grid-area: login;
   }
+
   .footer {
     grid-area: footer;
   }
 }
+

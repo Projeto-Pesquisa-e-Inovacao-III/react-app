@@ -6,6 +6,7 @@ import { useMediaQuery } from "@mui/material";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
 export default function ListUsers() {
     const isMobile = useMediaQuery("(max-width:1024px)");
@@ -14,20 +15,23 @@ export default function ListUsers() {
 
     const [pesquisa, setPesquisa] = useState("")
 
-    return(
+    return (
         <>
-            {!isMobile && <Header type="personal"/>}
+            {!isMobile && <Header type="personal" />}
+            {isMobile && <div className="logo-header-mobile">
+                <LogoHeaderMobile />
+            </div>}
             <div className={`list-user-container${isMobile ? "-mobile" : ""}`}>
                 <h1>Usuários</h1>
                 <p>Lista de usuários assinantes.</p>
-                <br/>
+                <br />
                 <div className={`list-users-search-bar${isMobile ? "-mobile" : ""}`}>
-                    <SearchBar search={pesquisa} setSearch={setPesquisa}/>
+                    <SearchBar search={pesquisa} setSearch={setPesquisa} />
                 </div>
-                <br/>
-                <UsersTable input={pesquisa}/>
+                <br />
+                <UsersTable input={pesquisa} />
             </div>
-            {isMobile && <div className="header-mobile"><Header type="personal"/></div>}
+            {isMobile && <div className="header-mobile"><Header type="personal" /></div>}
         </>
     )
 }

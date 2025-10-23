@@ -8,6 +8,7 @@ import "./style.css"
 import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
@@ -85,7 +86,7 @@ export function CheckSchedule() {
         }
     ];
 
-    function handleCallSucessReschedule(){
+    function handleCallSucessReschedule() {
         setSuccessReschedule(true)
         setOpenModal(false)
     }
@@ -93,38 +94,41 @@ export function CheckSchedule() {
 
     useEffect(() => {
         console.log(openSuccessAcceptModal, openSuccessDeclineModal)
-    },[ openSuccessAcceptModal, openSuccessDeclineModal]);
+    }, [openSuccessAcceptModal, openSuccessDeclineModal]);
 
-    return(
-        <> 
-        {!isMobile && <Header type="personal" />}
-        <div className="container-check-schedule">
-            <div className="title-filter">
-                <h1>Solicitações de Agendamentos</h1>
-                <div className="card-filter">
-                    <CardFilterCheckSchedule />
+    return (
+        <>
+            {!isMobile && <Header type="personal" />}
+            {isMobile && <div className="logo-header-mobile">
+                <LogoHeaderMobile />
+            </div>}
+            <div className="container-check-schedule">
+                <div className="title-filter">
+                    <h1>Solicitações de Agendamentos</h1>
+                    <div className="card-filter">
+                        <CardFilterCheckSchedule />
+                    </div>
+                </div>
+
+                <div className="cards-check-schedule">
+                    {dataCard.map((card) => (
+                        <CardCheckSchedule
+                            key={card.id}
+                            RescheduleClick={setOpenModal}
+                            AcceptScheduleClick={setModalAccept}
+                            DeclineScheculeClick={setModalDecline}
+                            cardData={card}
+                        />
+                    ))}
                 </div>
             </div>
-
-            <div className="cards-check-schedule">
-                {dataCard.map((card) => (
-                    <CardCheckSchedule
-                        key={card.id}
-                        RescheduleClick={setOpenModal}
-                        AcceptScheduleClick={setModalAccept}
-                        DeclineScheculeClick={setModalDecline}
-                        cardData={card}
-                    />
-                ))}
-            </div>
-        </div>
-        {isMobile && <Header type="personal" />}
-        {openModal && <CheckScheduleModal  closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
-        {openModalAccept && <TimerModal  callSuccessModal={setOpenSuccessAcceptModal} isMobile={isMobile}  closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento"/> }
-        {openModalDecline && <TimerModal  callSuccessModal={setOpenSuccessDeclineModal}  isMobile={isMobile}  closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
-        {openSuccessReschedule && <SuccessModal isMobile={isMobile} closeThen={setSuccessReschedule} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente"/>}
-        {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
-        {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
+            {isMobile && <Header type="personal" />}
+            {openModal && <CheckScheduleModal closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
+            {openModalAccept && <TimerModal callSuccessModal={setOpenSuccessAcceptModal} isMobile={isMobile} closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
+            {openModalDecline && <TimerModal callSuccessModal={setOpenSuccessDeclineModal} isMobile={isMobile} closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
+            {openSuccessReschedule && <SuccessModal isMobile={isMobile} closeThen={setSuccessReschedule} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente" />}
+            {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
+            {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
         </>
     )
 }

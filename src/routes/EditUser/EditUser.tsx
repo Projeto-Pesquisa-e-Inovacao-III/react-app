@@ -9,6 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
 export default function EditUser() {
   const isMobile = useMediaQuery("(max-width:1024px)");
@@ -16,6 +17,9 @@ export default function EditUser() {
   return (
     <>
       {!isMobile && <UserHeaderDesktop type="student" />}
+      {isMobile && <div className="logo-header-mobile">
+        <LogoHeaderMobile />
+      </div>}
       <div className="edit-user-grid">
         <div className="goBack-container">
           {isMobile ?
