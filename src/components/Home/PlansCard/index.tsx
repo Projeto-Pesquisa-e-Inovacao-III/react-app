@@ -28,7 +28,7 @@ export default function PlansCard({ description, content, price, benefits }: Pla
           </div>
         </div>
 
-        <div className="font-bold w-3/4">
+        <div className="font-bold w-3/4 flex justify-center mx-auto mt-5">
           <Button type="button" title="Quero esse" />
         </div>
       </div>

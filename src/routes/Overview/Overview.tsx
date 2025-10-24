@@ -10,8 +10,10 @@ import { AppointmentCard } from "../../components/AppointmentCard";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
-export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
+export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
+    
+    hasHeader(true);
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
@@ -27,7 +29,6 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
 
     const [appointmentCards] = useState(appointmentCardsData);
 
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
     return (
         <>
             <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
@@ -36,7 +37,6 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                         <LogoHeaderMobile />
                     </div>
                 )}
-                {!isMobile && <Header type={isPrestador ? "personal" : "student"} />}
                 <div className={`container-content${isMobile ? "-mobile" : ""}`}>
                     <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
                         {isMobile && (
@@ -99,7 +99,6 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
                         </div>
                     )}
                 </div>
-                {isMobile && <Header type={isPrestador ? "personal" : "student"} />}
             </div>
         </>
     );

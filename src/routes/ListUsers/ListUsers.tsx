@@ -1,33 +1,32 @@
 import UsersTable from "../../components/UsersTable/UsersTable";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import "./style.css"
 import "./mobile.css"
 import { useMediaQuery } from "@mui/material";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
-export default function ListUsers() {
+export default function ListUsers({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
+    hasHeader(true);
 
     const [pesquisa, setPesquisa] = useState("")
 
-    return(
+    return (
         <>
-            {!isMobile && <Header type="personal"/>}
+            {isMobile && <div className="logo-header-mobile">
+                <LogoHeaderMobile />
+            </div>}
             <div className={`list-user-container${isMobile ? "-mobile" : ""}`}>
                 <h1>Usuários</h1>
                 <p>Lista de usuários assinantes.</p>
-                <br/>
+                <br />
                 <div className={`list-users-search-bar${isMobile ? "-mobile" : ""}`}>
-                    <SearchBar search={pesquisa} setSearch={setPesquisa}/>
+                    <SearchBar search={pesquisa} setSearch={setPesquisa} />
                 </div>
-                <br/>
-                <UsersTable input={pesquisa}/>
+                <br />
+                <UsersTable input={pesquisa} />
             </div>
-            {isMobile && <div className="header-mobile"><Header type="personal"/></div>}
         </>
     )
 }

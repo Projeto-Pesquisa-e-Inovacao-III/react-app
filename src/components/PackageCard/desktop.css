@@ -64,7 +64,6 @@
     .card-price-section {
         display: flex;
         align-items: baseline;
-        margin-bottom: 25px;
     }
     
     .card-price-section .card-price-value {
@@ -93,7 +92,13 @@
         color: #555;
         margin-bottom: 12px;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
+
+        span {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
     }
 
 

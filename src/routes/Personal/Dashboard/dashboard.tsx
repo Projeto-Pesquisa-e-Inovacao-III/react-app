@@ -1,11 +1,11 @@
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import KPICards from "../../components/Dashboard/Cards/KPICards/KPICards";
+import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
+import UserHeaderMobile from "../../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
+import KPICards from "../../../components/Dashboard/Cards/KPICards/KPICards";
 
 import "./style.css"
 import { useMediaQuery } from "@mui/material";
-import Chart from "../../components/Dashboard/Charts/Chart";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import Chart from "../../../components/Dashboard/Charts/Chart";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
 
 export const description = "A bar chart"
 
@@ -19,15 +19,16 @@ const chartData = [
 ]
 
 
-export default function Dashboard() {
+export default function Dashboard({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+    hasHeader(true);
+
     const isMobile = useMediaQuery('(max-width:1024px)');
 
 
     return (
         <>
-            {!isMobile && <UserHeaderDesktop type="personal" />}
             <div className="wrapper-dashboard-personal">
-                {isMobile && <div className="wrapper-dashboard-personal-logo-mobile">
+                {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
                 </div>
                 }
@@ -49,7 +50,6 @@ export default function Dashboard() {
                         <Chart data={chartData} type="line" title="Ganhos Mensais" />
                     </div>
                 </div>
-                {isMobile && <UserHeaderMobile type="personal" />}
             </div>
         </>
     )

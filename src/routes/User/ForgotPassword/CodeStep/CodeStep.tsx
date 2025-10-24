@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "../style.css";
 import { Lock, Mail, Phone } from "lucide-react";
-import InputWithIcon from "../../../../components/AuthComponents/InputWithIcon";
+import InputWithIcon from "../../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 
 export default function CodeStep({actualTimer, verifyTimer}: {actualTimer: number, verifyTimer: React.Dispatch<React.SetStateAction<number>>}) {
   const [timer, setTimer] = useState<number>(actualTimer);

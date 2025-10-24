@@ -39,7 +39,8 @@
 
                     .user-personal {
                         font-size: 24px;
-                        font-weight: lighter;
+                        font-weight: 300;
+
                     }
 
                     .schedule-page-user {
@@ -72,6 +73,10 @@
                     align-items: center;
                     text-align: center;
 
+                    span {
+                        width: 15vw;
+                    }
+
                 }
             }
         }
@@ -79,7 +84,7 @@
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 475px) {
     .schedule-view {
         display: flex;
         flex-direction: column;
@@ -95,9 +100,16 @@
         text-align: center !important;
 
         span {
-            width: 100%;
+            width: 100% !important;
             font-size: 16px;
             font-weight: 600;
         }
     }
 }
+
+@media (max-width: 375px) {
+    .btn-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    }

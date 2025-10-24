@@ -3,19 +3,17 @@ import "./desktop.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 
-//todo: when rescheduling, success modal should say "Reagendamento feito com sucesso"
-export default function ViewSchedule() {
+export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
+    hasHeader(true);
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
         { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
@@ -27,14 +25,14 @@ export default function ViewSchedule() {
 
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
     const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
+    const [openSuccessModalReschedule, setOpenSuccessModalReschedule] = useState(false);
+
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
-    }, [openSuccessModal, openCancelModal, isMobile]);
-
-    const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
+    }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
 
     return (
         <>
@@ -42,7 +40,6 @@ export default function ViewSchedule() {
                 {isMobile && <div className="logo-header-mobile">
                     <LogoHeaderMobile />
                 </div>}
-                {!isMobile && <Header type="student" />}
                 <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
                     <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
                         <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
@@ -81,7 +78,6 @@ export default function ViewSchedule() {
                         ))}
                     </div>
                 </div>
-                {isMobile && <Header type="student" />}
             </div>
 
             {openNewEvent && (
@@ -103,7 +99,7 @@ export default function ViewSchedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={setOpenReschedule}
-                        openModal={setOpenSuccessModal}
+                        openModal={setOpenSuccessModalReschedule}
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Reagendar horário"
@@ -123,7 +119,14 @@ export default function ViewSchedule() {
                 />
             )}
 
-
+            {openSuccessModalReschedule && (
+                <SuccessModal
+                    isMobile={isMobile}
+                    closeThen={setOpenSuccessModalReschedule}
+                    title="Reagendamento Feito Com Sucesso"
+                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
+                />
+            )}
 
             {openCancelModal && (
                 <TimerModal

@@ -142,6 +142,10 @@
                     position: relative;
                     margin: 0 !important;
 
+                    input {
+                        text-overflow: ellipsis;
+
+                    }
 
                     .input-icon {
                         position: absolute;

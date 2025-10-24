@@ -1,7 +1,7 @@
 import { use, useEffect, useState } from "react";
 import "../style.css";
 import { Lock, Mail, Phone } from "lucide-react";
-import InputWithIcon from "../../../../components/AuthComponents/InputWithIcon";
+import InputWithIcon from "../../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 
 export default function ChangePasswordStep() {
   const [newPassword, setNewPassword] = useState("");

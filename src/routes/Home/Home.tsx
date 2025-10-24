@@ -10,10 +10,12 @@ import HeaderDesktop from "../../components/Home/Header/HeaderDesktop";
 
 //todo: update images; 
 // remake header mobile; 
-export default function Home() {
+export default function Home({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery('(max-width:1024px)');
 
     const Header = isMobile ? HeaderMobile : HeaderDesktop;
+
+    hasHeader(false);
 
     return (
         <>

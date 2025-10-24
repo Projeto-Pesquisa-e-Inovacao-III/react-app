@@ -5,6 +5,11 @@
     p{
         color: #4B5563;
     }
+
+    h1 {
+        font-weight: 600;
+        font-size: 30px;
+    }
 }
 
 .header-mobile {

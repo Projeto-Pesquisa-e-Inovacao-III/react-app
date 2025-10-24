@@ -10,10 +10,10 @@
         display: flex;
         gap: 15px;
         width: 100%;
+    }
 
-
-
-
+    h2 {
+        font-size: 24px;
     }
 }
 
