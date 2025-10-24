@@ -17,19 +17,26 @@ import { useState } from "react";
 
 // todo list:
 // safari support // deixa baixo
-// talk to Joao about home. how can we show to alex both pages quickly? same thing with 'packages' page!
-// edit-user button should be "save changes" instead of "edit user" // falar com o fillipe
+// edit-user button should be "save changes" instead of "edit user" // falar com o fillipe (ok)
+
+//text orange in "all ages"
+
+// center text at site
+// centered services cards must have 
+
 
 // institucional/prototipo:
-// fabio mais para a direita // suave ajeita
-// texto no inicio deve apresentar que site também são para idosos (mobile) // decidir texto com os caras
-
-// tela logado:
-// datas formatadas no home // isso o joao vai fazer
+// fabio mais para a direita // make it a div 
 
 // todo: 
-// personal calendar
-// data nos cards de assinatura
+// fix personal schedule
+// include time and date on rescheduling
+// show loading state while an appointment's rescheduling is being accepted
+// swap one KPI on the dashboard
+// replace the large calendar with a weekly view in personal
+// organize folders (division between components of specific pages )
+// find gaps
+// study if code is following best practices
 
 
 function App() {
