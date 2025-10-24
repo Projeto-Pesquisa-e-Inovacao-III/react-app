@@ -54,7 +54,7 @@ export default function UserHeaderMobile({ type }: UserType) {
                 </Link>
 
                 {/* we dont have settings. should we? */}
-                <Link to="/settings">
+                <Link to="/edit-user">
                     <HeaderIconsMobile icon={
                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.5 13C13.0523 13 13.5 12.5523 13.5 12C13.5 11.4477 13.0523 11 12.5 11C11.9477 11 11.5 11.4477 11.5 12C11.5 12.5523 11.9477 13 12.5 13Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -101,7 +101,7 @@ export default function UserHeaderMobile({ type }: UserType) {
                             pageTitle="Pacotes" />
                     </Link>
 
-                    <Link to="/account">
+                    <Link to="/edit-user">
                         <HeaderIconsMobile icon={
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 21V19C19 17.9391 18.5786 16.9217 17.8284 16.1716C17.0783 15.4214 16.0609 15 15 15H9C7.93913 15 6.92172 15.4214 6.17157 16.1716C5.42143 16.9217 5 17.9391 5 19V21" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
