@@ -9,6 +9,7 @@
     padding-right: 100px;
     color: white;
 
+
     nav {
         font-family: "Poppins", sans-serif;
         font-size: 18px;
@@ -36,7 +37,21 @@
     .auth-links {
         font-size: 18px;
         display: flex;
+        align-items: center;
         gap: 8px;
+
+        svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        img {
+            width: 55px;
+            height: 55px;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 50%;
+        }
 
         img:first-child {
             border-radius: 50%;

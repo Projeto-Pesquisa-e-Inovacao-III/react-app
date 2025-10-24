@@ -27,6 +27,11 @@ import { useEffect, useState } from "react";
 // tela logado:
 // datas formatadas no home // isso o joao vai fazer
 
+// todo: 
+// personal calendar
+// data nos cards de assinatura
+
+
 function App() {
   const [hasHeader, setHasHeader] = useState(true);
   const [type, setType] = useState<"student" | "personal">("student");
