@@ -13,7 +13,7 @@ import { Packages } from "./routes/Packages/Packages";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // todo list:
 // safari support // deixa baixo
@@ -41,7 +41,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home hasHeader={setHasHeader}/>} />
             <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader}/>} />
-            <Route path="/packages" element={<Packages hasHeader={setHasHeader} />} />
+            <Route path="/packages" element={<Packages type={type} hasHeader={setHasHeader} />} />
 
             <Route path="/home" element={<Overview isPrestador={type === "personal"} hasHeader={setHasHeader} />} />
             <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} />} />
