@@ -10,8 +10,8 @@ import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 
 // todo: fix font family  
-export default function ForgotPassword() {
-
+export default function ForgotPassword({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+  hasHeader(false);
   const isMobile = useMediaQuery('(max-width: 1024px)');
 
   const [step, setStep] = useState<number>(1);

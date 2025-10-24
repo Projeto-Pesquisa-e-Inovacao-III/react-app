@@ -1,23 +1,40 @@
-.packages-title-container {
-    text-align: center; 
-    margin: 15px 20px 0 20px; 
-    padding: 0 0 15px 0;
+.packages-title-container,
+.personal-packages-title-container {
+    margin: 15px 0 0 0;
+    padding: 0 50px 15px 50px;
+
+    .btn-sched {
+        width: 25%;
+        height: 50px;
+    }
+}
+
+.personal-packages-title-container-mobile, .additional-title-mobile {
+    padding: 10px 20px 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .btn-sched {
+        width: 25%;
+        height: 50px;
+        margin-top: 20px;
+    }
 }
 
 .packages-title-container h1 {
     font-size: 1.3rem;
     font-weight: 600;
     color: #333;
-    margin-top: 15px; 
+    margin-top: 15px;
 }
 
 
 .packages-list-wrapper-mobile {
-    
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 20px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
     width: 100%;
-    padding: 10px 20px 30px 20px; 
+    padding: 10px 20px 30px 20px;
 }

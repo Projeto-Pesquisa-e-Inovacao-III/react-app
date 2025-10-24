@@ -11,8 +11,8 @@ import Button from "../../../components/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 
 // todo: fix font family  
-export default function Login() {
-
+export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+  hasHeader(false);
   const isMobile = useMediaQuery('(max-width: 1024px)');
 
   const [email, setEmail] = useState<string>("");
