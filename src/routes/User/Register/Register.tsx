@@ -21,7 +21,8 @@ import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 // jesus, what a mess
 // thank god is only frontend for now
 // todo: validation, mask  
-export default function Register() {
+export default function Register({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+    hasHeader(false);
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");

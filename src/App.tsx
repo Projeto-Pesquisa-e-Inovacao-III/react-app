@@ -49,9 +49,9 @@ function App() {
             <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
             <Route path="/personal/check-schedule" element={<CheckSchedule hasHeader={setHasHeader} />} />
 
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/login" element={<Login hasHeader={setHasHeader} />} />
+            <Route path="/register" element={<Register hasHeader={setHasHeader} />} />
+            <Route path="/forgot-password" element={<ForgotPassword hasHeader={setHasHeader} />} />
             <Route path="/logout" element={<Logout />} />
           </Routes>
         </Layout>
