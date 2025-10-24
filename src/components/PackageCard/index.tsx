@@ -1,5 +1,6 @@
 import './mobile.css'
 import './desktop.css'
+import SmallerButton from '../SmallerButton';
 
 type PackageCardProps = {
     title: string;
@@ -11,6 +12,7 @@ type PackageCardProps = {
     onClick: () => void;
     isMobile?: boolean;
     variant?: "consultoria" | "adicional";
+    isPersonal?: boolean;
 };
 
 
@@ -18,7 +20,7 @@ export function PackageCard(props: PackageCardProps) {
     const { isMobile = false, variant = "consultoria" } = props;
 
     return (
-        <div className={`card-container card-variant-${variant}${isMobile ? '-mobile' : ''}`}>
+        <div className={`package-card-container card-variant-${variant}${isMobile ? '-mobile' : ''}`}>
 
             <h2 className={`card-title${isMobile ? '-mobile' : ''}`}>{props.title}</h2>
             <p className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</p>
@@ -41,11 +43,17 @@ export function PackageCard(props: PackageCardProps) {
                 ))}
             </ul>
 
-            {
-                props.titlebtn === "" ? null :
+            {props.isPersonal ?
+                <button className={`card-btn-personal${isMobile ? '-mobile' : ''}`} onClick={props.onClick}>
+                    <SmallerButton type="button" title="Editar" />
+                    <SmallerButton type="button" title="Deletar" />
+                </button>
+                :
+                props.titlebtn && (
                     <button className={`card-btn${isMobile ? '-mobile' : ''}`} onClick={props.onClick}>
                         {props.titlebtn}
                     </button>
+                )
             }
         </div>
     );

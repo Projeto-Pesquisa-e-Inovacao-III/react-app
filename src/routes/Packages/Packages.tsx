@@ -1,72 +1,85 @@
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { useMediaQuery } from "@mui/material";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { PackageCard } from "../../components/PackageCard";
-import { packagesMock } from "./mocks/packagesMock"; 
+import { packagesMock } from "./mocks/packagesMock";
 import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import "./mobile.css"
 import "./desktop.css"
+import SmallerButton from "../../components/SmallerButton";
 
-export function Packages({hasHeader}: {hasHeader: React.Dispatch<React.SetStateAction<boolean>>}) {
+type PackagesProps = {
+    hasHeader: React.Dispatch<React.SetStateAction<boolean>>;
+    type: "personal" | "student";
+};
+
+export function Packages({ hasHeader, type }: PackagesProps) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-
     hasHeader(true);
+
+    const isPersonal = type === "personal";
 
     const handleBuyClick = (packageTitle: string) => {
         alert(`Você clicou para comprar o pacote: ${packageTitle}`);
-    }
+    };
 
     return (
         <>
-            <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
-                {isMobile && (
+            {isMobile && (
+                <div className={`user-view-schedule-mobile`}>
                     <div className="logo-header-mobile">
                         <LogoHeaderMobile />
                     </div>
+                </div>
+            )}
+
+            <div
+                className={`${isPersonal ? "personal-packages-title-container" : "packages-title-container"
+                    }${isMobile ? "-mobile" : ""}`}
+            >
+                <h1>
+                    {isPersonal ? "Pacotes Atuais" : "Pacotes de Consultoria"}
+                </h1>
+
+                {isPersonal && (
+                    <SmallerButton type="button" title="Adicionar Pacote" />
                 )}
             </div>
-            
-            <div className="packages-title-container">
-                <h1>Pacotes de Consultoria</h1>
-            </div>
 
-            <div className={`packages-list-wrapper${isMobile ? '-mobile' : '-desktop'}`}>
+            <div className={`packages-list-wrapper${isMobile ? "-mobile" : "-desktop"}`}>
                 {packagesMock.map((pacote, index) => (
                     <PackageCard
                         key={index}
-                        title={pacote.title}
-                        subtitle={pacote.subtitle}
-                        price={pacote.price}
-                        duration={pacote.duration}
-                        benefits={pacote.benefits}
-                        titlebtn={pacote.titlebtn}
+                        {...pacote}
                         onClick={() => handleBuyClick(pacote.title)}
                         isMobile={isMobile}
+                        isPersonal={isPersonal}
                     />
                 ))}
             </div>
 
-            <div className="packages-title-container additional-title">
+            <div
+                className={`${isPersonal ? "personal-packages-title-container" : "packages-title-container"
+                    } additional-title${isMobile ? "-mobile" : ""}`}
+            >
                 <h1>Pacotes Adicionais</h1>
+
+                {isPersonal && (
+                    <SmallerButton type="button" title="Adicionar Pacote Adicional" />
+                )}
             </div>
 
-            <div className={`packages-list-wrapper-${isMobile ? 'mobile' : 'desktop'}`}>
+            <div className={`packages-list-wrapper-${isMobile ? "mobile" : "desktop"}`}>
                 {packagesMockAdicional.map((pacote, index) => (
                     <PackageCard
                         key={`adicional-${index}`}
-                        title={pacote.title}
-                        subtitle={pacote.subtitle}
-                        price={pacote.price}
-                        duration={pacote.duration}
-                        benefits={pacote.benefits}
-                        titlebtn={pacote.titlebtn}
+                        {...pacote}
                         onClick={() => handleBuyClick(pacote.title)}
                         isMobile={isMobile}
-                        variant="adicional" 
+                        variant="adicional"
+                        isPersonal={isPersonal}
                     />
                 ))}
             </div>
-
         </>
-    )
+    );
 }
