@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 // todo list:
 // safari support // deixa baixo
 // talk to Joao about home. how can we show to alex both pages quickly? same thing with 'packages' page!
+// edit-user button should be "save changes" instead of "edit user" // falar com o fillipe
 
 // institucional/prototipo:
 // fabio mais para a direita // suave ajeita
@@ -42,7 +43,7 @@ function App() {
             <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader}/>} />
             <Route path="/packages" element={<Packages hasHeader={setHasHeader} />} />
 
-            <Route path="/home" element={<Overview hasHeader={setHasHeader} />} />
+            <Route path="/home" element={<Overview isPrestador={type === "personal"} hasHeader={setHasHeader} />} />
             <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} />} />
             <Route path="/users" element={<ListUsers hasHeader={setHasHeader} />} />
             <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
