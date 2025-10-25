@@ -22,8 +22,16 @@
     }
 }
 
-.packages-title-container h1 {
-    font-size: 1.3rem;
+.packages-title-container-mobile h1, .personal-packages-title-container-mobile h1, .additional-title-mobile h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.packages-title-container h1, .personal-packages-title-container h1 {
+    font-size: 2rem;
     font-weight: 600;
     color: #333;
     margin-top: 15px;

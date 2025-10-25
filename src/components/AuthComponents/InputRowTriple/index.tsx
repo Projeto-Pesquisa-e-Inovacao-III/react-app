@@ -1,3 +1,4 @@
+import type { FormEvent } from "react";
 import "./style.css"
 
 type Props = {
@@ -11,9 +12,14 @@ type Props = {
     setFirstOnChange: React.Dispatch<React.SetStateAction<string>>;
     setSecondOnChange: React.Dispatch<React.SetStateAction<string>>;
     setThirdOnChange: React.Dispatch<React.SetStateAction<string>>;
+    valueFirst?: string;
+    valueSecond?: string;
+    valueThird?: string;
+    validatorFirst?: (event: React.FormEvent<HTMLInputElement>) => void;
+    validatorSecond?: (event: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, thirdPlaceholder, firstIcon, secondIcon, thirdIcon, thirdIsSelect, setFirstOnChange, setSecondOnChange, setThirdOnChange }: Props) {
+export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, thirdPlaceholder, firstIcon, secondIcon, thirdIcon, thirdIsSelect, setFirstOnChange, setSecondOnChange, setThirdOnChange, valueFirst, valueSecond, valueThird, validatorFirst, validatorSecond }: Props) {
     return (
         <div className="triple-row-input">
             <div className="input-block">
@@ -24,6 +30,8 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
                         name="name"
                         placeholder={firstPlaceholder}
                         onChange={(e) => setFirstOnChange(e.target.value)}
+                        value={valueFirst}
+                        onInput={validatorFirst}
                     />
                 </div>
             </div>
@@ -34,6 +42,8 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
                         type="text"
                         placeholder={secondPlaceholder}
                         onChange={(e) => setSecondOnChange(e.target.value)}
+                        value={valueSecond}
+                        onInput={validatorSecond}
                     />
                 </div>
             </div>
@@ -43,11 +53,11 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
                 <div className="input-block">
                     <div className="wrapper_inp">
                         <div className="input-icon">{thirdIcon}</div>
-                        <select onChange={(e) => setThirdOnChange(e.target.value)}>
+                        <select defaultValue={valueThird} onChange={(e) => setThirdOnChange(e.target.value)}>
                             <option value="#" disabled selected>{thirdPlaceholder}</option>
-                            <option value="option1">Option 1</option>
-                            <option value="option2">Option 2</option>
-                            <option value="option3">Option 3</option>
+                            <option value="male">Masculino</option>
+                            <option value="female">Feminino</option>
+                            <option value="other">Outro</option>
                         </select>
                     </div>
                 </div>

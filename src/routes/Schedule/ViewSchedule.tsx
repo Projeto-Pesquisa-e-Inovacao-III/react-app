@@ -47,7 +47,6 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
                 <LogoHeaderMobile />
             </div>}
             {isPersonal ? (
-
                 <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
             ) : (
                 <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>

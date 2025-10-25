@@ -18,17 +18,15 @@ import { useState } from "react";
 // todo list:
 // safari support // deixa baixo
 
-//text orange in "all ages"
-
-// center text at site
-// centered services cards must have 
+// centered services cards must have
 
 // todo: 
-// fix personal schedule // (validate)
-// show loading state while an appointment's rescheduling is being accepted
+// fix personal schedule // (done but needs review)
+// show loading state while an appointment's rescheduling is being accepted // é o que? 
 // swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
-// replace the large calendar with a weekly view in personal // are you guys sure about this?
-// organize folders (division between components of specific pages )
+
+//future improvements:
+// organize folders (division between components of specific pages)
 // find gaps
 // study if code is following best practices
 

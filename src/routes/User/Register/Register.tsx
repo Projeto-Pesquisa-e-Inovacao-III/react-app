@@ -8,7 +8,7 @@ import "./style.css";
 import Swal from "sweetalert2";
 import { cpfMask } from "../../../utils/mascara";
 import * as validation from "../../../utils/validacao";
-import type { UserDTO } from "../../../models/user";
+import type { UserDTO, UserDTOSprint2 } from "../../../models/user";
 import InputRowDouble from "../../../components/AuthComponents/InputRowDouble";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import InputRowTriple from "../../../components/AuthComponents/InputRowTriple";
@@ -18,19 +18,32 @@ import Button from "../../../components/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 
 
-// jesus, what a mess
-// thank god is only frontend for now
 // todo: validation, mask  
 export default function Register({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     hasHeader(false);
     const [name, setName] = useState<string>("");
+    const [surname, setSurname] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [customerDocument, setCustomerDocument] = useState<string>("");
+
     const [phone, setPhone] = useState<string>("");
     const [gender, setGender] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
+
+    function handleAutoFill() {
+        console.log("auto preenchendo")
+        setName("João");
+        setSurname("Silva");
+        setEmail("joao.silva@example.com");
+        setPassword("Senha123");
+        setCustomerDocument("123.456.789-00");
+        setPhone("(11) 91234-5678");
+        setGender("Masculino");
+        setPassword("123456789aA!");
+        setConfirmPassword("123456789aA!");
+    }
 
     const isMobile = useMediaQuery('(max-width: 1024px)');
 
@@ -92,9 +105,18 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                 }, 3000)
             })
             .catch((err) => {
+                if (err.response && err.response.status !== 500) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Usuário já cadastrado",
+                        showConfirmButton: true,
+                        confirmButtonColor: "#166ba3ff",
+                        timer: 3000,
+                    });
+                }
                 Swal.fire({
                     icon: "error",
-                    title: "Usuário já cadastrado",
+                    title: "Erro no servidor",
                     showConfirmButton: true,
                     confirmButtonColor: "#166ba3ff",
                     timer: 3000,
@@ -112,6 +134,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                     <div className={`welcome_message${isMobile ? "-mobile" : ""}`}>
                         <h1>Inscreva-se</h1>
                         <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
+                        <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
                     </div>
                     <div className="border-division"></div>
 
@@ -125,7 +148,9 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                 firstIcon={<User />}
                                 secondIcon={<User />}
                                 setFirstOnChange={setName}
-                                setSecondOnChange={setCustomerDocument}
+                                setSecondOnChange={setSurname}
+                                valueFirst={name}
+                                valueSecond={surname}
                             />
 
                             <InputWithIcon
@@ -133,6 +158,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                 placeholder="Email"
                                 onInputChange={setEmail}
                                 icon={<Mail />}
+                                value={email}
                             />
 
                             {!isMobile ? (
@@ -147,6 +173,10 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                     thirdIcon={<User />}
                                     setThirdOnChange={setGender}
                                     thirdIsSelect={true}
+                                    valueFirst={customerDocument}
+                                    valueSecond={phone}
+                                    valueThird={gender}
+                                    validatorFirst={cpfMask}
                                 />
                             ) : (
                                 <>
@@ -155,6 +185,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                         placeholder="CPF"
                                         onInputChange={setCustomerDocument}
                                         icon={<IdCard />}
+                                        value={customerDocument}
                                     />
 
                                     <InputRowDouble
@@ -164,6 +195,8 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                         secondIcon={<User />}
                                         setFirstOnChange={setPhone}
                                         setSecondOnChange={setGender}
+                                        valueFirst={phone}
+                                        valueSecond={gender}
                                     />
                                 </>
                             )}
@@ -177,6 +210,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                 onInputChange={setPassword}
                                 icon={<Lock />}
                                 isPassword={true}
+                                value={password}
                             />
                             <InputWithIcon
                                 type="password"
@@ -184,6 +218,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                 onInputChange={setConfirmPassword}
                                 icon={<Lock />}
                                 isPassword={true}
+                                value={confirmPassword}
                             />
                         </div>
 

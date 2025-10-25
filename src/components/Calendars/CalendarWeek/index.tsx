@@ -52,6 +52,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { 
                     eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                     slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                     timeZone="local"
+                    dayHeaderFormat={{ weekday: `${isMobile ? 'short' : 'long'}` }}
                     businessHours={true}
                     events={events}
                     headerToolbar={{

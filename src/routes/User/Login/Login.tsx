@@ -20,6 +20,12 @@ export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.S
 
   const nav = useNavigate()
 
+  function handleAutoFill() {
+    console.log("autofill")
+    setEmail("joao.silva@example.com");
+    setPassword("123456789aA!");
+  }
+
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // Handle login logic here
@@ -69,11 +75,12 @@ export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.S
         <div className="wrapper_login_elements">
           <div className="welcome_message">
             <h1>Bem-vindo</h1>
+            <button className="border-2" onClick={handleAutoFill}>Auto preencher</button>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="wrapper-inputs-login-page">
-              <InputWithIcon type={"email"} placeholder={"seu@email.com"} onInputChange={setEmail} icon={<Mail />} />
-              <InputWithIcon type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={setPassword} icon={<Lock />} />
+              <InputWithIcon value={email} type={"email"} placeholder={"seu@email.com"} onInputChange={setEmail} icon={<Mail />} />
+              <InputWithIcon value={password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={setPassword} icon={<Lock />} />
 
             </div>
             <div className="config_login">
