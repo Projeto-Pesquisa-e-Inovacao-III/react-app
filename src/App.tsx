@@ -23,10 +23,6 @@ import { useState } from "react";
 // center text at site
 // centered services cards must have 
 
-
-// institucional/prototipo:
-// fabio mais para a direita // make it a div 
-
 // todo: 
 // fix personal schedule // (validate)
 // include time and date on rescheduling
