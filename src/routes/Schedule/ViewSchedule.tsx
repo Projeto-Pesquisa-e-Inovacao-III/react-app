@@ -37,6 +37,10 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
         if (isMobile) window.scrollTo(0, 0);
     }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
 
+    useEffect(() => {
+        console.log("events", events);
+    }, [events]);
+
     return (
         <>
             {isMobile && <div className="logo-header-mobile">
@@ -47,9 +51,7 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
                 <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
             ) : (
                 <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
-                    {isMobile && <div className="logo-header-mobile">
-                        <LogoHeaderMobile />
-                    </div>}
+
                     <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
                         <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={events} />

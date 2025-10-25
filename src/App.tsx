@@ -17,7 +17,6 @@ import { useState } from "react";
 
 // todo list:
 // safari support // deixa baixo
-// edit-user button should be "save changes" instead of "edit user" // falar com o fillipe (ok)
 
 //text orange in "all ages"
 
@@ -29,7 +28,7 @@ import { useState } from "react";
 // fabio mais para a direita // make it a div 
 
 // todo: 
-// fix personal schedule
+// fix personal schedule // (validate)
 // include time and date on rescheduling
 // show loading state while an appointment's rescheduling is being accepted
 // swap one KPI on the dashboard

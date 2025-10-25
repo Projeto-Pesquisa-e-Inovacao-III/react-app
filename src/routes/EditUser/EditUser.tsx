@@ -106,7 +106,7 @@ export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
         <div className="footer">
           <div className="dashLine"></div>
-          <Button title="Editar Perfil" type="button" />
+          <Button title="Salvar Alterações" type="button" />
         </div>
       </div>
     </>
