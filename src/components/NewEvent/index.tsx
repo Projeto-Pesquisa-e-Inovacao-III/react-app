@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
-import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
+import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
 
 type NewEventProps = {

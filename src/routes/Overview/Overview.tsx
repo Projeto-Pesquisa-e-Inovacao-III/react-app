@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./desktop.css";
 import "./mobile.css";
-import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
 import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { useMediaQuery } from "@mui/material";
