@@ -30,71 +30,85 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             id: 1,
             clientName: "João Silva",
             age: 28,
+            type: "Personal",
             phone: "(11) 98765-4321",
             local: "Academia FitLife",
             address: "Rua das Flores, 123, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00"
+            hour: "14:00",
+            status: "pending"
         },
         {
             id: 2,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Residencial",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00"
+            hour: "14:00",
+            status: "pending"
         },
         {
             id: 3,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Funcional",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00"
+            hour: "14:00",
+            status: "pending"
         },
         {
             id: 4,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Personal",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "16/11/2025",
-            hour: "14:00"
+            hour: "14:00",
+            status: "pending"
         },
         {
             id: 5,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Residencial",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "17/11/2025",
-            hour: "13:00"
+            hour: "13:00",
+            status: "pending"
         },
         {
             id: 6,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Funcional",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "18/11/2025",
-            hour: "15:00"
+            hour: "15:00",
+            status: "pending"
         },
         {
             id: 7,
             clientName: "Maria Oliveira",
             age: 32,
+            type: "Personal",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "19/11/2025",
-            hour: "16:00"
+            hour: "16:00",
+            status: "student_pending"
         }
     ];
 

@@ -2,7 +2,7 @@
     background-color: #fff;
     width: fit-content;
     border-radius: 12px;
-    padding: 10px 20px;
+    padding: 10px 15px;
     display: flex;
     gap: 15px;
     flex-direction: column;
@@ -11,13 +11,18 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 
     .buttons {
+        width: 100%;
+    }
+
+    .buttons,
+    .status-indicator-check-schedule {
         display: flex;
         flex-direction: row;
         height: 40px;
-        width: max-content;
         gap: 10px;
 
         .btn-generic {
+            width: 100%;
             button {
                 width: 100%;
                 max-width: none;
@@ -31,19 +36,21 @@
         flex-direction: row;
         gap: 8px;
         width: 100%;
-        padding: 8px 20px;
+        padding: 10px 5px;
         border-bottom: 2px solid #737374;
 
         .titleName {
             font-size: 18px;
-            font-weight: semi-bold;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
         }
 
         span {
             font-size: 14px;
         }
-
-        ;
 
         .content {
             display: flex;
@@ -53,7 +60,7 @@
             height: 100%;
             width: 100%;
 
-            .text-in-same-row-check-schedule {
+            .text-in-the-row-check-schedule {
                 font-weight: 600;
                 display: flex;
                 flex-direction: row;
@@ -70,6 +77,24 @@
                 font-size: 14px;
                 font-weight: semi-bold;
             }
+
+            .student_pending-check-schedule {
+                display: flex;
+                gap: 5px;
+            }
+
+            .status-pending-check-schedule {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                .dot-icon-check-schedule {
+                    color: var(--bg-yellow);
+                    color: #FFA800;
+
+                }
+            }
+
         }
 
         .photograph {
@@ -107,7 +132,8 @@
 
 @media (max-width: 350px) {
 
-    .buttons {
+    .buttons,
+    .status-indicator-check-schedule {
         flex-wrap: wrap;
         height: 100% !important;
     }

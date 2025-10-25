@@ -41,7 +41,7 @@
                 }
             }
 
-            &.reschedule {
+            &.decline {
                 background-color: var(--bg-orange);
 
                 &:hover {
