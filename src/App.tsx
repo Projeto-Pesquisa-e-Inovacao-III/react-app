@@ -15,10 +15,6 @@ import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout";
 import { useState } from "react";
 
-// todo list:
-// safari support // deixa baixo
-
-// centered services cards must have
 
 // todo: 
 // fix personal schedule // (done but needs review)
@@ -26,6 +22,7 @@ import { useState } from "react";
 // swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
 
 //future improvements:
+// safari support // deixa baixo
 // organize folders (division between components of specific pages)
 // find gaps
 // study if code is following best practices

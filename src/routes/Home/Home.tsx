@@ -1,9 +1,9 @@
 import { useMediaQuery } from "@mui/material";
-import MainSection from "../../components/Home/MainSection";
-import AboutSection from "../../components/Home/AboutSection";
-import ServicesSection from "../../components/Home/ServicesSection";
-import PlansSection from "../../components/Home/PlansSection";
-import FAQSection from "../../components/Home/FAQSection";
+import MainSection from "./MainSection";
+import AboutSection from "./AboutSection";
+import ServicesSection from "./ServicesSection";
+import PlansSection from "./PlansSection";
+import FAQSection from "./FAQSection";
 import Footer from "../../components/Home/Footer/Footer";
 import HeaderMobile from "../../components/Home/Header/HeaderMobile";
 import HeaderDesktop from "../../components/Home/Header/HeaderDesktop";

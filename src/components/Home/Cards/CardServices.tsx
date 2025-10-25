@@ -1,6 +1,15 @@
-import type { CardServices } from "../../../constants/homeProps";
+type CardServices = {
+  title: string;
+  content: string;
+  image: string;
+  isReverse?: boolean;
+  isCarrousel?: boolean;
+  bgColor: string;
+  color?: string;
+  isMobile?: boolean;
+}
 
-export default function CardServices({ bgColor, title, content, image, isReverse, isMobile }: CardServices) {
+export default function CardServices({ bgColor, color, title, content, image, isReverse, isMobile }: CardServices) {
   return (
     <>
       {isMobile ? (
@@ -14,13 +23,13 @@ export default function CardServices({ bgColor, title, content, image, isReverse
           </div>
         </div>
       ) : (
-        <div className={`${bgColor} flex ${isReverse ? "flex-row-reverse pl-10" : "flex-row pr-10"} gap-9 mb-10 rounded-lg`}>
+        <div className={`${bgColor} flex ${isReverse ? "flex-row-reverse pl-10" : "flex-row pr-10"} gap-1 mb-10 rounded-lg`}>
           <div className="max-w-fit w-3/4 h-1/4 overflow-hidden p-10 bg-white">
-            <img className="w-full h-96" src={image} alt={title} />
+            <img className="w-lg object-cover h-96" src={image} alt={title} />
           </div>
-          <div className="w-full text-center text-white flex justify-around flex-col pb-20 pt-20">
-            <h1 className="text-4xl font-bold">{title}</h1>
-            <p className="text-2xl">{content}</p>
+          <div className={`w-full text-center ${color ? color : "text-white"} flex justify-around items-center flex-col pb-20 pt-20`}>
+            <h1 className="w-3xl text-4xl font-bold">{title}</h1>
+            <p className="w-6xl text-2xl">{content}</p>
           </div>
         </div>
       )}

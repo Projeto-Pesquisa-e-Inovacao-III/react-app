@@ -8,7 +8,7 @@
     scroll-behavior: smooth;
   }
 
-  
+
 }
 
 @media (max-width: 1024px) {
@@ -56,6 +56,16 @@
 
   .font-bebas {
     font-family: var(--font-bebas);
+  }
+
+  .gradient-white-with-blue-bar {
+    background: #ffffff;
+    background: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 1) 97%, rgba(9, 58, 93, 1) 96%);
+    background: -moz-linear-gradient(90deg, rgba(255, 255, 255, 1) 97%, rgba(9, 58, 93, 1) 96%);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1) 97%, rgba(9, 58, 93, 1) 96%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#FFFFFF",
+        endColorstr="#093A5D",
+        GradientType=1);
   }
 }
 
