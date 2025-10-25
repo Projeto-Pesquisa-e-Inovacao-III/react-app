@@ -1,23 +1,57 @@
+@import "tailwindcss";
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  font-family: Poppins;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   color: #000000;
-  background-color: #eeeeee;
+  background-color: #E5E7EB;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --muted-foreground: #757575;
+  --muted-foreground: #424242;
   --link-text: #2e5580;
-  
+
   --btn-bg: #2e5580;
   --btn-color: white;
   --btn-border: none;
   --btn-border-radius: 4px;
-  --btn-hover-bg: #274668;
+
+  --oxford-blue: #051128;
+  --indigo: #093A5D;
+  --lapis-lazuli: #0C6291;
+
+  --color-gigant-orange: #f26430;
+
+  --font-poppins: 'Poppins', sans-serif;
+  --font-bebas: 'Bebas Neue', cursive;
+
+  --calendar-width: 180px;
+
+  --bg-blue: #093A5D;
+  --btn-hover-bg: #2c6888;
+  --bg-blue-darker: #051128;
+  --bg-orange: #F26430;
+
+  --gray: #F5F5F5;
+  --bg-green: #4BB543;
+
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 0.3s ease;
+  opacity: 1;
 }

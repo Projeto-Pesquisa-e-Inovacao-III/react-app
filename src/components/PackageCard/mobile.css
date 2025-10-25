@@ -1,0 +1,151 @@
+@media (max-width: 1023px) {
+    .packages-title-container {
+        text-align: center;
+        margin: 15px 20px 0 20px;
+        padding: 0 0 15px 0;
+    }
+
+    .packages-title-container h1 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #333;
+        margin-top: 15px;
+    }
+
+    .packages-list-wrapper-desktop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .packages-list-wrapper-mobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+}
+
+.card-btn-personal-mobile {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+
+.card-variant-consultoria-mobile,
+.card-variant-adicional-mobile {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 500px;
+    min-width: auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+
+.card-title-mobile {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 5px;
+    text-align: left;
+    width: 100%;
+}
+
+.card-subtitle-mobile {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    min-height: auto;
+    text-align: left;
+    width: 100%;
+}
+
+.card-price-section-mobile {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 15px;
+    width: 100%;
+    min-width: 0;
+}
+
+.card-price-value-mobile {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #000;
+    margin-right: 5px;
+    line-height: 1.1;
+}
+
+.card-duration-mobile {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.card-benefits-list-mobile {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 25px 0;
+    width: 100%;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.benefit-item-mobile {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.benefit-item-mobile svg {
+    margin-right: 8px;
+    fill: #22C55E;
+    flex-shrink: 0;
+}
+
+.benefit-item-mobile span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+    display: flex;
+}
+
+.card-btn-mobile {
+    width: 100%;
+    background-color: var(--bg-blue, #0d47a1);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: auto;
+    transition: background-color 0.3s ease;
+}
+
+.card-btn-mobile:hover {
+    background-color: #003580;
+}

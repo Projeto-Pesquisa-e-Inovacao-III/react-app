@@ -1,0 +1,98 @@
+.new-event-opened-wrapper-callendar {
+  filter: opacity(0.4);
+}
+
+.disabled-day {
+  cursor: none;
+  background-color: #ddd !important;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.selected-day, .fc-highlight {
+  background-color: #2e2e2e !important;
+  color: white !important;
+  border-radius: 5px;
+  padding: 6px 10px;
+  transition: all 0.3s, color 0.3s;
+}
+
+#wrapper-styled-callendar .fc {
+  font-family: "Inter", sans-serif;
+}
+
+#wrapper-styled-callendar .fc-toolbar-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+#wrapper-styled-callendar .fc-prev-button,
+#wrapper-styled-callendar .fc-next-button {
+  background: none !important;
+  border: none !important;
+  font-size: 1.2rem !important;
+  color: #333 !important;
+  cursor: pointer;
+}
+
+#wrapper-styled-callendar .fc-col-header-cell {
+  font-weight: 500;
+  color: #555;
+  padding: 8px 0;
+  border: none !important;
+}
+
+#wrapper-styled-callendar .fc-daygrid-day {
+  border: none !important;
+  text-align: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+#wrapper-styled-callendar .fc-daygrid-day-top {
+  margin: 0 auto;
+  width: fit-content;
+}
+
+#wrapper-styled-callendar .fc-daygrid-day-number {
+  font-size: 0.95rem;
+}
+
+#wrapper-styled-callendar .fc-day-today {
+  background: none;
+}
+
+#wrapper-styled-callendar .fc-day-today .fc-daygrid-day-number {
+  background: black;
+  color: white !important;
+  border-radius: 50%;
+  padding: 6px 10px;
+}
+
+#wrapper-styled-callendar .fc-daygrid-day:hover {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+#wrapper-styled-callendar .fc-col-header-cell-cushion::first-letter,
+.fc-toolbar-title::first-letter {
+  text-transform: capitalize;
+}
+
+#wrapper-styled-callendar .fc .fc-scrollgrid-section table {
+  height: 50px;
+}
+
+#wrapper-styled-callendar .fc-theme-standard td,
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
+}
+
+#wrapper-styled-callendar .fc .fc-toolbar-title {
+  margin-left: 15px;
+}
+
+#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky>* {
+  position: relative !important;
+}

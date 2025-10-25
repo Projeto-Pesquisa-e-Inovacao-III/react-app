@@ -1,100 +1,91 @@
-.login {
+.container-login {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  background-color: var(--bg-blue-darker);
+  font-family: "Poppins", sans-serif;
 
-  a {
-    color: var(--link-text);
-    text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
-    }
+
+  .section-logo-login {
+    padding: 30px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-blue-darker);
+
   }
 
-  .wrapper_login_elements {
-    width: 23vw;
-    padding: 1.5rem;
-    background-color: #fff;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
 
-    .welcome_message {
-        p {
-            color: #757575e0;
-        }
+  .login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
+    height: auto;
+    width: 100vw;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
+    background-color: white;
+    position: relative;
+
+    a {
+      color: var(--link-text);
+      text-decoration: underline;
+
     }
 
-    form {
+    .wrapper_login_elements {
+      width: 23vw;
+      padding: 1.5rem;
+      text-align: center;
       display: flex;
-      gap: 1rem;
       flex-direction: column;
-      text-align: left;
+      justify-content: space-around;
+      gap: 1.5em;
 
-      .wrapper_inp {
-        position: relative;
-
-        .mail-icon,
-        .lock-icon {
-          position: absolute;
-          left: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--muted-foreground);
-          height: 1rem;
-          width: 1rem;
-        }
-
-        .password-toggle {
-          position: absolute;
-          right: 0.75rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--muted-foreground);
-          transition: all 0.3s ease;
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 0;
+      .welcome_message {
+        h1 {
+          font-size: 2em;
+          font-weight: 500;
         }
       }
 
-      input[type="email"],
-      input[type="text"],
-      input[type="password"] {
-        padding: 12px 16px 12px 40px;
-        background-color: transparent;
-        color: black;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 100%;
+      form {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+
+        .wrapper-inputs-login-page {
+          display: flex;
+          flex-direction: column;
+          gap: 2rem;
+
+          .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            transition: all 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+          }
+        }
+
+        .btn-generic{
+          margin-top: 2rem;
+        }
       }
+
+
+
 
       input[type="checkbox"] {
         background-color: transparent;
       }
 
-      button {
-        padding: 10px;
-        background-color: var(--btn-bg);
-        color: var(--btn-color);
-        border: var(--btn-border);
-        border-radius: var(--btn-border-radius);
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-          background-color: var(--btn-hover-bg);
-        }
-      }
     }
 
     .config_login {
@@ -104,6 +95,28 @@
       span {
         margin-left: 10px;
       }
+
+      a {
+        text-decoration: underline;
+      }
+    }
+
+  }
+}
+
+@media (max-width: 1024px) {
+  .container-login {
+    flex-direction: column;
+
+    .login {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+
+      .wrapper_login_elements {
+        width: 80vw;
+      }
     }
   }
+
 }

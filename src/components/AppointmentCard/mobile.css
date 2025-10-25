@@ -1,0 +1,114 @@
+.session-card-mobile {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 24px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 16px;
+    background-color: #fff;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+    .session-card-left-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        align-items: flex-start;
+
+        .session-card-status {
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .session-card-type {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .session-card-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+
+            .session-card-avatar {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .session-card-name {
+                font-weight: 600;
+                font-size: 16px;
+                color: #000;
+            }
+        }
+    }
+
+    .session-card-divider-mobile {
+        display: block;
+        width: 3px;
+        height: 80%;
+        background: #d1d1d1;
+        margin: 0 16px;
+    }
+
+    .session-card-right-mobile {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-width: 90px;
+        white-space: nowrap;
+
+        .session-card-date {
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .session-card-time {
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .session-card-mobile {
+        width: 80%;
+        max-width: 100%;
+        gap: 12px;
+        padding: 12px 6px;
+        align-items: flex-start;
+        .session-card-right-mobile {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .session-card-divider-mobile {
+            height: 90%;
+            margin: 0 8px;
+        }
+        .session-card-avatar {
+            width: 28px;
+            height: 28px;
+        }
+        .session-card-name {
+            font-size: 14px;
+        }
+        .session-card-date, .session-card-time {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            font-size: 13px;
+        }
+    }
+}
