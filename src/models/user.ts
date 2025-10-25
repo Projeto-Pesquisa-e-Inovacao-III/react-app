@@ -1,9 +1,12 @@
 export type UserDTO = {
     id?: string;
     nome: string;
+    sexo: string;
+    dataNascimento: string;
     email: string;
     senha: string;
-    cpf: string;
+    cpf?: string;
+    telefone?: string;
 }
 
 export type UserDTOSprint2 = {

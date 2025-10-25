@@ -12,7 +12,7 @@ type dataCardProps = {
     address?: string;
     date?: string;
     hour?: string;
-    status?: "pending" | "student_pending";
+    status?: string | "pending" | "student_pending";
 }
 
 export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, cardData }: {

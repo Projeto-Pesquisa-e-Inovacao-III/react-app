@@ -61,7 +61,10 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
             nome: name,
             email: email,
             senha: password,
-            cpf: customerDocument
+            cpf: customerDocument,
+            telefone: phone,
+            sexo: gender,
+            dataNascimento: "2000-01-01" // Placeholder date, adjust as needed
         };
 
         const nullOrBlank = validation.isNullOrBlank(userData);

@@ -20,13 +20,14 @@ import { useState } from "react";
 // fix personal schedule // (done but needs review)
 // show loading state while an appointment's rescheduling is being accepted // é o que? 
 // swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
+// integrate login with backend
 
 //future improvements:
 // safari support // deixa baixo
 // organize folders (division between components of specific pages)
 // find gaps
 // study if code is following best practices
-
+// editar/delete
 
 function App() {
   const [hasHeader, setHasHeader] = useState(true);
