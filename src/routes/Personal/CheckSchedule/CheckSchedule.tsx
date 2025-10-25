@@ -32,7 +32,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 28,
             phone: "(11) 98765-4321",
             local: "Academia FitLife",
-            address: "Rua das Flores, 123, São Paulo, SP"
+            address: "Rua das Flores, 123, São Paulo, SP",
+            date: "15/11/2025",
+            hour: "14:00"
         },
         {
             id: 2,
@@ -40,7 +42,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "15/11/2025",
+            hour: "14:00"
         },
         {
             id: 3,
@@ -48,7 +52,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "15/11/2025",
+            hour: "14:00"
         },
         {
             id: 4,
@@ -56,7 +62,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "16/11/2025",
+            hour: "14:00"
         },
         {
             id: 5,
@@ -64,7 +72,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "17/11/2025",
+            hour: "13:00"
         },
         {
             id: 6,
@@ -72,7 +82,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "18/11/2025",
+            hour: "15:00"
         },
         {
             id: 7,
@@ -80,7 +92,9 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
             age: 32,
             phone: "(11) 91234-5678",
             local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP"
+            address: "Avenida Brasil, 456, São Paulo, SP",
+            date: "19/11/2025",
+            hour: "16:00"
         }
     ];
 

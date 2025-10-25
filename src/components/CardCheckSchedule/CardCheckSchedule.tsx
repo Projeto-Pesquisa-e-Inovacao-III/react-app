@@ -8,6 +8,8 @@ type dataCardProps = {
     phone?: string;
     local?: string;
     address?: string;
+    date?: string;
+    hour?: string;
 }
 
 export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, cardData }: {
@@ -34,20 +36,25 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
 
     return (
         <>
-            <div className="card">
+            <div className="personal-check-schedule-card">
                 <div className="high">
                     <div className="photograph">
                         <img className="imgCard" src="https://placehold.co/60x60/png" alt="" />
                     </div>
                     <div className="content">
                         <h1 className="titleName">{cardData.clientName}</h1>
-                        <div className="name-age-row">
-                            <span>Nome: {cardData.clientName}</span>
-                            <span>Idade: {cardData.age} anos</span>
+                        <div className="text-in-same-row-check-schedule">
+                            {/* <span>Nome: <span className="text-in-row-check-schedule">{cardData.clientName}</span></span> */}
+                            <span>Idade: <span className="text-in-row-check-schedule">{cardData.age} anos</span></span>
+                        </div>
+                        <div className="text-in-same-row-check-schedule">
+                            <span>Data: <span className="text-in-row-check-schedule">{cardData.date}</span></span>
+                            <span>Hora: <span className="text-in-row-check-schedule">{cardData.hour}</span></span>
                         </div>
                         <span>Celular: {cardData.phone}</span>
                         <span>Local: {cardData.local}</span>
                         <span>Endereço: {cardData.address}</span>
+
                     </div>
                 </div>
                 <div className="buttons">

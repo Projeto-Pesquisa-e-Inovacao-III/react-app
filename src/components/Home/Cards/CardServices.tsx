@@ -18,7 +18,7 @@ export default function CardServices({ bgColor, title, content, image, isReverse
           <div className="max-w-fit w-3/4 h-1/4 overflow-hidden p-10 bg-white">
             <img className="w-full h-96" src={image} alt={title} />
           </div>
-          <div className="text-white flex justify-around flex-col w-1/2 pb-20 pt-20">
+          <div className="w-full text-center text-white flex justify-around flex-col pb-20 pt-20">
             <h1 className="text-4xl font-bold">{title}</h1>
             <p className="text-2xl">{content}</p>
           </div>

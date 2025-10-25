@@ -25,10 +25,9 @@ import { useState } from "react";
 
 // todo: 
 // fix personal schedule // (validate)
-// include time and date on rescheduling
 // show loading state while an appointment's rescheduling is being accepted
-// swap one KPI on the dashboard
-// replace the large calendar with a weekly view in personal
+// swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
+// replace the large calendar with a weekly view in personal // are you guys sure about this?
 // organize folders (division between components of specific pages )
 // find gaps
 // study if code is following best practices
