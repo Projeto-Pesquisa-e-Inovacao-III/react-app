@@ -29,7 +29,7 @@ export default function CardServices({ bgColor, color, title, content, image, is
           </div>
           <div className={`w-full text-center ${color ? color : "text-white"} flex justify-around items-center flex-col pb-20 pt-20`}>
             <h1 className="w-3xl text-4xl font-bold">{title}</h1>
-            <p className="w-6xl text-2xl">{content}</p>
+            <p className="w-5xl text-2xl">{content}</p>
           </div>
         </div>
       )}
