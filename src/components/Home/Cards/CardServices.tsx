@@ -1,4 +1,4 @@
-import type { CardServices } from "../../../constants/homeProps";
+import type { CardServices } from "../../../models/homeProps";
 
 export default function CardServices({ bgColor, title, content, image, isReverse, isMobile }: CardServices) {
   return (
