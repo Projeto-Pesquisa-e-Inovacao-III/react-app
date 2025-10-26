@@ -22,7 +22,6 @@ export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.S
   const nav = useNavigate();
 
   function handleAutoFill() {
-    console.log("autofill")
     setEmail("joao.silva@example.com");
     setPassword("123456789aA!");
   }
@@ -43,9 +42,7 @@ export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.S
           setSuccessLogin(true);
 
           setTimeout(() => {
-            if (successLogin) {
-              nav("/home")
-            }
+            nav("/home")
           }, 4000)
         }
 

@@ -41,12 +41,6 @@ export default function NewEvent(
     }, []);
 
     useEffect(() => {
-        console.log("newEventStartHour ", newEventStartHour);
-    }, [newEventStartHour]);
-
-
-
-    useEffect(() => {
         if (postalCode.length === 8) {
             axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
                 .then(response => {

@@ -117,11 +117,6 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
         setOpenModal(false)
     }
 
-
-    useEffect(() => {
-        console.log(openSuccessAcceptModal, openSuccessDeclineModal)
-    }, [openSuccessAcceptModal, openSuccessDeclineModal]);
-
     return (
         <>
             {isMobile && <div className="logo-header-mobile">

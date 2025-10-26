@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import { Lock, Mail, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
@@ -42,7 +42,6 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
     const [successRegister, setSuccessRegister] = useState<boolean>(false);
 
     function handleAutoFill() {
-        console.log("auto preenchendo")
         setName("João");
         setSurname("Silva");
         setEmail("joao.silva@example.com");
@@ -194,33 +193,6 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                     </div>
                                 </div>
 
-                                {/* {!isMobile ? (
-                                <InputRowTriple
-                                    firstPlaceholder="CPF"
-                                    firstIcon={<IdCard />}
-                                    setFirstOnChange={setCustomerDocument}
-                                    secondPlaceholder="Telefone"
-                                    secondIcon={<Phone />}
-                                    setSecondOnChange={setPhone}
-                                    thirdPlaceholder="Gênero"
-                                    thirdIcon={<User />}
-                                    setThirdOnChange={setGender}
-                                    thirdIsSelect={true}
-                                    valueFirst={customerDocument}
-                                    valueSecond={phone}
-                                    valueThird={gender}
-                                    validatorFirst={cpfMask}
-                                />
-                            ) : (
-                                <>
-                                    <InputWithIcon
-                                        type="text"
-                                        placeholder="CPF"
-                                        onInputChange={setCustomerDocument}
-                                        icon={<IdCard />}
-                                        value={customerDocument}
-                                    /> */}
-
                                 <InputRowDouble
                                     firstPlaceholder="CPF"
                                     secondPlaceholder="Telefone"
@@ -231,8 +203,6 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                     valueFirst={customerDocument}
                                     valueSecond={phone}
                                 />
-                                {/* </> */}
-                                {/* )} */}
                             </div>
                             <div className="border-division"></div>
 

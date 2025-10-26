@@ -20,7 +20,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                             <p className="mb-8">
                                 A Consultoria Saúde Fitness é especializada em oferecer
                                 atendimento personalizado em academias, residências e também ao ar
-                                livre para pessoas <span className="text-gigant-orange font-semibold"> todas as idades</span>. {/*achei zoado */}
+                                livre para pessoas <span className="text-gigant-orange font-semibold"> todas as idades</span>.
                             </p>
                             
 

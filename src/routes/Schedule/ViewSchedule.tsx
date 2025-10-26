@@ -37,10 +37,6 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
         if (isMobile) window.scrollTo(0, 0);
     }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
 
-    useEffect(() => {
-        console.log("events", events);
-    }, [events]);
-
     return (
         <>
             {isMobile && <div className="logo-header-mobile">

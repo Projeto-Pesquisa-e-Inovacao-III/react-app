@@ -17,30 +17,6 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { 
         setEvents(eventsMock);
     }, [insertedEvents]);
 
-
-    // useEffect(() => {
-    //     async function checkConnection() {
-    //         const isDatabaseConnected = await checkDebugConnection();
-    //         if (isDatabaseConnected) {
-    //             console.log("Conexão com o banco de dados bem-sucedida.");
-    //             getEvents().then((response) => {
-    //                 console.log(response)
-    //                 const databaseEvents = response.data.content.map((event: { title: string; dateTime: string }) => {
-    //                     const [date, time] = event.dateTime.split("T");
-    //                     return { title: event.title, start: `${date}T${time}`, end: `${date}T09:00:00` }; // t09 é só um horário fixo de fim do evento, pq não tem input para isso ainda
-    //                 });
-    //                 console.log("Eventos do banco de dados:", databaseEvents);
-    //                 setEvents(databaseEvents);
-    //             });
-    //         }
-    //     }
-    //     checkConnection();
-    //     console.log("events", events);
-    //     if (!events) {
-    //         setEvents(eventsMock);
-    //     }
-    // }, []);
-
     return (
         <div className="container-calendar-week-personal">
             <div className="wrapper-callendar" id="wrapper-callendar">
