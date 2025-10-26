@@ -41,6 +41,12 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
     const [successRegister, setSuccessRegister] = useState<boolean>(false);
 
+
+    function navToLogin() {
+        setSuccessRegister(false);
+        navigate("/login");
+    }
+
     function handleAutoFill() {
         setName("João");
         setSurname("Silva");
@@ -258,7 +264,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                         isMobile={isMobile}
                         title="Cadastro realizado com sucesso!"
                         content="Você já pode fazer login na sua conta."
-                        closeThen={setSuccessRegister}
+                        closeThen={navToLogin}
                     />
                 )}
         </>
