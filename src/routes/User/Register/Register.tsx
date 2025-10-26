@@ -52,7 +52,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
         setSurname("Silva");
         setEmail("joao.silva@example.com");
         setPassword("Senha123");
-        setCustomerDocument("123.456.789-00");
+        setCustomerDocument("123.456.789-10");
         setPhone("(11) 91234-5678");
         setGender("Masculino");
         setPassword("123456789aA!");
@@ -71,16 +71,19 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
         let errors = "";
 
+        console.log(customerDocument);
 
         const userData: UserDTO = {
             nome: name,
             email: email,
             senha: password,
-            cpf: customerDocument,
+            cpf: customerDocument.split(".").join("").split("-").join(""),
             telefone: phone,
             sexo: gender,
             dataNascimento: birthDate
         };
+
+        console.log(userData.cpf);
 
         const nullOrBlank = validation.isNullOrBlank(userData);
 
@@ -88,7 +91,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
             errors += nullOrBlank;
         } else if (!validation.validateEmail(email).startsWith("Email válido")) {
             errors += validation.validateEmail(email);
-        } else if (userData.cpf && userData.cpf.length !== 14) {
+        } else if (customerDocument && customerDocument.length !== 14) {
             errors += "CPF inválido. Deve ter 14 caracteres.\n";
         } else if (validation.validatePassword(password).startsWith("password válida") === false) {
             errors += validation.validatePassword(password);
@@ -111,7 +114,9 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                 setSuccessRegister(true);
 
                 setTimeout(() => {
-                    navigate("/login");
+                    if (successRegister) {
+                        navigate("/login");
+                    }
                 }, 4000);
 
             })
