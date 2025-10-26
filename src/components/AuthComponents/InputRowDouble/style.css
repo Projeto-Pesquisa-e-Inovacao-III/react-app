@@ -3,12 +3,15 @@
     gap: 1rem;
     align-items: center;
 
+
     .first-block,
     .second-block {
         .wrapper_inp {
             margin-top: 0.7rem;
             position: relative;
         }
+
+
 
         flex: 1;
     }

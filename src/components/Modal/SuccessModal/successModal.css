@@ -1,5 +1,5 @@
 .modal-event-created {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -17,6 +17,7 @@
     width: 40%;
 
     .content-modal {
+        text-align: center;
         width: fit-content;
         font-size: 18px;
     }

@@ -2,16 +2,19 @@ import { useEffect, useState } from "react";
 import "./desktop.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
-import ViewCalendarMonthStyled from "../../components/ViewCalendarMonthStyled";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
 import NewEvent from "../../components/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import CalendarWeek from "../../components/Calendars/CalendarWeek";
 
 export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
+
+    const isPersonal = localStorage.getItem("app-type") === "personal";
 
     hasHeader(true);
     const eventsMock = [
@@ -36,49 +39,54 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
 
     return (
         <>
-            <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
-                {isMobile && <div className="logo-header-mobile">
-                    <LogoHeaderMobile />
-                </div>}
-                <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
-                    <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
-                        <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
-                    </div>
-                    <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
-                        <div className="adjust-button-w-schedule">
-                            <SmallerButton
-                                type="button"
-                                icon={isMobile ? undefined : (<svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M5 12h14" />
-                                    <path d="M12 5v14" />
-                                </svg>)}
-                                title={`Agendar`}
-                                handleButtonClick={() => setOpenNewEvent(true)} />
-                        </div>
+            {isMobile && <div className="logo-header-mobile">
+                <LogoHeaderMobile />
+            </div>}
+            {isPersonal ? (
+                <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
+            ) : (
+                <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
 
-                        {events.map((event, index) => (
-                            <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
-                                <UserScheduleCard
-                                    date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
-                                    hour={`${event.hour.replace(":", "h").split(":")[0]}`}
-                                    handleCancel={setOpenCancelModal}
-                                    handleReschedule={setOpenReschedule}
-                                />
+                    <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
+                        <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
+                        </div>
+                        <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
+                            <div className="adjust-button-w-schedule">
+                                <SmallerButton
+                                    type="button"
+                                    icon={isMobile ? undefined : (<svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="M5 12h14" />
+                                        <path d="M12 5v14" />
+                                    </svg>)}
+                                    title={`Agendar`}
+                                    handleButtonClick={() => setOpenNewEvent(true)} />
                             </div>
-                        ))}
+
+                            {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, index) => (
+                                <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
+                                    <UserScheduleCard
+                                        date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
+                                        hour={`${event.hour.replace(":", "h").split(":")[0]}`}
+                                        handleCancel={setOpenCancelModal}
+                                        handleReschedule={setOpenReschedule}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {openNewEvent && (
                 <>
@@ -149,5 +157,6 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
                 />
             )}
         </>
+
     );
 }

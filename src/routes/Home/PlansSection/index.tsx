@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PlansCard from "../PlansCard";
+import PlansCard from "../../../components/Home/PlansCard";
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);

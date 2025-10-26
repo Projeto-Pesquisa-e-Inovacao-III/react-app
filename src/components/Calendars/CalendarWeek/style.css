@@ -1,0 +1,39 @@
+.container-calendar-week-personal {
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.new-event-opened-wrapper-callendar {
+    filter: opacity(0.4);
+}
+
+.disabled-day {
+    cursor: none;
+    background-color: #ddd !important;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.fc .fc-timegrid-col.fc-day-today {
+    background-color: rgba(15, 71, 177, 0.15);
+}
+
+@media (max-width: 1024px) {
+
+    .fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack {
+        height: 100vh;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.2rem !important;
+        text-align: center;
+    }
+
+    .container-calendar-week-personal {
+        padding: 0 20px 20px;
+
+        height: auto;
+        min-height: 100vh;
+    }
+}

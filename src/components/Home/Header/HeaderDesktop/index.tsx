@@ -1,13 +1,14 @@
+import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop";
+import { User } from "lucide-react";
 
-export default function HeaderDesktop() {
-
+export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {
     return (
         <>
             <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white">
-                <div>
+                <Link to="/">
                     <LogoHeaderDesktop />
-                </div>
+                </Link>
                 <nav className="font-poppins text-lg font-semibold mt-0 mb-0 ml-auto mr-auto flex items-center justify-center gap-10 ">
                     <a href="#main-section">Inicio</a>
                     <a href="#about-section">Quem sou?</a>
@@ -16,8 +17,20 @@ export default function HeaderDesktop() {
                 </nav>
 
                 <div className="text-lg flex gap-2">
-                    <a href="/login" className="p-3 text-white h-full rounded-md">Login</a>
-                    <a href="/register" className=" p-3 bg-white text-black h-full rounded-md">Cadastro</a>
+                    {userLoggedIn ? (
+                        <div className="flex gap-3 items-center">
+                            <Link to="/home" className="border-2 p-1 rounded-full">
+                                <User />
+                            </Link>
+                            <Link to="/logout" className="p-3 bg-white text-black h-full rounded-md">Logout</Link>
+
+                        </div>
+                    ) : (
+                        <>
+                            <Link to="/login" className="p-3 text-white h-full rounded-md">Login</Link>
+                            <Link to="/register" className=" p-3 bg-white text-black h-full rounded-md">Cadastro</Link>
+                        </>
+                    )}
                 </div>
             </header>
         </>

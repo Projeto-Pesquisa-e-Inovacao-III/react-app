@@ -11,7 +11,7 @@ export default function ChangePasswordStep() {
     <>
       <div className="welcome_message">
         <h1>Altere sua senha</h1>
-        <p>Lorem ipsum dolor sit amet consectetur. Amet purus donec quis ut. Ullamcorper proin a sit.</p>
+        <p>Para prosseguir digite uma nova senha e confirme-a.</p>
       </div>
       <div className="wrapper-inputs-forgot-password-page">
         <form action="">

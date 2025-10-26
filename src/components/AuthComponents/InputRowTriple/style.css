@@ -28,7 +28,8 @@
 
 
     select {
-        color: #525252 !important;
+        color: #000000 !important;
+        background-color: #f3f3f3;
 
         option {
             color: black;

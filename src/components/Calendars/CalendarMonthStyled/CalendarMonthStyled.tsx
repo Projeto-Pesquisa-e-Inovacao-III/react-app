@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./mobile.css";
 import "./desktop.css";
 import { use, useEffect, useRef, useState } from "react";
-import type { EventDTO } from "../../models/calendar";
+import type { EventDTO } from "../../../models/calendar";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;

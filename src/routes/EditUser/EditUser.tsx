@@ -6,9 +6,7 @@ import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import GoBackButton from "../../components/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 
 export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
@@ -108,7 +106,7 @@ export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
         <div className="footer">
           <div className="dashLine"></div>
-          <Button title="Editar Perfil" type="button" />
+          <Button title="Salvar Alterações" type="button" />
         </div>
       </div>
     </>

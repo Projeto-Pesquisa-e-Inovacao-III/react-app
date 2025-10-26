@@ -5,11 +5,13 @@ type Props = {
     secondPlaceholder: string;
     firstIcon: React.ReactNode;
     secondIcon: React.ReactNode;
+    valueFirst?: string;
+    valueSecond?: string;
     setFirstOnChange: React.Dispatch<React.SetStateAction<string>>;
     setSecondOnChange: React.Dispatch<React.SetStateAction<string>>;
 }
-
-export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange }: Props) {
+    
+export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange, valueFirst, valueSecond }: Props) {
     return (
         <div className="double-row-input">
             <div className="first-block">
@@ -20,6 +22,7 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                         name="name"
                         placeholder={firstPlaceholder}
                         onChange={(e) => setFirstOnChange(e.target.value)}
+                        value={valueFirst}
                     />
                 </div>
             </div>
@@ -31,6 +34,7 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                         name="costumerDocument"
                         placeholder={secondPlaceholder}
                         onChange={(e) => setSecondOnChange(e.target.value)}
+                        value={valueSecond}
                     // onInput={(e) => cpfMask(e)}
                     />
                 </div>

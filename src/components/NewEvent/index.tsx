@@ -4,8 +4,9 @@ import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
-import CalendarMonthStyled from "../CalendarMonthStyled/CalendarMonthStyled";
+import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
+import { cepMask } from "../../utils/mascara";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -40,11 +41,6 @@ export default function NewEvent(
     }, []);
 
     useEffect(() => {
-        console.log("newEventStartHour ", newEventStartHour);
-    }, [newEventStartHour]);
-
-
-    useEffect(() => {
         if (postalCode.length === 8) {
             axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
                 .then(response => {
@@ -65,9 +61,16 @@ export default function NewEvent(
             return;
         }
 
+        if (!postalCode || address === null) {
+            alert("Por favor, insira um CEP válido para o endereço.");
+            return;
+        }
 
-
-
+        if (!number) {
+            alert("Por favor, insira o número do endereço.");
+            return;
+        }
+        
         //debugging - check if backend is reachable
         const isDatabaseConnected = await checkDebugConnection();
         console.log("isDatabaseConnected", isDatabaseConnected);
@@ -222,7 +225,8 @@ export default function NewEvent(
                                         <input
                                             type="text"
                                             placeholder="CEP"
-                                            onChange={(e) => setPostalCode(e.target.value)}
+                                            onChange={(e) => setPostalCode((e.target.value).split("-").join("").trim())}
+                                            onInput={cepMask}
                                         />
                                         <input
                                             type="text"

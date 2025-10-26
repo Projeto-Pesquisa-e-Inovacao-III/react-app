@@ -10,9 +10,10 @@ type Props = {
     onInputChange?: React.Dispatch<React.SetStateAction<string>>;
     icon: React.ReactNode;
     isPassword?: boolean;
+    value?: string;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -27,6 +28,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                 className={`${isPassword ? `password-input` : ``}`}
                 placeholder={placeholder}
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
+                value={value}
             />
             {isPassword && (
                 <button

@@ -3,6 +3,7 @@ import { LogoHeaderDesktop } from "../../LogoHeaderDesktop";
 import "./style.css"
 import ChangeTypeDevDebug from "../../ChangeTypeDevDebug";
 import type React from "react";
+import { Bell } from "lucide-react";
 
 type UserType = {
   typeState: React.Dispatch<React.SetStateAction<"personal" | "student">>;
@@ -15,7 +16,7 @@ export default function UserHeaderDesktop({ typeState, type }: UserType) {
   return (
     <>
       <header className="user-header-desktop">
-        <LogoHeaderDesktop />
+        <Link to="/"><LogoHeaderDesktop /></Link>
         <nav>
           {type === 'personal' ? (
             <>
@@ -38,9 +39,10 @@ export default function UserHeaderDesktop({ typeState, type }: UserType) {
         </nav>
 
         <div className="auth-links">
-          <img src="https://placehold.co/60x60/png" alt="" />
-          <img src="https://placehold.co/30x60/png" alt="" />
-
+          <Bell />
+          <Link to="/edit-user">
+            <img src="https://thispersondoesnotexist.com" alt="" />
+          </Link>
         </div>
 
         <ChangeTypeDevDebug changeTypeTo={typeState} />

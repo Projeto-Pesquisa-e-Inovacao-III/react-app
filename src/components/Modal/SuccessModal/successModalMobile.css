@@ -17,6 +17,7 @@
     width: 90%;
 
     .content-modal {
+        text-align: center;
         width: 100%;
         font-size: 18px;
     }

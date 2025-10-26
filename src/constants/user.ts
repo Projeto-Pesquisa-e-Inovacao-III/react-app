@@ -17,3 +17,7 @@ export function update(id: string, userdata: UserDTO) {
 export function softDelete(id: string) {
    return api.patch(`/usuarios/${id}`)
 }
+
+export function logout() {
+   return api.get(`/usuarios/logout`)
+}

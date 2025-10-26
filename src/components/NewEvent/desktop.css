@@ -38,7 +38,7 @@
   h1 {
     padding: 20px 0;
     font-size: 36px;
-    font-weight: lighter;
+    font-weight: 300;
     text-transform: uppercase;
   }
 }
