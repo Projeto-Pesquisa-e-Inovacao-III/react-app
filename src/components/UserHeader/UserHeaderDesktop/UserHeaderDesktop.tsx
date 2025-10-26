@@ -24,7 +24,7 @@ export default function UserHeaderDesktop({ typeState, type }: UserType) {
               <Link to="/schedule">Agenda</Link>
               <Link to="/personal/check-schedule">Solicitações</Link>
               <Link to="/dashboard">Dashboard</Link>
-              <Link to="/packages">Assinatura</Link>
+              <Link to="/packages">Planos</Link>
               <Link to="/users">Usuários</Link>
             </>
           ) : (

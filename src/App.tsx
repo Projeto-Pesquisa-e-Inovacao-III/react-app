@@ -49,7 +49,8 @@ function App() {
             <Route path="/packages" element={<Packages type={type} hasHeader={setHasHeader} />} />
 
             <Route path="/home" element={<Overview isPrestador={type === "personal"} hasHeader={setHasHeader} />} />
-            <Route path="/dashboard" element={<PrivateRoute><Dashboard hasHeader={setHasHeader} /></PrivateRoute>} />
+            {/* <Route path="/dashboard" element={<PrivateRoute><Dashboard hasHeader={setHasHeader} /></PrivateRoute>} /> */}
+            <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} />} />
             <Route path="/users" element={<ListUsers hasHeader={setHasHeader} />} />
             <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
             <Route path="/personal/check-schedule" element={<CheckSchedule hasHeader={setHasHeader} />} />
