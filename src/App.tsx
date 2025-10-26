@@ -14,6 +14,7 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout";
 import { useState } from "react";
+import { PrivateRoute } from "./services/privateRoute";
 
 
 // todo: 
@@ -23,16 +24,18 @@ import { useState } from "react";
 // integrate login with backend
 
 //future improvements:
+// find a way to remove setHasHeader and type from every route (context?)
 // safari support // deixa baixo
 // organize folders (division between components of specific pages)
 // find gaps
 // study if code is following best practices
 // editar/delete
 
+
 function App() {
   const [hasHeader, setHasHeader] = useState(true);
   const [type, setType] = useState<"student" | "personal">("student");
-  
+
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -41,18 +44,19 @@ function App() {
       <BrowserRouter>
         <Layout hasHeader={hasHeader} type={type} changeTypeTo={setType}>
           <Routes>
-            <Route path="/" element={<Home hasHeader={setHasHeader}/>} />
-            <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader}/>} />
+            <Route path="/" element={<Home hasHeader={setHasHeader} />} />
+            <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader} />} />
             <Route path="/packages" element={<Packages type={type} hasHeader={setHasHeader} />} />
 
             <Route path="/home" element={<Overview isPrestador={type === "personal"} hasHeader={setHasHeader} />} />
-            <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} />} />
+            <Route path="/dashboard" element={<PrivateRoute><Dashboard hasHeader={setHasHeader} /></PrivateRoute>} />
             <Route path="/users" element={<ListUsers hasHeader={setHasHeader} />} />
             <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
             <Route path="/personal/check-schedule" element={<CheckSchedule hasHeader={setHasHeader} />} />
 
             <Route path="/login" element={<Login hasHeader={setHasHeader} />} />
             <Route path="/register" element={<Register hasHeader={setHasHeader} />} />
+
             <Route path="/forgot-password" element={<ForgotPassword hasHeader={setHasHeader} />} />
             <Route path="/logout" element={<Logout />} />
           </Routes>

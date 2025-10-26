@@ -16,7 +16,7 @@ export default function UserHeaderDesktop({ typeState, type }: UserType) {
   return (
     <>
       <header className="user-header-desktop">
-        <LogoHeaderDesktop />
+        <Link to="/"><LogoHeaderDesktop /></Link>
         <nav>
           {type === 'personal' ? (
             <>

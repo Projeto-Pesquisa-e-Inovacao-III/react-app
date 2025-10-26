@@ -77,7 +77,7 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
                                     handleButtonClick={() => setOpenNewEvent(true)} />
                             </div>
 
-                            {events.map((event, index) => (
+                            {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}

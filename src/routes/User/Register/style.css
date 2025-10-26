@@ -186,6 +186,16 @@
                     font-size: 1rem;
                     color: var(--muted-foreground);
                 }
+
+                .that-fucking-row-we-forgot {
+                    display: flex;
+                    gap: 1rem;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+
+
+                }
             }
 
             .config_register {
@@ -206,4 +216,22 @@
     .weak {
         color: red;
     }
+}
+
+
+/* calendar input */
+.MuiStack-root.css-10o2lyd-MuiStack-root {
+    padding-top: 0px !important;
+    flex: 1;
+}
+
+.css-10o2lyd-MuiStack-root>.MuiTextField-root,
+.css-10o2lyd-MuiStack-root>.MuiPickersTextField-root {
+    background-color: #f5f5f5;
+    width: 100%;
+    flex: 1;
+}
+
+.select-gender-register {
+    flex: 1;
 }

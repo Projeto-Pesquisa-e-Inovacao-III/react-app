@@ -47,6 +47,9 @@ export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: bool
                                     flexDirection: "column",
                                     gap: "20px",
                                     width: "100%",
+                                    maxWidth: "unset",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
                                 }}
                             >
                                 {filteredCards.map((card, index) => (

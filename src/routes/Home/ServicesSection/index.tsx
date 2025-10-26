@@ -35,7 +35,7 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
         />
 
         <CardServices
-          bgColor="gradient-white-with-blue-bar"
+          bgColor={`${isMobile ? "gradient-white-with-blue-bar-mobile" : "gradient-white-with-blue-bar"}`}
           color="text-black"
           title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
           content="Sua saúde é um presente que pode inspirar a todos ao seu redor, especialmente a sua família! Com nosso suporte, você encontrará o equilíbrio perfeito para se cuidar e motivar seus entes queridos a adotarem hábitos saudáveis."
