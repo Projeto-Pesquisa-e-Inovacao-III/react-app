@@ -16,7 +16,7 @@ export function OverviewCard(props: OverviewCardProps) {
     return (
         <div className={`card-container${isMobile ? '-mobile' : ''}`}>
             <h2 className={`card-title${isMobile ? '-mobile' : ''}`}>{props.title}</h2>
-            <p className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</p>
+            <h1 className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</h1>
             <p className={`card-paragraph${isMobile ? '-mobile' : ''}`}>{props.type}</p>
             {
                 props.titletbn == "" ? null :

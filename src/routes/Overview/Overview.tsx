@@ -2,14 +2,13 @@ import { useState } from "react";
 import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
-import UserHeaderMobile from "../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
-import UserHeaderDesktop from "../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
+import { useNavigate } from "react-router-dom";
 export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
     
@@ -19,15 +18,17 @@ export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: bool
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
         { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
     ];
+    const nav = useNavigate();
 
     const [events] = useState(eventsMock);
-    const cards = cardsArray;
+    const cards = cardsArray(nav);
 
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
         : cards.filter(card => card.typeUser === "usuario");
 
     const [appointmentCards] = useState(appointmentCardsData);
+
 
     return (
         <>
