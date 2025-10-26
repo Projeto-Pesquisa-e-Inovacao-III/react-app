@@ -42,7 +42,9 @@ export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.S
           setSuccessLogin(true);
 
           setTimeout(() => {
-            nav("/home")
+            if (successLogin) {
+              nav("/home")
+            }
           }, 4000)
         }
 
