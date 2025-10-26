@@ -1,5 +1,6 @@
 import "./EditUser.css";
 
+import Cookies from "js-cookie";
 import Button from "../../components/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
@@ -8,11 +9,26 @@ import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWi
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { getJWTCookie } from "../../services/authService";
 
 export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
   const isMobile = useMediaQuery("(max-width:1024px)");
   const userImage: string = "";
   hasHeader(true);
+
+  useEffect(() => {
+    const token = getJWTCookie()
+    try {
+      const decoded: { exp: number, sub: string } = jwtDecode(token);
+      const email = decoded.sub;
+
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+    }
+  }, [isMobile]);
+
   return (
     <>
       {isMobile && <div className="logo-header-mobile">

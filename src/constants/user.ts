@@ -2,6 +2,10 @@
 import type { UserDTO } from "../models/user";
 import { api } from "../system";
 
+export function findByEmail(email: string) {
+   return api.get(`/usuarios/email/${email}`)
+}
+
 export function register(userdata: UserDTO) {
    return api.post(`/usuarios/cadastro`, userdata)
 }

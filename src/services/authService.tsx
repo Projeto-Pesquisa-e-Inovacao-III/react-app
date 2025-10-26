@@ -2,8 +2,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 export function isAuthenticated() {
-    const token = Cookies.get("jwt");
-    if (!token) return false;
+    const token = getJWTCookie();
 
     try {
         const decoded: { exp: number } = jwtDecode(token);
@@ -13,4 +12,10 @@ export function isAuthenticated() {
     } catch {
         return false;
     }
+}
+
+export function getJWTCookie() {
+    const token = Cookies.get("jwt");
+    if (!token) return false;
+    return token;
 }

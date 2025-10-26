@@ -1,36 +1,39 @@
+import { useNavigate } from "react-router-dom";
 import type {OverviewCardType} from "../../../models/overviewCardType";
 
-export const cardsArray: OverviewCardType[] = [
+export const cardsArray = (nav: (path: string) => void) => [
     {
         title: "Aulas para realizar hoje",
-        subtitle: "5 aulas agendadas para hoje.",
+        subtitle: "5",
         type: "",
         titletbn: "Agendar",
-        onClick: () => alert("Ir para aulas de hoje!"),
+        onClick: () => nav("/schedule"),
         typeUser: "personal",
     },
     {
         title: "Solicitações de agendamentos pendentes",
-        subtitle: "5 solicitações aguardando aprovação.",
+        subtitle: "5",
         type: "",
         titletbn: "Ir Para Solicitações",
-        onClick: () => alert("Ir para solicitações!"),
+        onClick: () => nav("/personal/check-schedule"),
         typeUser: "personal",
     },
     {
         title: "Agendamentos Restantes",
-        subtitle: "Você tem 2 agendamentos restantes.",
+        subtitle: "2",
         type: "",
-        titletbn: "",
-        onClick: () => alert("Agendamentos clicados!"),
+        titletbn: "Agendamentos",
+        onClick: () => nav("/schedule"),
         typeUser: "usuario",
     },
     {
         title: "Status de planos",
-        subtitle: "Não possui assinatura - Tipo de assinatura: Nenhum",
-        type: "Plano atual: Nenhum",
+        subtitle: "Não possui assinatura",
+        type: "",
         titletbn: "Planos",
-        onClick: () => alert("Plano clicado!"),
+        onClick: () => nav("/packages"),
         typeUser: "usuario",
     },
 ];
+
+// type: Plano atual: Nenhum
