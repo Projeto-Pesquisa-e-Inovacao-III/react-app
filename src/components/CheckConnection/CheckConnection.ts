@@ -7,7 +7,7 @@ export async function checkDebugConnection() {
     return response.status === 200;
   } catch (error) {
     console.error("Erro ao conectar ao banco de dados:", error);
-    alert("[INFO] - Banco não está conectado. Existe a branch 'feat/calendar' no repositório de back");
+    // alert("[INFO] - Banco não está conectado. Existe a branch 'feat/calendar' no repositório de back");
 
     return false;
   }
