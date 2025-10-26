@@ -1,27 +1,27 @@
 .card-container-mobile {
-    flex: 1 1 180px;
-    min-width: 180px;
-    max-width: 280px;
-    min-height: 280px;
+    flex: 1 1 200px;
+    min-width: 200px;
+    max-width: 320px;
+    min-height: 260px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 12px;
+    padding: 16px 12px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 
     .card-title-mobile {
-        font-size: 1.0rem;
+        font-size: 0.95rem;
         font-weight: 700;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
         text-align: center;
         color: #222;
     }
 
     .card-subtitle-mobile {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         color: #000000;
         margin-bottom: 8px;
@@ -29,51 +29,59 @@
     }
 
     .card-paragraph-mobile {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: #444;
         margin-bottom: 12px;
         text-align: center;
     }
 
     .card-btn-mobile {
-        padding: 8px 20px;
-        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 240px;
+        height: 40px;
+        font-size: 0.85rem;
         border-radius: 6px;
         border: none;
         background: #0a3557;
         color: #fff;
         cursor: pointer;
-        margin-top: 8px;
+        padding: 0 16px;
+        box-sizing: border-box;
     }
 
     @media (max-width: 700px) {
         min-width: 0;
         max-width: 100%;
         min-height: 180px;
-        padding: 20px 6px;
+        padding: 18px 8px;
 
         .card-title-mobile {
-            font-size: 1rem;
-            margin-bottom: 3px;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
         }
         .card-subtitle-mobile {
             font-size: 0.85rem;
             margin-bottom: 5px;
         }
         .card-paragraph-mobile {
-            font-size: 0.8rem;
-            margin-bottom: 7px;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
         }
         .card-btn-mobile {
-            font-size: 0.85rem;
-            padding: 7px 12px;
+            font-size: 0.65rem;
+            height: 30px;
+            max-width: none;
+            padding: 0 12px;
         }
     }
     @media (max-width: 400px) {
         min-width: 0;
         max-width: 100%;
-        min-height: 180px;
-        padding: 8px 4px;
+        min-height: 160px;
+        padding: 8px 6px;
 
         .card-title-mobile {
             font-size: 0.8rem;
@@ -88,8 +96,9 @@
             margin-bottom: 5px;
         }
         .card-btn-mobile {
-            font-size: 0.7rem;
-            padding: 6px 10px;
+            font-size: 0.65rem;
+            height: 40px;
+            padding: 0 10px;
         }
     }
 }
