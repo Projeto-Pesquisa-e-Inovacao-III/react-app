@@ -6,6 +6,7 @@ import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import "./mobile.css"
 import "./desktop.css"
 import SmallerButton from "../../components/SmallerButton";
+import { api } from "../../system";
 
 type PackagesProps = {
     hasHeader: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,9 +19,25 @@ export function Packages({ hasHeader, type }: PackagesProps) {
 
     const isPersonal = type === "personal";
 
-    const handleBuyClick = (packageTitle: string) => {
-        alert(`Você clicou para comprar o pacote: ${packageTitle}`);
-    };
+    function createCheckout(){
+    api.post("/checkouts", {
+        items: [
+            {
+                reference_id: "pacote_1",
+                name: "Pacote Anual",
+                quantity: 1,
+                description: "Esse pacote é adquirido de forma única e não possui cobrança automática.",
+                unit_amount: 200000
+            }
+        ],
+        payment_methods: [{type:"PIX"}],
+        reference_id: "checkout_01"
+    }).then(response => {
+        window.location.href = response.data.links[1].href;
+    }).catch(error => {
+        console.error(error);
+    });
+}
 
     return (
         <>
@@ -50,7 +67,7 @@ export function Packages({ hasHeader, type }: PackagesProps) {
                     <PackageCard
                         key={index}
                         {...pacote}
-                        onClick={() => handleBuyClick(pacote.title)}
+                        onClick={() => createCheckout()}
                         isMobile={isMobile}
                         isPersonal={isPersonal}
                     />
@@ -73,7 +90,7 @@ export function Packages({ hasHeader, type }: PackagesProps) {
                     <PackageCard
                         key={`adicional-${index}`}
                         {...pacote}
-                        onClick={() => handleBuyClick(pacote.title)}
+                        onClick={() => createCheckout()}
                         isMobile={isMobile}
                         variant="adicional"
                         isPersonal={isPersonal}
