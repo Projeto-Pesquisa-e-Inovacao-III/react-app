@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { LogoHeaderDesktop } from "../../LogoHeaderDesktop";
+import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
-import ChangeTypeDevDebug from "../../ChangeTypeDevDebug";
+import ChangeTypeDevDebug from "../../ChangeTypeDevDebug/ChangeTypeDevDebug";
 import type React from "react";
 import { Bell } from "lucide-react";
 

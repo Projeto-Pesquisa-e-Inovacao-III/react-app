@@ -1,4 +1,4 @@
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import { useMediaQuery } from "@mui/material";
 import { PackageCard } from "../../components/PackageCard";
 import { packagesMock } from "./mocks/packagesMock";
@@ -8,13 +8,11 @@ import "./desktop.css"
 import SmallerButton from "../../components/SmallerButton";
 
 type PackagesProps = {
-    hasHeader: React.Dispatch<React.SetStateAction<boolean>>;
     type: "personal" | "student";
 };
 
-export function Packages({ hasHeader, type }: PackagesProps) {
+export function Packages({ type }: PackagesProps) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-    hasHeader(true);
 
     const isPersonal = type === "personal";
 

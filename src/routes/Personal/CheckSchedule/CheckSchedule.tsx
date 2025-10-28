@@ -6,12 +6,11 @@ import "./style.css"
 import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
-import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile/LogoHeaderMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
-export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    hasHeader(true);
+export function CheckSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);

@@ -1,5 +1,5 @@
 import { Dot } from "lucide-react";
-import Button from "../Button";
+import Button from "../Button/Button";
 import "./style.css"
 
 type dataCardProps = {

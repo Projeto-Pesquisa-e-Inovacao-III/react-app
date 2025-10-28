@@ -1,4 +1,14 @@
-export default function LinksCol({ title, firstPage, firstPageName, secondPage, secondPageName, thirdPage, thirdPageName }: { title: string, firstPage: string, firstPageName: string, secondPage?: string, secondPageName?: string, thirdPage?: string, thirdPageName?: string }) {
+type LinksColProps = {
+    title: string;
+    firstPage: string;
+    firstPageName: string;
+    secondPage?: string;
+    secondPageName?: string;
+    thirdPage?: string;
+    thirdPageName?: string;
+};
+
+export default function LinksCol({ title, firstPage, firstPageName, secondPage, secondPageName, thirdPage, thirdPageName }: LinksColProps) {
     return (
         <div id="col" className="flex flex-col justify-between">
             <h5 className="font-bold">{title}</h5>

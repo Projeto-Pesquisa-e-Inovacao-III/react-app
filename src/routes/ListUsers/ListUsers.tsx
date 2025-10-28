@@ -4,11 +4,10 @@ import "./mobile.css"
 import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 
-export default function ListUsers({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ListUsers() {
     const isMobile = useMediaQuery("(max-width:1024px)");
-    hasHeader(true);
 
     const [pesquisa, setPesquisa] = useState("")
 

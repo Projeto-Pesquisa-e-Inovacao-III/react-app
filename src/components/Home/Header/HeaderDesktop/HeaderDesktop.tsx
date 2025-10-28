@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop";
+import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop/LogoHeaderDesktop";
 import { User } from "lucide-react";
 
 export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {

@@ -1,33 +1,17 @@
 import "./EditUser.css";
-
-import Cookies from "js-cookie";
-import Button from "../../components/Button";
+import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
-import GoBackButton from "../../components/GoBackButton";
+import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-import { getJWTCookie } from "../../services/authService";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 
-export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+
+export default function EditUser() {
   const isMobile = useMediaQuery("(max-width:1024px)");
   const userImage: string = "";
-  hasHeader(true);
-
-  useEffect(() => {
-    const token = getJWTCookie()
-    try {
-      const decoded: { exp: number, sub: string } = jwtDecode(token);
-      const email = decoded.sub;
-
-    } catch (error) {
-      console.error("Error decoding JWT:", error);
-    }
-  }, [isMobile]);
 
   return (
     <>

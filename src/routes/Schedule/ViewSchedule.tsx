@@ -2,21 +2,20 @@ import { useEffect, useState } from "react";
 import "./desktop.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
-import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
-import NewEvent from "../../components/NewEvent";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
+import NewEvent from "../../components/NewEvent/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import CalendarWeek from "../../components/Calendars/CalendarWeek";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
+import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 
-export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
     const isPersonal = localStorage.getItem("app-type") === "personal";
 
-    hasHeader(true);
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
         { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },

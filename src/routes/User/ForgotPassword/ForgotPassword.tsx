@@ -3,15 +3,14 @@ import "./style.css";
 import { Phone } from "lucide-react";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
-import GoBackButton from "../../../components/GoBackButton";
-import Button from "../../../components/Button";
+import GoBackButton from "../../../components/GoBackButton/GoBackButton";
+import Button from "../../../components/Button/Button";
 import CodeStep from "./CodeStep/CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 
 // todo: fix font family  
-export default function ForgotPassword({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-  hasHeader(false);
+export default function ForgotPassword() {
   const isMobile = useMediaQuery('(max-width: 1024px)');
 
   const [step, setStep] = useState<number>(1);

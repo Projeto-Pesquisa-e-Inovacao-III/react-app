@@ -1,11 +1,9 @@
-import UserHeaderDesktop from "../../../components/UserHeader/UserHeaderDesktop/UserHeaderDesktop";
-import UserHeaderMobile from "../../../components/UserHeader/UserHeaderMobile/UserHeaderMobile";
 import KPICards from "../../../components/Dashboard/Cards/KPICards/KPICards";
 
 import "./style.css"
 import { useMediaQuery } from "@mui/material";
 import Chart from "../../../components/Dashboard/Charts/Chart";
-import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile/LogoHeaderMobile";
 
 export const description = "A bar chart"
 
@@ -19,8 +17,7 @@ const chartData = [
 ]
 
 
-export default function Dashboard({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    hasHeader(true);
+export default function Dashboard() {
 
     const isMobile = useMediaQuery('(max-width:1024px)');
 

@@ -1,18 +1,16 @@
 import { useState } from "react";
 import "./desktop.css";
 import "./mobile.css";
-import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { useMediaQuery } from "@mui/material";
-import { OverviewCard } from "../../components/OverviewCard";
-import { AppointmentCard } from "../../components/AppointmentCard";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
+import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
-export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
-    
-    hasHeader(true);
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },

@@ -8,15 +8,15 @@ import "./style.css";
 import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
-import InputRowDouble from "../../../components/AuthComponents/InputRowDouble";
+import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import GoBackButton from "../../../components/GoBackButton";
-import Button from "../../../components/Button";
+import GoBackButton from "../../../components/GoBackButton/GoBackButton";
+import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import Select from "../../../components/AuthComponents/Select";
 import type { Dayjs } from "dayjs";
@@ -25,8 +25,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 
 
 // todo: validation, mask  
-export default function Register({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    hasHeader(false);
+export default function Register() {
     const [name, setName] = useState<string>("");
     const [surname, setSurname] = useState<string>("");
     const [email, setEmail] = useState<string>("");

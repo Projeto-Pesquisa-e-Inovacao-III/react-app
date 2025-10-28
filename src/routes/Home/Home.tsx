@@ -5,18 +5,16 @@ import ServicesSection from "./ServicesSection";
 import PlansSection from "./PlansSection";
 import FAQSection from "./FAQSection";
 import Footer from "../../components/Home/Footer/Footer";
-import HeaderMobile from "../../components/Home/Header/HeaderMobile";
-import HeaderDesktop from "../../components/Home/Header/HeaderDesktop";
+import HeaderMobile from "../../components/Home/Header/HeaderMobile/HeaderMobile";
+import HeaderDesktop from "../../components/Home/Header/HeaderDesktop/HeaderDesktop";
 import { isAuthenticated } from "../../services/authService";
 
 //todo: update images; 
 // remake header mobile; 
-export default function Home({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function Home() {
     const isMobile = useMediaQuery('(max-width:1024px)');
 
     const Header = isMobile ? HeaderMobile : HeaderDesktop;
-
-    hasHeader(false);
 
     const isUserLoggedIn = isAuthenticated();
 

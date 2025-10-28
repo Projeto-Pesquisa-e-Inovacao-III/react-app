@@ -6,13 +6,12 @@ import * as userService from "../../../constants/user";
 import Swal from "sweetalert2";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
-import GoBackButton from "../../../components/GoBackButton";
-import Button from "../../../components/Button";
+import GoBackButton from "../../../components/GoBackButton/GoBackButton";
+import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 
-export default function Login({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-  hasHeader(false);
+export default function Login() {
   const isMobile = useMediaQuery('(max-width: 1024px)');
 
   const [email, setEmail] = useState<string>("");
