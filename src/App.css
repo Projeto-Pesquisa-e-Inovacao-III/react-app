@@ -13,7 +13,7 @@
 
 @media (max-width: 1024px) {
 
-  .logo-header-mobile {
+  .logo_header_mobile {
     display: flex;
     align-items: center;
     margin: 10px 0;

@@ -1,0 +1,96 @@
+.packagesListWrapperDesktop {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 20px;
+    width: auto;
+    padding: 20px 50px 60px 50px;
+}
+
+.packagesTitleContainer h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 15px;
+}
+
+.packagesTitleContainer,
+.personalPackagesTitleContainer {
+    padding: 20px 50px 0px 50px;
+}
+
+.addButtonContainer {
+    width: 25%;
+}
+
+@media (max-width: 1024px) {
+    .packagesListWrapperDesktop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .packagesListWrapperMobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .packagesTitleContainer,
+    .personalPackagesTitleContainer {
+        margin: 15px 0 0 0;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .personalPackagesTitleContainerMobile,
+    .additionalTitleMobile {
+        padding: 10px 20px 30px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .addButtonContainer {
+        width: 40%;
+    }
+
+    .personalPackagesTitleContainerMobile .addButtonContainer,
+    .additionalTitleMobile .addButtonContainer {
+        margin-top: 20px;
+    }
+
+    .packagesTitleContainerMobile h1,
+    .personalPackagesTitleContainerMobile h1,
+    .additionalTitleMobile h1 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #333;
+        margin-top: 15px;
+    }
+
+    .packagesTitleContainer h1,
+    .personalPackagesTitleContainer h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #333;
+        margin-top: 15px;
+    }
+
+    .packagesListWrapperMobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+}

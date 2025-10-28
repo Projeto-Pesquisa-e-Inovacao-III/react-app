@@ -38,9 +38,6 @@ export default function ViewSchedule() {
 
     return (
         <>
-            {isMobile && <div className="logo-header-mobile">
-                <LogoHeaderMobile />
-            </div>}
             {isPersonal ? (
                 <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
             ) : (

@@ -118,9 +118,6 @@ export function CheckSchedule() {
 
     return (
         <>
-            {isMobile && <div className="logo-header-mobile">
-                <LogoHeaderMobile />
-            </div>}
             <div className="container-check-schedule">
                 <div className="title-filter">
                     <h1>Solicitações de Agendamentos</h1>

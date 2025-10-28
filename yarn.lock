@@ -208,7 +208,6 @@
 "@emotion/memoize@^0.9.0":
   version "0.9.0"
   resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.9.0.tgz"
-  resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.9.0.tgz"
   integrity sha512-30FAj7/EoJ5mwVPOWhAyCX+FPfMDrVecJAM+Iw9NRoSl4BBAQeqj4cApHHUXOVvIPgLVDsCFoz/hGD+5QQD1GQ==
 
 "@emotion/react@^11.0.0-rc.0", "@emotion/react@^11.14.0", "@emotion/react@^11.4.1", "@emotion/react@^11.5.0", "@emotion/react@^11.9.0":
@@ -238,7 +237,6 @@
 
 "@emotion/sheet@^1.4.0":
   version "1.4.0"
-  resolved "https://registry.npmjs.org/@emotion/sheet/-/sheet-1.4.0.tgz"
   resolved "https://registry.npmjs.org/@emotion/sheet/-/sheet-1.4.0.tgz"
   integrity sha512-fTBW9/8r2w3dXWYM4HCB1Rdp8NLibOw2+XELH5m5+AkWiL/KqYX6dc0kKYlaYyKjrQ6ds33MCdMPEwgs2z1rqg==
 
@@ -1029,6 +1027,11 @@ chalk@^4.0.0:
   dependencies:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
+
+classnames@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npmjs.org/classnames/-/classnames-2.5.1.tgz"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
 
 clsx@^2.1.1:
   version "2.1.1"
@@ -2134,7 +2137,6 @@ redux-thunk@^3.1.0:
 
 redux@^5.0.0, redux@^5.0.1:
   version "5.0.1"
-  resolved "https://registry.npmjs.org/redux/-/redux-5.0.1.tgz"
   resolved "https://registry.npmjs.org/redux/-/redux-5.0.1.tgz"
   integrity sha512-M9/ELqF6fy8FwmkpnF0S3YKOqMyoWJ4+CS5Efg2ct3oY9daQvd/Pc71FpGZsVsbl3Cpb+IIcjBDUnnyBdQbq4w==
 

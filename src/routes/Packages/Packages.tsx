@@ -1,11 +1,10 @@
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import { useMediaQuery } from "@mui/material";
-import { PackageCard } from "../../components/PackageCard";
+import { PackageCard } from "../../components/PackageCard/PackageCard";
 import { packagesMock } from "./mocks/packagesMock";
 import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
-import "./mobile.css"
-import "./desktop.css"
+import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton";
+import classnames from "classnames";
 
 type PackagesProps = {
     type: "personal" | "student";
@@ -22,28 +21,23 @@ export function Packages({ type }: PackagesProps) {
 
     return (
         <>
-            {isMobile && (
-                <div className={`user-view-schedule-mobile`}>
-                    <div className="logo-header-mobile">
-                        <LogoHeaderMobile />
-                    </div>
-                </div>
-            )}
-
             <div
-                className={`${isPersonal ? "personal-packages-title-container" : "packages-title-container"
-                    }${isMobile ? "-mobile" : ""}`}
+                className={classnames(
+                    styles.packagesTitleContainer,
+                    { [styles.packagesTitleContainerMobile]: isMobile }
+                )}
             >
                 <h1>
                     {isPersonal ? "Pacotes Atuais" : "Pacotes de Consultoria"}
                 </h1>
-
                 {isPersonal && (
-                    <SmallerButton type="button" title="Adicionar Pacote" />
+                    <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
+                        <SmallerButton type="button" title="Adicionar Pacote" />
+                    </div>
                 )}
             </div>
 
-            <div className={`packages-list-wrapper${isMobile ? "-mobile" : "-desktop"}`}>
+            <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
                 {packagesMock.map((pacote, index) => (
                     <PackageCard
                         key={index}
@@ -56,17 +50,21 @@ export function Packages({ type }: PackagesProps) {
             </div>
 
             <div
-                className={`${isPersonal ? "personal-packages-title-container" : "packages-title-container"
-                    } additional-title${isMobile ? "-mobile" : ""}`}
+                className={classnames(
+                    styles.packagesTitleContainer,
+                    styles.additionalTitle,
+                    { [styles.packagesTitleContainerMobile]: isMobile }
+                )}
             >
                 <h1>Pacotes Adicionais</h1>
-
                 {isPersonal && (
-                    <SmallerButton type="button" title="Adicionar Pacote Adicional" />
+                    <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
+                        <SmallerButton type="button" title="Adicionar Pacote Adicional" />
+                    </div>
                 )}
             </div>
 
-            <div className={`packages-list-wrapper-${isMobile ? "mobile" : "desktop"}`}>
+            <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
                 {packagesMockAdicional.map((pacote, index) => (
                     <PackageCard
                         key={`adicional-${index}`}

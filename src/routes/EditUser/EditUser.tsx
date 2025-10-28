@@ -6,7 +6,6 @@ import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 
 
 export default function EditUser() {
@@ -15,9 +14,6 @@ export default function EditUser() {
 
   return (
     <>
-      {isMobile && <div className="logo-header-mobile">
-        <LogoHeaderMobile />
-      </div>}
       <div className="edit-user-grid">
         <div className="goBack-container">
           {isMobile ?

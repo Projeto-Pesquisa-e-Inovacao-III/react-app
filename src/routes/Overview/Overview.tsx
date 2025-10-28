@@ -5,11 +5,10 @@ import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMont
 import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
-export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
+export function Overview({ isPrestador }: { isPrestador?: boolean }) {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
     const eventsMock = [
@@ -31,25 +30,12 @@ export function Overview({ isPrestador = true }: { isPrestador?: boolean }) {
     return (
         <>
             <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
-                {isMobile && (
-                    <div className="logo-header-mobile">
-                        <LogoHeaderMobile />
-                    </div>
-                )}
                 <div className={`container-content${isMobile ? "-mobile" : ""}`}>
                     <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
                         {isMobile && (
                             <div
                                 className={`overview-right-column schedule-page-user-actions-mobile`}
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "20px",
-                                    width: "100%",
-                                    maxWidth: "unset",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
+
                             >
                                 {filteredCards.map((card, index) => (
                                     <OverviewCard

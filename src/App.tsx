@@ -14,11 +14,11 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
 import { useState } from "react";
-import { PrivateRoute } from "./services/privateRoute";
 
 
 // todo: 
-// swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
+// focus to change css to module css
+// create context to user type (personal/student) to avoid using type prop in several components
 
 //future improvements:
 // safari support // deixa baixo
@@ -28,7 +28,6 @@ import { PrivateRoute } from "./services/privateRoute";
 
 
 function App() {
-  const [hasHeader, setHasHeader] = useState(true);
   const [type, setType] = useState<"student" | "personal">("student");
 
   return (

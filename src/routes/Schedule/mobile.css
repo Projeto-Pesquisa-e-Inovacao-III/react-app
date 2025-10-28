@@ -1,12 +1,5 @@
 .user-view-schedule-mobile {
 
-    .logo-header-mobile {
-        display: flex;
-        align-items: center;
-        margin: 10px 0;
-        justify-content: center;
-    }
-
     .view-schedule-mobile {
         display: flex;
         flex-direction: column;
