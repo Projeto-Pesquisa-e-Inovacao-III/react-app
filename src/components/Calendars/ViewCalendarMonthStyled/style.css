@@ -18,6 +18,7 @@
 }
 
 #wrapper-styled-callendar .fc {
+  height: auto;
   font-family: "Inter", sans-serif;
 }
 

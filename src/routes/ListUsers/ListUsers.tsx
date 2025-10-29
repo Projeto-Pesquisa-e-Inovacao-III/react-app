@@ -1,5 +1,5 @@
 import UsersTable from "../../components/UsersTable/UsersTable";
-import styles from "./style.module.css"
+import styles from "./ListUsers.module.css"
 import { useMediaQuery } from "@mui/material";
 import { useState } from "react";
 import { SearchBar } from "../../components/SearchBar/SearchBar";

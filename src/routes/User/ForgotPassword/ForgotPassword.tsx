@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./style.css";
+import styles from "./ForgotPassword.module.css";
 import { Phone } from "lucide-react";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
@@ -8,6 +8,7 @@ import Button from "../../../components/Button/Button";
 import CodeStep from "./CodeStep/CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
+import classNames from "classnames";
 
 // todo: fix font family  
 export default function ForgotPassword() {
@@ -31,49 +32,49 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <div className="container-forgot-password">
+      <div className={styles.containerForgotPassword}>
         {!isMobile && (
-          <div className="section-logo-forgot-password">
-            <LogoWhiteBig />
+          <div className={styles.sectionLogoForgotPassword}>
+        <LogoWhiteBig />
           </div>
         )}
-        <div className="forgot-password">
+        <div className={styles.forgotPassword}>
           <div onClick={step != 1 ? (e) => handleStep(e, false) : undefined}>
-            <GoBackButton to={step == 1 ? '/login' : undefined} />
+        <GoBackButton to={step == 1 ? '/login' : undefined} />
           </div>
-          <div className={`wrapper_forgot-password_elements ${isMobile ? 'wrapper_forgot-password_elements-mobile' : ''}`}>
-            {
-              step === 1 && (
-                <>
-                  <div className="welcome_message">
-                    <h1>Esqueceu a senha?</h1>
-                    <p>Para continuar, digite o número do seu celular com DDD no campo abaixo. Nós vamos enviar um código de confirmação para o seu WhatsApp.</p>
-                  </div>
-                  <div className="wrapper-inputs-forgot-password-page">
-                    <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} />
+          <div className={classNames(styles.wrapperForgotPasswordElements, { [styles.mobile]: isMobile })}>
+        {
+          step === 1 && (
+            <>
+          <div className={styles.welcomeMessage}>
+            <h1>Esqueceu a senha?</h1>
+            <p>Para continuar, digite o número do seu celular com DDD no campo abaixo. Nós vamos enviar um código de confirmação para o seu WhatsApp.</p>
+          </div>
+          <div className={styles.wrapperInputsForgotPasswordPage}>
+            <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} />
 
-                  </div>
-                </>
-              )
-            }
-            {
-              step === 2 && (
-                <>
-                  <CodeStep actualTimer={verifyTimer} verifyTimer={setVerifyTimer} />
-                </>
-              )
-            }
-            {
-              step >= 3 && (
-                <>
-                  <ChangePasswordStep />
-                </>
-              )
-            }
+          </div>
+            </>
+          )
+        }
+        {
+          step === 2 && (
+            <>
+          <CodeStep actualTimer={verifyTimer} verifyTimer={setVerifyTimer} />
+            </>
+          )
+        }
+        {
+          step >= 3 && (
+            <>
+          <ChangePasswordStep />
+            </>
+          )
+        }
 
-            <div className="continue-button" onClick={(e) => handleStep(e, true)}>
-              <Button type="submit" title="Continuar" />
-            </div>
+        <div className={styles.continueButton} onClick={(e) => handleStep(e, true)}>
+          <Button type="submit" title="Continuar" />
+        </div>
 
           </div>
         </div>

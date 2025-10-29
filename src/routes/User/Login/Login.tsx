@@ -1,5 +1,4 @@
 import { useState } from "react";
-import "./style.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
@@ -10,6 +9,7 @@ import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import styles from './Login.module.css';
 
 export default function Login() {
   const isMobile = useMediaQuery('(max-width: 1024px)');
@@ -60,34 +60,34 @@ export default function Login() {
       });
   }
 
+  // ... (add this import at the top of the file)
+
   return (
     <>
-      <div className="container-login">
+      <div className={styles.containerLogin}>
         {!isMobile && (
-          <div className="section-logo-login">
+          <div className={styles.sectionLogoLogin}>
             <LogoWhiteBig />
           </div>
         )}
-        <div className="login">
+        <div className={styles.login}>
           <GoBackButton to="/" />
-          <div className="wrapper_login_elements">
-            <div className="welcome_message">
+          <div className={styles.wrapperLoginElements}>
+            <div className={styles.welcomeMessage}>
               <h1>Bem-vindo</h1>
               <button className="border-2" onClick={handleAutoFill}>Auto preencher</button>
             </div>
             <form onSubmit={handleSubmit}>
-              <div className="wrapper-inputs-login-page">
+              <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={email} type={"email"} placeholder={"seu@email.com"} onInputChange={setEmail} icon={<Mail />} />
                 <InputWithIcon value={password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={setPassword} icon={<Lock />} />
-
               </div>
-              <div className="config_login">
+              <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
               <Button type="submit" title="Entrar" />
-
             </form>
-            <span className="mg-15">
+            <span className={styles.mg15}>
               Não tem uma conta? <Link to="/register">Criar uma conta</Link>
             </span>
           </div>

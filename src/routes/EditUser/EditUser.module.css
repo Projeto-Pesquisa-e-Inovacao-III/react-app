@@ -1,0 +1,164 @@
+.editUserGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 17px 13px;
+}
+
+/* white container */
+.editUserGrid .whiteContainer .wrapperInp {
+  width: 100%;
+}
+
+.editUserGrid .whiteContainer .inputIcon {
+  left: 0.65rem;
+  top: 62%;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .editUserGrid {
+    padding: 32px 90px;
+    gap: 25px;
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas:
+      "header header"
+      "personal profile"
+      "login _"
+      "footer footer";
+  }
+
+  .profileSection {
+    max-width: 364px;
+    max-height: 369px;
+  }
+
+  .profileSection .button {
+    padding: 15px;
+  }
+
+  .editUserGrid h2 {
+    font-size: 36px;
+    font-weight: 400;
+  }
+
+  .whiteContainer {
+    padding: 15px 20px;
+  }
+
+  .footer .btnGeneric {
+    width: 320px;
+  }
+
+  .footer .btnGeneric button {
+    padding: 18px;
+  }
+
+  .personalInfo .whiteContainer .content {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+      "nome nome nome"
+      "sobreNome sobreNome sobreNome"
+      "cpf telefone genero";
+  }
+
+  #nome {
+    grid-area: nome;
+  }
+
+  #sobreNome {
+    grid-area: sobreNome;
+  }
+
+  #cpf {
+    grid-area: cpf;
+  }
+
+  #genero {
+    grid-area: genero;
+  }
+
+  #telefone {
+    grid-area: telefone;
+  }
+}
+
+/* Mobile */
+@media (max-width: 1024px) {
+  .editUserGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "header header"
+      "profile profile"
+      "personal personal"
+      "login login"
+      "footer footer";
+  }
+
+  .goBackContainer {
+    height: 45px;
+  }
+
+  .goBackContainer .goBackLogin {
+    top: initial;
+    left: initial;
+    position: initial;
+  }
+
+  .atualizarFotoContainer {
+    width: 100%;
+    max-width: 153px;
+    max-height: 45px;
+  }
+
+  .atualizarFotoContainer .button {
+    padding: 13px;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dashLine {
+    border: none;
+    height: 3px;
+    background-image: linear-gradient(to right, rgb(175, 175, 175) 50%, transparent 50%);
+    background-size: 20px 2px;
+    background-repeat: repeat-x;
+  }
+
+  .footer .btnGeneric {
+    width: 148px;
+  }
+
+  .footer .btnGeneric button {
+    padding: 15px;
+  }
+}
+
+/* Grid Areas */
+.goBackContainer {
+  grid-area: header;
+}
+
+.profileSection {
+  grid-area: profile;
+}
+
+.personalInfo {
+  grid-area: personal;
+}
+
+.loginInfo {
+  grid-area: login;
+}
+
+.footer {
+  grid-area: footer;
+}

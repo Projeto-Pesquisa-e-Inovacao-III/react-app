@@ -4,11 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import { User } from 'lucide-react';
 import { IdCard } from 'lucide-react';
-import "./style.css";
+import styles from "./Register.module.css";
 import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
-import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -22,6 +21,8 @@ import Select from "../../../components/AuthComponents/Select";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import classNames from "classnames";
+import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
 
 
 // todo: validation, mask  
@@ -142,22 +143,26 @@ export default function Register() {
 
     return (
         <>
-            <div className="register">
+            <div className={styles.register}>
                 <GoBackButton to="/" />
 
-                <div className={`wrapper_register_elements ${isMobile ? "wrapper_register_elements-mobile" : ""}`}>
-                    <div className="register_elements">
-                        <div className={`welcome_message${isMobile ? "-mobile" : ""}`}>
+                <div className={classNames(styles.wrapperRegisterElements, {
+                    [styles.wrapperRegisterElementsMobile]: isMobile
+                })}>
+                    <div className={styles.registerElements}>
+                        <div className={classNames(styles.welcomeMessage, {
+                            [styles.welcomeMessageMobile]: isMobile
+                        })}>
                             <h1>Inscreva-se</h1>
                             <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
                             <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
                         </div>
-                        <div className="border-division"></div>
+                        <div className={styles.borderDivision}></div>
 
 
                         <form onSubmit={handleSubmit}>
 
-                            <div className="wrapper-inputs-from-form">
+                            <div className={styles.wrapperInputsFromForm}>
                                 <InputRowDouble
                                     firstPlaceholder="Nome"
                                     secondPlaceholder="Sobrenome"
@@ -177,21 +182,23 @@ export default function Register() {
                                     value={email}
                                 />
 
-                                <div className="that-fucking-row-we-forgot">
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DemoContainer components={['DatePicker']}>
-                                            <DatePicker
-                                                format="DD/MM/YYYY"
-                                                slotProps={{
-                                                    field: { openPickerButtonPosition: 'start' },
-                                                }}
-                                                value={birthDate}
-                                                onChange={(date) => setBirthDate(date)}
-                                            />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
+                                <div className={styles.DoubleInputsRow}>
+                                    <div className={styles.datePickerWrapper}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={['DatePicker']}>
+                                                <DatePicker
+                                                    format="DD/MM/YYYY"
+                                                    slotProps={{
+                                                        field: { openPickerButtonPosition: 'start' },
+                                                    }}
+                                                    value={birthDate}
+                                                    onChange={(date) => setBirthDate(date)}
+                                                />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    </div>
 
-                                    <div className="select-gender-register">
+                                    <div className={styles.selectGenderRegister}>
                                         <Select
                                             id="gender"
                                             placeholder="Selecione um genero"
@@ -214,9 +221,9 @@ export default function Register() {
                                     valueSecond={phone}
                                 />
                             </div>
-                            <div className="border-division"></div>
+                            <div className={styles.borderDivision}></div>
 
-                            <div className="wrapper-password-input">
+                            <div className={styles.wrapperPasswordInput}>
                                 <InputWithIcon
                                     type="password"
                                     placeholder="Senha"
@@ -235,15 +242,15 @@ export default function Register() {
                                 />
                             </div>
 
-                            <div className="terms">
+                            <div className={styles.terms}>
                                 <input type="checkbox" />
                                 <label>Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
                             {showPasswordValidation && (
-                                <div className="password-validation">
+                                <div className={styles.passwordValidation}>
                                     {errors.split('\n').map((msg, index) => (
-                                        <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
+                                        <p key={index} className={!validation.validatePassword(password).includes(msg) ? styles.strong : styles.weak}>{msg}</p>
                                     ))}
                                 </div>
                             )}
@@ -256,7 +263,7 @@ export default function Register() {
                 </div >
 
                 {!isMobile &&
-                    <div className="section-logo-login">
+                    <div className={styles.sectionLogoLogin}>
                         <LogoWhiteBig />
                     </div>
                 }

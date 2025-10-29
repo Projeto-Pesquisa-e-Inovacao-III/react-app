@@ -1,0 +1,119 @@
+.userViewSchedule {
+    height: 100vh;
+}
+
+.viewSchedule {
+    display: flex;
+    gap: 60px;
+    padding: 40px;
+}
+
+.schedulePageCalendar {
+    background-color: white;
+    padding: 20px;
+    flex: 2;
+    height: fit-content;
+}
+
+.schedulePageUserActions {
+    flex: 1;
+}
+
+.adjustButtonWSchedule {
+    width: 30%;
+}
+
+.scheduleView {
+    display: flex;
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.left {
+    width: 100%;
+}
+
+.userPersonal {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.schedulePageUser {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.schedulePageUser img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.btnActions {
+    display: flex;
+    gap: 15px;
+}
+
+.borderDivision {
+    border-left: 1px solid black;
+    margin: 0 20px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+/* Mobile styles */
+.mobile.userViewSchedule .viewSchedule {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding: 20px;
+    padding-top: 0;
+}
+
+.mobile .schedulePageCalendar {
+    padding: 20px;
+    flex: 2;
+}
+
+.mobile .borderDivision {
+    margin-right: 3dvw;
+}
+
+.mobile .right span {
+    width: 15vw;
+}
+
+@media (max-width: 475px) {
+    .scheduleView {
+        flex-direction: column;
+    }
+
+    .borderDivision {
+        border: 1px solid black;
+        margin: 20px 0 !important;
+    }
+
+    .right {
+        text-align: center !important;
+    }
+
+    .right span {
+        width: 100% !important;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}
+
+@media (max-width: 375px) {
+    .btnActions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

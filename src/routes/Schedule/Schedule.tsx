@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import "./desktop.css"
-import "./mobile.css"
+import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -10,8 +9,9 @@ import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
 import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
+import classnames from "classnames";
 
-export default function ViewSchedule() {
+export default function Schedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
     const type = useContext(TypeContext);
@@ -43,14 +43,14 @@ export default function ViewSchedule() {
             {isPersonal ? (
                 <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
             ) : (
-                <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
+                <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
-                    <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
-                        <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
+                    <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
+                        <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
                         </div>
-                        <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
-                            <div className="adjust-button-w-schedule">
+                        <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
+                            <div className={styles.adjustButtonWSchedule}>
                                 <SmallerButton
                                     type="button"
                                     icon={isMobile ? undefined : (<svg
