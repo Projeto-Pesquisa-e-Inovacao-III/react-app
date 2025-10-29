@@ -14,6 +14,7 @@ import Dashboard from "./routes/Personal/Dashboard/Dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
+import PlansHistory from "./routes/PlansHistory/PlansHistory";
 
 
 // todo: 
@@ -45,6 +46,7 @@ function App() {
 
             {/* header / logo at mobile*/}
             <Route element={<Layout />}>
+                <Route path="/plans-history" element={<PlansHistory />} />
                 <Route path="/schedule" element={<ViewSchedule />} />
                 <Route path="/packages" element={<Packages />} />
                 <Route path="/home" element={<Overview />} />

@@ -30,7 +30,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
               <Link to="/home">Inicio</Link>
               <Link to="/schedule">Agenda</Link>
               <Link to="/packages">Planos</Link>
-              <Link to="#plans-section">Histórico de planos</Link>
+              <Link to="/plans-history">Histórico de planos</Link>
             </>
           )
           }

@@ -19,6 +19,11 @@
     margin: 10px 0;
     justify-content: center;
   }
+
+  .layout_main_outlet {
+    height: auto;
+    min-height: 100vh;
+  }
 }
 
 @layer components {

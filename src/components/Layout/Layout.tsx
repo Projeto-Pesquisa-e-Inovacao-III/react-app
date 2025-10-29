@@ -31,7 +31,7 @@ export default function Layout() {
                     {isMobile && <div className="logo_header_mobile">
                         <LogoHeaderMobile />
                     </div>}
-                    <main><Outlet /></main>
+                    <main className="layout_main_outlet"><Outlet /></main>
                     {isMobile && <Header type={type} />}
                 </>
             {/* )} */}
