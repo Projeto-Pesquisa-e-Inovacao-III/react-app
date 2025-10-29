@@ -18,7 +18,7 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import { useMediaQuery } from "@mui/material";
 
 // todo: 
-// create context to user type (personal/student) to avoid using type prop in several components
+// create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
 // fix mobile view of forgot password steps
 // fix button at forgot password (step 2 is centered)
 
@@ -31,7 +31,7 @@ import { useMediaQuery } from "@mui/material";
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<"student" | "personal">("personal");
 
   return (
     <>

@@ -4,7 +4,6 @@ import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useReducer } from "react";
 import useMobile from "../../hooks/isMobile";
@@ -51,9 +50,7 @@ export default function EditUser() {
     <>
       <div className={styles.editUserGrid}>
         <div className={styles.goBackContainer}>
-          {isMobile ?
-            <GoBackButton />
-            :
+          {!isMobile &&
             <h2>Editar Perfil</h2>
           }
         </div>

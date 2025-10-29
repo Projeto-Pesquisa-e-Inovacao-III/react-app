@@ -1,7 +1,6 @@
 import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
-import { useMediaQuery } from "@mui/material";
 import styles from "./CheckSchedule.module.css"
 import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";

@@ -99,9 +99,6 @@
       "footer footer";
   }
 
-  .goBackContainer {
-    height: 45px;
-  }
 
   .goBackContainer .goBackLogin {
     top: initial;
@@ -112,7 +109,6 @@
   .atualizarFotoContainer {
     width: 100%;
     max-width: 153px;
-    max-height: 45px;
   }
 
   .atualizarFotoContainer .button {
@@ -139,6 +135,11 @@
 
   .footer .btnGeneric button {
     padding: 15px;
+  }
+
+  .profileSection {
+    max-width: none;
+    max-height: none;
   }
 }
 
