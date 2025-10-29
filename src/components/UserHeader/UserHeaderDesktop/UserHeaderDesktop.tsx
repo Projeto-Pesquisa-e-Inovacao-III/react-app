@@ -2,15 +2,13 @@ import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
 import ChangeTypeDevDebug from "../../ChangeTypeDevDebug/ChangeTypeDevDebug";
-import type React from "react";
 import { Bell } from "lucide-react";
 
 type UserType = {
-  typeState: React.Dispatch<React.SetStateAction<"personal" | "student">>;
   type: "personal" | "student"
 }
 
-export default function UserHeaderDesktop({ typeState, type }: UserType) {
+export default function UserHeaderDesktop({ type }: UserType) {
 
 
   return (
@@ -44,8 +42,6 @@ export default function UserHeaderDesktop({ typeState, type }: UserType) {
             <img src="https://thispersondoesnotexist.com" alt="" />
           </Link>
         </div>
-
-        <ChangeTypeDevDebug changeTypeTo={typeState} />
 
       </header>
     </>

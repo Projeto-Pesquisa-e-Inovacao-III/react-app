@@ -13,7 +13,7 @@ import { Packages } from "./routes/Packages/Packages";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
-import { useState } from "react";
+import { useState, createContext } from "react";
 
 
 // todo: 
@@ -26,36 +26,39 @@ import { useState } from "react";
 // study if code is following best practices
 // editar/delete usuario
 
+export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<"student" | "personal">("personal");
 
   return (
     <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/logout" element={<Logout />} />
+      <TypeContext.Provider value={type}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/logout" element={<Logout />} />
 
-          {/* header */}
-          <Route element={<Layout type={type} changeTypeTo={setType} />}>
-            <Route path="/schedule" element={<ViewSchedule />} />
-            <Route path="/packages" element={<Packages type={type} />} />
-            <Route path="/home" element={<Overview isPrestador={type === "personal"} />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/users" element={<ListUsers />} />
-            <Route path="/edit-user" element={<EditUser />} />
-            <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            {/* header / logo at mobile*/}
+            <Route element={<Layout />}>
+                <Route path="/schedule" element={<ViewSchedule />} />
+                <Route path="/packages" element={<Packages />} />
+                <Route path="/home" element={<Overview />} />
+
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/edit-user" element={<EditUser />} />
+                <Route path="/personal/check-schedule" element={<CheckSchedule />}
+            />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </TypeContext.Provider>
     </>
   );
-
-
 }
 
 export default App;

@@ -5,13 +5,13 @@ import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton";
 import classnames from "classnames";
+import { useContext } from "react";
+import { TypeContext } from "../../App";
 
-type PackagesProps = {
-    type: "personal" | "student";
-};
-
-export function Packages({ type }: PackagesProps) {
+export function Packages() {
     const isMobile = useMediaQuery("(max-width:1024px)");
+
+    const type = useContext(TypeContext);
 
     const isPersonal = type === "personal";
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "./desktop.css";
 import "./mobile.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
@@ -8,8 +8,10 @@ import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCar
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
-export function Overview({ isPrestador }: { isPrestador?: boolean }) {
+import { TypeContext } from "../../App";
+export function Overview() {
     const isMobile = useMediaQuery("(max-width:1024px)");
+
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
@@ -20,12 +22,15 @@ export function Overview({ isPrestador }: { isPrestador?: boolean }) {
     const [events] = useState(eventsMock);
     const cards = cardsArray(nav);
 
+    const type = useContext(TypeContext);
+
+    const isPrestador = type === "personal";
+
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
         : cards.filter(card => card.typeUser === "usuario");
 
     const [appointmentCards] = useState(appointmentCardsData);
-
 
     return (
         <>

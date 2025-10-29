@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./desktop.css"
 import "./mobile.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
@@ -8,13 +8,15 @@ import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
+import { TypeContext } from "../../App";
 
 export default function ViewSchedule() {
     const isMobile = useMediaQuery("(max-width:1024px)");
 
-    const isPersonal = localStorage.getItem("app-type") === "personal";
+    const type = useContext(TypeContext);
+
+    const isPersonal = type === "personal";
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
