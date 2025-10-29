@@ -1,4 +1,4 @@
-import "./EditUser.css";
+import styles from "./EditUser.module.css";
 import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
@@ -14,8 +14,8 @@ export default function EditUser() {
 
   return (
     <>
-      <div className="edit-user-grid">
-        <div className="goBack-container">
+      <div className={styles.editUserGrid}>
+        <div className={styles.goBackContainer}>
           {isMobile ?
             <GoBackButton />
             :
@@ -23,7 +23,7 @@ export default function EditUser() {
           }
         </div>
 
-        <div className="profile-section">
+        <div className={styles.profileSection}>
           <WhiteContainer title="Foto de Perfil" titleMarginBottom={25} gap={30}>
             {userImage ?
               <UserImg
@@ -35,14 +35,14 @@ export default function EditUser() {
               :
               <User width={216} height={216} />
             }
-            <div className="atualizar-foto-container">
+            <div className={styles.atualizarFotoContainer}>
               <Button title="Atualizar Foto" type="button" />
             </div>
           </WhiteContainer>
         </div>
 
-        <div className="personal-info">
-          <WhiteContainer title="Informações Pessoais" gap={20}>
+        <div className={styles.personalInfo}>
+          <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
             <InputWithIcon
               id="nome"
               type="text"
@@ -81,8 +81,8 @@ export default function EditUser() {
           </WhiteContainer>
         </div>
 
-        <div className="login-info">
-          <WhiteContainer title="Informações de Login">
+        <div className={styles.loginInfo}>
+          <WhiteContainer contentClassName={styles.loginInfoContainer} title="Informações de Login">
             <InputWithIcon
               id="email"
               type="email"
@@ -100,8 +100,8 @@ export default function EditUser() {
           </WhiteContainer>
         </div>
 
-        <div className="footer">
-          <div className="dashLine"></div>
+        <div className={styles.footer}>
+          <div className={styles.dashLine}></div>
           <Button title="Salvar Alterações" type="button" />
         </div>
       </div>

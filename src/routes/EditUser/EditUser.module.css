@@ -2,89 +2,88 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
-  padding: 17px 13px;
+  padding: 40px;
+  gap: 25px;
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas:
+    "header header"
+    "personal profile"
+    "login _"
+    "footer footer";
 }
 
 /* white container */
-.editUserGrid .whiteContainer .wrapperInp {
+.editUserGrid :global(.whiteContainer .wrapper_inp) {
   width: 100%;
 }
 
-.editUserGrid .whiteContainer .inputIcon {
+.editUserGrid :global(.whiteContainer .input-icon) {
   left: 0.65rem;
   top: 62%;
   height: 1.5rem;
   width: 1.5rem;
 }
+.profileSection {
+  max-width: 364px;
+  max-height: 369px;
+}
 
-/* Desktop */
-@media (min-width: 1025px) {
-  .editUserGrid {
-    padding: 32px 90px;
-    gap: 25px;
-    grid-template-columns: 3fr 1fr;
-    grid-template-areas:
-      "header header"
-      "personal profile"
-      "login _"
-      "footer footer";
-  }
+.profileSection .button {
+  padding: 15px;
+}
 
-  .profileSection {
-    max-width: 364px;
-    max-height: 369px;
-  }
+.editUserGrid h2 {
+  font-size: 36px;
+  font-weight: 400;
+}
 
-  .profileSection .button {
-    padding: 15px;
-  }
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
 
-  .editUserGrid h2 {
-    font-size: 36px;
-    font-weight: 400;
-  }
+.footer .btnGeneric {
+  width: 320px;
+}
 
-  .whiteContainer {
-    padding: 15px 20px;
-  }
+.footer .btnGeneric button {
+  padding: 18px;
+}
 
-  .footer .btnGeneric {
-    width: 320px;
-  }
+.personalInfoGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "nome nome nome"
+    "sobreNome sobreNome sobreNome"
+    "cpf telefone genero";
+}
 
-  .footer .btnGeneric button {
-    padding: 18px;
-  }
+.loginInfoContainer :global(#email) {
+  width: 100%;
+}
 
-  .personalInfo .whiteContainer .content {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas:
-      "nome nome nome"
-      "sobreNome sobreNome sobreNome"
-      "cpf telefone genero";
-  }
+.loginInfoContainer :global(#senha) {
+  width: 100%;
+}
 
-  #nome {
-    grid-area: nome;
-  }
+.personalInfoGrid :global(#nome) {
+  grid-area: nome;
+}
 
-  #sobreNome {
-    grid-area: sobreNome;
-  }
+.personalInfoGrid :global(#sobreNome) {
+  grid-area: sobreNome;
+}
 
-  #cpf {
-    grid-area: cpf;
-  }
+.personalInfoGrid :global(#cpf) {
+  grid-area: cpf;
+}
 
-  #genero {
-    grid-area: genero;
-  }
+.personalInfoGrid :global(#genero) {
+  grid-area: genero;
+}
 
-  #telefone {
-    grid-area: telefone;
-  }
+.personalInfoGrid :global(#telefone) {
+  grid-area: telefone;
 }
 
 /* Mobile */
