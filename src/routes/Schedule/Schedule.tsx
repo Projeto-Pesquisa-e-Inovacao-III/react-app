@@ -10,9 +10,11 @@ import SmallerButton from "../../components/SmallerButton";
 import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
+import useMobile from "../../hooks/isMobile";
 
 export default function Schedule() {
-    const isMobile = useMediaQuery("(max-width:1024px)");
+    const isMobile = useMobile();
+
 
     const type = useContext(TypeContext);
 

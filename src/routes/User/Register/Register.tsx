@@ -23,6 +23,7 @@ import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import classNames from "classnames";
 import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
+import useMobile from "../../../hooks/isMobile";
 
 const initialRegisterState = {
     name: "",
@@ -63,6 +64,8 @@ function reducer(state: any, action: any) {
 
 // todo: validation, mask  
 export default function Register() {
+    const isMobile = useMobile();
+
     const [register, dispatch] = useReducer(reducer, initialRegisterState);
 
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
@@ -88,7 +91,6 @@ export default function Register() {
         dispatch({ type: 'setBirthDate', payload: dayjs("01-01-2000") });
     }
 
-    const isMobile = useMediaQuery('(max-width: 1024px)');
 
     const navigate = useNavigate();
 
@@ -98,8 +100,6 @@ export default function Register() {
         e.preventDefault();
 
         let errors = "";
-
-        console.log(register.customerDocument);
 
         const userData: UserDTO = {
             nome: register.name,

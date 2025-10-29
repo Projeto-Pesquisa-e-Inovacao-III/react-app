@@ -9,10 +9,12 @@ import CodeStep from "./CodeStep/CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import classNames from "classnames";
+import useMobile from "../../../hooks/isMobile";
 
 // todo: fix font family  
 export default function ForgotPassword() {
-  const isMobile = useMediaQuery('(max-width: 1024px)');
+      const isMobile = useMobile();
+  
 
   const [step, setStep] = useState<number>(1);
   const [verifyTimer, setVerifyTimer] = useState<number>(20);

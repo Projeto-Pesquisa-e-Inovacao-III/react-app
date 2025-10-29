@@ -9,9 +9,9 @@ import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
 import { TypeContext } from "../../App";
 import classNames from "classnames";
+import useMobile from "../../hooks/isMobile";
 export function Overview() {
-    const isMobile = useMediaQuery("(max-width:1024px)");
-
+    const isMobile = useMobile();
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },

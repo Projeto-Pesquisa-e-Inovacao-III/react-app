@@ -7,9 +7,10 @@ import SmallerButton from "../../components/SmallerButton";
 import classnames from "classnames";
 import { useContext } from "react";
 import { TypeContext } from "../../App";
+import useMobile from "../../hooks/isMobile";
 
 export function Packages() {
-    const isMobile = useMediaQuery("(max-width:1024px)");
+    const isMobile = useMobile();
 
     const type = useContext(TypeContext);
 

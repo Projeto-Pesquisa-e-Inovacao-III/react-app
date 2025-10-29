@@ -10,6 +10,7 @@ import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import styles from './Login.module.css';
+import useMobile from "../../../hooks/isMobile";
 
 const initialLoginState = {
   email: "",
@@ -29,7 +30,8 @@ function reducer(state: any, action: any) {
 }
 
 export default function Login() {
-  const isMobile = useMediaQuery('(max-width: 1024px)');
+  const isMobile = useMobile();
+  
  
   const [login, dispatch] = useReducer(reducer, initialLoginState);
 

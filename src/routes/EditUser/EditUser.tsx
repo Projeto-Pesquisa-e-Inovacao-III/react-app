@@ -6,11 +6,46 @@ import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
+import { useReducer } from "react";
+import useMobile from "../../hooks/isMobile";
 
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case "setFirstName":
+      return { ...state, firstName: action.payload };
+    case "setLastName":
+      return { ...state, lastName: action.payload };
+    case "setCPF":
+      return { ...state, cpf: action.payload };
+    case "setPhone":
+      return { ...state, phone: action.payload };
+    case "setGender":
+      return { ...state, gender: action.payload };
+    case "setEmail":
+      return { ...state, email: action.payload };
+    case "setPassword":
+      return { ...state, password: action.payload };
+    default:
+      return state;
+  }
+}
+
+const initialEditUserState = {
+  firstName: "",
+  lastName: "",
+  cpf: "",
+  phone: "",
+  gender: "",
+  email: "",
+  password: "",
+};
 
 export default function EditUser() {
-  const isMobile = useMediaQuery("(max-width:1024px)");
+      const isMobile = useMobile();
+
   const userImage: string = "";
+
+  const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
   return (
     <>

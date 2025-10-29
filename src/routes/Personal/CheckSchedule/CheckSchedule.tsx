@@ -6,11 +6,13 @@ import styles from "./CheckSchedule.module.css"
 import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import useMobile from "../../../hooks/isMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
 export function CheckSchedule() {
-    const isMobile = useMediaQuery("(max-width:1024px)");
+    const isMobile = useMobile();
+
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
     const [openModalDecline, setModalDecline] = useState<boolean>(false);

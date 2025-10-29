@@ -15,6 +15,7 @@ import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
+import { useMediaQuery } from "@mui/material";
 
 // todo: 
 // create context to user type (personal/student) to avoid using type prop in several components

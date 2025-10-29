@@ -4,6 +4,7 @@ import styles from "./Dashboard.module.css"
 import { useMediaQuery } from "@mui/material";
 import Chart from "../../../components/Dashboard/Charts/Chart";
 import classnames from "classnames";
+import useMobile from "../../../hooks/isMobile";
 
 export const description = "A bar chart"
 
@@ -18,9 +19,7 @@ const chartData = [
 
 
 export default function Dashboard() {
-
-    const isMobile = useMediaQuery('(max-width:1024px)');
-
+    const isMobile = useMobile();
 
     return (
         <>
