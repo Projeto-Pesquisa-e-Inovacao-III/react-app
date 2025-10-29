@@ -8,8 +8,8 @@ type Props = {
     secondIcon: React.ReactNode;
     valueFirst?: string;
     valueSecond?: string;
-    setFirstOnChange: React.Dispatch<React.SetStateAction<string>>;
-    setSecondOnChange: React.Dispatch<React.SetStateAction<string>>;
+    setFirstOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+    setSecondOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
 }
 
 export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange, valueFirst, valueSecond }: Props) {

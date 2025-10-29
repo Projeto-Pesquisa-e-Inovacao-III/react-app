@@ -16,9 +16,7 @@ import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 
-
 // todo: 
-// focus to change css to module css
 // create context to user type (personal/student) to avoid using type prop in several components
 // fix mobile view of forgot password steps
 // fix button at forgot password (step 2 is centered)
