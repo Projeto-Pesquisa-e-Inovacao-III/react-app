@@ -12,20 +12,21 @@
     "footer footer";
 }
 
-/* white container */
-.editUserGrid :global(.whiteContainer .wrapper_inp) {
-  width: 100%;
+/* inside white container */
+.editUserGrid :global(.input-icon) {
+  transform: translateY(0%) !important;
+  height: 1.2rem;
+  width: 1.2rem;
+
 }
 
-.editUserGrid :global(.whiteContainer .input-icon) {
-  left: 0.65rem;
-  top: 62%;
-  height: 1.5rem;
-  width: 1.5rem;
-}
 .profileSection {
   max-width: 364px;
   max-height: 369px;
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
 }
 
 .profileSection .button {
@@ -41,7 +42,7 @@
   padding: 15px 20px;
 }
 
-.footer .btnGeneric {
+.footer {
   width: 320px;
 }
 

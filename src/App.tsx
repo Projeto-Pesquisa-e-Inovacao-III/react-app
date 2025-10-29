@@ -10,17 +10,18 @@ import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
 import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
-import Dashboard from "./routes/Personal/Dashboard/Dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
+import Dashboard from "./routes/Personal/Dashboard/dashboard";
 
 
 // todo: 
 // focus to change css to module css
 // create context to user type (personal/student) to avoid using type prop in several components
 // fix mobile view of forgot password steps
+// fix button at forgot password (step 2 is centered)
 
 //future improvements:
 // safari support // deixa baixo

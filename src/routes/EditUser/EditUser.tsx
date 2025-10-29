@@ -24,7 +24,7 @@ export default function EditUser() {
         </div>
 
         <div className={styles.profileSection}>
-          <WhiteContainer title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
             {userImage ?
               <UserImg
                 Source={""}

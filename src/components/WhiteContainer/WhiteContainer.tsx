@@ -7,12 +7,13 @@ type WhiteContainerProps = {
     children?: ReactNode,
     gap?: number,
     titleMarginBottom?: number,
+    containerClassName?: string,
     contentClassName?: string
 }
 
-export function WhiteContainer({ title, children, gap, titleMarginBottom, contentClassName }: WhiteContainerProps) {
+export function WhiteContainer({ title, children, gap, titleMarginBottom, contentClassName, containerClassName }: WhiteContainerProps) {
     return (
-        <div className={classNames(styles.whiteContainer)}>
+        <div className={classNames(styles.whiteContainer, containerClassName)}>
             <h2
             style={{
                 marginBottom: titleMarginBottom || 20
