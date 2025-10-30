@@ -14,13 +14,17 @@
 .search {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .search input {
     border: 1px solid #ccc;
 }
 
-.searchButton {}
+.datePickerWrapper {
+    display: flex;
+    gap: 8px;
+}
 
 .plansCard {
     border: 1px solid #eee;

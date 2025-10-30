@@ -5,15 +5,16 @@ import { Eye, EyeOff } from "lucide-react";
 type Props = {
     type: string;
     placeholder: string;
+    icon: React.ReactNode;
     label?: string;
     id?: string; 
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
-    icon: React.ReactNode;
+    onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
     value?: string;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -28,6 +29,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                 className={`${isPassword ? `password-input` : ``}`}
                 placeholder={placeholder}
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
+                onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
                 value={value}
             />
             {isPassword && (

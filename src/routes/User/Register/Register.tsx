@@ -8,7 +8,7 @@ import styles from "./Register.module.css";
 import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
-import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -17,12 +17,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
-import Select from "../../../components/AuthComponents/Select";
+import Select from "../../../components/Inputs/Select";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import classNames from "classnames";
-import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
+import InputRowDouble from "../../../components/Inputs/InputRowDouble/InputRowDouble";
 import useMobile from "../../../hooks/isMobile";
 
 const initialRegisterState = {
