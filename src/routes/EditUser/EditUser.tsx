@@ -1,50 +1,62 @@
-import "./EditUser.css";
-
-import Cookies from "js-cookie";
-import Button from "../../components/Button";
+import styles from "./EditUser.module.css";
+import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
-import GoBackButton from "../../components/GoBackButton";
+import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import { useEffect } from "react";
-import { jwtDecode } from "jwt-decode";
-import { getJWTCookie } from "../../services/authService";
+import { useReducer } from "react";
+import useMobile from "../../hooks/isMobile";
 
-export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-  const isMobile = useMediaQuery("(max-width:1024px)");
+function reducer(state: any, action: any) {
+  switch (action.type) {
+    case "setFirstName":
+      return { ...state, firstName: action.payload };
+    case "setLastName":
+      return { ...state, lastName: action.payload };
+    case "setCPF":
+      return { ...state, cpf: action.payload };
+    case "setPhone":
+      return { ...state, phone: action.payload };
+    case "setGender":
+      return { ...state, gender: action.payload };
+    case "setEmail":
+      return { ...state, email: action.payload };
+    case "setPassword":
+      return { ...state, password: action.payload };
+    default:
+      return state;
+  }
+}
+
+const initialEditUserState = {
+  firstName: "",
+  lastName: "",
+  cpf: "",
+  phone: "",
+  gender: "",
+  email: "",
+  password: "",
+};
+
+export default function EditUser() {
+      const isMobile = useMobile();
+
   const userImage: string = "";
-  hasHeader(true);
 
-  useEffect(() => {
-    const token = getJWTCookie()
-    try {
-      const decoded: { exp: number, sub: string } = jwtDecode(token);
-      const email = decoded.sub;
-
-    } catch (error) {
-      console.error("Error decoding JWT:", error);
-    }
-  }, [isMobile]);
+  const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
   return (
     <>
-      {isMobile && <div className="logo-header-mobile">
-        <LogoHeaderMobile />
-      </div>}
-      <div className="edit-user-grid">
-        <div className="goBack-container">
-          {isMobile ?
-            <GoBackButton />
-            :
+      <div className={styles.editUserGrid}>
+        <div className={styles.goBackContainer}>
+          {!isMobile &&
             <h2>Editar Perfil</h2>
           }
         </div>
 
-        <div className="profile-section">
-          <WhiteContainer title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+        <div className={styles.profileSection}>
+          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
             {userImage ?
               <UserImg
                 Source={""}
@@ -55,14 +67,14 @@ export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<Reac
               :
               <User width={216} height={216} />
             }
-            <div className="atualizar-foto-container">
+            <div className={styles.atualizarFotoContainer}>
               <Button title="Atualizar Foto" type="button" />
             </div>
           </WhiteContainer>
         </div>
 
-        <div className="personal-info">
-          <WhiteContainer title="Informações Pessoais" gap={20}>
+        <div className={styles.personalInfo}>
+          <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
             <InputWithIcon
               id="nome"
               type="text"
@@ -101,8 +113,8 @@ export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<Reac
           </WhiteContainer>
         </div>
 
-        <div className="login-info">
-          <WhiteContainer title="Informações de Login">
+        <div className={styles.loginInfo}>
+          <WhiteContainer contentClassName={styles.loginInfoContainer} title="Informações de Login">
             <InputWithIcon
               id="email"
               type="email"
@@ -120,8 +132,8 @@ export default function EditUser({ hasHeader }: { hasHeader: React.Dispatch<Reac
           </WhiteContainer>
         </div>
 
-        <div className="footer">
-          <div className="dashLine"></div>
+        <div className={styles.footer}>
+          <div className={styles.dashLine}></div>
           <Button title="Salvar Alterações" type="button" />
         </div>
       </div>

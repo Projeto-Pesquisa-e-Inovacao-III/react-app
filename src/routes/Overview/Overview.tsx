@@ -1,18 +1,16 @@
-import { useState } from "react";
-import "./desktop.css";
-import "./mobile.css";
-import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
-import { useMediaQuery } from "@mui/material";
-import { OverviewCard } from "../../components/OverviewCard";
-import { AppointmentCard } from "../../components/AppointmentCard";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
+import { useContext, useState } from "react";
+import styles from "./Overview.module.css";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
+import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
+import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
-export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: boolean, hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const isMobile = useMediaQuery("(max-width:1024px)");
-    
-    hasHeader(true);
+import { TypeContext } from "../../App";
+import classNames from "classnames";
+import useMobile from "../../hooks/isMobile";
+export function Overview() {
+    const isMobile = useMobile();
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
@@ -23,36 +21,23 @@ export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: bool
     const [events] = useState(eventsMock);
     const cards = cardsArray(nav);
 
+    const type = useContext(TypeContext);
+
+    const isPrestador = type === "personal";
+
     const filteredCards = isPrestador
         ? cards.filter(card => card.typeUser === "personal")
         : cards.filter(card => card.typeUser === "usuario");
 
     const [appointmentCards] = useState(appointmentCardsData);
 
-
     return (
         <>
-            <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
-                {isMobile && (
-                    <div className="logo-header-mobile">
-                        <LogoHeaderMobile />
-                    </div>
-                )}
-                <div className={`container-content${isMobile ? "-mobile" : ""}`}>
-                    <div className={`overview-left-column${isMobile ? "-mobile" : ""}`}>
+            <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
+                <div className={classNames(styles.containerContent, { [styles.containerContentMobile]: isMobile })}>
+                    <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
                         {isMobile && (
-                            <div
-                                className={`overview-right-column schedule-page-user-actions-mobile`}
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "20px",
-                                    width: "100%",
-                                    maxWidth: "unset",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                }}
-                            >
+                            <div className={styles.schedulePageUserActionsMobile}>
                                 {filteredCards.map((card, index) => (
                                     <OverviewCard
                                         key={index}
@@ -66,12 +51,12 @@ export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: bool
                                 ))}
                             </div>
                         )}
-                        <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
+                        <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
                         </div>
                         <div>
                             <h1>Agendamentos</h1>
-                            <div className={isMobile ? "appointment-cards-row-mobile" : "appointment-cards-row"}>
+                            <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
                                 {appointmentCards.map((card, index) => (
                                     <AppointmentCard
                                         key={index}
@@ -87,19 +72,18 @@ export function Overview({ isPrestador = true, hasHeader }: { isPrestador?: bool
                         </div>
                     </div>
                     {!isMobile && (
-                        <div
-                            className={`overview-right-column schedule-page-user-actions`}
-                        >{filteredCards.map((card, index) => (
-                            <OverviewCard
-                                key={index}
-                                title={card.title}
-                                subtitle={card.subtitle}
-                                type={card.type}
-                                titletbn={card.titletbn}
-                                onClick={card.onClick}
-                                isMobile={isMobile}
-                            />
-                        ))}
+                        <div className={styles.schedulePageUserActions}>
+                            {filteredCards.map((card, index) => (
+                                <OverviewCard
+                                    key={index}
+                                    title={card.title}
+                                    subtitle={card.subtitle}
+                                    type={card.type}
+                                    titletbn={card.titletbn}
+                                    onClick={card.onClick}
+                                    isMobile={isMobile}
+                                />
+                            ))}
                         </div>
                     )}
                 </div>

@@ -1,42 +1,73 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
 import { Lock, Mail, Phone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import { User } from 'lucide-react';
 import { IdCard } from 'lucide-react';
-import "./style.css";
+import styles from "./Register.module.css";
 import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
-import InputRowDouble from "../../../components/AuthComponents/InputRowDouble";
 import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import GoBackButton from "../../../components/GoBackButton";
-import Button from "../../../components/Button";
+import GoBackButton from "../../../components/GoBackButton/GoBackButton";
+import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import Select from "../../../components/AuthComponents/Select";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import classNames from "classnames";
+import InputRowDouble from "../../../components/AuthComponents/InputRowDouble/InputRowDouble";
+import useMobile from "../../../hooks/isMobile";
 
+const initialRegisterState = {
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    customerDocument: "",
+    birthDate: null,
+    phone: "",
+    gender: "",
+    confirmPassword: ""
+};
+
+function reducer(state: any, action: any) {
+    switch (action.type) {
+        case 'setName':
+            return { ...state, name: action.payload };
+        case 'setSurname':
+            return { ...state, surname: action.payload };
+        case 'setEmail':
+            return { ...state, email: action.payload };
+        case 'setPassword':
+            return { ...state, password: action.payload };
+        case 'setCustomerDocument':
+            return { ...state, customerDocument: action.payload };
+        case 'setBirthDate':
+            return { ...state, birthDate: action.payload };
+        case 'setPhone':
+            return { ...state, phone: action.payload };
+        case 'setGender':
+            return { ...state, gender: action.payload };
+        case 'setConfirmPassword':
+            return { ...state, confirmPassword: action.payload };
+        default:
+            return state;
+    }
+}
 
 // todo: validation, mask  
-export default function Register({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    hasHeader(false);
-    const [name, setName] = useState<string>("");
-    const [surname, setSurname] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    const [customerDocument, setCustomerDocument] = useState<string>("");
-    const [birthDate, setBirthDate] = useState<Dayjs | null>(null);
+export default function Register() {
+    const isMobile = useMobile();
 
-    const [phone, setPhone] = useState<string>("");
-    const [gender, setGender] = useState<string>("");
-    const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [register, dispatch] = useReducer(reducer, initialRegisterState);
+
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
 
     const [successRegister, setSuccessRegister] = useState<boolean>(false);
@@ -48,19 +79,18 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
     }
 
     function handleAutoFill() {
-        setName("João");
-        setSurname("Silva");
-        setEmail("joao.silva@example.com");
-        setPassword("Senha123");
-        setCustomerDocument("123.456.789-10");
-        setPhone("(11) 91234-5678");
-        setGender("Masculino");
-        setPassword("123456789aA!");
-        setConfirmPassword("123456789aA!");
-        setBirthDate(dayjs("01-01-2000"));
+        dispatch({ type: 'setName', payload: "João" });
+        dispatch({ type: 'setSurname', payload: "Silva" });
+        dispatch({ type: 'setEmail', payload: "joao.silva@example.com" });
+        dispatch({ type: 'setPassword', payload: "Senha123" });
+        dispatch({ type: 'setCustomerDocument', payload: "123.456.789-10" });
+        dispatch({ type: 'setPhone', payload: "(11) 91234-5678" });
+        dispatch({ type: 'setGender', payload: "Masculino" });
+        dispatch({ type: 'setPassword', payload: "123456789aA!" });
+        dispatch({ type: 'setConfirmPassword', payload: "123456789aA!" });
+        dispatch({ type: 'setBirthDate', payload: dayjs("01-01-2000") });
     }
 
-    const isMobile = useMediaQuery('(max-width: 1024px)');
 
     const navigate = useNavigate();
 
@@ -71,16 +101,14 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
         let errors = "";
 
-        console.log(customerDocument);
-
         const userData: UserDTO = {
-            nome: name,
-            email: email,
-            senha: password,
-            cpf: customerDocument.split(".").join("").split("-").join(""),
-            telefone: phone,
-            sexo: gender,
-            dataNascimento: birthDate
+            nome: register.name,
+            email: register.email,
+            senha: register.password,
+            cpf: register.customerDocument.split(".").join("").split("-").join(""),
+            telefone: register.phone,
+            sexo: register.gender,
+            dataNascimento: register.birthDate
         };
 
         console.log(userData.cpf);
@@ -89,12 +117,12 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
         if (nullOrBlank) {
             errors += nullOrBlank;
-        } else if (!validation.validateEmail(email).startsWith("Email válido")) {
-            errors += validation.validateEmail(email);
-        } else if (customerDocument && customerDocument.length !== 14) {
+        } else if (!validation.validateEmail(register.email).startsWith("Email válido")) {
+            errors += validation.validateEmail(register.email);
+        } else if (register.customerDocument && register.customerDocument.length !== 14) {
             errors += "CPF inválido. Deve ter 14 caracteres.\n";
-        } else if (validation.validatePassword(password).startsWith("password válida") === false) {
-            errors += validation.validatePassword(password);
+        } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
+            errors += validation.validatePassword(register.password);
         }
 
         if (errors) {
@@ -143,62 +171,68 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
 
     return (
         <>
-            <div className="register">
+            <div className={styles.register}>
                 <GoBackButton to="/" />
 
-                <div className={`wrapper_register_elements ${isMobile ? "wrapper_register_elements-mobile" : ""}`}>
-                    <div className="register_elements">
-                        <div className={`welcome_message${isMobile ? "-mobile" : ""}`}>
+                <div className={classNames(styles.wrapperRegisterElements, {
+                    [styles.wrapperRegisterElementsMobile]: isMobile
+                })}>
+                    <div className={styles.registerElements}>
+                        <div className={classNames(styles.welcomeMessage, {
+                            [styles.welcomeMessageMobile]: isMobile
+                        })}>
                             <h1>Inscreva-se</h1>
                             <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
                             <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
                         </div>
-                        <div className="border-division"></div>
+                        <div className={styles.borderDivision}></div>
 
 
                         <form onSubmit={handleSubmit}>
 
-                            <div className="wrapper-inputs-from-form">
+                            <div className={styles.wrapperInputsFromForm}>
                                 <InputRowDouble
                                     firstPlaceholder="Nome"
                                     secondPlaceholder="Sobrenome"
                                     firstIcon={<User />}
                                     secondIcon={<User />}
-                                    setFirstOnChange={setName}
-                                    setSecondOnChange={setSurname}
-                                    valueFirst={name}
-                                    valueSecond={surname}
+                                    setFirstOnChange={(name: string) => dispatch({ type: 'setName', payload: name })}
+                                    setSecondOnChange={(surname: string) => dispatch({ type: 'setSurname', payload: surname })}
+                                    valueFirst={register.name}
+                                    valueSecond={register.surname}
                                 />
 
                                 <InputWithIcon
                                     type="text"
                                     placeholder="Email"
-                                    onInputChange={setEmail}
+                                    onInputChange={(email: string) => dispatch({ type: 'setEmail', payload: email })}
                                     icon={<Mail />}
-                                    value={email}
+                                    value={register.email}
                                 />
 
-                                <div className="that-fucking-row-we-forgot">
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DemoContainer components={['DatePicker']}>
-                                            <DatePicker
-                                                format="DD/MM/YYYY"
-                                                slotProps={{
-                                                    field: { openPickerButtonPosition: 'start' },
-                                                }}
-                                                value={birthDate}
-                                                onChange={(date) => setBirthDate(date)}
-                                            />
-                                        </DemoContainer>
-                                    </LocalizationProvider>
+                                <div className={styles.DoubleInputsRow}>
+                                    <div className={styles.datePickerWrapper}>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DemoContainer components={['DatePicker']}>
+                                                <DatePicker
+                                                    format="DD/MM/YYYY"
+                                                    slotProps={{
+                                                        field: { openPickerButtonPosition: 'start' },
+                                                    }}
+                                                    value={register.birthDate}
+                                                    onChange={(date) => dispatch({ type: 'setBirthDate', payload: date })}
+                                                />
+                                            </DemoContainer>
+                                        </LocalizationProvider>
+                                    </div>
 
-                                    <div className="select-gender-register">
+                                    <div className={styles.selectGenderRegister}>
                                         <Select
                                             id="gender"
                                             placeholder="Selecione um genero"
-                                            onInputChange={setGender}
+                                            onInputChange={(gender: string) => dispatch({ type: 'setGender', payload: gender })}
                                             icon={<User />}
-                                            value={gender}
+                                            value={register.gender}
                                             options={["Masculino", "Feminino", "Outro"]}
                                         />
                                     </div>
@@ -209,42 +243,42 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                                     secondPlaceholder="Telefone"
                                     firstIcon={<IdCard />}
                                     secondIcon={<Phone />}
-                                    setFirstOnChange={setCustomerDocument}
-                                    setSecondOnChange={setPhone}
-                                    valueFirst={customerDocument}
-                                    valueSecond={phone}
+                                    setFirstOnChange={(customerDocument: string) => dispatch({ type: 'setCustomerDocument', payload: customerDocument })}
+                                    setSecondOnChange={(phone: string) => dispatch({ type: 'setPhone', payload: phone })}
+                                    valueFirst={register.customerDocument}
+                                    valueSecond={register.phone}
                                 />
                             </div>
-                            <div className="border-division"></div>
+                            <div className={styles.borderDivision}></div>
 
-                            <div className="wrapper-password-input">
+                            <div className={styles.wrapperPasswordInput}>
                                 <InputWithIcon
                                     type="password"
                                     placeholder="Senha"
-                                    onInputChange={setPassword}
+                                    onInputChange={(password: string) => dispatch({ type: 'setPassword', payload: password })}
                                     icon={<Lock />}
                                     isPassword={true}
-                                    value={password}
+                                    value={register.password}
                                 />
                                 <InputWithIcon
                                     type="password"
                                     placeholder="Confirmar Senha"
-                                    onInputChange={setConfirmPassword}
+                                    onInputChange={(confirmPassword: string) => dispatch({ type: 'setConfirmPassword', payload: confirmPassword })}
                                     icon={<Lock />}
                                     isPassword={true}
-                                    value={confirmPassword}
+                                    value={register.confirmPassword}
                                 />
                             </div>
 
-                            <div className="terms">
+                            <div className={styles.terms}>
                                 <input type="checkbox" />
                                 <label>Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
                             {showPasswordValidation && (
-                                <div className="password-validation">
+                                <div className={styles.passwordValidation}>
                                     {errors.split('\n').map((msg, index) => (
-                                        <p key={index} className={!validation.validatePassword(password).includes(msg) ? "strong" : "weak"}>{msg}</p>
+                                        <p key={index} className={!validation.validatePassword(register.password).includes(msg) ? styles.strong : styles.weak}>{msg}</p>
                                     ))}
                                 </div>
                             )}
@@ -257,7 +291,7 @@ export default function Register({ hasHeader }: { hasHeader: React.Dispatch<Reac
                 </div >
 
                 {!isMobile &&
-                    <div className="section-logo-login">
+                    <div className={styles.sectionLogoLogin}>
                         <LogoWhiteBig />
                     </div>
                 }

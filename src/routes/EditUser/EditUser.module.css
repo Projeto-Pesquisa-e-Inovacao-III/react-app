@@ -1,0 +1,164 @@
+.editUserGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  gap: 25px;
+  grid-template-columns: 4fr 1fr;
+  grid-template-areas:
+    "header header"
+    "personal profile"
+    "login _"
+    "footer footer";
+}
+
+/* inside white container */
+.editUserGrid :global(.input-icon) {
+  transform: translateY(0%) !important;
+  height: 1.2rem;
+  width: 1.2rem;
+
+}
+
+.profileSection {
+  max-width: 364px;
+  max-height: 369px;
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
+}
+
+.profileSection .button {
+  padding: 15px;
+}
+
+.editUserGrid h2 {
+  font-size: 36px;
+  font-weight: 400;
+}
+
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
+
+.footer {
+  width: 320px;
+}
+
+.footer .btnGeneric button {
+  padding: 18px;
+}
+
+.personalInfoGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "nome nome nome"
+    "sobreNome sobreNome sobreNome"
+    "cpf telefone genero";
+}
+
+.loginInfoContainer :global(#email) {
+  width: 100%;
+}
+
+.loginInfoContainer :global(#senha) {
+  width: 100%;
+}
+
+.personalInfoGrid :global(#nome) {
+  grid-area: nome;
+}
+
+.personalInfoGrid :global(#sobreNome) {
+  grid-area: sobreNome;
+}
+
+.personalInfoGrid :global(#cpf) {
+  grid-area: cpf;
+}
+
+.personalInfoGrid :global(#genero) {
+  grid-area: genero;
+}
+
+.personalInfoGrid :global(#telefone) {
+  grid-area: telefone;
+}
+
+/* Mobile */
+@media (max-width: 1024px) {
+  .editUserGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "header header"
+      "profile profile"
+      "personal personal"
+      "login login"
+      "footer footer";
+  }
+
+
+  .goBackContainer .goBackLogin {
+    top: initial;
+    left: initial;
+    position: initial;
+  }
+
+  .atualizarFotoContainer {
+    width: 100%;
+    max-width: 153px;
+  }
+
+  .atualizarFotoContainer .button {
+    padding: 13px;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dashLine {
+    border: none;
+    height: 3px;
+    background-image: linear-gradient(to right, rgb(175, 175, 175) 50%, transparent 50%);
+    background-size: 20px 2px;
+    background-repeat: repeat-x;
+  }
+
+  .footer .btnGeneric {
+    width: 148px;
+  }
+
+  .footer .btnGeneric button {
+    padding: 15px;
+  }
+
+  .profileSection {
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* Grid Areas */
+.goBackContainer {
+  grid-area: header;
+}
+
+.profileSection {
+  grid-area: profile;
+}
+
+.personalInfo {
+  grid-area: personal;
+}
+
+.loginInfo {
+  grid-area: login;
+}
+
+.footer {
+  grid-area: footer;
+}

@@ -1,29 +1,23 @@
 import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
-import { useMediaQuery } from "@mui/material";
-import "./style.css"
+import styles from "./CheckSchedule.module.css"
 import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
-import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile";
+import useMobile from "../../../hooks/isMobile";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
-export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    hasHeader(true);
-    const isMobile = useMediaQuery("(max-width:1024px)");
+export function CheckSchedule() {
+    const isMobile = useMobile();
+
     const [openModal, setOpenModal] = useState<boolean>(false);
     const [openModalAccept, setModalAccept] = useState<boolean>(false);
     const [openModalDecline, setModalDecline] = useState<boolean>(false);
     const [openSuccessReschedule, setSuccessReschedule] = useState<boolean>(false);
     const [openSuccessAcceptModal, setOpenSuccessAcceptModal] = useState<boolean>(false);
     const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (isMobile) window.scrollTo(0, 0);
-    }, [openModal, openModalAccept, openModalDecline, openSuccessReschedule, openSuccessAcceptModal, openSuccessDeclineModal]);
-
 
     const dataCard = [
         {
@@ -119,18 +113,15 @@ export function CheckSchedule({ hasHeader}: { hasHeader: React.Dispatch<React.Se
 
     return (
         <>
-            {isMobile && <div className="logo-header-mobile">
-                <LogoHeaderMobile />
-            </div>}
-            <div className="container-check-schedule">
-                <div className="title-filter">
+            <div className={styles.containerCheckSchedule}>
+                <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
-                    <div className="card-filter">
+                    <div className={styles.cardFilter}>
                         <CardFilterCheckSchedule />
                     </div>
                 </div>
 
-                <div className="cards-check-schedule">
+                <div className={styles.cardsCheckSchedule}>
                     {dataCard.map((card) => (
                         <CardCheckSchedule
                             key={card.id}

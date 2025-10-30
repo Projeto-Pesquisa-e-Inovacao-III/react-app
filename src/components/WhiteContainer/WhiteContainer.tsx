@@ -1,23 +1,25 @@
 import React, { type ReactNode } from "react";
-import "./WhiteContainer.css"
+import styles from "./WhiteContainer.module.css"
+import classNames from "classnames";
 
 type WhiteContainerProps = {
     title?: string | "",
     children?: ReactNode,
     gap?: number,
-    titleMarginBottom?: number
+    titleMarginBottom?: number,
+    containerClassName?: string,
+    contentClassName?: string
 }
 
-export function WhiteContainer({ title, children, gap, titleMarginBottom }: WhiteContainerProps) {
+export function WhiteContainer({ title, children, gap, titleMarginBottom, contentClassName, containerClassName }: WhiteContainerProps) {
     return (
-        <div className="white-container">
+        <div className={classNames(styles.whiteContainer, containerClassName)}>
             <h2
             style={{
                 marginBottom: titleMarginBottom || 20
             }}
             >{title}</h2>
-            <div 
-            className="content"
+            <div className={classNames(styles.content, contentClassName)}
             style={{
                 gap: `${gap || 0}px` 
             }}>

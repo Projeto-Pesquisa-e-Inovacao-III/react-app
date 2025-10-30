@@ -11,15 +11,7 @@
 
 }
 
-@media (max-width: 1024px) {
 
-  .logo-header-mobile {
-    display: flex;
-    align-items: center;
-    margin: 10px 0;
-    justify-content: center;
-  }
-}
 
 @layer components {
   .bg-gigant-orange {
@@ -95,5 +87,27 @@
     width: 100%;
     font-size: 1rem;
     height: 56px;
+  }
+}
+
+.layout_main_outlet {
+  padding: 20px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+@media (max-width: 1024px) {
+
+  .logo_header_mobile {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    justify-content: center;
+  }
+
+  .layout_main_outlet {
+    padding: 20px;
+    height: auto;
+    min-height: 100vh;
   }
 }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import HeaderIconsMobile from "../../HeaderIconsMobile";
+import HeaderIconsMobile from "../../HeaderIconsMobile/HeaderIconsMobile";
 import "./style.css"
 
 

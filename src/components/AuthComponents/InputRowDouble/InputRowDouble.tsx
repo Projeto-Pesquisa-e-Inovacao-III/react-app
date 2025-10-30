@@ -1,4 +1,5 @@
-import "./style.css"
+import classNames from "classnames";
+import styles from "./InputRowDouble.module.css"
 
 type Props = {
     firstPlaceholder: string;
@@ -7,16 +8,16 @@ type Props = {
     secondIcon: React.ReactNode;
     valueFirst?: string;
     valueSecond?: string;
-    setFirstOnChange: React.Dispatch<React.SetStateAction<string>>;
-    setSecondOnChange: React.Dispatch<React.SetStateAction<string>>;
+    setFirstOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+    setSecondOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
 }
-    
+
 export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange, valueFirst, valueSecond }: Props) {
     return (
-        <div className="double-row-input">
-            <div className="first-block">
-                <div className="wrapper_inp">
-                    <div className="input-icon">{firstIcon}</div>
+        <div className={styles.doubleRowInput}>
+            <div className={styles.firstBlock}>
+                <div className={classNames(`${styles.wrapperInp}`, `wrapper_inp`)}>
+                    <div className={styles.inputIcon}>{firstIcon}</div>
                     <input
                         type="text"
                         name="name"
@@ -26,9 +27,9 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                     />
                 </div>
             </div>
-            <div className="second-block">
-                <div className="wrapper_inp">
-                    <div className="input-icon">{secondIcon}</div>
+            <div className={styles.secondBlock}>
+                <div className={classNames(`${styles.wrapperInp}`, `wrapper_inp`)}>
+                    <div className={styles.inputIcon}>{secondIcon}</div>
                     <input
                         type="text"
                         name="costumerDocument"
@@ -40,6 +41,5 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                 </div>
             </div>
         </div>
-        
-    );
+    )
 }

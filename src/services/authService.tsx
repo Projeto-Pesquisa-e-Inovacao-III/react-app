@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 
 export function isAuthenticated() {
     const token = getJWTCookie();
+    if (!token) return false;
 
     try {
         const decoded: { exp: number } = jwtDecode(token);

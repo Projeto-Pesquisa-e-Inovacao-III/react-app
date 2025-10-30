@@ -1,18 +1,114 @@
-@media (max-width: 1023px) {
-    .packages-title-container {
+.packageCardContainer {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.cardVariantConsultoria {
+    min-height: 600px;
+}
+
+.cardVariantAdicional {
+    min-height: 500px;
+}
+
+.cardTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.cardSubtitle {
+    font-size: 15px;
+    color: #777;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    min-height: 40px;
+}
+
+.cardPriceSection {
+    display: flex;
+    align-items: baseline;
+}
+
+.cardPriceSection .cardPriceValue {
+    font-size: 36px;
+    font-weight: 800;
+    color: #000;
+    margin-right: 8px;
+}
+
+.cardPriceSection .cardDuration {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+.cardBenefitsList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 4px 0;
+    flex-grow: 1;
+}
+
+.cardBenefitsList .benefitItem {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.benefitItem span {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.cardBtn {
+    background-color: var(--bg-blue);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: auto;
+}
+
+.cardBtnPersonal {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.cardBtn:hover {
+    background-color: #023c7a;
+}
+
+@media (max-width: 1024px) {
+    .packagesTitleContainer {
         text-align: center;
         margin: 15px 20px 0 20px;
         padding: 0 0 15px 0;
     }
 
-    .packages-title-container h1 {
+    .packagesTitleContainer h1 {
         font-size: 1.6rem;
         font-weight: 600;
         color: #333;
         margin-top: 15px;
     }
 
-    .packages-list-wrapper-desktop {
+    .packagesListWrapperDesktop {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -21,7 +117,7 @@
         padding: 10px 20px 30px 20px;
     }
 
-    .packages-list-wrapper-mobile {
+    .packagesListWrapperMobile {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -31,15 +127,14 @@
     }
 }
 
-.card-btn-personal-mobile {
+.cardBtnPersonalMobile {
     display: flex;
     width: 100%;
     gap: 20px;
 }
 
-
-.card-variant-consultoria-mobile,
-.card-variant-adicional-mobile {
+.cardVariantConsultoriaMobile,
+.cardVariantAdicionalMobile {
     background-color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -55,8 +150,7 @@
     text-align: left;
 }
 
-
-.card-title-mobile {
+.cardTitleMobile {
     font-size: 1.15rem;
     font-weight: 700;
     color: #1f2937;
@@ -65,7 +159,7 @@
     width: 100%;
 }
 
-.card-subtitle-mobile {
+.cardSubtitleMobile {
     font-size: 0.85rem;
     color: #6b7280;
     line-height: 1.4;
@@ -75,7 +169,7 @@
     width: 100%;
 }
 
-.card-price-section-mobile {
+.cardPriceSectionMobile {
     display: flex;
     flex-direction: row;
     align-items: baseline;
@@ -84,7 +178,7 @@
     min-width: 0;
 }
 
-.card-price-value-mobile {
+.cardPriceValueMobile {
     font-size: 1.8rem;
     font-weight: 800;
     color: #000;
@@ -92,13 +186,13 @@
     line-height: 1.1;
 }
 
-.card-duration-mobile {
+.cardDurationMobile {
     font-size: 0.9rem;
     color: #666;
     font-weight: 500;
 }
 
-.card-benefits-list-mobile {
+.cardBenefitsListMobile {
     list-style: none;
     padding: 0;
     margin: 0 0 25px 0;
@@ -107,7 +201,7 @@
     flex-grow: 1;
 }
 
-.benefit-item-mobile {
+.benefitItemMobile {
     font-size: 0.9rem;
     color: #374151;
     margin-bottom: 8px;
@@ -117,13 +211,13 @@
     min-width: 0;
 }
 
-.benefit-item-mobile svg {
+.benefitItemMobile svg {
     margin-right: 8px;
     fill: #22C55E;
     flex-shrink: 0;
 }
 
-.benefit-item-mobile span {
+.benefitItemMobile span {
     flex: 1;
     min-width: 0;
     overflow-wrap: break-word;
@@ -132,7 +226,7 @@
     display: flex;
 }
 
-.card-btn-mobile {
+.cardBtnMobile {
     width: 100%;
     background-color: var(--bg-blue, #0d47a1);
     color: #fff;
@@ -146,6 +240,6 @@
     transition: background-color 0.3s ease;
 }
 
-.card-btn-mobile:hover {
+.cardBtnMobile:hover {
     background-color: #003580;
 }

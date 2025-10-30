@@ -2,21 +2,6 @@ import type { PackagesCardType } from "../../../models/packagesCardType";
 
 export const packagesMockAdicional: PackagesCardType[] = [
     {
-        title: "Aulas com Personal",
-        subtitle: "As aulas com personal são cobradas separadamente da consultoria.",
-        imageUrl: "", 
-        price: "R$120",
-        duration: "por aula",
-        benefits: [
-            "Treinos individuais com personal na academia, com duração de 1 hora a aula.",
-        ],
-        titlebtn: "Adicionar",
-        onClick: () => {
-            alert("Aulas com Personal Adicionadas!");
-        },
-        typeUser: "usuario" 
-    },
-    {
         title: "Personal Residencial",
         subtitle: "As aulas com personal são cobradas separadamente da consultoria.",
         imageUrl: "", 
@@ -28,6 +13,21 @@ export const packagesMockAdicional: PackagesCardType[] = [
         titlebtn: "Adicionar",
         onClick: () => {
             alert("Personal Residencial Adicionado!");
+        },
+        typeUser: "usuario" 
+    },
+    {
+        title: "Aulas com Personal",
+        subtitle: "As aulas com personal são cobradas separadamente da consultoria.",
+        imageUrl: "", 
+        price: "R$120",
+        duration: "por aula",
+        benefits: [
+            "Treinos individuais com personal na academia, com duração de 1 hora a aula.",
+        ],
+        titlebtn: "Adicionar",
+        onClick: () => {
+            alert("Aulas com Personal Adicionadas!");
         },
         typeUser: "usuario" 
     },

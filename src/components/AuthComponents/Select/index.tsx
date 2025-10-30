@@ -4,7 +4,7 @@ type Props = {
     placeholder: string;
     label?: string;
     id?: string;
-    onInputChange: React.Dispatch<React.SetStateAction<string>>;
+    onInputChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     icon: React.ReactNode;
     value?: string;
     options?: string[];

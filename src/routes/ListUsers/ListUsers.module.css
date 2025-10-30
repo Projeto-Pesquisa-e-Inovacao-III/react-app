@@ -1,0 +1,36 @@
+.listUserContainer p {
+    color: #4b5563;
+}
+
+.listUserContainer h1 {
+    font-weight: 600;
+    font-size: 30px;
+    color: #333;
+}
+
+.headerMobile {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.listUsersSearchBar {
+    padding: 1%;
+    width: 40%;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 1.5px 0px 0px rgba(0, 0, 0, 0.2);
+}
+
+
+.listUserContainerMobile h1 {
+    font-weight: 600;
+    font-size: 30px;
+}
+
+.listUsersSearchBarMobile {
+    width: 100%;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0px 1.5px 0px 0px rgba(0, 0, 0, 0.2);
+}

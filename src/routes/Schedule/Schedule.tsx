@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
-import "./desktop.css"
-import "./mobile.css"
+import { useContext, useEffect, useState } from "react";
+import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
-import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled";
-import NewEvent from "../../components/NewEvent";
+import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
+import NewEvent from "../../components/NewEvent/NewEvent";
 import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
-import { LogoHeaderMobile } from "../../components/LogoHeaderMobile";
-import CalendarWeek from "../../components/Calendars/CalendarWeek";
+import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
+import { TypeContext } from "../../App";
+import classnames from "classnames";
+import useMobile from "../../hooks/isMobile";
 
-export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<React.SetStateAction<boolean>> }) {
-    const isMobile = useMediaQuery("(max-width:1024px)");
+export default function Schedule() {
+    const isMobile = useMobile();
 
-    const isPersonal = localStorage.getItem("app-type") === "personal";
 
-    hasHeader(true);
+    const type = useContext(TypeContext);
+
+    const isPersonal = type === "personal";
+
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
         { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
@@ -39,20 +42,17 @@ export default function ViewSchedule({ hasHeader }: { hasHeader: React.Dispatch<
 
     return (
         <>
-            {isMobile && <div className="logo-header-mobile">
-                <LogoHeaderMobile />
-            </div>}
             {isPersonal ? (
                 <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
             ) : (
-                <div className={`user-view-schedule${isMobile ? "-mobile" : ""}`}>
+                <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
-                    <div className={`view-schedule${isMobile ? "-mobile" : ""}`}>
-                        <div className={`schedule-page-calendar${isMobile ? "-mobile" : ""}`}>
+                    <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
+                        <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
                         </div>
-                        <div className={`schedule-page-user-actions${isMobile ? "-mobile" : ""}`}>
-                            <div className="adjust-button-w-schedule">
+                        <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
+                            <div className={styles.adjustButtonWSchedule}>
                                 <SmallerButton
                                     type="button"
                                     icon={isMobile ? undefined : (<svg

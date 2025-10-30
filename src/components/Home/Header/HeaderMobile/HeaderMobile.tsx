@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LogoHeaderMobile } from "../../../LogoHeaderMobile";
+import { LogoHeaderMobile } from "../../../LogoHeaderMobile/LogoHeaderMobile";
 import { Link } from "react-router";
 
 export default function HeaderMobile({ userLoggedIn }: { userLoggedIn: boolean }) {

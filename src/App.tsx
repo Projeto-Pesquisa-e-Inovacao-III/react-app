@@ -5,68 +5,62 @@ import Home from "./routes/Home/Home";
 import Register from "./routes/User/Register/Register";
 import EditUser from "./routes/EditUser/EditUser";
 import Logout from "./routes/User/Logout/Logout";
-import ViewSchedule from "./routes/Schedule/ViewSchedule";
+import ViewSchedule from "./routes/Schedule/Schedule";
 import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
 import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
-import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import ListUsers from "./routes/ListUsers/ListUsers"
-import Layout from "./components/Layout";
-import { useState } from "react";
-import { PrivateRoute } from "./services/privateRoute";
-
+import Layout from "./components/Layout/Layout";
+import { useState, createContext } from "react";
+import PlansHistory from "./routes/PlansHistory/PlansHistory";
+import Dashboard from "./routes/Personal/Dashboard/dashboard";
 
 // todo: 
-// fix personal schedule // (done but needs review)
-// show loading state while an appointment's rescheduling is being accepted // é o que? 
-// swap one KPI on the dashboard // ??? (what KPI?) (what to swap with?)
-// integrate login with backend
+// create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
+// fix mobile view of forgot password steps
+// fix button at forgot password (step 2 is centered)
 
 //future improvements:
-// find a way to remove setHasHeader and type from every route (context?)
 // safari support // deixa baixo
-// organize folders (division between components of specific pages)
 // find gaps
 // study if code is following best practices
-// editar/delete
+// editar/delete usuario
 
+export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [hasHeader, setHasHeader] = useState(true);
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<"student" | "personal">("personal");
 
   return (
     <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
-      <BrowserRouter>
-        <Layout hasHeader={hasHeader} type={type} changeTypeTo={setType}>
+      <TypeContext.Provider value={type}>
+        <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home hasHeader={setHasHeader} />} />
-            <Route path="/schedule" element={<ViewSchedule hasHeader={setHasHeader} />} />
-            <Route path="/packages" element={<Packages type={type} hasHeader={setHasHeader} />} />
-
-            <Route path="/home" element={<Overview isPrestador={type === "personal"} hasHeader={setHasHeader} />} />
-            {/* <Route path="/dashboard" element={<PrivateRoute><Dashboard hasHeader={setHasHeader} /></PrivateRoute>} /> */}
-            <Route path="/dashboard" element={<Dashboard hasHeader={setHasHeader} />} />
-            <Route path="/users" element={<ListUsers hasHeader={setHasHeader} />} />
-            <Route path="/edit-user" element={<EditUser hasHeader={setHasHeader} />} />
-            <Route path="/personal/check-schedule" element={<CheckSchedule hasHeader={setHasHeader} />} />
-
-            <Route path="/login" element={<Login hasHeader={setHasHeader} />} />
-            <Route path="/register" element={<Register hasHeader={setHasHeader} />} />
-
-            <Route path="/forgot-password" element={<ForgotPassword hasHeader={setHasHeader} />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/logout" element={<Logout />} />
+
+            {/* header / logo at mobile*/}
+            <Route element={<Layout />}>
+                <Route path="/plans-history" element={<PlansHistory />} />
+                <Route path="/schedule" element={<ViewSchedule />} />
+                <Route path="/packages" element={<Packages />} />
+                <Route path="/home" element={<Overview />} />
+
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/edit-user" element={<EditUser />} />
+                <Route path="/personal/check-schedule" element={<CheckSchedule />}
+            />
+            </Route>
           </Routes>
-        </Layout>
-      </BrowserRouter>
+        </BrowserRouter>
+      </TypeContext.Provider>
     </>
   );
-
-
 }
 
 export default App;

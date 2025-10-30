@@ -1,4 +1,6 @@
 import { Bar, BarChart, CartesianGrid, Label, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import styles from "./chart.module.css"
+
 
 type Props = {
     data: any[];
@@ -12,7 +14,7 @@ export default function Chart({ data, type, title }: Props) {
     const ChartComponent = type === 'line' ? LineChart : BarChart;
 
     return (
-        <div className="chart-bar-personal">
+        <div className={styles.chartBarPersonal}>
 
             <h3 style={{ paddingLeft: '20px', fontWeight: 'bold' }}>
                 {title}

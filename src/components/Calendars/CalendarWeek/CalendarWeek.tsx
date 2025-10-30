@@ -3,7 +3,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { useEffect, useState } from "react";
-import NewEvent from "../../NewEvent";
+import NewEvent from "../../NewEvent/NewEvent";
 export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { insertedEvents: any[], isMobile: boolean, openModal: React.Dispatch<React.SetStateAction<boolean>> }) {
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
     const [events, setEvents] = useState<any>(insertedEvents);

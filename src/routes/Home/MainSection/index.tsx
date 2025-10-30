@@ -1,4 +1,4 @@
-import ButtonHome from "../../../components/Home/ButtonHome";
+import ButtonHome from "../../../components/Home/ButtonHome/ButtonHome";
 
 export default function HomeSection({ isMobile }: { isMobile: boolean }) {
     return (

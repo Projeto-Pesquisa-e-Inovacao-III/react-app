@@ -1,4 +1,4 @@
-import Button from "../Button";
+import Button from "../Button/Button";
 import { SearchBar } from "../SearchBar/SearchBar";
 import "./style.css"
 

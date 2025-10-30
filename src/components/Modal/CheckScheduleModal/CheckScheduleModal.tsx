@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
-import Button from "../../Button";
+import Button from "../../Button/Button";
 import MiniCalendar from "../../Calendars/MiniCalendar/MiniCalendar";
 
 
