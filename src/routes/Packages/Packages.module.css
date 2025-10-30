@@ -1,3 +1,9 @@
+.packagesContainer {
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
 .packagesListWrapperDesktop {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -5,19 +11,15 @@
     justify-content: center;
     gap: 20px;
     width: auto;
-    padding: 20px 50px 60px 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+
 }
 
 .packagesTitleContainer h1 {
-    font-size: 1.6rem;
     font-weight: 600;
+    font-size: 30px;
     color: #333;
-    margin-top: 15px;
-}
-
-.packagesTitleContainer,
-.personalPackagesTitleContainer {
-    padding: 20px 50px 0px 50px;
 }
 
 .addButtonContainer {
@@ -34,24 +36,20 @@
         padding: 10px 20px 30px 20px;
     }
 
+    .packagesContainer {
+        padding: 20px !important;
+    }
+
     .packagesListWrapperMobile {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
         width: 100%;
-        padding: 10px 20px 30px 20px;
-    }
-
-    .packagesTitleContainer,
-    .personalPackagesTitleContainer {
-        margin: 15px 0 0 0;
-        padding: 10px 20px 30px 20px;
     }
 
     .personalPackagesTitleContainerMobile,
     .additionalTitleMobile {
-        padding: 10px 20px 30px 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -82,15 +80,6 @@
         font-weight: 600;
         color: #333;
         margin-top: 15px;
-    }
-
-    .packagesListWrapperMobile {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        width: 100%;
-        padding: 10px 20px 30px 20px;
     }
 
 }

@@ -9,7 +9,9 @@
 .containerContent {
     display: flex;
     gap: 60px;
-    padding: 40px;
+    padding: 20px;
+    padding-left: 100px;
+    padding-right: 100px;
     min-height: 100vh;
     justify-content: center;
 }

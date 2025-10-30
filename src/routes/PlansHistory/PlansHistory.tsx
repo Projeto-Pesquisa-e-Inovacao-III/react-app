@@ -5,6 +5,7 @@ import classNames from "classnames";
 import styles from "./PlansHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
 import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
+import { Typography } from "@mui/material";
 
 export default function PlansHistory() {
     return (

@@ -21,7 +21,7 @@ export function Packages() {
     };
 
     return (
-        <>
+        <div className={styles.packagesContainer}>
             <div
                 className={classnames(
                     styles.packagesTitleContainer,
@@ -77,6 +77,6 @@ export function Packages() {
                     />
                 ))}
             </div>
-        </>
+        </div>
     );
 }

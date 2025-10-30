@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
-import { useMediaQuery } from "@mui/material";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";

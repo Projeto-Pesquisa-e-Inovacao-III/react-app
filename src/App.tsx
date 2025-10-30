@@ -15,7 +15,6 @@ import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
-import { useMediaQuery } from "@mui/material";
 
 // todo: 
 // create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
@@ -31,7 +30,7 @@ import { useMediaQuery } from "@mui/material";
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("personal");
+  const [type, setType] = useState<"student" | "personal">("student");
 
   return (
     <>
