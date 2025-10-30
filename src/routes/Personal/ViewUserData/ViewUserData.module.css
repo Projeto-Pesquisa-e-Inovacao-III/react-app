@@ -1,0 +1,60 @@
+.container {
+    padding: 40px;
+    background-color: #fff;
+    height: 100vh;
+}
+
+.containerMobile {
+    padding: 20px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 50px;
+}
+
+.userDetails {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 20px 0px;
+    flex-wrap: wrap;
+}
+
+.userDetails img {
+    width: 150px;
+    height: 150px;
+    border-radius: 75px;
+    margin-bottom: 20px;
+}
+
+.wrapperInfos {
+    flex-wrap: wrap;
+    display: flex;
+    gap: 20px;
+    margin-left: 20px;
+}
+
+@media (max-width: 768px) {
+    .wrapperInfos {
+        margin-left: 0px !important;
+    }
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.info span {
+    color: #333;
+}
+
+.btnCreateTraining {
+    width: 20%;
+}
+
+.btnCreateTrainingMobile {
+    width: 100%;
+}
