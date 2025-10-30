@@ -1,7 +1,4 @@
 .container {
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
 }
 
 .container .title {
@@ -70,7 +67,6 @@
 @media (max-width: 1024px) {
 
     .container {
-        padding: 20px;
     }
 
     .search {

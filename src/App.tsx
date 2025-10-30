@@ -30,7 +30,7 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<"student" | "personal">("personal");
 
   return (
     <>

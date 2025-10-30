@@ -1,8 +1,4 @@
-.container-calendar-week-personal {
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-}
+
 
 .new-event-opened-wrapper-callendar {
     filter: opacity(0.4);
@@ -30,10 +26,4 @@
         text-align: center;
     }
 
-    .container-calendar-week-personal {
-        padding: 0 20px 20px;
-
-        height: auto;
-        min-height: 100vh;
-    }
 }

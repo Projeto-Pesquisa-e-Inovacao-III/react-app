@@ -2,9 +2,6 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 10px;
-  padding: 20px;
-  padding-left: 100px;
-  padding-right: 100px;
   gap: 25px;
   grid-template-columns: 4fr 1fr;
   grid-template-areas:
@@ -99,8 +96,6 @@
       "personal personal"
       "login login"
       "footer footer";
-
-    padding: 20px;
   }
 
 

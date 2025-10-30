@@ -1,9 +1,3 @@
-.listUserContainer {
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-}
-
 .listUserContainer p {
     color: #4b5563;
 }
@@ -28,12 +22,6 @@
     box-shadow: 0px 1.5px 0px 0px rgba(0, 0, 0, 0.2);
 }
 
-.listUserContainerMobile {
-    padding: 20px;
-    height: auto;
-    min-height: 100vh;
-
-}
 
 .listUserContainerMobile h1 {
     font-weight: 600;

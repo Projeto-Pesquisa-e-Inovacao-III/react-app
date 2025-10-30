@@ -1,8 +1,3 @@
-.packagesContainer {
-    padding: 20px;
-    padding-left: 100px;
-    padding-right: 100px;
-}
 
 .packagesListWrapperDesktop {
     display: grid;
@@ -34,10 +29,6 @@
         gap: 20px;
         width: 100%;
         padding: 10px 20px 30px 20px;
-    }
-
-    .packagesContainer {
-        padding: 20px !important;
     }
 
     .packagesListWrapperMobile {
