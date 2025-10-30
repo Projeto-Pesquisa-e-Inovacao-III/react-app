@@ -1,4 +1,3 @@
-import { useMediaQuery } from "@mui/material";
 import { PackageCard } from "../../components/PackageCard/PackageCard";
 import { packagesMock } from "./mocks/packagesMock";
 import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
@@ -8,10 +7,12 @@ import classnames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
-import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import Input from "../../components/Inputs/Input/Input";
 import Button from "../../components/Button/Button";
 import { Plus } from "lucide-react";
+import TimerModal from "../../components/Modal/TimerModal/TimerModal";
+import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
+import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 
 export function Packages() {
     const isMobile = useMobile();
@@ -20,14 +21,19 @@ export function Packages() {
 
 
     const [openModalAddPackage, setOpenModalAddPackage] = useState(false);
+    const [openModalAddAdditionalPackage, setOpenModalAddAdditionalPackage] = useState(false);
+    const [openModalEditPackage, setOpenModalEditPackage] = useState(false);
+    const [openModalDeletePackage, setOpenModalDeletePackage] = useState(false);
+    const [openSuccessModal, setOpenSuccessModal] = useState(false);
+    const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
 
     useEffect(() => {
-        if (openModalAddPackage) {
+        if (openModalAddPackage || openModalAddAdditionalPackage) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
-    }, [openModalAddPackage]);
+    }, [openModalAddPackage, openModalAddAdditionalPackage]);
 
     const isPersonal = type === "personal";
 
@@ -39,11 +45,25 @@ export function Packages() {
         setOpenModalAddPackage(true);
     }
 
-    const mockBenefits = ["Benefício 1"];
+    function handleAddAdditionalPackage() {
+        setOpenModalAddAdditionalPackage(true);
+    }
 
-    const [benefits, setBenefits] = useState<string[]>(mockBenefits);
-    function handleAddBenefit(benefit: string) {
-        setBenefits([...benefits, benefit]);
+    function handleSuccessModalInfos(title: string, content: string) {
+        setOpenSuccessModal(true)
+        setSuccessModalInfos({ title, content });
+    }
+
+
+    const valuesMock = {
+        name: "Pacote Exemplo",
+        price: "R$ 199,99",
+        deadline: "30 dias",
+        benefits: [
+            "Benefício 1",
+            "Benefício 2",
+            "Benefício 3"
+        ]
     }
 
     return (
@@ -73,6 +93,8 @@ export function Packages() {
                             onClick={() => handleBuyClick(pacote.title)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
+                            setHandleDelete={setOpenModalDeletePackage}
+                            setHandleEdit={setOpenModalEditPackage}
                         />
                     ))}
                 </div>
@@ -87,7 +109,7 @@ export function Packages() {
                     <h1>Pacotes Adicionais</h1>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton type="button" title="Adicionar Pacote Adicional" />
+                            <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={handleAddAdditionalPackage} />
                         </div>
                     )}
                 </div>
@@ -100,51 +122,52 @@ export function Packages() {
                             onClick={() => handleBuyClick(pacote.title)}
                             isMobile={isMobile}
                             variant="adicional"
+                            setHandleEdit={setOpenModalEditPackage}
+                            setHandleDelete={setOpenModalDeletePackage}
                             isPersonal={isPersonal}
                         />
                     ))}
                 </div>
             </div>
+
+
             {openModalAddPackage && (
+                <AddPackagePlan title="Adicionar Pacote" onClose={setOpenModalAddPackage} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
+            )}
+
+            {
+                openModalAddAdditionalPackage && (
+                    <AddPackagePlan title="Adicionar Pacote Adicional" onClose={setOpenModalAddAdditionalPackage} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
+                )
+            }
+
+
+
+            {openModalDeletePackage && (
                 <>
-                    <div className={styles.modalOverlay}>
-                        <div className={styles.modalContent}>
-                            <h1>Adicionar Pacote</h1>
-                            {/* Formulário para adicionar pacote */}
-                            <form className={styles.addPackageForm}>
-                                <div className={styles.inputContainer}>
-                                    <label htmlFor="packageName">Nome do Pacote:</label>
-                                    <Input type="text" />
-                                </div>
-                                <div className={styles.inputContainer}>
-                                    <label htmlFor="packagePrice">Preço:</label>
-                                    <Input type="text" />
-                                </div>
-                                <div className={styles.inputContainer}>
-                                    <label htmlFor="packagePrice">Prazo:</label>
-                                    <Input type="text" />
-                                </div>
-
-                                {benefits.map((benefit, index) => (
-                                    <div className={styles.inputContainer}>
-                                        <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
-                                        <Input key={index} type="text" />
-                                    </div>
-                                ))}
-
-                                <div>
-                                    <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("Novo Benefício")} />
-                                </div>
-
-                                <div className={styles.modalButtons}>
-                                    <Button type="button" title="Adicionar Pacote" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("Novo Benefício")} />
-                                    <Button type="button" title="Cancelar" classNameVariable={styles.buttonAddBenefit} onClick={() => setOpenModalAddPackage(false)} />
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <TimerModal
+                        isMobile={isMobile}
+                        title="Confirmar Exclusão"
+                        content="Tem certeza de que deseja excluir este pacote?"
+                        closeThen={setOpenModalDeletePackage}
+                        isDelete={true}
+                        callSuccessModal={() => handleSuccessModalInfos("Exclusão concluída", "O pacote foi excluído com sucesso")}
+                    />
                 </>
             )}
+
+            {openModalEditPackage && (
+                <>
+                    <AddPackagePlan title="Editar Pacote" onClose={setOpenModalEditPackage} values={valuesMock} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} />
+                </>
+            )}
+
+            {openSuccessModal && (
+                <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={setOpenSuccessModal} />
+
+            )}
+
+
         </>
     );
 }

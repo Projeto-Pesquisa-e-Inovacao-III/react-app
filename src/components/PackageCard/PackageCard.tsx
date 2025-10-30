@@ -10,6 +10,8 @@ type PackageCardProps = {
     benefits: string[];
     titlebtn: string;
     onClick: () => void;
+    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>>;
+    setHandleDelete: React.Dispatch<React.SetStateAction<boolean>>;
     isMobile?: boolean;
     variant?: "consultoria" | "adicional";
     isPersonal?: boolean;
@@ -18,6 +20,14 @@ type PackageCardProps = {
 
 export function PackageCard(props: PackageCardProps) {
     const { isMobile = false, variant = "consultoria" } = props;
+
+    function handleOpenEdit() {
+        props.setHandleEdit(true);
+    }
+
+    function handleOpenDelete() {
+        props.setHandleDelete(true);
+    }
 
     return (
         <div
@@ -92,8 +102,8 @@ export function PackageCard(props: PackageCardProps) {
                         [styles.cardBtnPersonalMobile]: isMobile,
                     })}
                 >
-                    <SmallerButton type="button" title="Editar" />
-                    <SmallerButton type="button" title="Deletar" />
+                    <SmallerButton type="button" title="Editar" handleButtonClick={handleOpenEdit} />
+                    <SmallerButton type="button" title="Deletar" handleButtonClick={handleOpenDelete} />
                 </div>
                 :
                 props.titlebtn && (
