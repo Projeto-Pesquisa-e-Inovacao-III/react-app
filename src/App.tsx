@@ -17,6 +17,7 @@ import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
 import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
+import MoreOptions from "./routes/MoreOptions/MoreOptions";
 
 // todo: 
 // create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
@@ -47,18 +48,19 @@ function App() {
 
             {/* header / logo at mobile*/}
             <Route element={<Layout />}>
-                <Route path="/plans-history" element={<PlansHistory />} />
-                <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
-                <Route path="/schedule" element={<ViewSchedule />} />
-                <Route path="/packages" element={<Packages />} />
-                <Route path="/home" element={<Overview />} />
+              <Route path="/plans-history" element={<PlansHistory />} />
+              <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
+              <Route path="/schedule" element={<ViewSchedule />} />
+              <Route path="/packages" element={<Packages />} />
+              <Route path="/home" element={<Overview />} />
 
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/users" element={<ListUsers />} />
-                <Route path="/users/view-user-data" element={<ViewUserData />} />
-                <Route path="/edit-user" element={<EditUser />} />
-                <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<ListUsers />} />
+              <Route path="/users/view-user-data" element={<ViewUserData />} />
+              <Route path="/edit-user" element={<EditUser />} />
+              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
             </Route>
+            <Route path="/more-options" element={<MoreOptions />} />
           </Routes>
         </BrowserRouter>
       </TypeContext.Provider>

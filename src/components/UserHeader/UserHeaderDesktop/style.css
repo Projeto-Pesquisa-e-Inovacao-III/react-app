@@ -93,3 +93,30 @@
         }
     }
 }
+
+.header-modal-desktop {
+    position: absolute;
+    top: 70px;
+    right: 100px;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 1000;
+}
+
+.header-modal-content-desktop {
+    display: flex;
+    flex-direction: column;
+    a {
+        padding: 20px 30px;
+        text-decoration: none;
+        color: black;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #f0f0f0;
+        }
+    }
+}

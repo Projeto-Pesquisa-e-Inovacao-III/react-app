@@ -13,6 +13,7 @@ type UserType = {
 export default function UserHeaderDesktop({ type }: UserType) {
 
   const [openNotification, setOpenNotification] = useState<boolean>(false);
+  const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
   const notifications = [
     {
@@ -61,9 +62,9 @@ export default function UserHeaderDesktop({ type }: UserType) {
           <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
             <Bell />
           </div>
-          <Link to="/edit-user">
+          <div className="user-info-desktop" onClick={() => setOpenHeaderModal(!openHeaderModal)}>
             <img src="https://thispersondoesnotexist.com" alt="" />
-          </Link>
+          </div>
         </div>
 
       </header >
@@ -72,6 +73,18 @@ export default function UserHeaderDesktop({ type }: UserType) {
         <Notification notifications={notifications} />
       )
       }
+
+      {openHeaderModal && (
+        <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
+          <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
+            <Link to="/edit-user">Editar perfil</Link>
+            <Link to="/logout">Sair</Link>
+          </div>
+        </div>
+      )
+      }
     </>
   );
 }
+
+
