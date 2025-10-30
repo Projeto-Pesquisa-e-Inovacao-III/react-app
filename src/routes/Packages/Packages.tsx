@@ -5,12 +5,13 @@ import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton";
 import classnames from "classnames";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import Input from "../../components/Inputs/Input/Input";
 import Button from "../../components/Button/Button";
+import { Plus } from "lucide-react";
 
 export function Packages() {
     const isMobile = useMobile();
@@ -19,6 +20,14 @@ export function Packages() {
 
 
     const [openModalAddPackage, setOpenModalAddPackage] = useState(false);
+
+    useEffect(() => {
+        if (openModalAddPackage) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }, [openModalAddPackage]);
 
     const isPersonal = type === "personal";
 
@@ -30,7 +39,9 @@ export function Packages() {
         setOpenModalAddPackage(true);
     }
 
-    const [benefits, setBenefits] = useState<string[]>([]);
+    const mockBenefits = ["Benefício 1"];
+
+    const [benefits, setBenefits] = useState<string[]>(mockBenefits);
     function handleAddBenefit(benefit: string) {
         setBenefits([...benefits, benefit]);
     }
@@ -109,12 +120,26 @@ export function Packages() {
                                     <label htmlFor="packagePrice">Preço:</label>
                                     <Input type="text" />
                                 </div>
-                                <div>
-                                    <Button type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("Novo Benefício")} />
+                                <div className={styles.inputContainer}>
+                                    <label htmlFor="packagePrice">Prazo:</label>
+                                    <Input type="text" />
                                 </div>
 
-                                <button type="submit">Adicionar</button>
-                                <button type="button" onClick={() => setOpenModalAddPackage(false)}>Cancelar</button>
+                                {benefits.map((benefit, index) => (
+                                    <div className={styles.inputContainer}>
+                                        <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
+                                        <Input key={index} type="text" />
+                                    </div>
+                                ))}
+
+                                <div>
+                                    <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("Novo Benefício")} />
+                                </div>
+
+                                <div className={styles.modalButtons}>
+                                    <Button type="button" title="Adicionar Pacote" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("Novo Benefício")} />
+                                    <Button type="button" title="Cancelar" classNameVariable={styles.buttonAddBenefit} onClick={() => setOpenModalAddPackage(false)} />
+                                </div>
                             </form>
                         </div>
                     </div>
