@@ -19,11 +19,6 @@ export function CheckSchedule() {
     const [openSuccessAcceptModal, setOpenSuccessAcceptModal] = useState<boolean>(false);
     const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (isMobile) window.scrollTo(0, 0);
-    }, [openModal, openModalAccept, openModalDecline, openSuccessReschedule, openSuccessAcceptModal, openSuccessDeclineModal]);
-
-
     const dataCard = [
         {
             id: 1,
