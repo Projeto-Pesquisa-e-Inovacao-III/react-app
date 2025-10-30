@@ -3,7 +3,7 @@ import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import GoBackButton from "../../components/GoBackButton/GoBackButton";
-import InputWithIcon from "../../components/AuthComponents/InputWithIcon/InputWithIcon";
+import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useReducer } from "react";
 import useMobile from "../../hooks/isMobile";
@@ -40,7 +40,7 @@ const initialEditUserState = {
 };
 
 export default function EditUser() {
-      const isMobile = useMobile();
+  const isMobile = useMobile();
 
   const userImage: string = "";
 
@@ -49,11 +49,11 @@ export default function EditUser() {
   return (
     <>
       <div className={styles.editUserGrid}>
-        <div className={styles.goBackContainer}>
-          {!isMobile &&
+        {!isMobile &&
+          <div className={styles.goBackContainer}>
             <h2>Editar Perfil</h2>
-          }
-        </div>
+          </div>
+        }
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>

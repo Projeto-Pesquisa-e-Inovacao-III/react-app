@@ -3,6 +3,8 @@ import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
 import ChangeTypeDevDebug from "../../ChangeTypeDevDebug/ChangeTypeDevDebug";
 import { Bell } from "lucide-react";
+import { useState } from "react";
+import Notification from "../Notification/Notification";
 
 type UserType = {
   type: "personal" | "student"
@@ -10,6 +12,24 @@ type UserType = {
 
 export default function UserHeaderDesktop({ type }: UserType) {
 
+  const [openNotification, setOpenNotification] = useState<boolean>(false);
+
+  const notifications = [
+    {
+      notificationTitle: "Título da Notificação",
+      message: "Nova notificação!",
+      icon: <Bell />,
+      date: "2023-10-01",
+      isRead: false
+    },
+    {
+      notificationTitle: "Outro Título",
+      message: "Outra notificação!",
+      icon: <Bell />,
+      date: "2023-10-02",
+      isRead: false
+    }
+  ];
 
   return (
     <>
@@ -37,13 +57,21 @@ export default function UserHeaderDesktop({ type }: UserType) {
         </nav>
 
         <div className="auth-links">
-          <Bell />
+          {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
+          <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
+            <Bell />
+          </div>
           <Link to="/edit-user">
             <img src="https://thispersondoesnotexist.com" alt="" />
           </Link>
         </div>
 
-      </header>
+      </header >
+
+      {openNotification && (
+        <Notification notifications={notifications} />
+      )
+      }
     </>
   );
 }

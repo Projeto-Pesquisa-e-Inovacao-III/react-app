@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
 import Swal from "sweetalert2";
-import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";

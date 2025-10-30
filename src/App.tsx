@@ -15,6 +15,7 @@ import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
+import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
 
 // todo: 
 // create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
@@ -30,7 +31,7 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("personal");
+  const [type, setType] = useState<"student" | "personal">("student");
 
   return (
     <>
@@ -46,6 +47,7 @@ function App() {
             {/* header / logo at mobile*/}
             <Route element={<Layout />}>
                 <Route path="/plans-history" element={<PlansHistory />} />
+                <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
                 <Route path="/schedule" element={<ViewSchedule />} />
                 <Route path="/packages" element={<Packages />} />
                 <Route path="/home" element={<Overview />} />

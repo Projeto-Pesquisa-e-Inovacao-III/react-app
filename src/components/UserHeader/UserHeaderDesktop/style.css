@@ -46,6 +46,15 @@
             height: 30px;
         }
 
+        .notification-bell {
+            cursor: pointer;
+            height: 55px;
+            width: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         img {
             width: 55px;
             height: 55px;

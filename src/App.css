@@ -81,7 +81,7 @@
   select {
     padding: 20px 16px 20px 40px;
     background-color: transparent;
-    color: black;
+    color: #333;
     border: 1px solid #ccc;
     border-radius: 8px;
     width: 100%;

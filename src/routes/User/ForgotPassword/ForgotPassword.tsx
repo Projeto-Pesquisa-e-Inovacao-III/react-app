@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./ForgotPassword.module.css";
 import { Phone } from "lucide-react";
-import InputWithIcon from "../../../components/AuthComponents/InputWithIcon/InputWithIcon";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";

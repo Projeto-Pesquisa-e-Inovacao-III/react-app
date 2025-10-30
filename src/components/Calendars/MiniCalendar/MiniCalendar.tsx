@@ -5,7 +5,7 @@ import "./style.css";
 import { useEffect, useState } from "react";
 
 type Props = {
-    clickedDate?: React.Dispatch<React.SetStateAction<string>>;
+    clickedDate?: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
     createdEvents?: { title: string; start: string; end: string }[];
 };
 
