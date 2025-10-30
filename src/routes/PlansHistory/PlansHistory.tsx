@@ -7,10 +7,18 @@ import SmallerButton from "../../components/SmallerButton";
 import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
 import { useState } from "react";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
+import { useNavigate } from "react-router-dom";
 
 export default function PlansHistory() {
     const [initialDateFilter, setInitialDateFilter] = useState<string>("");
     const [finalDateFilter, setFinalDateFilter] = useState<string>("");
+
+    const nav = useNavigate();
+
+    function handleDetailsClick() {
+        nav('/plans-history-details');
+    }
+
     return (
         <div className={classNames(styles.container)}>
             <div className={classNames(styles.title)}>
@@ -46,8 +54,8 @@ export default function PlansHistory() {
                             <h2>{plan.title}</h2>
                             <p>{plan.subtitle}</p>
                         </div>
-                        <div className={classNames(styles.planButton)}>
-                            <SmallerButton title="Detalhes" handleButtonClick={plan.onClick} />
+                        <div className={classNames(styles.planButton)} onClick={handleDetailsClick}>
+                            <SmallerButton title="Detalhes"/>
                         </div>
                     </div>
                 </div>

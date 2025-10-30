@@ -7,7 +7,7 @@ export default function PlansHistoryDetails() {
 
     return (
         <div className={styles.container}>
-            <GoBackButton />
+            <GoBackButton to='/plans-history'/>
             <div className={styles.title}>
                 <h1>Detalhes da compra</h1>
             </div>
