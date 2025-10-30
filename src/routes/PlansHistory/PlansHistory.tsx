@@ -36,7 +36,7 @@ export default function PlansHistory() {
             </div>
 
             {PlansHistoryMock.map((plan, index) => (
-                <div className={classNames(styles.plansCard)}>
+                <div key={`${plan.date}-${index}`} className={classNames(styles.plansCard)}>
                     <div className={classNames(styles.planBoughtDate)}>
                         <p>{plan.date}</p>
                     </div>
