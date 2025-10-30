@@ -40,7 +40,7 @@ const initialEditUserState = {
 };
 
 export default function EditUser() {
-      const isMobile = useMobile();
+  const isMobile = useMobile();
 
   const userImage: string = "";
 
@@ -49,11 +49,11 @@ export default function EditUser() {
   return (
     <>
       <div className={styles.editUserGrid}>
-        <div className={styles.goBackContainer}>
-          {!isMobile &&
+        {!isMobile &&
+          <div className={styles.goBackContainer}>
             <h2>Editar Perfil</h2>
-          }
-        </div>
+          </div>
+        }
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
