@@ -6,7 +6,7 @@ type SmallerButtonProps = {
     title: string;
     value?: string;
     selected?: boolean;
-    handleButtonClick?: (value: string) => void;
+    handleButtonClick?: (value: string | boolean) => void;
 };
 export default function SmallerButton({ type, icon, title, value, selected, handleButtonClick }: SmallerButtonProps) {
     useEffect(() => {

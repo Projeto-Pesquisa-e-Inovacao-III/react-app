@@ -54,7 +54,7 @@ export default function UserHeaderMobile({ type }: UserType) {
                 </Link>
 
                 {/* we dont have settings. should we? */}
-                <Link to="/edit-user">
+                <Link to="/more-options">
                     <HeaderIconsMobile icon={
                         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M12.5 13C13.0523 13 13.5 12.5523 13.5 12C13.5 11.4477 13.0523 11 12.5 11C11.9477 11 11.5 11.4477 11.5 12C11.5 12.5523 11.9477 13 12.5 13Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

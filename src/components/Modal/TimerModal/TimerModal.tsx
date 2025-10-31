@@ -13,7 +13,7 @@ type TimerModalProps = {
     id?: number | null;
     events?: EventDTO[];
     setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>;
-    callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>>;
+    callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     buttonTitle?: string;
     isDelete?: boolean;
 }

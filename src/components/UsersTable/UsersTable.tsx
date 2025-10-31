@@ -2,9 +2,11 @@ import "./style.css"
 import "./mobile.css"
 import SmallerButton from "../SmallerButton";
 import { useMediaQuery } from "@mui/material";
+import useMobile from "../../hooks/isMobile";
+import { useNavigate } from "react-router-dom";
 
 export default function UsersTable(props){
-    const isMobile = useMediaQuery("(max-width:1024px)");
+    const isMobile = useMobile();
 
     const users = [
         {
@@ -15,11 +17,14 @@ export default function UsersTable(props){
             name: "Carlos Mendes",
             idade: "45 anos"
         },
-        // {
-        //     name: "Juliana Rocha",
-        //     idade: "32 anos"
-        // }
     ];
+
+    const nav = useNavigate();
+
+    function handleViewUserData(){
+        nav("/users/view-user-data");
+    }
+
 
      return (
         <div className={`users-table-container${isMobile ? "-mobile" : ""}`}>
@@ -46,7 +51,7 @@ export default function UsersTable(props){
                             </div>
                         </div>
                         <div>
-                            <SmallerButton title="Ver Dados"/>
+                            <SmallerButton handleButtonClick={handleViewUserData} title="Ver Dados"/>
                         </div>
                     </div>
                 ))}

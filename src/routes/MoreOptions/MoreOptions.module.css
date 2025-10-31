@@ -1,0 +1,41 @@
+.container {
+    min-height: 100vh;
+    height: auto;
+}
+
+.header {
+    display: flex;
+    background-color: var( --indigo );
+    padding: 20px;
+}
+
+.header img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.header h2 {
+    margin-left: 20px;
+    align-self: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonOption {
+    display: flex !important;
+    flex-direction: row !important;
+    background-color: transparent !important;
+    color: black !important;
+    border-bottom: 1px solid #ccc !important;
+    padding: 10px 0;
+    text-align: left;
+    font-size: 16px;
+    gap: 20px;
+}
