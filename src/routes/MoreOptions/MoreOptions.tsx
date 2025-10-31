@@ -23,14 +23,12 @@ export default function MoreOptions() {
                     <h2>Usuario</h2>
                 </div>
                 <div className={styles.options}>
-                    <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => handleNavigate("/edit-user")}/>
+                    <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => handleNavigate("/edit-user")} />
                     <Button icon={<MapPin />} type='button' classNameVariable={styles.buttonOption} title='Endereços Cadastrados' />
-                    <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' />
+                    <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => handleNavigate("/plans-history")} />
                     <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' />
                 </div>
             </div>
-
-            {isMobile && <UserHeaderMobile type={type} />}
         </>
     )
 }

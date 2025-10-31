@@ -33,7 +33,7 @@ import MoreOptions from "./routes/MoreOptions/MoreOptions";
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("personal");
+  const [type, setType] = useState<"student" | "personal">("student");
 
   return (
     <>
@@ -59,8 +59,8 @@ function App() {
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/edit-user" element={<EditUser />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/more-options" element={<MoreOptions />} />
             </Route>
-            <Route path="/more-options" element={<MoreOptions />} />
           </Routes>
         </BrowserRouter>
       </TypeContext.Provider>

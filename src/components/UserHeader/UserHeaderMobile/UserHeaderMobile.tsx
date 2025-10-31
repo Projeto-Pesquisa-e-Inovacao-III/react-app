@@ -101,7 +101,7 @@ export default function UserHeaderMobile({ type }: UserType) {
                             pageTitle="Pacotes" />
                     </Link>
 
-                    <Link to="/edit-user">
+                    <Link to="/more-options">
                         <HeaderIconsMobile icon={
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 21V19C19 17.9391 18.5786 16.9217 17.8284 16.1716C17.0783 15.4214 16.0609 15 15 15H9C7.93913 15 6.92172 15.4214 6.17157 16.1716C5.42143 16.9217 5 17.9391 5 19V21" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
