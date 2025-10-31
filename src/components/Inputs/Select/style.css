@@ -32,8 +32,16 @@
         height: 56px;
     }
 
+    .dont-has-icon {
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     label {
         font-size: 14px;
     }
 
 }
+

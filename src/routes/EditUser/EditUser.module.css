@@ -13,7 +13,7 @@
 
 /* inside white container */
 .editUserGrid :global(.input-icon) {
-  transform: translateY(0%) !important;
+  top: 64%;
   height: 1.2rem;
   width: 1.2rem;
 

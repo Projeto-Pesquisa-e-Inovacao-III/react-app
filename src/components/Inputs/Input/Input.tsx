@@ -7,13 +7,14 @@ type Props = {
     placeholder?: string;
     label?: string;
     id?: string; 
+    name?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
     value?: string;
 }
 
-export default function Input({ type, placeholder, label, id, onInputChange, onInputClick, isPassword, value }: Props) {
+export default function Input({ type, placeholder, label, id, name, onInputChange, onInputClick, isPassword, value }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -23,6 +24,7 @@ export default function Input({ type, placeholder, label, id, onInputChange, onI
             }
             <input
                 id={`${id}-input`}
+                name={name}
                 type={isPassword && showPassword ? "text" : type}
                 className={`${isPassword ? `password-input` : ``}`}
                 placeholder={placeholder}
