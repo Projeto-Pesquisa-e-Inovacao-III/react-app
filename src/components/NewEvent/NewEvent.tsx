@@ -18,12 +18,13 @@ type NewEventProps = {
     buttonTitle?: string;
     isReschedule?: boolean;
     rescheduleId?: number | null;
+    clickedDate?: string;
 };
 
 export default function NewEvent(
-    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule }: NewEventProps
+    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
-    const [newEventDate, setNewEventDate] = useState<string>("");
+    const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
     const [selectedType, setSelectedType] = useState<string>("personal");
     const [selectedLocation, setSelectedLocation] = useState<string>("casa");
@@ -36,8 +37,11 @@ export default function NewEvent(
 
     let eventToReschedule = insertedEvents?.find(event => event?.id === rescheduleId);
 
+
+
     useEffect(() => {
         document.body.style.overflow = 'hidden';
+        console.log("clickedDate no NewEvent:", clickedDate);
     }, []);
 
     useEffect(() => {
@@ -165,6 +169,7 @@ export default function NewEvent(
                     <div className={`calendar-small${isMobile ? "-mobile" : ""}`}>
                         <CalendarMonthStyled
                             clickedDate={setNewEventDate}
+                            clickedDateStr={clickedDate}
                             createdEvents={insertedEvents}
                             eventToReschedule={eventToReschedule?.date}
                             isMobile={isMobile}

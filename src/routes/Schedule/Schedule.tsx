@@ -11,10 +11,10 @@ import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function Schedule() {
     const isMobile = useMobile();
-
 
     const type = useContext(TypeContext);
 
@@ -39,6 +39,19 @@ export default function Schedule() {
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
     }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [clickedDate, setClickedDate] = useState<string>("");
+
+    useEffect(() => {
+        if (searchParams.get("date")) {
+            setClickedDate(searchParams.get("date") || "");
+            setOpenNewEvent(true);
+
+        }
+
+    }, []);
 
     return (
         <>
@@ -98,6 +111,7 @@ export default function Schedule() {
                         insertEvent={setEvents}
                         title="Agendar horário"
                         buttonTitle="Agendar"
+                        clickedDate={clickedDate}
                     />
                 </>
             )}
