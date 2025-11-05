@@ -20,15 +20,8 @@ import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
 import MoreOptions from "./routes/MoreOptions/MoreOptions";
 
 // todo: 
-// create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
-// fix mobile view of forgot password steps
-// fix button at forgot password (step 2 is centered)
-
-//future improvements:
 // safari support // deixa baixo
-// find gaps
 // study if code is following best practices
-// editar/delete usuario
 
 export const TypeContext = createContext<"student" | "personal">("student");
 
