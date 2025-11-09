@@ -35,7 +35,7 @@ export default function MoreOptions() {
                     {type == "personal" &&
                         <>
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
-                            <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/edit-user")} />
+                            <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
                         </>
                     }
                     <Button icon={<LogOut />} type='button' classNameVariable={styles.buttonOption} title='Sair' onClick={() => nav("/logout")} />

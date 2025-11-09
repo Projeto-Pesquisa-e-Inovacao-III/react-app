@@ -2,7 +2,7 @@
     background-color: #fff;
     width: fit-content;
     border-radius: 12px;
-    padding: 10px 15px;
+    padding: 10px;
     display: flex;
     gap: 15px;
     flex-direction: column;
@@ -61,6 +61,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    min-width: 340px;
     text-overflow: ellipsis;
 }
 
