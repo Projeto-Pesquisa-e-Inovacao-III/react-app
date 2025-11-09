@@ -1,0 +1,52 @@
+.rowCard {
+    border: 1px solid #eee;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 16px;
+
+}
+
+.rowHeader {
+    border-bottom: 1px solid #eee;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+}
+
+.rowWrapperText {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 16px;
+    align-items: center;
+}
+
+.rowInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-right: 16px;
+}
+
+.rowInfo p {
+    font-size: 0.95rem;
+    color: #555;
+
+}
+
+.rowInfo h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #222;
+}
+
+@media (max-width: 1024px) {
+
+
+    .rowWrapperText {
+        flex-wrap: wrap;
+    }
+
+    .rowButton {
+        margin-top: 12px;
+    }
+}

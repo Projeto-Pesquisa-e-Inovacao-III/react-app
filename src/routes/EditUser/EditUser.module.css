@@ -13,10 +13,7 @@
 
 /* inside white container */
 .editUserGrid :global(.input-icon) {
-  top: 64%;
-  height: 1.2rem;
-  width: 1.2rem;
-
+  top: 64% !important;
 }
 
 .profileSection {

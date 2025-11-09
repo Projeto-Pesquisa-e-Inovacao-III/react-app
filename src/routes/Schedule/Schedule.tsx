@@ -45,12 +45,12 @@ export default function Schedule() {
     const [clickedDate, setClickedDate] = useState<string>("");
 
     useEffect(() => {
+        setClickedDate("");
+
         if (searchParams.get("date")) {
             setClickedDate(searchParams.get("date") || "");
             setOpenNewEvent(true);
-
         }
-
     }, [searchParams]);
 
     return (
@@ -93,6 +93,7 @@ export default function Schedule() {
                                         hour={`${event.hour.replace(":", "h").split(":")[0]}`}
                                         handleCancel={setOpenCancelModal}
                                         handleReschedule={setOpenReschedule}
+                                        isMobile={isMobile}
                                     />
                                 </div>
                             ))}
@@ -110,7 +111,7 @@ export default function Schedule() {
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Agendar horário"
-                        buttonTitle="Agendar"
+                        buttonTitle="Avançar"
                         clickedDate={clickedDate}
                     />
                 </>

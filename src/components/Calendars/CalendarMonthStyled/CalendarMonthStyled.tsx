@@ -69,7 +69,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             if (disabledDays.includes(dateStr) && dateStr !== eventToReschedule)
               return ["disabled-day"];
 
-            if (dateStr === newEventDate || dateStr === clickedDateStr) return ["selected-day"];
+            if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];
 
             return [];
           }}

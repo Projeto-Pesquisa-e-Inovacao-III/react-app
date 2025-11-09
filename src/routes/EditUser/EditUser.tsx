@@ -7,6 +7,7 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useReducer } from "react";
 import useMobile from "../../hooks/isMobile";
+import Select from "../../components/Inputs/Select";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -103,13 +104,17 @@ export default function EditUser() {
               icon={<Phone />}
               label="Telefone"
             ></InputWithIcon>
-            <InputWithIcon
+            <Select
               id="genero"
-              type="text"
-              placeholder="Digite seu gênero"
-              icon={<User />}
               label="Gênero"
-            ></InputWithIcon>
+              options={[
+                "Masculino",
+                "Feminino",
+                "Outro",
+              ]}
+              placeholder="Selecione seu gênero"
+              onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
+            />
           </WhiteContainer>
         </div>
 

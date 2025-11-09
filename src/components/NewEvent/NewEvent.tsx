@@ -1,12 +1,13 @@
-import "./mobile.css";
-import "./desktop.css";
 import { use, useEffect, useState } from "react";
 import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
-import { cepMask } from "../../utils/mascara";
+import styles from './NewEvent.module.css';
+import classnames from 'classnames';
+import Select from "../Inputs/Select";
+import { useNavigate } from "react-router-dom";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -74,7 +75,7 @@ export default function NewEvent(
             alert("Por favor, insira o número do endereço.");
             return;
         }
-        
+
         //debugging - check if backend is reachable
         const isDatabaseConnected = await checkDebugConnection();
         console.log("isDatabaseConnected", isDatabaseConnected);
@@ -115,8 +116,10 @@ export default function NewEvent(
 
     }
 
+    const navigation = useNavigate();
     function handleClose() {
         document.body.style.overflow = 'auto';
+        navigation("/schedule");
         close(false);
     }
 
@@ -126,12 +129,12 @@ export default function NewEvent(
 
     return (
         <>
-            <div className="overlay"></div>
-            <div className={`new-event-form${isMobile ? "-mobile" : ""}`}>
-                <div className={`top-new-event${isMobile ? "-mobile" : ""}`}>
+            <div className={styles.overlay}></div>
+            <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
+                <div className={classnames(styles.topNewEvent, { [styles.topNewEventMobile]: isMobile })}>
                     {isMobile ? (
                         <>
-                            <div className="go-back-mobile" onClick={handleClose}>
+                            <div className={styles.goBackMobile} onClick={handleClose}>
                                 <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
                                     <path
                                         d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
@@ -164,117 +167,172 @@ export default function NewEvent(
                         </>
                     )}
                 </div>
-
-                <div className={`wrapper-new-event${isMobile ? "-mobile" : ""}`}>
-                    <div className={`calendar-small${isMobile ? "-mobile" : ""}`}>
-                        <CalendarMonthStyled
-                            clickedDate={setNewEventDate}
-                            clickedDateStr={clickedDate}
-                            createdEvents={insertedEvents}
-                            eventToReschedule={eventToReschedule?.date}
-                            isMobile={isMobile}
-                        />
-
-                        <div className="hours">
-                            <div className={`button-hour-new-event ${newEventStartHour === "08:00:00" ? "button-hour-new-event-selected" : ""}`}>
-                                <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
-                                    handleButtonClick={handleButtonClick} />
-                            </div>
-                            <div className={`button-hour-new-event ${newEventStartHour === "09:00:00" ? "button-hour-new-event-selected" : ""}`}>
-                                <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
-                                    handleButtonClick={handleButtonClick} />
-                            </div>
-                            <div className={`button-hour-new-event ${newEventStartHour === "10:00:00" ? "button-hour-new-event-selected" : ""}`}>
-                                <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
-                                    handleButtonClick={handleButtonClick} />
-                            </div>
-                            <div className={`button-hour-new-event ${newEventStartHour === "11:00:00" ? "button-hour-new-event-selected" : ""}`}>
-                                <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
-                                    handleButtonClick={handleButtonClick} />
+                <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
+                    <div className={styles.personalInfo}>
+                        <div className={classnames(styles.rowHeader)}>
+                            <p>Personal</p>
+                        </div>
+                        <div className={classnames(styles.usersTableCard, { [styles.usersTableCardMobile]: isMobile })}>
+                            <div className={classnames(styles.userDataFull, { [styles.userDataFullMobile]: isMobile })}>
+                                <img
+                                    className={styles.userImage}
+                                    src="https://placehold.co/50x50/png"
+                                    alt=""
+                                />
+                                <div className={styles.userData}>
+                                    <b>
+                                        Fábio
+                                    </b>
+                                    <span>
+                                        Idade: 88 anos
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <form
-                        className={`input-infos-form${isMobile ? "-mobile" : ""}`}
-                        onSubmit={handleNewEvent}
-                    >
-                        <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}>
-                            <div className="input-group">
-                                <label>Tipo</label>
-                                <select
-                                    value={selectedType}
-                                    onChange={(e) => setSelectedType(e.target.value)}
-                                >
-                                    <option value="personal">Personal</option>
-                                    <option value="consultoria">Consultoria</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
+                    {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
+                    <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
+                        <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                            <Select
+                                placeholder="Selecione o tipo"
+                                label="Tipo"
+                                options={["Personal", "Consultoria", "Outro"]}
+                                value={selectedType}
+                                onInputChange={setSelectedType}
+                                className={styles.selectComponent}
+                            />
+                        </div>
 
-                            <div className="input-group">
-                                <label>Local</label>
-                                <select
-                                    value={selectedLocation}
-                                    onChange={(e) => setSelectedLocation(e.target.value)}
-                                >
-                                    <option value="casa">Casa</option>
-                                    <option value="academia">Academia</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
+                        <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                            <Select
+                                placeholder="Selecione o local"
+                                label="Local"
+                                options={["Casa", "Academia", "Outro"]}
+                                value={selectedLocation}
+                                onInputChange={setSelectedLocation}
+                                className={styles.selectComponent}
+                            />
+                        </div>
+                    </div>
+                    <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
+                        <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
+                            <CalendarMonthStyled
+                                clickedDate={setNewEventDate}
+                                clickedDateStr={clickedDate}
+                                createdEvents={insertedEvents}
+                                eventToReschedule={eventToReschedule?.date}
+                                isMobile={isMobile}
+                            />
 
-                            {selectedLocation === "casa" && (
-                                <div className="input-group-address">
-                                    <div className="input-group double-input">
-                                        <input
-                                            type="text"
-                                            placeholder="CEP"
-                                            onChange={(e) => setPostalCode((e.target.value).split("-").join("").trim())}
-                                            onInput={cepMask}
-                                        />
-                                        <input
-                                            type="text"
-                                            placeholder="Cidade"
-                                            className="disabled"
-                                            disabled
-                                            value={city || ""}
-                                        />
-                                    </div>
-                                    <div className="input-group input-group-max">
-                                        <input
-                                            type="text"
-                                            placeholder="Endereço"
-                                            className="input-address disabled"
-                                            disabled
-                                            value={address || ""}
-                                        />
-                                    </div>
-                                    <div className="input-group double-input">
-                                        <input
-                                            className="input-number"
-                                            type="text"
-                                            placeholder="N°"
-                                            value={number || ""}
-                                            onChange={(e) => setNumber(e.target.value)}
-                                        />
-                                        <input
-                                            type="text"
-                                            placeholder="Complemento"
-                                            value={complement || ""}
-                                            onChange={(e) => setComplement(e.target.value)}
-                                        />
-                                    </div>
+                            <div className={styles.hours}>
+                                <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
+                                    <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
+                                        handleButtonClick={handleButtonClick} />
                                 </div>
-                            )}
+                                <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
+                                    <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
+                                        handleButtonClick={handleButtonClick} />
+                                </div>
+                                <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
+                                    <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                        handleButtonClick={handleButtonClick} />
+                                </div>
+                                <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
+                                    <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                        handleButtonClick={handleButtonClick} />
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="submit-button">
-                            <SmallerButton type="submit" title={buttonTitle || "Agendar"} />
+                        <div className={classnames(styles.buttonNextStep)}>
+                            <SmallerButton type="button" title={buttonTitle || "Avançar"} />
                         </div>
-                    </form>
+
+                    </div>
                 </div>
             </div>
         </>
     );
 }
+
+
+
+// <form
+//     className={`input-infos-form${isMobile ? "-mobile" : ""}`}
+//     onSubmit={handleNewEvent}
+// >
+//     <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}>
+//         <div className="input-group">
+//             <label>Tipo</label>
+//             <select
+//                 value={selectedType}
+//                 onChange={(e) => setSelectedType(e.target.value)}
+//             >
+//                 <option value="personal">Personal</option>
+//                 <option value="consultoria">Consultoria</option>
+//                 <option value="outro">Outro</option>
+//             </select>
+//         </div>
+
+//         <div className="input-group">
+//             <label>Local</label>
+//             <select
+//                 value={selectedLocation}
+//                 onChange={(e) => setSelectedLocation(e.target.value)}
+//             >
+//                 <option value="casa">Casa</option>
+//                 <option value="academia">Academia</option>
+//                 <option value="outro">Outro</option>
+//             </select>
+//         </div>
+
+//         {selectedLocation === "casa" && (
+//             <div className="input-group-address">
+//                 <div className="input-group double-input">
+//                     <input
+//                         type="text"
+//                         placeholder="CEP"
+//                         onChange={(e) => setPostalCode((e.target.value).split("-").join("").trim())}
+//                         onInput={cepMask}
+//                     />
+//                     <input
+//                         type="text"
+//                         placeholder="Cidade"
+//                         className="disabled"
+//                         disabled
+//                         value={city || ""}
+//                     />
+//                 </div>
+//                 <div className="input-group input-group-max">
+//                     <input
+//                         type="text"
+//                         placeholder="Endereço"
+//                         className="input-address disabled"
+//                         disabled
+//                         value={address || ""}
+//                     />
+//                 </div>
+//                 <div className="input-group double-input">
+//                     <input
+//                         className="input-number"
+//                         type="text"
+//                         placeholder="N°"
+//                         value={number || ""}
+//                         onChange={(e) => setNumber(e.target.value)}
+//                     />
+//                     <input
+//                         type="text"
+//                         placeholder="Complemento"
+//                         value={complement || ""}
+//                         onChange={(e) => setComplement(e.target.value)}
+//                     />
+//                 </div>
+//             </div>
+//         )}
+//     </div>
+
+//     <div className="submit-button">
+//         <SmallerButton type="submit" title={buttonTitle || "Agendar"} />
+//     </div>
+// </form>
