@@ -1,0 +1,135 @@
+#miniWrapperStyledCalendar {
+  width: 100%;
+  max-width: 400px;
+  height: 280px;
+  margin: 0 auto;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
+
+#miniWrapperStyledCalendar :global(.fc-col-header-cell) {
+  padding: 0 !important;
+}
+
+#miniWrapperStyledCalendar :global(.fc-scrollgrid-sync-table) {
+  table-layout: auto !important;
+}
+
+#miniWrapperStyledCalendar :global(.fc-day-disabled) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#miniWrapperStyledCalendar :global(.fc-toolbar-title) {
+  font-size: 1.2rem !important;
+}
+
+#miniWrapperStyledCalendar :global(.fc .fc-scrollgrid-section table) {
+  height: 0px !important;
+}
+
+.miniContainerCalendar {
+  height: 300px;
+}
+
+.fc .fc-daygrid-day-number {
+  padding: 0px 6px;
+}
+
+.mini-selected-day {
+  background-color: #2e2e2e !important;
+  color: white !important;
+  border-radius: 5px;
+  padding: 6px 10px;
+  transition: all 0.3s, color 0.3s;
+}
+
+.fc {
+  font-family: "Inter", sans-serif;
+}
+
+.fc-toolbar-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.fc-scroller-liquid-absolute {
+  height: 100% !important;
+}
+
+.fc-prev-button,
+.fc-next-button {
+  background: none !important;
+  border: none !important;
+  font: .95rem !important;
+  color: #333 !important;
+  cursor: pointer;
+}
+
+.fc-col-header-cell {
+  font-weight: 500;
+  color: #555;
+  padding: 8px 0;
+  border: none !important;
+}
+
+.fc-daygrid-day {
+  border: none !important;
+  text-align: center;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+.fc-daygrid-day-top {
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.fc-daygrid-day-number {
+  font-size: 0.95rem;
+}
+
+.fc-day-today {
+  background: none;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  background: black;
+  color: white !important;
+  border-radius: 50%;
+}
+
+.fc-daygrid-day:hover {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.fc-col-header-cell-cushion::first-letter,
+.fc-toolbar-title::first-letter {
+  text-transform: capitalize;
+}
+
+.fc .fc-scrollgrid-section-sticky>* {
+  background: transparent;
+  position: sticky;
+  z-index: 3;
+}
+
+.fc .fc-scrollgrid-section table {
+  height: 50px;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard .fc-scrollgrid {
+  border: none;
+}
+
+.fc .fc-toolbar-title {
+  margin-left: 15px;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin: 0;
+}

@@ -30,11 +30,11 @@ export function CheckSchedule() {
             address: "Rua das Flores, 123, São Paulo, SP",
             date: "15/11/2025",
             hour: "14:00",
-            status: "pending"
+            status: "done"
         },
         {
             id: 2,
-            clientName: "Maria Oliveira",
+            clientName: "Maria Oliveiraaaaaa",
             age: 32,
             type: "Residencial",
             phone: "(11) 91234-5678",

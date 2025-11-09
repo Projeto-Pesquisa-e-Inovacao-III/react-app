@@ -1,5 +1,5 @@
 import { useState } from "react";
-import MiniCalendar from "../../Calendars/MiniCalendar/MiniCalendar";
+import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
 import styles from "./InputCalendar.module.css"
 import InputWithIcon from "../InputWithIcon/InputWithIcon";
 import { Calendar } from "lucide-react";
@@ -23,8 +23,11 @@ export default function InputCalendar({ selectedDate, setSelectedDate }: InputCa
 
     function handleDateSelect(date: string) {
         if (date != null && date !== "") {
-            console.log(date);
-            setSelectedDate(new Date(date).toLocaleDateString("pt-BR"));
+            console.log("Data selecionada no InputCalendar:", date);
+            const formattedDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
+                timeZone: "UTC"
+            });
+            setSelectedDate(formattedDate);
             handleCloseCalendar()
         }
     }
