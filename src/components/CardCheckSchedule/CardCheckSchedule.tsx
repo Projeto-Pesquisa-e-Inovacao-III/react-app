@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import Button from "../Button/Button";
 import StatusSchedule from "../StatusSchedule/StatusSchedule";
 import styles from "./CardCheckSchedule.module.css";
@@ -44,8 +45,9 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aluno)" />)}
                     {cardData.status === "pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação)" />)}
                     {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
+                    {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
                 </div>
-                <div className={styles.high}>
+                <div className={classNames(styles.high, {[styles.highStatusWithoutBorder]: cardData.status !== "pending"})}>
                     <div className={styles.photograph}>
                         <img className={styles.imgCard} src="https://placehold.co/60x60/png" alt="" />
                     </div>

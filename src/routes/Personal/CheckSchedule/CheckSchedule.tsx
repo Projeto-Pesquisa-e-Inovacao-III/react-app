@@ -42,7 +42,7 @@ export function CheckSchedule() {
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
             hour: "14:00",
-            status: "pending"
+            status: "cancelled"
         },
         {
             id: 3,

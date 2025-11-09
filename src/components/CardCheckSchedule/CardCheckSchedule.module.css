@@ -50,6 +50,10 @@
     border-bottom: 2px solid #737374;
 }
 
+.highStatusWithoutBorder {
+    border-bottom: none;
+}
+
 .titleName {
     font-size: 18px;
     font-weight: bold;
