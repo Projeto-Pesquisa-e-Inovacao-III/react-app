@@ -1,6 +1,7 @@
 .container {
   position: relative;
-  padding: 0 90px;
+  padding: 0 clamp(16px, 5vw, 90px);
+
 }
 
 .containerMobile {
@@ -8,41 +9,7 @@
   padding: 0;
 }
 
-.personalInfo {
-  border: 1px solid #b3b3b3;
-  border-radius: 8px;
-}
 
-.personalInfo .rowHeader {
-  border-bottom: 1px solid #b3b3b3;
-  padding: 0px 16px;
-  font-size: 0.9rem;
-}
-
-.personalInfo .usersTableCard {
-  display: flex;
-  align-items: center;
-  padding: 2px 16px;
-}
-
-.personalInfo .userDataFull {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-
-}
-
-.personalInfo .userDataFull img {
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-}
-
-.personalInfo .userData {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
 
 .newEventOpenedWrapperCallendar {
   filter: opacity(0.4);
@@ -71,7 +38,7 @@
 .newEventForm {
   background-color: white;
   border: 1px solid #ccc;
-  padding: 20px;
+  padding: 16px;
   border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: fixed;
@@ -88,18 +55,26 @@
 .topNewEvent {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  padding-top: 0px;
 }
 
 .topNewEvent svg {
   cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 15px;
+  margin-right: 20px;
 }
 
-.topNewEvent h1 {
+
+.mainTitle {
   font-size: 36px;
   font-weight: 300;
   text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.mainTitleMobile {
+  padding: 0;
 }
 
 .containerCalendar {
@@ -189,13 +164,7 @@
   width: 30vw;
 }
 
-.inputInfosForm {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  justify-content: space-between;
-  padding: 0 30px;
-}
+
 
 .submitButton {
   width: 30%;
@@ -245,7 +214,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
-  margin: 20px 0;
+  margin: 10px 0;
   width: 40%;
 }
 
@@ -271,7 +240,6 @@
 .inputGroupAddress {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
 .inputGroupAddress .inputGroup {
@@ -294,7 +262,10 @@
   width: 25% !important;
 }
 
-/* Mobile Styles */
+.newEventForm {
+  width: 70%;
+}
+
 .newEventFormMobile {
   position: fixed;
   background-color: white;
@@ -302,7 +273,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100vw;
+  width: 100vw !important;
   max-width: none;
   height: 100vh;
   max-height: none;
@@ -334,6 +305,8 @@
 
 .goBackMobile {
   display: flex;
+  justify-content: flex-end;
+
   align-items: center;
   margin-bottom: 10px;
 }
@@ -345,7 +318,38 @@
 }
 
 .goBackMobile svg {
-  margin-top: 2.3px;
+  z-index: 1001;
+  cursor: pointer;
+}
+
+
+.goBackMobileStepTwo {
+  justify-content: space-between !important;
+}
+
+.goBackButton {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.goBackMobileStepOne {
+  justify-content: flex-start;
+}
+
+.goBackMobileStepOneDesktop {
+  justify-content: flex-end !important;
+  position: absolute;
+  right: 0;
+  padding-right: 20px;
+}
+
+
+.goBackButtonMobile {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  justify-content: flex-start !important;
 }
 
 .calendarSmallMobile {
@@ -395,10 +399,54 @@
   gap: 20px;
 }
 
-.wrapperInputsMobile .selectComponent, .wrapperInputsMobile .inputGroup{
-width: 100%;
+.wrapperInputsMobile .selectComponent,
+.wrapperInputsMobile .inputGroup {
+  width: 100%;
 }
 
 .wrapperInputsMobile .inputGroup select {
   width: 100%;
+}
+
+
+.inputInfosFormContainer .title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  padding: 10px 0;
+  margin: 10px 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-top: 1px solid #b3b3b3;
+}
+
+.inputInfosForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.labelInput {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  align-items: baseline;
+}
+
+.labelInput input::placeholder {
+  color: #a0a0a0 !important;
+}
+
+
+.smallInput {
+  width: 25% !important;
+}
+
+.smallInput input {
+  width: 100% !important;
+
 }
