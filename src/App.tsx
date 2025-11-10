@@ -19,7 +19,7 @@ import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetail
 import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
 import MoreOptions from "./routes/MoreOptions/MoreOptions";
 import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
-import ScheduleHistoryDetails from "./routes/ScheduleHistoryDetails/ScheduleHistoryDetails";
+import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 
 // todo: 
 // safari support // deixa baixo
@@ -28,7 +28,7 @@ import ScheduleHistoryDetails from "./routes/ScheduleHistoryDetails/ScheduleHist
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("personal");
+  const [type, setType] = useState<"student" | "personal">("student");
 
   return (
     <>
@@ -45,7 +45,7 @@ function App() {
             <Route element={<Layout />}>
               <Route path="/plans-history" element={<PlansHistory />} />
               <Route path="/schedule-history" element={<ScheduleHistory />} />
-              <Route path="/schedule-history-details" element={<ScheduleHistoryDetails />} />
+              <Route path="/schedule-details" element={<ScheduleDetails />} />
               <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
               <Route path="/schedule" element={<ViewSchedule />} />
               <Route path="/packages" element={<Packages />} />

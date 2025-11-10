@@ -49,14 +49,13 @@ export default function ScheduleHistory() {
     const nav = useNavigate();
 
     function handleDetailsClick() {
-        nav('/plans-history-details');
+        nav('/schedule-details');
     }
 
     return (
         <div className={classNames(styles.container)}>
             <div className={classNames(styles.title)}>
                 <h1>Histórico de Agendamentos</h1>
-
             </div>
 
             <div className={classNames(styles.search)}>

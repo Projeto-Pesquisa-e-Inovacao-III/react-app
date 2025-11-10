@@ -1,29 +1,21 @@
 import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
-import styles from './ScheduleHistoryDetails.module.css';
+import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-export default function ScheduleHistoryDetails() {
+import { CalendarDays, Clock } from 'lucide-react';
+export default function ScheduleDetails() {
     const isMobile = useMobile();
 
     return (
         <div className={styles.container}>
             <GoBackButton />
             <div className={styles.title}>
-                <h1>Detalhes da compra</h1>
+                <h1>Detalhes do agendamento</h1>
             </div>
             <div className={classNames(styles.contentRow)}>
                 <div className={styles.content}>
-                    <h2 className={styles.subtitle}>Dados</h2>
-                    <span>Nome: Joao Silva</span>
-                    <span>Email: Joao@exemplo.com</span>
-                    <span>Telefone: (11) 91234-5678</span>
-                </div>
-                <div className={classNames(styles.content, styles.paymentMethod, { [styles.paymentMethodMobile]: isMobile })}>
-                    <h2 className={styles.subtitle}>Método de pagamento</h2>
-
-                    <span>Cartão de Crédito</span>
-                    <span>**** **** **** 1234</span>
-                    <span>123.456.789-00</span>
+                    <span><CalendarDays />12 de Janeiro das 14:00 às 15:00</span>
+                    <span><Clock />60 minutos</span>
                 </div>
             </div>
 

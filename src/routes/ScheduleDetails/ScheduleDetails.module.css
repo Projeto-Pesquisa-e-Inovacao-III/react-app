@@ -15,14 +15,6 @@
     font-weight: 500;
 }
 
-.container .content {
-    display: flex;
-    flex-direction: column;
-}
-
-.content h2 {
-    padding-bottom: 24px;
-}
 
 .container .contentRow {
     display: flex;
@@ -32,6 +24,22 @@
     flex-wrap: wrap;
 
 }
+
+.container .content {
+    display: flex;
+    flex-direction: column;
+}
+
+.container span {
+    display: flex;
+    gap: 10px;
+}
+
+
+.content h2 {
+    padding-bottom: 24px;
+}
+
 
 
 .content span,
