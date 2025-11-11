@@ -32,7 +32,7 @@ export default function ScheduleDetails() {
     })} das ${dataMocked.initialHour} às ${dataMocked.finalHour}`;
 
     return (
-        <div className={styles.container}>
+        <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
             <GoBackButton />
             <div className={styles.wrapperContent}>
                 <div className={styles.title}>

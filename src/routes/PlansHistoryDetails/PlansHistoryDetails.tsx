@@ -27,7 +27,7 @@ export default function PlansHistoryDetails() {
                 </div>
             </div>
 
-            <div className={styles.contentRow}>
+            <div className={classNames(styles.contentRow, styles.orderDetailsSection)}>
                 <h2 className={styles.subtitle}>Detalhes do pedido</h2>
                 <div className={classNames(styles.content, styles.orderDetails)}>
                     <span>Produto: Plano Mensal</span>

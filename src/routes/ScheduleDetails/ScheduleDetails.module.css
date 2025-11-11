@@ -7,6 +7,9 @@
     justify-content: space-between;
     height: 80vh;
 }
+.containerMobile {
+    height: auto;
+}
 
 .container .title {
     font-size: 30px;
