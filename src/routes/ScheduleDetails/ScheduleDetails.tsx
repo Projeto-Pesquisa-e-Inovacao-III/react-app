@@ -3,43 +3,87 @@ import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
 import { CalendarDays, Clock } from 'lucide-react';
+import CardInfo from '../../components/CardInfo/CardInfo';
+import Button from '../../components/Button/Button';
 export default function ScheduleDetails() {
     const isMobile = useMobile();
+
+    const dataMocked = {
+        id: 1,
+        clientName: "João Silva",
+        age: 28,
+        type: "Personal",
+        phone: "(11) 98765-4321",
+        local: "Academia FitLife",
+        address: "Rua das Flores, 123, São Paulo, SP",
+        date: "2025-11-15",
+        initialHour: "14:00",
+        finalHour: "15:00",
+        duration: "60 minutos",
+        status: "pending"
+    }
+
+    const date = new Date(`${dataMocked.date}T${dataMocked.initialHour}`);
+
+    const formattedDate = `${date.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+    })} das ${dataMocked.initialHour} às ${dataMocked.finalHour}`;
 
     return (
         <div className={styles.container}>
             <GoBackButton />
-            <div className={styles.title}>
-                <h1>Detalhes do agendamento</h1>
-            </div>
-            <div className={classNames(styles.contentRow)}>
-                <div className={styles.content}>
-                    <span><CalendarDays />12 de Janeiro das 14:00 às 15:00</span>
-                    <span><Clock />60 minutos</span>
-                </div>
-            </div>
+            <div className={styles.wrapperContent}>
+                <div className={styles.title}>
+                    <h1>Detalhes do agendamento</h1>
+                    {dataMocked.status === "done" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusDone}>Concluído</span>
+                        </div>
+                    }
 
-            <div className={styles.contentRow}>
-                <h2 className={styles.subtitle}>Detalhes do pedido</h2>
-                <div className={classNames(styles.content, styles.orderDetails)}>
-                    <span>Produto: Plano Mensal</span>
-                    <span>Valor: R$ 29,90</span>
-                    <span>Data da compra: 01/05/2024</span>
+                    {dataMocked.status === "pending" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusPending}>Pendente</span>
+                        </div>
+                    }
+
+                    {dataMocked.status === "cancelled" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusCancelled}>Cancelado</span>
+                        </div>
+                    }
+                </div>
+                <div className={classNames(styles.contentRow)}>
+                    <div className={styles.content}>
+                        <div className={styles.textWithIcon}>
+                            <span><CalendarDays /></span><span>{formattedDate}</span>
+                        </div>
+                        <div className={styles.textWithIcon}>
+                            <span><Clock /></span><span>{dataMocked.duration}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
+
+                <div className={styles.contentDetails}>
+                    <h2 className={styles.subtitle}>Detalhes</h2>
+                    <div className={styles.planDetails}>
+                        <span className={styles.planDetailsDescription}>Tipo: {dataMocked.type}</span>
+                        <span className={styles.planDetailsDescription}>Local: {dataMocked.local}</span>
+                        <span className={styles.planDetailsDescription}>Endereço: {dataMocked.address}</span>
+                    </div>
                 </div>
             </div>
-            <div className={styles.dashed}></div>
-            <div className={styles.contentRow}>
-                <div className={styles.planDetails}>
-                    <h2 className={styles.subtitle}>Plano mensal</h2>
-                    <span className={styles.planDetailsDescription}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At, id nesciunt pariatur similique neque nihil.</span>
+            {dataMocked.status === "pending" &&
+                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
+                    <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" />
+                    <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" />
+                    <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" />
                 </div>
-                <div className={classNames(styles.cardDetails, { [styles.cardDetailsMobile]: isMobile })}>
-                    <span className={styles.highlight}>Subtotal: <span>R$ 29,90</span></span>
-                    <span className={styles.highlight}>Desconto: <span>R$ 0,00</span></span>
-                    <div className={styles.dashed}></div>
-                    <span className={styles.highlight}>Total: <span>R$ 29,90</span></span>
-                </div>
-            </div>
+            }
         </div >
     );
 }

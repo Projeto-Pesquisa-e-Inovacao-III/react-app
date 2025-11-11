@@ -1,13 +1,27 @@
 .container {
-    background-color: #fff;
+    background-color: #ffffff;
     position: relative;
     padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 80vh;
 }
 
 .container .title {
     font-size: 30px;
     font-weight: 500;
     padding: 36px 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.statusIndicatorCheckSchedule {
+    font-size: 20px;
 }
 
 .subtitle {
@@ -17,17 +31,32 @@
 
 
 .container .contentRow {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     padding: 12px 0;
-    flex-wrap: wrap;
 
 }
+
+.contentDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+    border: 1px solid #b3b3b3;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+
 
 .container .content {
     display: flex;
     flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.textWithIcon {
+    display: flex;
+    gap: 12px;
+
 }
 
 .container span {
@@ -115,4 +144,29 @@
     margin-top: 12px;
     min-width: auto !important;
     flex: 1 !important;
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.buttons :global(.btn-generic) {
+    width: auto;
+}
+
+.buttonsMobile {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.buttonsMobile :global(.btn-generic) {
+    width: 100%;
+}
+
+.buttonsMobile :global(.btn-generic button) {
+    width: 100%;
+    max-width: none;
 }
