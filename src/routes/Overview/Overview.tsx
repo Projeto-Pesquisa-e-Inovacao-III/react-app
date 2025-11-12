@@ -63,8 +63,10 @@ export function Overview() {
                                         status={card.status}
                                         name={card.name}
                                         photoUrl={card.photoUrl}
+                                        type={card.type}
                                         date={card.date}
                                         time={card.time}
+                                        address={card.address}
                                         isMobile={isMobile}
                                     />
                                 ))}
@@ -74,15 +76,17 @@ export function Overview() {
                     {!isMobile && (
                         <div className={styles.schedulePageUserActions}>
                             {filteredCards.map((card, index) => (
-                                <OverviewCard
-                                    key={index}
-                                    title={card.title}
-                                    subtitle={card.subtitle}
-                                    type={card.type}
-                                    titletbn={card.titletbn}
-                                    onClick={card.onClick}
-                                    isMobile={isMobile}
-                                />
+                                <>
+                                    <OverviewCard
+                                        key={index}
+                                        title={card.title}
+                                        subtitle={card.subtitle}
+                                        type={card.type}
+                                        titletbn={card.titletbn}
+                                        onClick={card.onClick}
+                                        isMobile={isMobile}
+                                    />
+                                </>
                             ))}
                         </div>
                     )}

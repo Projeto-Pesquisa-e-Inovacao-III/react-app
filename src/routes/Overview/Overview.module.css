@@ -6,6 +6,12 @@
     background-color: #E5E7EB;
 }
 
+.overviewLeftColumn h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
 .containerContent {
     display: flex;
     gap: 60px;

@@ -1,4 +1,3 @@
-import React from 'react'
 import styles from './StatusSchedule.module.css'
 
 type StatusScheduleProps = {

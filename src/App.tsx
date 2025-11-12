@@ -24,25 +24,27 @@ import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 // todo: 
 // safari support // deixa baixo
 // study if code is following best practices
+// remake personal cards at overview (statu) 
+
 
 export const TypeContext = createContext<"student" | "personal">("student");
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<"student" | "personal">("personal");
 
   return (
     <>
       <TypeContext.Provider value={type}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/logout" element={<Logout />} />
-
-            {/* header / logo at mobile*/}
             <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/logout" element={<Logout />} />
+
+              {/* header / logo at mobile*/}
               <Route path="/plans-history" element={<PlansHistory />} />
               <Route path="/schedule-history" element={<ScheduleHistory />} />
               <Route path="/schedule-details" element={<ScheduleDetails />} />
