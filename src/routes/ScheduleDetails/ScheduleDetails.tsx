@@ -5,8 +5,14 @@ import useMobile from '../../hooks/isMobile';
 import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
+import { useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
+
 export default function ScheduleDetails() {
     const isMobile = useMobile();
+
+
+    const type: string = useOutletContext();
 
     const dataMocked = {
         id: 1,
@@ -66,7 +72,13 @@ export default function ScheduleDetails() {
                     </div>
                 </div>
 
-                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
+                {type === "student" &&
+                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
+                }
+
+                {type === "personal" &&
+                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title="Rapaz" subtitle="Idade: 48 anos" includeImg={true} />
+                }
 
                 <div className={styles.contentDetails}>
                     <h2 className={styles.subtitle}>Detalhes</h2>
@@ -78,10 +90,19 @@ export default function ScheduleDetails() {
                 </div>
             </div>
             {dataMocked.status === "pending" &&
+
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
-                    <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" />
-                    <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" />
-                    <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" />
+                    {type === "personal" &&
+                        <div className={styles.buttonAbsence}>
+                            <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" />
+                        </div>
+                    }
+
+                    <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "student" })}>
+                        <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" />
+                        <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" />
+                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" />
+                    </div>
                 </div>
             }
         </div >

@@ -11,6 +11,8 @@ import { useNavigate } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
 import { ArrowLeftIcon, MapPin } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
+import { createAddress } from "../../constants/address";
+import type { Address } from "../../models/address";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -25,6 +27,8 @@ type NewEventProps = {
     clickedDate?: string;
 };
 
+
+// todo: refacotr address state to a single object. 
 export default function NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
@@ -45,7 +49,6 @@ export default function NewEvent(
 
     let eventToReschedule = insertedEvents?.find(event => event?.id === rescheduleId);
 
-
     useEffect(() => {
         if (newEventDate && newEventStartHour) {
             console.log("newEventDate:", newEventDate);
@@ -56,13 +59,20 @@ export default function NewEvent(
 
             const date = new Date(`${dateStr}T${hourStr}`);
 
+            const initialHour = date.toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+
+            const finalHour = date.setHours(date.getHours() + 1); // assuming 1 hour duration
+
             const formatted = date.toLocaleString('pt-BR', {
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-            });
+            }).replace(" às ", "") + ` das ${initialHour} - ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
             setFormattedDate(formatted);
         }
     }, [newEventDate, newEventStartHour]);
@@ -85,6 +95,26 @@ export default function NewEvent(
                 });
         }
     }, [postalCode]);
+
+    async function handleInsertAddress(e: React.FormEvent) {
+        e.preventDefault();
+
+        const body: Address = {
+            numero: number,
+            complemento: complement,
+            unidade: "any",
+            tipo: selectedLocation,
+            cep: {
+                id: postalCode
+            }
+        }
+            await createAddress(body)
+            .then(response => {
+                console.log("Endereço criado com sucesso:", response.data);
+            }).catch(error => {
+                console.error("Erro ao criar endereço:", error);
+            });
+    }
 
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
@@ -284,19 +314,19 @@ export default function NewEvent(
 
                                     <div className={styles.hours}>
                                         <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
-                                            <SmallerButton type="button" title="08:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
+                                            <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
                                                 handleButtonClick={handleButtonClick} />
                                         </div>
                                         <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
-                                            <SmallerButton type="button" title="09:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
+                                            <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
                                                 handleButtonClick={handleButtonClick} />
                                         </div>
                                         <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
-                                            <SmallerButton type="button" title="10:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                            <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
                                                 handleButtonClick={handleButtonClick} />
                                         </div>
                                         <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
-                                            <SmallerButton type="button" title="11:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                            <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
                                                 handleButtonClick={handleButtonClick} />
                                         </div>
                                     </div>
@@ -319,8 +349,8 @@ export default function NewEvent(
                             </div>
                             <form
                                 className={classnames(styles.inputInfosForm, { [styles.inputInfosFormMobile]: isMobile })}
-                                onSubmit={handleNewEvent}
-                            >
+                                onSubmit={(e) =>{
+                                    handleInsertAddress(e);}}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                                     {selectedLocation === "casa" && (
                                         <div className={styles.inputGroupAddress}>

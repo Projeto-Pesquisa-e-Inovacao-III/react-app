@@ -29,7 +29,8 @@ export function CheckSchedule() {
             local: "Academia FitLife",
             address: "Rua das Flores, 123, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
+            initialHour: "14:00",
+            finalHour: "15:00",
             status: "done"
         },
         {
@@ -41,7 +42,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
+            initialHour: "13:00",
+            finalHour: "14:00",
             status: "cancelled"
         },
         {
@@ -53,7 +55,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
+            initialHour: "15:00",
+            finalHour: "16:00",
             status: "pending"
         },
         {
@@ -65,7 +68,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "16/11/2025",
-            hour: "14:00",
+            initialHour: "14:00",
+            finalHour: "15:00",
             status: "pending"
         },
         {
@@ -77,7 +81,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "17/11/2025",
-            hour: "13:00",
+            initialHour: "13:00",
+            finalHour: "14:00",
             status: "pending"
         },
         {
@@ -89,7 +94,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "18/11/2025",
-            hour: "15:00",
+            initialHour: "15:00",
+            finalHour: "16:00",
             status: "pending"
         },
         {
@@ -101,8 +107,22 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "19/11/2025",
-            hour: "16:00",
+            initialHour: "16:00",
+            finalHour: "17:00",
             status: "student_pending"
+        },
+        {
+            id: 8,
+            clientName: "Carlos Pereira",
+            age: 40,
+            type: "Funcional",
+            phone: "(11) 99876-5432",
+            local: "Academia Strong",
+            address: "Rua das Palmeiras, 789, São Paulo, SP",
+            date: "20/11/2025",
+            initialHour: "17:00",
+            finalHour: "18:00",
+            status: "schedule_pending"
         }
     ];
 

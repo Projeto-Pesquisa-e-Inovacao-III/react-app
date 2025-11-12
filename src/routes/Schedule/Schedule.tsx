@@ -86,11 +86,12 @@ export default function Schedule() {
                                     handleButtonClick={() => setOpenNewEvent(true)} />
                             </div>
 
-                            {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, index) => (
+                            {events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
-                                        hour={`${event.hour.replace(":", "h").split(":")[0]}`}
+                                        initialHour={`${event.hour.replace(":", "h").split(":")[0]}`}
+                                        finalHour={`${(parseInt(event.hour.replace(":", "h").split(":")[0]) + 1)}h00`}
                                         handleCancel={setOpenCancelModal}
                                         handleReschedule={setOpenReschedule}
                                         isMobile={isMobile}

@@ -2,7 +2,16 @@ import classNames from "classnames";
 import SmallerButton from "../SmallerButton";
 import "./style.css"
 
-export default function UserScheduleCard({ date, hour, handleCancel, handleReschedule, isMobile }: { date: string, hour: string, handleCancel: React.Dispatch<React.SetStateAction<boolean>>, handleReschedule: React.Dispatch<React.SetStateAction<boolean>>, isMobile: boolean }) {
+type UserScheduleCardProps = {
+    date: string;
+    initialHour: string;
+    finalHour: string;
+    handleCancel: React.Dispatch<React.SetStateAction<boolean>>;
+    handleReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+    isMobile: boolean;
+}
+
+export default function UserScheduleCard({ date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">
@@ -20,7 +29,7 @@ export default function UserScheduleCard({ date, hour, handleCancel, handleResch
                 <div className="mobile-view">
                     <span className="border-division"></span>
                     <div className={classNames("right", { "right-mobile": isMobile })}>
-                        <span>{date} {hour}</span>
+                        <span>{date} {initialHour} - {finalHour}</span>
                     </div>
                 </div>
             )}
@@ -28,7 +37,7 @@ export default function UserScheduleCard({ date, hour, handleCancel, handleResch
                 <>
                     <span className="border-division"></span>
                     <div className={classNames("right", { "right-mobile": isMobile })}>
-                        <span>{date} {hour}</span>
+                        <span>{date} {initialHour} - {finalHour}</span>
                     </div>
                 </>
             )}

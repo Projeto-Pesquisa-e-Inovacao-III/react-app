@@ -62,7 +62,7 @@ export default function Layout() {
                     {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                         <LogoHeaderMobile />
                     </div>}
-                    <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet /></main>
+                    <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
                     {isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
                 </>
             {/* )} */}
