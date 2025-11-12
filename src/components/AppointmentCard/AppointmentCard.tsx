@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import StatusSchedule from '../StatusSchedule/StatusSchedule';
 import styles from './AppointmentCard.module.css';
 import classNames from 'classnames';
@@ -15,8 +16,14 @@ type Index = {
 
 export function AppointmentCard(props: Index) {
     const { isMobile = false } = props;
+    
+    const nav = useNavigate();
+
+    function handleNavigateToDetail() {
+        nav('/schedule-details');
+    }
     return (
-        <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })}>
+        <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
             <StatusSchedule dotColor={props.status === 'Pendente' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status} />
             <div className={styles.sessionCardInfo}>
                 <div className={classNames(styles.sessionCardLeft, { [styles.sessionCardLeftMobile]: isMobile })}>
