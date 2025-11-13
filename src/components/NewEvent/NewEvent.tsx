@@ -70,9 +70,8 @@ export default function NewEvent(
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-            }).replace(" às ", "") + ` das ${initialHour} - ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+                
+            }).replace(" às ", "") + ` das ${initialHour} às ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
             setFormattedDate(formatted);
         }
     }, [newEventDate, newEventStartHour]);
@@ -102,7 +101,7 @@ export default function NewEvent(
         const body: Address = {
             numero: number,
             complemento: complement,
-            unidade: "any",
+            unidade: "",
             tipo: selectedLocation,
             cep: {
                 id: postalCode
