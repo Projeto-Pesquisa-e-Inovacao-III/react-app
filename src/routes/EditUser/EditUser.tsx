@@ -9,7 +9,7 @@ import { useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select";
 import Input from "../../components/Inputs/Input/Input";
-import { api, api2 } from "../../system";
+import { api } from "../../system";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
