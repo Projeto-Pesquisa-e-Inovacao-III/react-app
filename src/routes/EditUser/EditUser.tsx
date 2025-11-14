@@ -56,16 +56,20 @@ export default function EditUser() {
       const formData = new FormData();
       formData.append("imagem", file);
 
-      // todo: remove hardcoded id
       const id = 'df71689b-d517-4af3-8e42-1be334d424bd'
 
-      await api.post(`/api/postagens/${id}/imagens`, formData)
-      .then((response) => {
-        console.log("Imagem enviada com sucesso:", response.data);
-        setUserImage(response.data.imagemUrl);
-      }).catch((error) => {
-        console.error("Erro ao enviar a imagem:", error);
-      });
+      // requisição simulada
+      
+      // await api.post(`/api/postagens/${id}/imagens`, formData)
+      // .then((response) => {
+      //   console.log("Imagem enviada com sucesso:", response.data);
+      //   setUserImage(response.data.imagemUrl);
+      // }).catch((error) => {
+      //   console.error("Erro ao enviar a imagem:", error);
+      // });
+
+      const imageUrl = URL.createObjectURL(file);
+      setUserImage(imageUrl);
     }
   }
 
