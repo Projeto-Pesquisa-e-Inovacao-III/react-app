@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
-import ChangeTypeDevDebug from "../../ChangeTypeDevDebug/ChangeTypeDevDebug";
 import { Bell } from "lucide-react";
 import { useState } from "react";
 import Notification from "../Notification/Notification";
@@ -52,6 +51,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
               <Link to="/schedule">Agenda</Link>
               <Link to="/packages">Planos</Link>
               <Link to="/plans-history">Histórico de planos</Link>
+              <Link to="/schedule-history">Histórico de agendamentos</Link>
             </>
           )
           }

@@ -1,6 +1,8 @@
-import { Dot } from "lucide-react";
+import classNames from "classnames";
 import Button from "../Button/Button";
-import "./style.css"
+import StatusSchedule from "../StatusSchedule/StatusSchedule";
+import styles from "./CardCheckSchedule.module.css";
+import { useEffect } from "react";
 
 type dataCardProps = {
     id?: number;
@@ -11,17 +13,29 @@ type dataCardProps = {
     local?: string;
     address?: string;
     date?: string;
-    hour?: string;
-    status?: string | "pending" | "student_pending";
+    initialHour?: string;
+    finalHour?: string;
+    status?: string | "pending" | "student_pending" | "schedule_pending" | "done" | "cancelled";
 }
 
-export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, cardData }: {
+export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
     RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     AcceptScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    RegisterAbsenceClick?: React.Dispatch<React.SetStateAction<boolean>>,
     cardData: dataCardProps
 }) {
+    useEffect(() => {
+        const today = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+        if (cardData.date && cardData.date < today) {
+            console.log("entrou");
+            console.log("cardData.date", cardData.date);
+            console.log("today", today);
 
+            cardData.status = "schedule_pending";
+            console.log("cardData.status", cardData.status);
+        }
+    }, []);
 
     function handleRescheduleClick() {
         RescheduleClick?.(true);
@@ -37,40 +51,39 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
         DeclineScheculeClick?.(true)
     }
 
+    function handleRegisterAbsenceClick() {
+        RegisterAbsenceClick?.(true)
+    }
+
     return (
         <>
-            <div className="personal-check-schedule-card">
-                <div className="high">
-                    <div className="photograph">
-                        <img className="imgCard" src="https://placehold.co/60x60/png" alt="" />
+            <div className={styles.personalCheckScheduleCard}>
+                <div className={styles.statusIndicatorCheckSchedule}>
+                    {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação aluno)" />)}
+                    {cardData.status === "pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
+                    {cardData.status === "schedule_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
+                    {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
+                    {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
+                </div>
+                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "pending" })}>
+                    <div className={styles.photograph}>
+                        <img className={styles.imgCard} src="https://placehold.co/60x60/png" alt="" />
                     </div>
-                    <div className="content">
-                        <div className="titleName">
+                    <div className={styles.content}>
+                        <div className={styles.titleName}>
                             <h1>{cardData.clientName}</h1>
-                            {
-                                cardData.status === "student_pending" &&
-                                <div className="student_pending-check-schedule">
-                                    <div className="status-pending-check-schedule">
-                                        <svg width="7" height="7" viewBox="0 0 7 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="3.5" cy="3.5" r="3.5" fill="#D7AC00" />
-                                        </svg>
-
-                                        <span className="text-pending-check-schedule">Pendente (aluno)</span>
-                                    </div>
-                                </div>
-                            }
                         </div>
 
-                        <div className="text-in-the-row-check-schedule">
-                            <span>Data: <span className="text-in-row-check-schedule">{cardData.date}</span></span>
-                            <span>Hora: <span className="text-in-row-check-schedule">{cardData.hour}</span></span>
+                        <div className={styles.textInTheRowCheckSchedule}>
+                            <span>Data: <span className={styles.textInRowCheckSchedule}>{cardData.date}</span></span>
+                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.initialHour} - {cardData.finalHour}</span></span>
                         </div>
-                        <div className="text-in-the-row-check-schedule">
-                            {/* <span>Nome: <span className="text-in-row-check-schedule">{cardData.clientName}</span></span> */}
-                            <span>Idade: <span className="text-in-row-check-schedule">{cardData.age} anos</span></span>
+                        <div className={styles.textInTheRowCheckSchedule}>
+                            {/* <span>Nome: <span className={styles.textInRowCheckSchedule}>{cardData.clientName}</span></span> */}
+                            <span>Idade: <span className={styles.textInRowCheckSchedule}>{cardData.age} anos</span></span>
                         </div>
-                        <div className="text-in-the-row-check-schedule">
-                            <span>Tipo: <span className="text-in-row-check-schedule">{cardData.type}</span></span>
+                        <div className={styles.textInTheRowCheckSchedule}>
+                            <span>Tipo: <span className={styles.textInRowCheckSchedule}>{cardData.type}</span></span>
                         </div>
                         <span>Celular: {cardData.phone}</span>
                         <span>Local: {cardData.local}</span>
@@ -78,17 +91,17 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
 
                     </div>
                 </div>
-                {cardData.status === "student_pending" && (
-                    <div className="status-indicator-check-schedule">
+                {cardData.status && cardData.status === "pending" && (
+                    <div className={styles.buttons}>
+                        <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" onClick={handleAcceptClick} />
                         <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" onClick={handleDeclineClick} />
                         <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" onClick={handleRescheduleClick} />
                     </div>
                 )}
-                {cardData.status === "pending" && (
-                    <div className="buttons">
-                        <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" onClick={handleAcceptClick} />
-                        <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" onClick={handleDeclineClick} />
-                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" onClick={handleRescheduleClick} />
+
+                {cardData.status && cardData.status === "schedule_pending" && (
+                    <div className={styles.buttons}>
+                        <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={handleRegisterAbsenceClick} />
                     </div>
                 )}
 

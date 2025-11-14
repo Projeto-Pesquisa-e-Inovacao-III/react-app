@@ -1,11 +1,11 @@
-import { Banknote, HistoryIcon, IdCard, MapPin } from 'lucide-react';
+import { Banknote, Boxes, Eye, HistoryIcon, IdCard, LogOut, MapPin, Package, User, Users } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
 import { useContext } from 'react';
 import { TypeContext } from '../../App';
-import UserHeaderMobile from '../../components/UserHeader/UserHeaderMobile/UserHeaderMobile';
 import { useNavigate } from 'react-router-dom';
+import Logout from '../User/Logout/Logout';
 
 export default function MoreOptions() {
     const isMobile = useMobile();
@@ -23,14 +23,25 @@ export default function MoreOptions() {
                     <h2>Usuario</h2>
                 </div>
                 <div className={styles.options}>
-                    <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => handleNavigate("/edit-user")}/>
-                    <Button icon={<MapPin />} type='button' classNameVariable={styles.buttonOption} title='Endereços Cadastrados' />
-                    <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' />
-                    <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' />
-                </div>
-            </div>
+                    <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
+                    {type == "student" &&
+                        <>
+                            <Button icon={<MapPin />} type='button' classNameVariable={styles.buttonOption} title='Endereços Cadastrados' />
+                            <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => nav("/plans-history")} />
+                            <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' />
+                        </>
+                    }
 
-            {isMobile && <UserHeaderMobile type={type} />}
+                    {type == "personal" &&
+                        <>
+                            <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
+                            <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
+                        </>
+                    }
+                    <Button icon={<LogOut />} type='button' classNameVariable={styles.buttonOption} title='Sair' onClick={() => nav("/logout")} />
+                </div>
+
+            </div>
         </>
     )
 }

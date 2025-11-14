@@ -2,7 +2,6 @@ import { useState } from "react";
 import styles from "./ForgotPassword.module.css";
 import { Phone } from "lucide-react";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
-import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import CodeStep from "./CodeStep/CodeStep";
@@ -42,13 +41,13 @@ export default function ForgotPassword() {
         )}
         <div className={styles.forgotPassword}>
           <div onClick={step != 1 ? (e) => handleStep(e, false) : undefined}>
-        <GoBackButton to={step == 1 ? '/login' : undefined} />
+        <GoBackButton to={step == 1 ? '/login' : (e) => handleStep(e, true)} />
           </div>
-          <div className={classNames(styles.wrapperForgotPasswordElements, { [styles.mobile]: isMobile })}>
+          <div className={classNames(styles.wrapperForgotPasswordElements, { [styles.wrapperForgotPasswordElementsMobile]: isMobile })}>
         {
           step === 1 && (
             <>
-          <div className={styles.welcomeMessage}>
+          <div className={classNames(styles.welcomeMessage)}>
             <h1>Esqueceu a senha?</h1>
             <p>Para continuar, digite o número do seu celular com DDD no campo abaixo. Nós vamos enviar um código de confirmação para o seu WhatsApp.</p>
           </div>

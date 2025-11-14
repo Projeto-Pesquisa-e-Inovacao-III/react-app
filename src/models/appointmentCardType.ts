@@ -3,6 +3,8 @@ export type AppointmentCardType = {
     name: string;
     photoUrl: string;
     date: string;
+    type: string;
     time: string;
+    address: string;
     isMobile?: boolean;
 };

@@ -2,13 +2,18 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewCalendarMonthStyled({ events, isMobile }: { events?: { title: string; date: string; hour: string }[]; isMobile?: boolean }) {
 
   const actualMonth = new Date().getMonth() + 1;
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
+
+  const [clickedDate, setClickedDate] = useState<string>("");
+
+  const nav = useNavigate();
 
   return (
     <div className="container-calendar">
@@ -22,6 +27,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
           }}
+          
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const hasEvent = events?.some(event => event.date === cellDate);
@@ -45,7 +51,10 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
               </div>
             );
           }}
-
+          dateClick={(arg) => {
+            const clickedDate = arg.date.toISOString().split("T")[0];
+            nav(`/schedule/?date=${clickedDate}`);
+          }}
           headerToolbar={{
 
             start: "title",

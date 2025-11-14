@@ -1,32 +1,46 @@
-import './desktop.css'
-import './mobile.css'
+import { useNavigate } from 'react-router-dom';
+import StatusSchedule from '../StatusSchedule/StatusSchedule';
+import styles from './AppointmentCard.module.css';
+import classNames from 'classnames';
 
 type Index = {
     status: 'Pendente' | 'Confirmado' | 'Cancelado';
     name: string;
     photoUrl: string;
     date: string;
+    type: string;
+    address: string;
     time: string;
     isMobile?: boolean;
 };
 
-export function AppointmentCard (props: Index) {
+export function AppointmentCard(props: Index) {
     const { isMobile = false } = props;
+    
+    const nav = useNavigate();
+
+    function handleNavigateToDetail() {
+        nav('/schedule-details');
+    }
     return (
-        <div className={`session-card${isMobile ? '-mobile' : ''}`}>
-            <div className={`session-card-left${isMobile ? '-mobile' : ''}`}>
-                <p className="session-card-status">{props.status}</p>
-                <p className="session-card-type">Consulta</p>
-                <div className="session-card-user">
-                    <img src={props.photoUrl} alt={props.name} className="session-card-avatar" />
-                    <p className="session-card-name">{props.name}</p>
+        <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
+            <StatusSchedule dotColor={props.status === 'Pendente' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status} />
+            <div className={styles.sessionCardInfo}>
+                <div className={classNames(styles.sessionCardLeft, { [styles.sessionCardLeftMobile]: isMobile })}>
+                    <p className={styles.sessionCardStatus}>{props.type}</p>
+                    <div className={styles.sessionCardUser}>
+                        <img src={props.photoUrl} alt={props.name} className={styles.sessionCardAvatar} />
+                        <div>
+                            <p className={styles.sessionCardName}>{props.name}</p>
+                            <p className={styles.sessionCardAddress}>{props.address}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div className={`session-card-divider${isMobile ? '-mobile' : ''}`} />
-            <div
-                className={`session-card-right${isMobile ? '-mobile' : ''}`}>
-                <p className="session-card-date">{props.date}</p>
-                <p className="session-card-time">{props.time}</p>
+                <div className={classNames(styles.sessionCardDivider, { [styles.sessionCardDividerMobile]: isMobile })} />
+                <div className={classNames(styles.sessionCardRight, { [styles.sessionCardRightMobile]: isMobile })}>
+                    <p className={styles.sessionCardDate}>{props.date}</p>
+                    <p className={styles.sessionCardTime}>{props.time}</p>
+                </div>
             </div>
         </div>
     );

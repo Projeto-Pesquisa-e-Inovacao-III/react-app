@@ -35,6 +35,7 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
 
     useEffect(() => {
         clickedDate?.(newEventDate);
+        
     }, [newEventDate]);
 
     return (
@@ -54,12 +55,7 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
                         setNewEventDate(info.dateStr);
                     }}
                     dayCellClassNames={(arg) => {
-                        const disabledDays = events?.map((event) => event.date);
                         const dateStr = arg.date.toISOString().split("T")[0];
-
-                        if (disabledDays?.includes(dateStr)) {
-                            return ["mini-disabled-day"];
-                        }
 
                         if (dateStr === newEventDate) {
                             return ["mini-selected-day"];

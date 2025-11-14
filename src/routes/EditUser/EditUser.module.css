@@ -11,12 +11,18 @@
     "footer footer";
 }
 
+.atualizarFotoContainer span {
+  padding: 14px;
+  font-size: 16px;
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
 /* inside white container */
 .editUserGrid :global(.input-icon) {
-  top: 64%;
-  height: 1.2rem;
-  width: 1.2rem;
-
+  top: 64% !important;
 }
 
 .profileSection {

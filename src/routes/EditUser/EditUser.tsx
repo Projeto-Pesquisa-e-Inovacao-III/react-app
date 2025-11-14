@@ -5,8 +5,11 @@ import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
+import Select from "../../components/Inputs/Select";
+import Input from "../../components/Inputs/Input/Input";
+import { api } from "../../system";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -42,9 +45,33 @@ const initialEditUserState = {
 export default function EditUser() {
   const isMobile = useMobile();
 
-  const userImage: string = "";
+  const [userImage, setUserImage] = useState<string>("");
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
+
+  async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+
+      const formData = new FormData();
+      formData.append("imagem", file);
+
+      const id = 'df71689b-d517-4af3-8e42-1be334d424bd'
+
+      // requisição simulada
+      
+      // await api.post(`/api/postagens/${id}/imagens`, formData)
+      // .then((response) => {
+      //   console.log("Imagem enviada com sucesso:", response.data);
+      //   setUserImage(response.data.imagemUrl);
+      // }).catch((error) => {
+      //   console.error("Erro ao enviar a imagem:", error);
+      // });
+
+      const imageUrl = URL.createObjectURL(file);
+      setUserImage(imageUrl);
+    }
+  }
 
   return (
     <>
@@ -59,16 +86,19 @@ export default function EditUser() {
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
             {userImage ?
               <UserImg
-                Source={""}
+                Source={userImage}
                 Height={216}
                 Width={216}
-                Alt=""
+                Alt="foto"
               />
               :
               <User width={216} height={216} />
             }
             <div className={styles.atualizarFotoContainer}>
-              <Button title="Atualizar Foto" type="button" />
+              <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+              <label htmlFor="upload-photo">
+                <span>Atualizar Foto</span>
+              </label>
             </div>
           </WhiteContainer>
         </div>
@@ -103,13 +133,17 @@ export default function EditUser() {
               icon={<Phone />}
               label="Telefone"
             ></InputWithIcon>
-            <InputWithIcon
+            <Select
               id="genero"
-              type="text"
-              placeholder="Digite seu gênero"
-              icon={<User />}
               label="Gênero"
-            ></InputWithIcon>
+              options={[
+                "Masculino",
+                "Feminino",
+                "Outro",
+              ]}
+              placeholder="Selecione seu gênero"
+              onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
+            />
           </WhiteContainer>
         </div>
 

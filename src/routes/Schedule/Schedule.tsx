@@ -11,10 +11,10 @@ import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
+import { useParams, useSearchParams } from "react-router-dom";
 
 export default function Schedule() {
     const isMobile = useMobile();
-
 
     const type = useContext(TypeContext);
 
@@ -39,6 +39,19 @@ export default function Schedule() {
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
     }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
+
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const [clickedDate, setClickedDate] = useState<string>("");
+
+    useEffect(() => {
+        setClickedDate("");
+
+        if (searchParams.get("date")) {
+            setClickedDate(searchParams.get("date") || "");
+            setOpenNewEvent(true);
+        }
+    }, [searchParams]);
 
     return (
         <>
@@ -73,13 +86,15 @@ export default function Schedule() {
                                     handleButtonClick={() => setOpenNewEvent(true)} />
                             </div>
 
-                            {events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).map((event, index) => (
+                            {events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
-                                        hour={`${event.hour.replace(":", "h").split(":")[0]}`}
+                                        initialHour={`${event.hour.replace(":", "h").split(":")[0]}`}
+                                        finalHour={`${(parseInt(event.hour.replace(":", "h").split(":")[0]) + 1)}h00`}
                                         handleCancel={setOpenCancelModal}
                                         handleReschedule={setOpenReschedule}
+                                        isMobile={isMobile}
                                     />
                                 </div>
                             ))}
@@ -97,7 +112,8 @@ export default function Schedule() {
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Agendar horário"
-                        buttonTitle="Agendar"
+                        buttonTitle="Avançar"
+                        clickedDate={clickedDate}
                     />
                 </>
             )}

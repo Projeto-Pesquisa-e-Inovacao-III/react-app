@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./style.css";
 import Button from "../../Button/Button";
-import MiniCalendar from "../../Calendars/MiniCalendar/MiniCalendar";
+import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
 
 
 export default function CheckScheduleModal({closeThen, isMobile, openSuccess, }: { closeThen: React.Dispatch<React.SetStateAction<boolean>>, isMobile: boolean, openSuccess: ()=> void }) {

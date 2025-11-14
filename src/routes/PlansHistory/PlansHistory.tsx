@@ -8,6 +8,7 @@ import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
 import { useState } from "react";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
+import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 
 export default function PlansHistory() {
     const [initialDateFilter, setInitialDateFilter] = useState<string>("");
@@ -43,23 +44,7 @@ export default function PlansHistory() {
                 </div>
             </div>
 
-            {PlansHistoryMock.map((plan, index) => (
-                <div key={`${plan.date}-${index}`} className={classNames(styles.plansCard)}>
-                    <div className={classNames(styles.planBoughtDate)}>
-                        <p>{plan.date}</p>
-                    </div>
-                    <div className={classNames(styles.planWrapperText)}>
-
-                        <div className={classNames(styles.planInfo)}>
-                            <h2>{plan.title}</h2>
-                            <p>{plan.subtitle}</p>
-                        </div>
-                        <div className={classNames(styles.planButton)} onClick={handleDetailsClick}>
-                            <SmallerButton title="Detalhes"/>
-                        </div>
-                    </div>
-                </div>
-            ))}
+            <RowWithHeaderTitle data={PlansHistoryMock} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
         </div>
     );
 }

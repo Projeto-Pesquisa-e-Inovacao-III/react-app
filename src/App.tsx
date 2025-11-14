@@ -18,17 +18,14 @@ import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
 import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
 import MoreOptions from "./routes/MoreOptions/MoreOptions";
+import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
+import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 
 // todo: 
-// create context to user type (personal/student) to avoid using type prop in several components (done but need back-end integration)
-// fix mobile view of forgot password steps
-// fix button at forgot password (step 2 is centered)
-
-//future improvements:
 // safari support // deixa baixo
-// find gaps
 // study if code is following best practices
-// editar/delete usuario
+// remake personal cards at overview (statu) 
+
 
 export const TypeContext = createContext<"student" | "personal">("student");
 
@@ -40,15 +37,17 @@ function App() {
       <TypeContext.Provider value={type}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/logout" element={<Logout />} />
-
-            {/* header / logo at mobile*/}
             <Route element={<Layout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/logout" element={<Logout />} />
+
+              {/* header / logo at mobile*/}
               <Route path="/plans-history" element={<PlansHistory />} />
+              <Route path="/schedule-history" element={<ScheduleHistory />} />
+              <Route path="/schedule-details" element={<ScheduleDetails />} />
               <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
               <Route path="/schedule" element={<ViewSchedule />} />
               <Route path="/packages" element={<Packages />} />
@@ -59,8 +58,8 @@ function App() {
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/edit-user" element={<EditUser />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/more-options" element={<MoreOptions />} />
             </Route>
-            <Route path="/more-options" element={<MoreOptions />} />
           </Routes>
         </BrowserRouter>
       </TypeContext.Provider>

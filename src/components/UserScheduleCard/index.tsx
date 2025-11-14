@@ -1,9 +1,19 @@
+import classNames from "classnames";
 import SmallerButton from "../SmallerButton";
 import "./style.css"
 
-export default function UserScheduleCard({ date, hour, handleCancel, handleReschedule }: { date: string, hour: string, handleCancel: React.Dispatch<React.SetStateAction<boolean>>, handleReschedule: React.Dispatch<React.SetStateAction<boolean>> }) {
+type UserScheduleCardProps = {
+    date: string;
+    initialHour: string;
+    finalHour: string;
+    handleCancel: React.Dispatch<React.SetStateAction<boolean>>;
+    handleReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+    isMobile: boolean;
+}
+
+export default function UserScheduleCard({ date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
     return (
-        <div className="schedule-view">
+        <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">
                 <span className="user-personal">Personal</span>
                 <div className="schedule-page-user">
@@ -15,10 +25,22 @@ export default function UserScheduleCard({ date, hour, handleCancel, handleResch
                     <SmallerButton type="button" title="Cancelar" handleButtonClick={() => handleCancel(true)} />
                 </div>
             </div>
-            <span className="border-division"></span>
-            <div className="right">
-                <span>{date} {hour}</span>
-            </div>
+            {isMobile && (
+                <div className="mobile-view">
+                    <span className="border-division"></span>
+                    <div className={classNames("right", { "right-mobile": isMobile })}>
+                        <span>{date} {initialHour} - {finalHour}</span>
+                    </div>
+                </div>
+            )}
+            {!isMobile && (
+                <>
+                    <span className="border-division"></span>
+                    <div className={classNames("right", { "right-mobile": isMobile })}>
+                        <span>{date} {initialHour} - {finalHour}</span>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

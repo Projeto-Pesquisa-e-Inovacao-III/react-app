@@ -1,0 +1,192 @@
+.container {
+    background-color: #ffffff;
+    position: relative;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: auto;
+}
+
+.containerMobile {
+    height: auto;
+}
+
+.container .title {
+    font-size: 30px;
+    font-weight: 500;
+    padding: 36px 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.statusIndicatorCheckSchedule {
+    font-size: 20px;
+}
+
+.subtitle {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+
+.container .contentRow {
+    padding: 12px 0;
+
+}
+
+.contentDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 20px 0;
+    border: 1px solid #b3b3b3;
+    padding: 24px;
+    border-radius: 8px;
+}
+
+
+
+.container .content {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.textWithIcon {
+    display: flex;
+    gap: 12px;
+
+}
+
+.container span {
+    display: flex;
+    gap: 10px;
+}
+
+
+.content h2 {
+    padding-bottom: 24px;
+}
+
+
+
+.content span,
+.contentRow span {
+    color: #333;
+}
+
+.dashed {
+    background-color: #E0E0E0;
+    height: 1px;
+    border: none;
+    margin: 12px 0;
+}
+
+
+.contentRow .cardDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 300px;
+    flex: .3;
+}
+
+.paymentMethodMobile {
+    margin-top: 20px;
+
+}
+
+.cardDetails,
+.paymentMethod,
+.orderDetails {
+    min-width: 300px;
+
+}
+
+@media (max-width: 400px) {
+    .paymentMethodMobile h2 {
+        width: min-content;
+    }
+
+
+    .cardDetails,
+    .paymentMethod,
+    .orderDetails {
+        min-width: 100%;
+    }
+
+    .title {
+        padding: 44px 0 !important;
+    }
+}
+
+
+.planDetailsDescription {
+    width: 70%;
+}
+
+.cardDetails .highlight {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cardDetailsMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 12px;
+    min-width: auto !important;
+    flex: 1 !important;
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 12px;
+}
+
+.buttons :global(.btn-generic) {
+    width: auto;
+}
+
+.buttonsMobile {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.buttonsMobile :global(.btn-generic) {
+    width: 100%;
+}
+
+.buttonsMobile :global(.btn-generic button) {
+    width: 100%;
+    max-width: none;
+}
+
+.buttonAbsence :global(.btn-generic button) {
+    max-width: none;
+}
+
+.buttonGroupStudent {
+    width: 100%;
+    justify-content: flex-end;
+}

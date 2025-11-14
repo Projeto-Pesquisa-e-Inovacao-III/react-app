@@ -8,13 +8,14 @@ import type { EventDTO } from "../../../models/calendar";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
+  clickedDateStr?: string;
   createdEvents?: EventDTO[];
   eventToReschedule?: string;
   isMobile: boolean;
 };
 
 
-export default function CalendarMonthStyled({ clickedDate, createdEvents, eventToReschedule, isMobile }: Props) {
+export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile }: Props) {
 
   const databaseEvents = createdEvents?.map((event: EventDTO) => {
     return { title: event.title, date: event.date };
@@ -36,7 +37,7 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents, eventT
   }, []);
 
   useEffect(() => {
-    clickedDate(newEventDate);
+    clickedDate(newEventDate || clickedDateStr || "");
   }, [newEventDate]);
 
   useEffect(() => {
@@ -44,6 +45,12 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents, eventT
     calendarApi?.select(eventToReschedule || "");
     setNewEventDate(eventToReschedule || "");
   }, []);
+
+  useEffect(() => {
+    if (newEventDate) {
+      console.log("New event date selected:", newEventDate);
+    }
+  }, [newEventDate]);
 
   return (
     <div className={`container-calendar${isMobile ? "-mobile" : ""}`}>
@@ -62,7 +69,7 @@ export default function CalendarMonthStyled({ clickedDate, createdEvents, eventT
             if (disabledDays.includes(dateStr) && dateStr !== eventToReschedule)
               return ["disabled-day"];
 
-            if (dateStr === newEventDate) return ["selected-day"];
+            if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];
 
             return [];
           }}

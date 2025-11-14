@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
+import TextareaModal from "../../../components/Modal/TextareaModal/TextareaModal";
+import Button from "../../../components/Button/Button";
+import Select from "../../../components/Inputs/Select";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
@@ -19,6 +22,8 @@ export function CheckSchedule() {
     const [openSuccessAcceptModal, setOpenSuccessAcceptModal] = useState<boolean>(false);
     const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
 
+    const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
+
     const dataCard = [
         {
             id: 1,
@@ -29,20 +34,22 @@ export function CheckSchedule() {
             local: "Academia FitLife",
             address: "Rua das Flores, 123, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
-            status: "pending"
+            initialHour: "14:00",
+            finalHour: "15:00",
+            status: "done"
         },
         {
             id: 2,
-            clientName: "Maria Oliveira",
+            clientName: "Maria Oliveiraaaaaa",
             age: 32,
             type: "Residencial",
             phone: "(11) 91234-5678",
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
-            status: "pending"
+            initialHour: "13:00",
+            finalHour: "14:00",
+            status: "cancelled"
         },
         {
             id: 3,
@@ -53,7 +60,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "15/11/2025",
-            hour: "14:00",
+            initialHour: "15:00",
+            finalHour: "16:00",
             status: "pending"
         },
         {
@@ -65,7 +73,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "16/11/2025",
-            hour: "14:00",
+            initialHour: "14:00",
+            finalHour: "15:00",
             status: "pending"
         },
         {
@@ -77,7 +86,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "17/11/2025",
-            hour: "13:00",
+            initialHour: "13:00",
+            finalHour: "14:00",
             status: "pending"
         },
         {
@@ -89,7 +99,8 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "18/11/2025",
-            hour: "15:00",
+            initialHour: "15:00",
+            finalHour: "16:00",
             status: "pending"
         },
         {
@@ -101,9 +112,23 @@ export function CheckSchedule() {
             local: "Academia Power",
             address: "Avenida Brasil, 456, São Paulo, SP",
             date: "19/11/2025",
-            hour: "16:00",
+            initialHour: "16:00",
+            finalHour: "17:00",
             status: "student_pending"
-        }
+        },
+        {
+            id: 8,
+            clientName: "Carlos Pereira",
+            age: 40,
+            type: "Funcional",
+            phone: "(11) 99876-5432",
+            local: "Academia Strong",
+            address: "Rua das Palmeiras, 789, São Paulo, SP",
+            date: "10/11/2025",
+            initialHour: "17:00",
+            finalHour: "18:00",
+            status: "student_pending"
+        },
     ];
 
     function handleCallSucessReschedule() {
@@ -128,6 +153,7 @@ export function CheckSchedule() {
                             RescheduleClick={setOpenModal}
                             AcceptScheduleClick={setModalAccept}
                             DeclineScheculeClick={setModalDecline}
+                            RegisterAbsenceClick={setRegisterAbsence}
                             cardData={card}
                         />
                     ))}
@@ -139,6 +165,35 @@ export function CheckSchedule() {
             {openSuccessReschedule && <SuccessModal isMobile={isMobile} closeThen={setSuccessReschedule} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente" />}
             {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
             {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
+
+            {registerAbsence && (
+                <>
+                    <div className="overlay" onClick={() => setRegisterAbsence(false)}></div>
+                    <div className={styles.modal}>
+                        <h2 className={styles.title}>Registrar ausência</h2>
+
+                        <Select
+                            label="Motivo da ausência"
+                            options={["Aluno", "Personal"]}
+                            placeholder="Selecione o motivo da ausência"
+                            onInputChange={() => { }}
+                        />
+                        {/* se for aluno */}
+                        <div className={styles.fieldGroup}>
+                            <label className={styles.label}>Motivo: </label>
+                            <div className={styles.reasonText}>
+                                <button>Não justificado</button>
+                                <span contentEditable="true"></span>
+                            </div>
+                        </div>
+
+                        <div className={styles.buttons}>
+                            <Button title="Enviar" type="button" onClick={() => setRegisterAbsence(true)} />
+                            <Button title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => setRegisterAbsence(false)} />
+                        </div>
+                    </div>
+                </>
+            )}
         </>
     )
 }
