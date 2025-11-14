@@ -2,6 +2,7 @@ import classNames from "classnames";
 import Button from "../Button/Button";
 import StatusSchedule from "../StatusSchedule/StatusSchedule";
 import styles from "./CardCheckSchedule.module.css";
+import { useEffect } from "react";
 
 type dataCardProps = {
     id?: number;
@@ -17,13 +18,24 @@ type dataCardProps = {
     status?: string | "pending" | "student_pending" | "schedule_pending" | "done" | "cancelled";
 }
 
-export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, cardData }: {
+export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
     RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     AcceptScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    RegisterAbsenceClick?: React.Dispatch<React.SetStateAction<boolean>>,
     cardData: dataCardProps
 }) {
+    useEffect(() => {
+        const today = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
+        if (cardData.date && cardData.date < today) {
+            console.log("entrou");
+            console.log("cardData.date", cardData.date);
+            console.log("today", today);
 
+            cardData.status = "schedule_pending";
+            console.log("cardData.status", cardData.status);
+        }
+    }, []);
 
     function handleRescheduleClick() {
         RescheduleClick?.(true);
@@ -39,6 +51,10 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
         DeclineScheculeClick?.(true)
     }
 
+    function handleRegisterAbsenceClick() {
+        RegisterAbsenceClick?.(true)
+    }
+
     return (
         <>
             <div className={styles.personalCheckScheduleCard}>
@@ -49,7 +65,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
                 </div>
-                <div className={classNames(styles.high, {[styles.highStatusWithoutBorder]: cardData.status !== "pending"})}>
+                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "pending" })}>
                     <div className={styles.photograph}>
                         <img className={styles.imgCard} src="https://placehold.co/60x60/png" alt="" />
                     </div>
@@ -75,7 +91,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
 
                     </div>
                 </div>
-                {cardData.status === "pending" && (
+                {cardData.status && cardData.status === "pending" && (
                     <div className={styles.buttons}>
                         <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" onClick={handleAcceptClick} />
                         <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" onClick={handleDeclineClick} />
@@ -83,9 +99,9 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     </div>
                 )}
 
-                {cardData.status === "schedule_pending" && (
+                {cardData.status && cardData.status === "schedule_pending" && (
                     <div className={styles.buttons}>
-                        <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={handleAcceptClick} />
+                        <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={handleRegisterAbsenceClick} />
                     </div>
                 )}
 

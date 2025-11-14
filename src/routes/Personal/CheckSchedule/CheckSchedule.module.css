@@ -57,3 +57,91 @@
         margin-top: 10px;
     }
 }
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 40%;
+}
+
+.modal :global(.wrapper_inp) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.modal :global(.wrapper_inp label) {
+    margin-right: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    width: fit-content;
+    text-wrap: nowrap;
+}
+
+
+.modal h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fieldGroup label {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.reasonText {
+
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+    word-wrap: break-word;
+    position: relative;
+}
+
+.reasonText button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.reasonText span {
+    width: 100%;
+    height: 150px;
+    display: block;
+}
+
+.reasonText span:focus {
+    outline: none;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
