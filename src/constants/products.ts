@@ -8,3 +8,7 @@ export function getProductsExhibitions() {
 export function newProductExhibition(data: ProductExhibition) {
     return api.post(`/produtos-exibicoes`, data)
 }
+
+export function desactivateProductExhibition(id: number) {
+    return api.patch(`/produtos-exibicoes/desativar/${id}`)
+}

@@ -11,7 +11,7 @@ import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
-import { getProductsExhibitions } from "../../constants/products";
+import { desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 
 export function Packages() {
     const isMobile = useMobile();
@@ -25,6 +25,8 @@ export function Packages() {
     const [openModalDeletePackage, setOpenModalDeletePackage] = useState(false);
     const [openSuccessModal, setOpenSuccessModal] = useState(false);
     const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
+
+    const [packageId, setPackageId] = useState<number | null>(null);
 
     useEffect(() => {
         if (openModalAddPackage || openModalAddAdditionalPackage) {
@@ -48,10 +50,7 @@ export function Packages() {
         setOpenModalAddAdditionalPackage(true);
     }
 
-    function handleSuccessModalInfos(title: string, content: string) {
-        setOpenSuccessModal(true)
-        setSuccessModalInfos({ title, content });
-    }
+
 
 
     const valuesMock = {
@@ -74,8 +73,34 @@ export function Packages() {
 
     useEffect(() => {
         handleGetProductsExhibitions();
-    }, []);
+    }, [productsExhibitions.length]);
 
+    function handleSuccessModalInfos(title: string, content: string) {
+        setOpenSuccessModal(true)
+        setSuccessModalInfos({ title, content });
+    }
+
+
+    function handleDeletePackage(id: number) {
+
+        if (!packageId) {
+            setOpenModalDeletePackage(true);
+            setPackageId(id)
+            return;
+        }
+
+
+        desactivateProductExhibition(id).then((response) => {
+            console.log("Pacote desativado com sucesso! ", response);
+            handleSuccessModalInfos("Exclusão concluída", "O pacote foi excluído com sucesso");
+            setOpenModalDeletePackage(false);
+            setProductsExhibitions(prev => prev.filter(pkg => pkg.id !== id));
+            setPackageId(null);
+        }).catch((error) => {
+            console.error("Erro ao desativar o pacote:", error);
+        });
+
+    }
     return (
         <>
             <div className={classnames(styles.packagesContainer, { [styles.packagesContainerBlock]: openModalAddPackage })}>
@@ -97,18 +122,15 @@ export function Packages() {
 
                 <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
                     {productsExhibitions.map((pacote, index) => (
+                        pacote.status === "ATIVO" &&
                         <PackageCard
                             key={index}
                             {...pacote}
-                            title={pacote.titulo}
-                            subtitle={pacote.subtitulo}
-                            price={pacote.preco}
-                            duration={pacote.periodo}
-                            benefits={JSON.parse(pacote.descricao)}
+                            descricao={JSON.parse(pacote.descricao)}
                             onClick={() => handleBuyClick(pacote.titulo)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
-                            setHandleDelete={setOpenModalDeletePackage}
+                            setHandleDelete={() => handleDeletePackage(pacote.id!)}
                             setHandleEdit={setOpenModalEditPackage}
                         />
                     ))}
@@ -174,13 +196,15 @@ export function Packages() {
 
             {openModalDeletePackage && (
                 <>
+                    <div className="overlay"></div>
                     <TimerModal
                         isMobile={isMobile}
                         title="Confirmar Exclusão"
                         content="Tem certeza de que deseja excluir este pacote?"
                         closeThen={setOpenModalDeletePackage}
                         isDelete={true}
-                        callSuccessModal={() => handleSuccessModalInfos("Exclusão concluída", "O pacote foi excluído com sucesso")}
+                        buttonTitle="Excluir Pacote"
+                        callSuccessModal={() => handleDeletePackage(packageId)}
                     />
                 </>
             )}
@@ -192,6 +216,7 @@ export function Packages() {
             )}
 
             {openSuccessModal && (
+
                 <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={setOpenSuccessModal} />
 
             )}

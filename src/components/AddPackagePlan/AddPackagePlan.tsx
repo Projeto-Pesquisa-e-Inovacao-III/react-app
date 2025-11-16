@@ -53,6 +53,11 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             duracaoMes: parseInt(deadline || "12")
         }
 
+        if(benefits.includes("")) {
+            alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
+            return;
+        }
+
         newProductExhibition(data).then(() => {
             console.log("Pacote adicionado com sucesso!");
             callSuccessModal();
