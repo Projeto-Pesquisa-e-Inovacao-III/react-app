@@ -13,6 +13,21 @@ export type UserDTO = {
     };
 }
 
+export type UpdateUserDTO = {
+    nome: string;
+    sexo: string;
+    email: string;
+    cpf?: string;
+    telefone?: {
+        ddd: string;
+        numero: string;
+        pais: string;
+    };
+    dataNascimento: string;
+    senha: string;
+
+}
+
 export type UserDTOSprint2 = {
     nome: string;
     sobrenome: string;

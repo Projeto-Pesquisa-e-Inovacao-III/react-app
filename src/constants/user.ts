@@ -1,5 +1,5 @@
 
-import type { UserDTO } from "../models/user";
+import type { UpdateUserDTO, UserDTO } from "../models/user";
 import { api } from "../system";
 
 export function findByEmail(email: string) {
@@ -10,16 +10,24 @@ export function findUserData() {
    return api.get(`/usuarios/me`)
 }
 
+export function getUserImage() {
+   return api.get(`/usuarios/me/imagem`)
+}
+
+export function insertUserImage(imageData: FormData) {
+   return api.post(`/usuarios/me/imagem`, imageData)
+}
+
+export function update(userdata: UpdateUserDTO) {
+   return api.put(`/alunos/me`, userdata)
+}
+
 export function register(userdata: UserDTO) {
    return api.post(`/alunos/cadastro`, userdata)
 }
 
 export function login(email: string, password: string) {
    return api.post(`/usuarios/login`, { email: email, senha: password })
-}
-
-export function update(id: string, userdata: UserDTO) {
-   return api.put(`/usuarios/${id}`, userdata)
 }
 
 export function softDelete(id: string) {

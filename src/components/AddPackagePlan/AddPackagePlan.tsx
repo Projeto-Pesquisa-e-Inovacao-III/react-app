@@ -3,9 +3,10 @@ import Button from "../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
 import { Plus } from "lucide-react";
-import { useState } from "react";
-import { newProductExhibition } from "../../constants/products";
+import { useEffect, useState } from "react";
+import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
+import { useNavigate } from "react-router-dom";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,17 +18,20 @@ type AddPackagePlanProps = {
         benefits: string[];
         quantity: number;
     };
+    isEdit?: boolean;
     packageCreated?: React.Dispatch<React.SetStateAction<ProductExhibition[]>>;
     callSuccessModal: () => void;
 };
 
-export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal }: AddPackagePlanProps) {
+export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit }: AddPackagePlanProps) {
 
-    const [name, setName] = useState<string>(values?.name || "");
-    const [price, setPrice] = useState<string>(values?.price || "");
-    const [deadline, setDeadline] = useState<string>(values?.deadline || "");
-    const [quantity, setQuantity] = useState<number>(values?.quantity || 12);
-    const [benefits, setBenefits] = useState<string[]>([""]);
+    const [name, setName] = useState<string>(values?.titulo || "");
+    const [price, setPrice] = useState<string>(values?.preco || "");
+    const [deadline, setDeadline] = useState<string>(values?.duracaoMes || "");
+    const [quantity, setQuantity] = useState<number>(values?.quantidadeAula || 0);
+    const [benefits, setBenefits] = useState<string[]>(values?.descricao ? JSON.parse(values.descricao) : [""]);
+
+    const navigate = useNavigate();
 
     function handleAddBenefit() {
         setBenefits([...benefits, ""]);
@@ -53,7 +57,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             duracaoMes: parseInt(deadline || "12")
         }
 
-        if(benefits.includes("")) {
+        if (benefits.includes("")) {
             alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
             return;
         }
@@ -70,6 +74,34 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
         });
     }
 
+    function handleEditPackage() {
+        const data: ProductExhibition = {
+            titulo: name,
+            subtitulo: "",
+            descricao: JSON.stringify(benefits),
+            preco: price,
+            periodo: deadline,
+            status: "ATIVO",
+            tipoAula: "ONLINE",
+            quantidadeAula: quantity,
+            duracaoMes: parseInt(deadline || "12")
+        }
+
+        updateProductExhibition(values.id, data).then(() => {
+            console.log("Pacote editado com sucesso!");
+            callSuccessModal();
+
+            if (packageCreated) {
+
+                packageCreated(prev => prev.filter(pkg => pkg.id !== values.id));
+
+            }
+            onClose(false);
+        }).catch((error) => {
+            console.error("Erro ao editar pacote:", error);
+        });
+    }
+
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -78,25 +110,25 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                 <form className={styles.addPackageForm}>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packageName">Nome:</label>
-                        <Input type="text" onInputChange={setName} />
+                        <Input type="text" value={name} onInputChange={setName} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Preço:</label>
-                        <Input type="text" onInputChange={setPrice} />
+                        <Input type="text" value={price} onInputChange={setPrice} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Quantidade de aulas:</label>
-                        <Input type="number" onInputChange={setQuantity} />
+                        <Input type="number" value={quantity} onInputChange={setQuantity} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Prazo:</label>
-                        <Input type="number" onInputChange={setDeadline} />
+                        <Input type="number" value={deadline} onInputChange={setDeadline} />
                     </div>
 
                     {benefits.map((benefit, index) => (
                         <div className={styles.inputContainer}>
                             <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
-                            <Input key={index} type="text" onInputChange={(value) => handleBenefitChange(index, value)} />
+                            <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} />
                         </div>
                     ))}
 
@@ -105,7 +137,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                     </div>
 
                     <div className={styles.modalButtons}>
-                        <Button type="button" title="Adicionar" classNameVariable={styles.buttonAddBenefit} onClick={handleAddPackage} />
+                        <Button type="button" title={isEdit ? "Editar" : "Adicionar"} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
                         <Button type="button" title="Cancelar" classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
                     </div>
                 </form>

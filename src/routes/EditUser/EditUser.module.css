@@ -64,6 +64,10 @@
     "cpf telefone genero";
 }
 
+.personalInfoGrid :global(.wrapper_inp) {
+  width: 100%;
+}
+
 .loginInfoContainer :global(#email) {
   width: 100%;
 }

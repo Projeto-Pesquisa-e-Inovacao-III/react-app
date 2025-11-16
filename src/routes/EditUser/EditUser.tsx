@@ -9,8 +9,10 @@ import { useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select";
 import Input from "../../components/Inputs/Input/Input";
-import { api } from "../../system";
-import { findUserData } from "../../constants/user";
+import { api, BASE_URL } from "../../system";
+import { findUserData, getUserImage, insertUserImage, update } from "../../constants/user";
+import type { UpdateUserDTO, UserDTO } from "../../models/user";
+import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -41,14 +43,20 @@ const initialEditUserState = {
   gender: "",
   email: "",
   password: "",
+  birthDate: "",
 };
+
+//todo: warning maximum size of 5mb for user image
 
 export default function EditUser() {
   const isMobile = useMobile();
 
   const [userImage, setUserImage] = useState<string>("");
+  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
+
+  const [callSuccessModal, setCallSuccessModal] = useState(false);
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -57,20 +65,9 @@ export default function EditUser() {
       const formData = new FormData();
       formData.append("imagem", file);
 
-      const id = 'df71689b-d517-4af3-8e42-1be334d424bd'
-
-      // requisição simulada
-
-      // await api.post(`/api/postagens/${id}/imagens`, formData)
-      // .then((response) => {
-      //   console.log("Imagem enviada com sucesso:", response.data);
-      //   setUserImage(response.data.imagemUrl);
-      // }).catch((error) => {
-      //   console.error("Erro ao enviar a imagem:", error);
-      // });
-
       const imageUrl = URL.createObjectURL(file);
       setUserImage(imageUrl);
+      setUserImageFormData(formData);
     }
   }
 
@@ -83,9 +80,41 @@ export default function EditUser() {
       dispatch({ type: "setPhone", payload: userData.telefones[0].numeroCompleto });
       dispatch({ type: "setGender", payload: userData.sexo });
       dispatch({ type: "setEmail", payload: userData.email });
+      dispatch({ type: "setBirthDate", payload: userData.dataNascimento });
+
+      setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+
     }).catch((error) => {
       console.error("Erro ao buscar dados do usuário:", error);
     });
+  }
+
+  function handleUpdateUserInfo() {
+    const options: UpdateUserDTO = {
+      nome: state.firstName,
+      cpf: state.cpf,
+      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      sexo: state.gender,
+      email: state.email,
+      dataNascimento: "2000-01-01", //is this necessary? can we update birthdate?,
+      senha: "123456789aA!",  //is this right? are we gonna update password here?
+    }
+
+    update(options).then(() => {
+      console.log("Dados do usuário atualizados com sucesso!");
+      setCallSuccessModal(true);
+    }).catch((error) => {
+      console.error("Erro ao atualizar dados do usuário:", error);
+    });
+
+    if (userImageFormData.has("imagem")) {
+      insertUserImage(userImageFormData).then(() => {
+        console.log("Imagem do usuário atualizada com sucesso!");
+        setCallSuccessModal(true);
+      }).catch((error) => {
+        console.error("Erro ao atualizar imagem do usuário:", error);
+      });
+    }
   }
 
   useEffect(() => {
@@ -195,9 +224,18 @@ export default function EditUser() {
 
         <div className={styles.footer}>
           <div className={styles.dashLine}></div>
-          <Button title="Salvar Alterações" type="button" />
+          <Button title="Salvar Alterações" type="button" onClick={handleUpdateUserInfo} />
         </div>
       </div>
+
+      {callSuccessModal && (
+        <SuccessModal
+          isMobile={isMobile}
+          closeThen={setCallSuccessModal}
+          title="Perfil atualizado!"
+          content="Suas informações foram atualizadas com sucesso."
+        />
+      )}
     </>
   );
 }

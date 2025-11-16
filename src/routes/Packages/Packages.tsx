@@ -29,12 +29,12 @@ export function Packages() {
     const [packageId, setPackageId] = useState<number | null>(null);
 
     useEffect(() => {
-        if (openModalAddPackage || openModalAddAdditionalPackage) {
+        if (openModalAddPackage || openModalAddAdditionalPackage || openModalEditPackage || openModalDeletePackage) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'auto';
         }
-    }, [openModalAddPackage, openModalAddAdditionalPackage]);
+    }, [openModalAddPackage, openModalAddAdditionalPackage, openModalEditPackage, openModalDeletePackage]);
 
     const isPersonal = type === "personal";
 
@@ -50,30 +50,12 @@ export function Packages() {
         setOpenModalAddAdditionalPackage(true);
     }
 
-
-
-
-    const valuesMock = {
-        name: "Pacote Exemplo",
-        price: "R$ 199,99",
-        deadline: "30 dias",
-        benefits: [
-            "Benefício 1",
-            "Benefício 2",
-            "Benefício 3"
-        ]
-    }
-
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
 
     async function handleGetProductsExhibitions() {
         const response = await getProductsExhibitions();
         setProductsExhibitions(response.data);
     }
-
-    useEffect(() => {
-        handleGetProductsExhibitions();
-    }, [productsExhibitions.length]);
 
     function handleSuccessModalInfos(title: string, content: string) {
         setOpenSuccessModal(true)
@@ -89,7 +71,6 @@ export function Packages() {
             return;
         }
 
-
         desactivateProductExhibition(id).then((response) => {
             console.log("Pacote desativado com sucesso! ", response);
             handleSuccessModalInfos("Exclusão concluída", "O pacote foi excluído com sucesso");
@@ -101,6 +82,36 @@ export function Packages() {
         });
 
     }
+
+    function handleUpdatePackage(id: number) {
+
+        if (!packageId) {
+            setPackageId(id)
+            setOpenModalEditPackage(true);
+            return;
+        }
+
+    }
+
+    function handleCloseUpdateModal() {
+        setOpenModalEditPackage(false);
+        setPackageId(null);
+    }
+
+    function handleCloseDeleteModal() {
+        setOpenModalDeletePackage(false);
+        setPackageId(null);
+    }
+
+    function productsExhibitionsFindById(id: number) {
+        return productsExhibitions.find(pkg => pkg.id === id);
+    }
+
+    useEffect(() => {
+        handleGetProductsExhibitions();
+    }, [productsExhibitions.length]);
+
+
     return (
         <>
             <div className={classnames(styles.packagesContainer, { [styles.packagesContainerBlock]: openModalAddPackage })}>
@@ -121,7 +132,7 @@ export function Packages() {
                 </div>
 
                 <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
-                    {productsExhibitions.map((pacote, index) => (
+                    {productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
                         pacote.status === "ATIVO" &&
                         <PackageCard
                             key={index}
@@ -131,7 +142,7 @@ export function Packages() {
                             isMobile={isMobile}
                             isPersonal={isPersonal}
                             setHandleDelete={() => handleDeletePackage(pacote.id!)}
-                            setHandleEdit={setOpenModalEditPackage}
+                            setHandleEdit={() => handleUpdatePackage(pacote.id!)}
                         />
                     ))}
                     {/* dados mockados */}
@@ -201,7 +212,7 @@ export function Packages() {
                         isMobile={isMobile}
                         title="Confirmar Exclusão"
                         content="Tem certeza de que deseja excluir este pacote?"
-                        closeThen={setOpenModalDeletePackage}
+                        closeThen={handleCloseDeleteModal}
                         isDelete={true}
                         buttonTitle="Excluir Pacote"
                         callSuccessModal={() => handleDeletePackage(packageId)}
@@ -211,7 +222,7 @@ export function Packages() {
 
             {openModalEditPackage && (
                 <>
-                    <AddPackagePlan title="Editar Pacote" onClose={setOpenModalEditPackage} values={valuesMock} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} />
+                    <AddPackagePlan title="Editar Pacote" onClose={handleCloseUpdateModal} packageCreated={setProductsExhibitions} values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 </>
             )}
 
