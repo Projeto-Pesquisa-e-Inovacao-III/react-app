@@ -7,7 +7,7 @@ type Props = {
     placeholder: string;
     icon: React.ReactNode;
     label?: string;
-    id?: string; 
+    id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
@@ -18,7 +18,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
-        <div className="wrapper_inp" id={id}>   
+        <div className="wrapper_inp" id={id}>
             {label &&
                 <label htmlFor={`${id}-input`}>{label}</label>
             }

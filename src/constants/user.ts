@@ -6,6 +6,10 @@ export function findByEmail(email: string) {
    return api.get(`/usuarios/email/${email}`)
 }
 
+export function findUserData() {
+   return api.get(`/usuarios/me`)
+}
+
 export function register(userdata: UserDTO) {
    return api.post(`/alunos/cadastro`, userdata)
 }

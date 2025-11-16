@@ -12,3 +12,7 @@ export function newProductExhibition(data: ProductExhibition) {
 export function desactivateProductExhibition(id: number) {
     return api.patch(`/produtos-exibicoes/desativar/${id}`)
 }
+
+export function updateProductExhibition(id: number, data: Partial<ProductExhibition>) {
+    return api.put(`/produtos-exibicoes/editar/${id}`, data);
+}

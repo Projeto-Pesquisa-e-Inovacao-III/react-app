@@ -10,6 +10,7 @@ import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select";
 import Input from "../../components/Inputs/Input/Input";
 import { api } from "../../system";
+import { findUserData } from "../../constants/user";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -59,7 +60,7 @@ export default function EditUser() {
       const id = 'df71689b-d517-4af3-8e42-1be334d424bd'
 
       // requisição simulada
-      
+
       // await api.post(`/api/postagens/${id}/imagens`, formData)
       // .then((response) => {
       //   console.log("Imagem enviada com sucesso:", response.data);
@@ -72,6 +73,24 @@ export default function EditUser() {
       setUserImage(imageUrl);
     }
   }
+
+  function handleGetUserInfo() {
+    findUserData().then((response) => {
+      const userData = response.data;
+      console.log("Dados do usuário:", userData);
+      dispatch({ type: "setFirstName", payload: userData.nome });
+      dispatch({ type: "setCPF", payload: userData.cpf });
+      dispatch({ type: "setPhone", payload: userData.telefones[0].numeroCompleto });
+      dispatch({ type: "setGender", payload: userData.sexo });
+      dispatch({ type: "setEmail", payload: userData.email });
+    }).catch((error) => {
+      console.error("Erro ao buscar dados do usuário:", error);
+    });
+  }
+
+  useEffect(() => {
+    handleGetUserInfo();
+  }, []);
 
   return (
     <>
@@ -111,6 +130,8 @@ export default function EditUser() {
               placeholder="Digite seu nome"
               icon={<User />}
               label="Primeiro Nome"
+              value={state.firstName}
+              onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
               id="sobreNome"
@@ -125,6 +146,8 @@ export default function EditUser() {
               placeholder="Digite seu CPF"
               icon={<IdCard />}
               label="CPF"
+              value={state.cpf}
+              onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
               id="telefone"
@@ -132,6 +155,7 @@ export default function EditUser() {
               placeholder="Digite seu telefone"
               icon={<Phone />}
               label="Telefone"
+              value={state.phone}
             ></InputWithIcon>
             <Select
               id="genero"
@@ -142,6 +166,7 @@ export default function EditUser() {
                 "Outro",
               ]}
               placeholder="Selecione seu gênero"
+              value={state.gender}
               onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
             />
           </WhiteContainer>
@@ -155,6 +180,8 @@ export default function EditUser() {
               placeholder="Digite seu email"
               icon={<Mail />}
               label="Email"
+              value={state.email}
+              onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
               id="senha"
