@@ -15,7 +15,7 @@ type dataCardProps = {
     date?: string;
     initialHour?: string;
     finalHour?: string;
-    status?: string | "pending" | "student_pending" | "schedule_pending" | "done" | "cancelled";
+    status?: string | "pending" | "student_pending" | "schedule_pending" | "schedule_pending_past" | "done" | "cancelled";
 }
 
 export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
@@ -25,17 +25,9 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
     RegisterAbsenceClick?: React.Dispatch<React.SetStateAction<boolean>>,
     cardData: dataCardProps
 }) {
-    useEffect(() => {
-        const today = new Date().toLocaleDateString("pt-BR", { timeZone: "America/Sao_Paulo" });
-        if (cardData.date && cardData.date < today) {
-            console.log("entrou");
-            console.log("cardData.date", cardData.date);
-            console.log("today", today);
-
-            cardData.status = "schedule_pending";
-            console.log("cardData.status", cardData.status);
-        }
-    }, []);
+    const today = new Date();
+    const [day, month, year] = cardData.date?.split("/").map(Number) || [0, 0, 0];
+    const scheduleDate = new Date(year, month - 1, day);
 
     function handleRescheduleClick() {
         RescheduleClick?.(true);
@@ -65,7 +57,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
                 </div>
-                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "pending" })}>
+                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "pending"})}>
                     <div className={styles.photograph}>
                         <img className={styles.imgCard} src="https://placehold.co/60x60/png" alt="" />
                     </div>
@@ -99,7 +91,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     </div>
                 )}
 
-                {cardData.status && cardData.status === "schedule_pending" && (
+                {cardData.status && cardData.status === "schedule_pending" && scheduleDate < today && (
                     <div className={styles.buttons}>
                         <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={handleRegisterAbsenceClick} />
                     </div>

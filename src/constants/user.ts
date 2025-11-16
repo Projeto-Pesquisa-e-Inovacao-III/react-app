@@ -7,7 +7,7 @@ export function findByEmail(email: string) {
 }
 
 export function register(userdata: UserDTO) {
-   return api.post(`/usuarios/cadastro`, userdata)
+   return api.post(`/alunos/cadastro`, userdata)
 }
 
 export function login(email: string, password: string) {

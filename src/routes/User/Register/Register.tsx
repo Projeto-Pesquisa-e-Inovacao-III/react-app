@@ -106,7 +106,11 @@ export default function Register() {
             email: register.email,
             senha: register.password,
             cpf: register.customerDocument.split(".").join("").split("-").join(""),
-            telefone: register.phone,
+            telefone: {
+                ddd: register.phone.substring(1, 3),
+                numero: register.phone.substring(5).split("-").join(""),
+                pais: "55"
+            },
             sexo: register.gender,
             dataNascimento: register.birthDate
         };

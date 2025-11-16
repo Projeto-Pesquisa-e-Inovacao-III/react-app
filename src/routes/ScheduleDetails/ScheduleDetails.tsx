@@ -5,8 +5,9 @@ import useMobile from '../../hooks/isMobile';
 import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
@@ -30,12 +31,15 @@ export default function ScheduleDetails() {
     }
 
     const date = new Date(`${dataMocked.date}T${dataMocked.initialHour}`);
+    const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
     const formattedDate = `${date.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
     })} das ${dataMocked.initialHour} às ${dataMocked.finalHour}`;
+
+    const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
 
     return (
         <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
@@ -92,9 +96,9 @@ export default function ScheduleDetails() {
             {dataMocked.status === "pending" &&
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
-                    {type === "personal" &&
+                    {type === "personal" && today > formattedDate &&
                         <div className={styles.buttonAbsence}>
-                            <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" />
+                            <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)}/>
                         </div>
                     }
 
@@ -105,6 +109,10 @@ export default function ScheduleDetails() {
                     </div>
                 </div>
             }
-        </div >
+
+            {registerAbsence &&
+                <RegisterAbsenceModal closeThen={setRegisterAbsence} />
+            }
+        </div>
     );
 }
