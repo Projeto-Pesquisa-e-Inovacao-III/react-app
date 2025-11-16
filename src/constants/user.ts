@@ -14,6 +14,10 @@ export function getUserImage() {
    return api.get(`/usuarios/me/imagem`)
 }
 
+export function removerUserImage() {
+   return api.delete(`/usuarios/me/imagem`)
+}
+
 export function insertUserImage(imageData: FormData) {
    return api.post(`/usuarios/me/imagem`, imageData)
 }

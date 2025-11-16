@@ -10,9 +10,10 @@ import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select";
 import Input from "../../components/Inputs/Input/Input";
 import { api, BASE_URL } from "../../system";
-import { findUserData, getUserImage, insertUserImage, update } from "../../constants/user";
+import { findUserData, getUserImage, insertUserImage, removerUserImage, update } from "../../constants/user";
 import type { UpdateUserDTO, UserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
+import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -57,6 +58,8 @@ export default function EditUser() {
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
   const [callSuccessModal, setCallSuccessModal] = useState(false);
+  const [callTimerModal, setCallTimerModal] = useState(false);
+  const [textSuccessModal, setTextSuccessModal] = useState({ title: "", content: "" });
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -71,6 +74,23 @@ export default function EditUser() {
     }
   }
 
+  function handleRemoveImage() {
+    setUserImage("");
+    const formData = new FormData();
+    formData.append("imagem", "");
+    setUserImageFormData(formData);
+    removerUserImage().then(() => {
+      console.log("Imagem do usuário removida com sucesso!");
+    }).catch((error) => {
+      console.error("Erro ao remover imagem do usuário:", error);
+    });
+
+    setTextSuccessModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
+    setCallTimerModal(false);
+    setCallSuccessModal(true);
+
+  }
+
   function handleGetUserInfo() {
     findUserData().then((response) => {
       const userData = response.data;
@@ -82,7 +102,10 @@ export default function EditUser() {
       dispatch({ type: "setEmail", payload: userData.email });
       dispatch({ type: "setBirthDate", payload: userData.dataNascimento });
 
-      setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+      if (userData.caminhoFoto) {
+        setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+
+      }
 
     }).catch((error) => {
       console.error("Erro ao buscar dados do usuário:", error);
@@ -102,7 +125,9 @@ export default function EditUser() {
 
     update(options).then(() => {
       console.log("Dados do usuário atualizados com sucesso!");
+      setTextSuccessModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setCallSuccessModal(true);
+
     }).catch((error) => {
       console.error("Erro ao atualizar dados do usuário:", error);
     });
@@ -110,7 +135,6 @@ export default function EditUser() {
     if (userImageFormData.has("imagem")) {
       insertUserImage(userImageFormData).then(() => {
         console.log("Imagem do usuário atualizada com sucesso!");
-        setCallSuccessModal(true);
       }).catch((error) => {
         console.error("Erro ao atualizar imagem do usuário:", error);
       });
@@ -143,10 +167,18 @@ export default function EditUser() {
               <User width={216} height={216} />
             }
             <div className={styles.atualizarFotoContainer}>
-              <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-              <label htmlFor="upload-photo">
-                <span>Atualizar Foto</span>
-              </label>
+              <div>
+                <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                <label htmlFor="upload-photo">
+                  <span>Atualizar Foto</span>
+                </label>
+              </div>
+
+              {userImage ?
+                <div >
+                  <Button title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setCallTimerModal(true)} />
+                </div>
+                : null}
             </div>
           </WhiteContainer>
         </div>
@@ -232,8 +264,19 @@ export default function EditUser() {
         <SuccessModal
           isMobile={isMobile}
           closeThen={setCallSuccessModal}
-          title="Perfil atualizado!"
-          content="Suas informações foram atualizadas com sucesso."
+          title={textSuccessModal.title}
+          content={textSuccessModal.content}
+        />
+      )}
+
+      {callTimerModal && (
+        <TimerModal
+          isMobile={isMobile}
+          closeThen={() => setCallTimerModal(false)}
+          callSuccessModal={handleRemoveImage}
+          title="Remover imagem?"
+          buttonTitle="Remover"
+          content="Tem certeza que deseja remover sua imagem de perfil?"
         />
       )}
     </>
