@@ -9,6 +9,8 @@ import useMobile from "../../../hooks/isMobile";
 import TextareaModal from "../../../components/Modal/TextareaModal/TextareaModal";
 import Button from "../../../components/Button/Button";
 import Select from "../../../components/Inputs/Select";
+import classNames from "classnames";
+import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 
 
 //todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
@@ -23,6 +25,7 @@ export function CheckSchedule() {
     const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
 
     const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
+
 
     const dataCard = [
         {
@@ -124,10 +127,10 @@ export function CheckSchedule() {
             phone: "(11) 99876-5432",
             local: "Academia Strong",
             address: "Rua das Palmeiras, 789, São Paulo, SP",
-            date: "10/11/2025",
+            date: "11/11/2025",
             initialHour: "17:00",
             finalHour: "18:00",
-            status: "student_pending"
+            status: "schedule_pending"
         },
     ];
 
@@ -166,34 +169,9 @@ export function CheckSchedule() {
             {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
             {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
 
-            {registerAbsence && (
-                <>
-                    <div className="overlay" onClick={() => setRegisterAbsence(false)}></div>
-                    <div className={styles.modal}>
-                        <h2 className={styles.title}>Registrar ausência</h2>
-
-                        <Select
-                            label="Motivo da ausência"
-                            options={["Aluno", "Personal"]}
-                            placeholder="Selecione o motivo da ausência"
-                            onInputChange={() => { }}
-                        />
-                        {/* se for aluno */}
-                        <div className={styles.fieldGroup}>
-                            <label className={styles.label}>Motivo: </label>
-                            <div className={styles.reasonText}>
-                                <button>Não justificado</button>
-                                <span contentEditable="true"></span>
-                            </div>
-                        </div>
-
-                        <div className={styles.buttons}>
-                            <Button title="Enviar" type="button" onClick={() => setRegisterAbsence(true)} />
-                            <Button title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => setRegisterAbsence(false)} />
-                        </div>
-                    </div>
-                </>
-            )}
+            {registerAbsence &&
+                <RegisterAbsenceModal closeThen={setRegisterAbsence} />
+            }
         </>
     )
 }

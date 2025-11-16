@@ -17,12 +17,6 @@ export default function PlansHistoryDetails() {
                     <span>Nome: Joao Silva</span>
                     <span>Email: Joao@exemplo.com</span>
                     <span>Telefone: (11) 91234-5678</span>
-                </div>
-                <div className={classNames(styles.content, styles.paymentMethod, { [styles.paymentMethodMobile]: isMobile })}>
-                    <h2 className={styles.subtitle}>Método de pagamento</h2>
-
-                    <span>Cartão de Crédito</span>
-                    <span>**** **** **** 1234</span>
                     <span>123.456.789-00</span>
                 </div>
             </div>

@@ -6,7 +6,11 @@ export type UserDTO = {
     email: string;
     senha: string;
     cpf?: string;
-    telefone?: string;
+    telefone?: {
+        ddd: string;
+        numero: string;
+        pais: string;
+    };
 }
 
 export type UserDTOSprint2 = {

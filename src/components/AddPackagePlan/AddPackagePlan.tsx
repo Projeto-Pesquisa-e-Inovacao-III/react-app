@@ -4,6 +4,8 @@ import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { newProductExhibition } from "../../constants/products";
+import type { ProductExhibition } from "../../models/products";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,23 +15,56 @@ type AddPackagePlanProps = {
         price: string;
         deadline: string;
         benefits: string[];
-    }
+        quantity: number;
+    };
+    packageCreated?: React.Dispatch<React.SetStateAction<ProductExhibition[]>>;
     callSuccessModal: () => void;
 };
 
-export default function AddPackagePlan({ onClose, title, values, callSuccessModal }: AddPackagePlanProps) {
-    const mockBenefits = values?.benefits || [""];
+export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal }: AddPackagePlanProps) {
 
-    const [benefits, setBenefits] = useState<string[]>(mockBenefits);
-    function handleAddBenefit(benefit: string) {
-        setBenefits([...benefits, benefit]);
+    const [name, setName] = useState<string>(values?.name || "");
+    const [price, setPrice] = useState<string>(values?.price || "");
+    const [deadline, setDeadline] = useState<string>(values?.deadline || "");
+    const [quantity, setQuantity] = useState<number>(values?.quantity || 12);
+    const [benefits, setBenefits] = useState<string[]>([""]);
+
+    function handleAddBenefit() {
+        setBenefits([...benefits, ""]);
     }
+
+    function handleBenefitChange(index: number, value: string) {
+        const updated = [...benefits];
+        updated[index] = value;
+        setBenefits(updated);
+    }
+
 
     function handleAddPackage() {
-        onClose(false);
-        callSuccessModal();
+        const data: ProductExhibition = {
+            titulo: name,
+            subtitulo: "",
+            descricao: JSON.stringify(benefits),
+            preco: price,
+            periodo: deadline,
+            status: "ATIVO",
+            tipoAula: "ONLINE",
+            quantidadeAula: quantity,
+            duracaoMes: parseInt(deadline || "12")
+        }
+
+        newProductExhibition(data).then(() => {
+            console.log("Pacote adicionado com sucesso!");
+            callSuccessModal();
+            if (packageCreated) {
+                packageCreated(prev => [...prev, data]);
+            }
+            onClose(false);
+        }).catch((error) => {
+            console.error("Erro ao adicionar pacote:", error);
+        });
     }
-    
+
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -38,21 +73,25 @@ export default function AddPackagePlan({ onClose, title, values, callSuccessModa
                 <form className={styles.addPackageForm}>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packageName">Nome:</label>
-                        <Input type="text" value={values?.name} />
+                        <Input type="text" onInputChange={setName} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Preço:</label>
-                        <Input type="text" value={values?.price} />
+                        <Input type="text" onInputChange={setPrice} />
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="packagePrice">Quantidade de aulas:</label>
+                        <Input type="number" onInputChange={setQuantity} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Prazo:</label>
-                        <Input type="text" value={values?.deadline} />
+                        <Input type="number" onInputChange={setDeadline} />
                     </div>
 
                     {benefits.map((benefit, index) => (
                         <div className={styles.inputContainer}>
                             <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
-                            <Input key={index} type="text" value={benefit}/>
+                            <Input key={index} type="text" onInputChange={(value) => handleBenefitChange(index, value)} />
                         </div>
                     ))}
 

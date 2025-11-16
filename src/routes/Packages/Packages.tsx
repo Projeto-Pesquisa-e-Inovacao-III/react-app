@@ -7,12 +7,11 @@ import classnames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
-import Input from "../../components/Inputs/Input/Input";
-import Button from "../../components/Button/Button";
-import { Plus } from "lucide-react";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
+import type { ProductExhibition } from "../../models/products";
+import { getProductsExhibitions } from "../../constants/products";
 
 export function Packages() {
     const isMobile = useMobile();
@@ -66,6 +65,17 @@ export function Packages() {
         ]
     }
 
+    const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
+
+    async function handleGetProductsExhibitions() {
+        const response = await getProductsExhibitions();
+        setProductsExhibitions(response.data);
+    }
+
+    useEffect(() => {
+        handleGetProductsExhibitions();
+    }, []);
+
     return (
         <>
             <div className={classnames(styles.packagesContainer, { [styles.packagesContainerBlock]: openModalAddPackage })}>
@@ -86,6 +96,24 @@ export function Packages() {
                 </div>
 
                 <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
+                    {productsExhibitions.map((pacote, index) => (
+                        <PackageCard
+                            key={index}
+                            {...pacote}
+                            title={pacote.titulo}
+                            subtitle={pacote.subtitulo}
+                            price={pacote.preco}
+                            duration={pacote.periodo}
+                            benefits={JSON.parse(pacote.descricao)}
+                            onClick={() => handleBuyClick(pacote.titulo)}
+                            isMobile={isMobile}
+                            isPersonal={isPersonal}
+                            setHandleDelete={setOpenModalDeletePackage}
+                            setHandleEdit={setOpenModalEditPackage}
+                        />
+                    ))}
+                    {/* dados mockados */}
+                    {/* 
                     {packagesMock.map((pacote, index) => (
                         <PackageCard
                             key={index}
@@ -97,6 +125,7 @@ export function Packages() {
                             setHandleEdit={setOpenModalEditPackage}
                         />
                     ))}
+                     */}
                 </div>
 
                 <div
@@ -132,7 +161,7 @@ export function Packages() {
 
 
             {openModalAddPackage && (
-                <AddPackagePlan title="Adicionar Pacote" onClose={setOpenModalAddPackage} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
+                <AddPackagePlan title="Adicionar Pacote" onClose={setOpenModalAddPackage} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
             )}
 
             {

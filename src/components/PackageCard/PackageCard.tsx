@@ -4,11 +4,11 @@ import classnames from 'classnames';
 
 type PackageCardProps = {
     title: string;
-    subtitle: string;
+    subtitle?: string;
     price: string;
     duration: string;
     benefits: string[];
-    titlebtn: string;
+    titlebtn?: string;
     onClick: () => void;
     setHandleEdit: React.Dispatch<React.SetStateAction<boolean>>;
     setHandleDelete: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,7 +42,7 @@ export function PackageCard(props: PackageCardProps) {
             </h2>
 
             <p className={classnames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>
-                {props.subtitle}
+                {props.subtitle || "Esse pacote é adquirido de forma única e não possui cobrança automática."}
             </p>
 
             <div
@@ -55,14 +55,14 @@ export function PackageCard(props: PackageCardProps) {
                         [styles.cardPriceValueMobile]: isMobile,
                     })}
                 >
-                    {props.price}
+                    R${props.price}
                 </span>
                 <span
                     className={classnames(styles.cardDuration, {
                         [styles.cardDurationMobile]: isMobile,
                     })}
                 >
-                    {props.duration}
+                    {props.duration} meses
                 </span>
             </div>
 
@@ -106,14 +106,12 @@ export function PackageCard(props: PackageCardProps) {
                     <SmallerButton type="button" title="Deletar" handleButtonClick={handleOpenDelete} />
                 </div>
                 :
-                props.titlebtn && (
-                    <button
-                        className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
-                        onClick={props.onClick}
-                    >
-                        {props.titlebtn}
-                    </button>
-                )
+                <button
+                    className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
+                    onClick={props.onClick}
+                >
+                    Comprar 
+                </button>
             }
         </div>
     );

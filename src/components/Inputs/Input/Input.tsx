@@ -11,7 +11,7 @@ type Props = {
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
-    value?: string;
+    value?: string | number;
 }
 
 export default function Input({ type, placeholder, label, id, name, onInputChange, onInputClick, isPassword, value }: Props) {
