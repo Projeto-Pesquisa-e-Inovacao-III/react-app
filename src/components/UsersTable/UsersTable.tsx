@@ -4,46 +4,41 @@ import SmallerButton from "../SmallerButton";
 import { useMediaQuery } from "@mui/material";
 import useMobile from "../../hooks/isMobile";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../system";
 
-export default function UsersTable(props){
+export default function UsersTable(props) {
     const isMobile = useMobile();
-
-    const users = [
-        {
-            name: "Ana Silva",
-            idade: "60 anos"
-        },
-        {
-            name: "Carlos Mendes",
-            idade: "45 anos"
-        },
-    ];
 
     const nav = useNavigate();
 
-    function handleViewUserData(){
+    function handleViewUserData() {
         nav("/users/view-user-data");
     }
 
 
-     return (
+    return (
         <div className={`users-table-container${isMobile ? "-mobile" : ""}`}>
             <div className="users-table-header">
                 <h3 className={"h3"}>Usuários</h3>
             </div>
 
-            {users.filter(user => user.name.toLowerCase().includes(props.input.toLowerCase()))
+            {props.users.filter(user => user.nome.toLowerCase().includes(props.input.toLowerCase()))
                 .map((user, index) => (
                     <div key={index} className={`users-table-card${isMobile ? "-mobile" : ""}`}>
                         <div className={`user-data-full${isMobile ? "-mobile" : ""}`}>
-                            <img
-                                className="user-image"
-                                src="https://placehold.co/50x50/png"
-                                alt=""
-                            />
+                            {user.caminhoFoto ? (
+                                <img
+                                    className="user-image"
+                                    src={`${BASE_URL}/usuarios/foto/${user.caminhoFoto}`}
+                                    alt={user.nome}
+                                />
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                            )}
+
                             <div className="user-data">
                                 <b>
-                                    {user.name}
+                                    {user.nome}
                                 </b>
                                 <span>
                                     Idade: {user.idade}
@@ -51,7 +46,7 @@ export default function UsersTable(props){
                             </div>
                         </div>
                         <div>
-                            <SmallerButton handleButtonClick={handleViewUserData} title="Ver Dados"/>
+                            <SmallerButton handleButtonClick={handleViewUserData} title="Ver Dados" />
                         </div>
                     </div>
                 ))}

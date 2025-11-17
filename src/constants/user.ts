@@ -14,6 +14,10 @@ export function getUserImage() {
    return api.get(`/usuarios/me/imagem`)
 }
 
+export function getUserImageByName(name: string) {
+   return api.get(`/usuarios/foto/${name}`)
+}
+
 export function removerUserImage() {
    return api.delete(`/usuarios/me/imagem`)
 }
