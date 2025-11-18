@@ -14,6 +14,7 @@ import { findUserData, getUserImage, insertUserImage, removerUserImage, update }
 import type { UpdateUserDTO, UserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
+import UserAvatar from "../../components/UserAvatar/UserAvatar";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -155,16 +156,7 @@ export default function EditUser() {
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
-            {userImage ?
-              <UserImg
-                Source={userImage}
-                Height={216}
-                Width={216}
-                Alt="foto"
-              />
-              :
-              <User width={216} height={216} />
-            }
+            <UserAvatar />
             <div className={styles.atualizarFotoContainer}>
               <div>
                 <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />

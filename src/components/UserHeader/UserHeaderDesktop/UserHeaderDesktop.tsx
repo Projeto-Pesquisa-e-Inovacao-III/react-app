@@ -4,6 +4,7 @@ import "./style.css"
 import { Bell } from "lucide-react";
 import { useState } from "react";
 import Notification from "../Notification/Notification";
+import UserAvatar from "../../UserAvatar/UserAvatar";
 
 type UserType = {
   type: "personal" | "student"
@@ -62,8 +63,8 @@ export default function UserHeaderDesktop({ type }: UserType) {
           <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
             <Bell />
           </div>
-          <div className="user-info-desktop" onClick={() => setOpenHeaderModal(!openHeaderModal)}>
-            <img src="https://thispersondoesnotexist.com" alt="" />
+          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
+            <UserAvatar />
           </div>
         </div>
 
