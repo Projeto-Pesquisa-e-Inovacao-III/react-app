@@ -2,20 +2,18 @@ import styles from "./EditUser.module.css";
 import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
-import GoBackButton from "../../components/GoBackButton/GoBackButton";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select";
-import Input from "../../components/Inputs/Input/Input";
 import { api, BASE_URL } from "../../system";
 import { findUserData, getUserImage, insertUserImage, removerUserImage, update } from "../../constants/user";
 import type { UpdateUserDTO, UserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
-import UserAvatar from "../../components/UserAvatar/UserAvatar";
 import { cellphoneMask, cpfMask } from "../../utils/mascara";
+import { TypeContext } from "../../App";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -52,6 +50,9 @@ const initialEditUserState = {
 
 export default function EditUser() {
   const isMobile = useMobile();
+
+  const type = useContext(TypeContext);
+
 
   const [userImage, setUserImage] = useState<string>("");
   const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
@@ -195,7 +196,7 @@ export default function EditUser() {
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
-            <InputWithIcon
+            {type === "student" ? (<InputWithIcon
               id="cpf"
               type="text"
               placeholder="Digite seu CPF"
@@ -204,7 +205,17 @@ export default function EditUser() {
               value={state.cpf}
               onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
               mask={cpfMask}
-            ></InputWithIcon>
+            ></InputWithIcon>) : <InputWithIcon
+              id="cpf"
+              type="text"
+              placeholder="Digite seu CREF"
+              icon={<IdCard />}
+              label="CREF"
+              value={state.cpf}
+              onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
+              mask={cpfMask}
+            ></InputWithIcon>}
+
             <InputWithIcon
               id="telefone"
               type="text"
