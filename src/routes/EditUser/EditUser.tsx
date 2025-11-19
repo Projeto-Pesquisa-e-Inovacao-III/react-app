@@ -196,13 +196,6 @@ export default function EditUser() {
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
-              id="sobreNome"
-              type="text"
-              placeholder="Digite seu sobrenome"
-              icon={<User />}
-              label="Último Nome"
-            ></InputWithIcon>
-            <InputWithIcon
               id="cpf"
               type="text"
               placeholder="Digite seu CPF"
@@ -238,7 +231,7 @@ export default function EditUser() {
         </div>
 
         <div className={styles.loginInfo}>
-          <WhiteContainer contentClassName={styles.loginInfoContainer} title="Informações de Login">
+          <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
             <InputWithIcon
               id="email"
               type="email"

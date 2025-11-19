@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Trash2, Plus, Clock } from "lucide-react";
 import styles from "./SetAvailability.module.css";
 
@@ -59,17 +59,14 @@ export default function SetAvailability() {
             ...newSchedule[dayIndex].slots[slotIndex],
             [field]: value,
         };
+
+
         setSchedule(newSchedule);
     };
 
-    function removeSlot(dayIndex: number, slotIndex: number) {
-        const newSchedule = [...schedule];
-        if (newSchedule[dayIndex].slots.length > 1) {
-            newSchedule[dayIndex].slots.splice(slotIndex, 1);
-            setSchedule(newSchedule);
-        }
-    };
-
+    useEffect(() => {
+        console.log("Current Schedule:", schedule);
+    }), [schedule]
     return (
         <div className={styles.container}>
             <div className={styles.header}>
@@ -125,7 +122,6 @@ export default function SetAvailability() {
                             <th className={styles.intervalColumn}>Intervalo Saída</th>
                             <th className={styles.timeColumn}>Até</th>
                             <th className={styles.intervalColumn}>Intervalo Sessões</th>
-                            <th className={styles.actionsColumn}>Ações</th>
                         </tr>
                     </thead>
                     <tbody className={styles.tableBody}>
@@ -208,16 +204,6 @@ export default function SetAvailability() {
                                                 className={styles.input}
                                             />
                                         </td>
-                                        <td className={styles.tableCell}>
-                                            <button
-                                                className={`${styles.button} ${styles.deleteButton}`}
-                                                onClick={() => removeSlot(dayIndex, slotIndex)}
-                                                disabled={daySchedule.slots.length === 1}
-                                                title="Remover horário"
-                                            >
-                                                <Trash2 className={styles.icon} />
-                                            </button>
-                                        </td>
                                     </tr>
                                 ))}
                             </>
@@ -235,18 +221,6 @@ export default function SetAvailability() {
 
                         {daySchedule.slots.map((slot, slotIndex) => (
                             <div key={slot.id} className={styles.slotCard}>
-                                <div className={styles.slotHeader}>
-                                    <span className={styles.slotNumber}>Horário {slotIndex + 1}</span>
-                                    <button
-                                        className={`${styles.button} ${styles.deleteButton}`}
-                                        onClick={() => removeSlot(dayIndex, slotIndex)}
-                                        disabled={daySchedule.slots.length === 1}
-                                        title="Remover horário"
-                                    >
-                                        <Trash2 className={styles.icon} />
-                                    </button>
-                                </div>
-
                                 <div className={styles.slotFields}>
                                     <div className={styles.fieldGroup}>
                                         <label className={styles.fieldLabel}>De</label>

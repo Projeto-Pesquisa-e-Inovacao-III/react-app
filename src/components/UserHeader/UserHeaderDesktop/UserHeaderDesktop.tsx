@@ -15,22 +15,22 @@ export default function UserHeaderDesktop({ type }: UserType) {
   const [openNotification, setOpenNotification] = useState<boolean>(false);
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
-  const notifications = [
-    {
-      notificationTitle: "Título da Notificação",
-      message: "Nova notificação!",
-      icon: <Bell />,
-      date: "2023-10-01",
-      isRead: false
-    },
-    {
-      notificationTitle: "Outro Título",
-      message: "Outra notificação!",
-      icon: <Bell />,
-      date: "2023-10-02",
-      isRead: false
-    }
-  ];
+  // const notifications = [
+  //   {
+  //     notificationTitle: "Título da Notificação",
+  //     message: "Nova notificação!",
+  //     icon: <Bell />,
+  //     date: "2023-10-01",
+  //     isRead: false
+  //   },
+  //   {
+  //     notificationTitle: "Outro Título",
+  //     message: "Outra notificação!",
+  //     icon: <Bell />,
+  //     date: "2023-10-02",
+  //     isRead: false
+  //   }
+  // ];
 
   return (
     <>
@@ -60,20 +60,20 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
         <div className="auth-links">
           {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
-          <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
+          {/* <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
             <Bell />
-          </div>
+          </div> */}
           <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
             <UserAvatar />
           </div>
         </div>
 
       </header >
-
+{/* 
       {openNotification && (
         <Notification notifications={notifications} />
       )
-      }
+      } */}
 
       {openHeaderModal && (
         <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
