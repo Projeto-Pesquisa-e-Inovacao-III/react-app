@@ -66,7 +66,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const disabledDays = events.map((e) => e.date);
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            if (disabledDays.includes(dateStr) && dateStr !== eventToReschedule)
+            if (dateStr === eventToReschedule)
               return ["disabled-day"];
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];

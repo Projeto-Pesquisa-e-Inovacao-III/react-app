@@ -70,7 +70,7 @@ export default function NewEvent(
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',
-                
+
             }).replace(" às ", "") + ` das ${initialHour} às ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
             setFormattedDate(formatted);
         }
@@ -79,6 +79,7 @@ export default function NewEvent(
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         console.log("clickedDate no NewEvent:", clickedDate);
+        console.log("renderizando NewEvent component");
     }, []);
 
     useEffect(() => {
@@ -107,7 +108,7 @@ export default function NewEvent(
                 id: postalCode
             }
         }
-            await createAddress(body)
+        await createAddress(body)
             .then(response => {
                 console.log("Endereço criado com sucesso:", response.data);
             }).catch(error => {
@@ -152,11 +153,6 @@ export default function NewEvent(
                 });
         }
 
-        if (calculatedTitle && newEventDate) {
-            openModal(true);
-            handleClose();
-        }
-
         if (isReschedule) {
             const updateEvent = insertedEvents.map(event => {
                 return event.id === rescheduleId ? { ...event, date: newEventDate, hour: newEventStartHour } : event;
@@ -169,7 +165,10 @@ export default function NewEvent(
             insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
         }
 
-
+        if (calculatedTitle && newEventDate) {
+            openModal(true);
+            handleClose();
+        }
 
     }
 
@@ -348,8 +347,9 @@ export default function NewEvent(
                             </div>
                             <form
                                 className={classnames(styles.inputInfosForm, { [styles.inputInfosFormMobile]: isMobile })}
-                                onSubmit={(e) =>{
-                                    handleInsertAddress(e);}}>
+                                onSubmit={(e) => {
+                                    handleNewEvent(e);
+                                }}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                                     {selectedLocation === "casa" && (
                                         <div className={styles.inputGroupAddress}>

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { TypeContext } from "../../App";
 import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
+import { actualPlan } from "../../constants/products";
 export function Overview() {
     const isMobile = useMobile();
 
@@ -19,6 +20,9 @@ export function Overview() {
     const nav = useNavigate();
 
     const [events] = useState(eventsMock);
+
+    const [actualPlanData, setActualPlanData] = useState("");
+
     const cards = cardsArray(nav);
 
     const type = useContext(TypeContext);
@@ -31,6 +35,21 @@ export function Overview() {
 
     const [appointmentCards] = useState(appointmentCardsData);
 
+    useEffect(() => {
+        function getActualPlan() {
+            actualPlan().then(response => {
+                console.log(response.data);
+                setActualPlanData(response.data);
+            }).catch(error => {
+                console.error("Error fetching actual plan:", error);
+            });
+        }
+
+        getActualPlan();
+
+
+    }, []);
+
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -38,17 +57,22 @@ export function Overview() {
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
                         {isMobile && (
                             <div className={styles.schedulePageUserActionsMobile}>
-                                {filteredCards.map((card, index) => (
-                                    <OverviewCard
-                                        key={index}
-                                        title={card.title}
-                                        subtitle={card.subtitle}
-                                        type={card.type}
-                                        titletbn={card.titletbn}
-                                        onClick={card.onClick}
-                                        isMobile={isMobile}
-                                    />
-                                ))}
+                                <OverviewCard
+                                    title={"Status de planos"}
+                                    subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
+                                    type={"usuario"}
+                                    titletbn={"Planos"}
+                                    onClick={() => nav("/packages")}
+                                    isMobile={isMobile}
+                                />
+                                <OverviewCard
+                                    title={"Agendamentos Restantes"}
+                                    subtitle={"2"}
+                                    type={"usuario"}
+                                    titletbn={"Agendamentos"}
+                                    onClick={() => nav("/schedule")}
+                                    isMobile={isMobile}
+                                />
                             </div>
                         )}
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
@@ -75,19 +99,22 @@ export function Overview() {
                     </div>
                     {!isMobile && (
                         <div className={styles.schedulePageUserActions}>
-                            {filteredCards.map((card, index) => (
-                                <>
-                                    <OverviewCard
-                                        key={index}
-                                        title={card.title}
-                                        subtitle={card.subtitle}
-                                        type={card.type}
-                                        titletbn={card.titletbn}
-                                        onClick={card.onClick}
-                                        isMobile={isMobile}
-                                    />
-                                </>
-                            ))}
+                            <OverviewCard
+                                title={"Status de planos"}
+                                subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
+                                type={"usuario"}
+                                titletbn={"Planos"}
+                                onClick={() => nav("/packages")}
+                                isMobile={isMobile}
+                            />
+                            <OverviewCard
+                                title={"Agendamentos Restantes"}
+                                subtitle={"2"}
+                                type={"usuario"}
+                                titletbn={"Agendamentos"}
+                                onClick={() => nav("/schedule")}
+                                isMobile={isMobile}
+                            />
                         </div>
                     )}
                 </div>
