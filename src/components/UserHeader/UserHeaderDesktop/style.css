@@ -120,3 +120,19 @@
         }
     }
 }
+
+.user-avatar-header-desktop {
+    background-color: #c3c3c3;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 50px;
+    width: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    svg {
+        color: black;
+    }
+}
