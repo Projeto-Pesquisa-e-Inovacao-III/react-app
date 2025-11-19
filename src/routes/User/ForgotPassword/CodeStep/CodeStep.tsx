@@ -4,19 +4,9 @@ import styles from "../ForgotPassword.module.css";
 import { Lock, Mail, Phone } from "lucide-react";
 import InputWithIcon from "../../../../components/Inputs/InputWithIcon/InputWithIcon";
 
-export default function CodeStep({actualTimer, verifyTimer}: {actualTimer: number, verifyTimer: React.Dispatch<React.SetStateAction<number>>}) {
-  const [timer, setTimer] = useState<number>(actualTimer);
+export default function CodeStep({code, typedCode}: {code: string, typedCode: string}) {
 
-  useEffect(() => {
-    if (timer > 0) {
-      const countdown = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-        verifyTimer(timer - 1);
-      }, 1000);
 
-      return () => clearInterval(countdown);
-    }
-  }, [timer]);
 
   return (
     <>
@@ -31,7 +21,7 @@ export default function CodeStep({actualTimer, verifyTimer}: {actualTimer: numbe
         ) : (
           <p>{timer}s para reenviar código</p>
         )}
-        <InputWithIcon type={"text"} placeholder={"Código de confirmação"} icon={<Lock />} />
+        <InputWithIcon type={"text"} placeholder={"Código de confirmação"} icon={<Lock />} onInputChange={(value: string) => setInputCode(value)}/>
       </div>
     </>
   );

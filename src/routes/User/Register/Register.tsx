@@ -24,6 +24,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import classNames from "classnames";
 import InputRowDouble from "../../../components/Inputs/InputRowDouble/InputRowDouble";
 import useMobile from "../../../hooks/isMobile";
+import { cellphoneMask, cpfMask } from "../../../utils/mascara";
 
 const initialRegisterState = {
     name: "",
@@ -251,6 +252,8 @@ export default function Register() {
                                     setSecondOnChange={(phone: string) => dispatch({ type: 'setPhone', payload: phone })}
                                     valueFirst={register.customerDocument}
                                     valueSecond={register.phone}
+                                    firstMask={cpfMask}
+                                    secondMask={cellphoneMask}
                                 />
                             </div>
                             <div className={styles.borderDivision}></div>

@@ -26,7 +26,7 @@
 .atualizarFotoContainer :global(.buttonRemoveImage) {
   padding: 14px;
   font-size: 16px;
-  background-color: var(--btn-bg);
+  background-color: var(--bg-blue);
   color: var(--btn-color);
   border-radius: 6px;
   cursor: pointer;

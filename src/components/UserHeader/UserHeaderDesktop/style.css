@@ -135,4 +135,11 @@
     svg {
         color: black;
     }
+
+    img {
+        border-radius: 50%;
+        height: 50px !important;
+        width: 50px !important;
+        object-fit: cover;
+    }
 }

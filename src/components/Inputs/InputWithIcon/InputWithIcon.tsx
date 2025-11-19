@@ -12,9 +12,10 @@ type Props = {
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
     value?: string;
+    mask?: (input: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -30,6 +31,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                 placeholder={placeholder}
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                 onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
+                onInput={(e) => mask ? mask(e) : undefined}
                 value={value}
             />
             {isPassword && (

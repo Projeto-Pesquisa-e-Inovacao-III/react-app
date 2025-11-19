@@ -8,7 +8,9 @@ export default function UserAvatar() {
   const [userImage, setUserImage] = React.useState<string>("");
   useEffect(() => {
     getUserImage().then((response) => {
-      setUserImage(response.data);
+      if(response.data) {
+        setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+      }
     }).catch((error) => {
       console.error("Error fetching user image:", error);
     });

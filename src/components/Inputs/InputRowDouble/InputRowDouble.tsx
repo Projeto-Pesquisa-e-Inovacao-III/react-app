@@ -10,9 +10,11 @@ type Props = {
     valueSecond?: string;
     setFirstOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     setSecondOnChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
+    firstMask?: (input: React.FormEvent<HTMLInputElement>) => void;
+    secondMask?: (input: React.FormEvent<HTMLInputElement>) => void;
 }
 
-export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange, valueFirst, valueSecond }: Props) {
+export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, firstIcon, secondIcon, setFirstOnChange, setSecondOnChange, valueFirst, valueSecond, firstMask, secondMask }: Props) {
     return (
         <div className={styles.doubleRowInput}>
             <div className={styles.firstBlock}>
@@ -24,6 +26,7 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                         placeholder={firstPlaceholder}
                         onChange={(e) => setFirstOnChange(e.target.value)}
                         value={valueFirst}
+                        onInput={(e) => firstMask ? firstMask(e) : undefined}
                     />
                 </div>
             </div>
@@ -35,6 +38,7 @@ export default function InputRowDouble({ firstPlaceholder, secondPlaceholder, fi
                         name="costumerDocument"
                         placeholder={secondPlaceholder}
                         onChange={(e) => setSecondOnChange(e.target.value)}
+                        onInput={(e) => secondMask ? secondMask(e) : undefined}
                         value={valueSecond}
                     // onInput={(e) => cpfMask(e)}
                     />

@@ -15,6 +15,7 @@ import type { UpdateUserDTO, UserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import UserAvatar from "../../components/UserAvatar/UserAvatar";
+import { cellphoneMask, cpfMask } from "../../utils/mascara";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -156,7 +157,16 @@ export default function EditUser() {
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
-            <UserAvatar />
+            {userImage ?
+              <UserImg
+                Source={userImage}
+                Height={216}
+                Width={216}
+                Alt="foto"
+              />
+              :
+              <User width={216} height={216} />
+            }
             <div className={styles.atualizarFotoContainer}>
               <div>
                 <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
@@ -200,6 +210,7 @@ export default function EditUser() {
               label="CPF"
               value={state.cpf}
               onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
+              mask={cpfMask}
             ></InputWithIcon>
             <InputWithIcon
               id="telefone"
@@ -208,6 +219,8 @@ export default function EditUser() {
               icon={<Phone />}
               label="Telefone"
               value={state.phone}
+              onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
+              mask={cellphoneMask}
             ></InputWithIcon>
             <Select
               id="genero"

@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ForgotPassword.module.css";
-import { Phone } from "lucide-react";
+import { Lock, Phone } from "lucide-react";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
@@ -9,37 +9,32 @@ import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
-import { sendResetCode } from "../../../constants/user";
+import { sendResetCode, verifyCode } from "../../../constants/user";
+import { cellphoneMask } from "../../../utils/mascara";
 
 // todo: fix font family  
 export default function ForgotPassword() {
   const isMobile = useMobile();
 
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [inputCode, setInputCode] = useState<string>("");
 
   const [step, setStep] = useState<number>(1);
-  const [verifyTimer, setVerifyTimer] = useState<number>(20);
 
-  function handleSendCode(): boolean {
-    sendResetCode(phoneNumber)
-      .then((response) => {
-        console.log("Código enviado com sucesso:", response.data);
-        return true;
-      })
-      .catch((error) => {
-        console.error("Erro ao enviar o código:", error);
-        return false;
-      });
-    return false;
-  }
-
-  function handleStep(e: React.MouseEvent<HTMLElement>, isIncrease: boolean) {
+  async function handleStep(e: React.MouseEvent<HTMLElement>, isIncrease: boolean) {
     e.preventDefault();
 
     if (step === 1 && isIncrease) {
-      const isCodeSent = handleSendCode();
+      const isCodeSent: boolean = await handleSendCode();
       if (!isCodeSent) return;
+      setStep(2);
 
+      return;
+    }
+
+    if (step === 2 && isIncrease) {
+      const isCodeCorrect: boolean = await handleVerifyCode(inputCode);
+      if (!isCodeCorrect) return;
+      setStep(3);
     }
 
     if (step != 3) {
@@ -51,6 +46,43 @@ export default function ForgotPassword() {
     }
 
   }
+
+  const [timer, setTimer] = useState<number>(20);
+
+
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  async function handleSendCode(): Promise<boolean> {
+    try {
+      const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
+      console.log("Código enviado com sucesso:", response.data);
+      setTimer(20);
+      return true;
+    } catch (error) {
+      console.error("Erro ao enviar o código:", error);
+      return false;
+    }
+  }
+
+  async function handleVerifyCode(inputedCode: string): Promise<boolean> {
+    try {
+      const response = await verifyCode(phoneNumber, inputedCode)
+      console.log("Código verificado com sucesso:", response.data);
+      return true;
+    } catch (error) {
+      console.error("Erro ao verificar o código:", error);
+      return false;
+    }
+  }
+
+  useEffect(() => {
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+
+      return () => clearInterval(countdown);
+    }
+  }, [timer]);
 
   return (
     <>
@@ -73,7 +105,7 @@ export default function ForgotPassword() {
                     <p>Para continuar, digite o número do seu celular com DDD no campo abaixo. Nós vamos enviar um código de confirmação para o seu WhatsApp.</p>
                   </div>
                   <div className={styles.wrapperInputsForgotPasswordPage}>
-                    <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} onInputChange={(value: string) => setPhoneNumber(value)} />
+                    <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} onInputChange={(value: string) => setPhoneNumber(value)} mask={cellphoneMask} />
 
                   </div>
                 </>
@@ -82,8 +114,21 @@ export default function ForgotPassword() {
             {
               step === 2 && (
                 <>
-                  <CodeStep actualTimer={verifyTimer} verifyTimer={setVerifyTimer} />
+                  <div className={styles.welcomeMessage}>
+                    <h1>Insira o código</h1>
+                    <p>Enviamos um código com 6 números para o seu WhatsApp.
+                      Por favor, digite os números no campo abaixo para continuar. A mensagem pode levar alguns instantes para chegar.</p>
+                  </div>
+                  <div className={styles.wrapperInputsForgotPasswordPage}>
+                    {timer === 0 ? (
+                      <button className={styles.resendCodeButton} onClick={handleSendCode}>Reenviar código</button>
+                    ) : (
+                      <p>{timer}s para reenviar código</p>
+                    )}
+                    <InputWithIcon type={"text"} placeholder={"Código de confirmação"} icon={<Lock />} onInputChange={(value: string) => setInputCode(value)} />
+                  </div>
                 </>
+
               )
             }
             {
