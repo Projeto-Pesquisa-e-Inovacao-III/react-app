@@ -45,3 +45,11 @@ export function softDelete(id: string) {
 export function logout() {
    return api.get(`/usuarios/logout`)
 }
+
+export function sendResetCode(number: string) {
+   return api.post(`/api/password-reset/send-code`, { number: `+55${number}` })
+}
+
+export function changePassword(oldPassword: string, newPassword: string) {
+   return api.post(`/usuarios/mudar-senha`, { senhaAntiga: oldPassword, senhaNova: newPassword })
+}
