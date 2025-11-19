@@ -53,6 +53,7 @@ export default function ForgotPassword() {
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   async function handleSendCode(): Promise<boolean> {
     try {
+      // const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
       const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
       console.log("Código enviado com sucesso:", response.data);
       setTimer(20);
@@ -65,8 +66,9 @@ export default function ForgotPassword() {
 
   async function handleVerifyCode(inputedCode: string): Promise<boolean> {
     try {
-      const response = await verifyCode(phoneNumber, inputedCode)
+      const response = await verifyCode(phoneNumber.trim().replace(/[\s()-]/g, ''), inputedCode)
       console.log("Código verificado com sucesso:", response.data);
+
       return true;
     } catch (error) {
       console.error("Erro ao verificar o código:", error);

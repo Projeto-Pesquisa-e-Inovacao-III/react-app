@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
@@ -10,6 +10,7 @@ import { TypeContext } from "../../App";
 import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
+import { getTotalByClassType } from "../../constants/overview";
 export function Overview() {
     const isMobile = useMobile();
 
@@ -46,9 +47,45 @@ export function Overview() {
         }
 
         getActualPlan();
-
-
     }, []);
+
+    const [aulaFuncionalTotal, setAulaFuncionalTotal] = useState<number>(0);
+    const [aulaResidencialTotal, setAulaResidencialTotal] = useState<number>(0);
+    const [aulaAcademiaTotal, setAulaAcademiaTotal] = useState<number>(0);
+    
+    useEffect(() => {
+        async function fetchAulaFuncionalTotal() {
+            try {
+                const funcionalTotal = await getTotalByClassType("FUNCIONAL");
+                setAulaFuncionalTotal(funcionalTotal);
+
+                const residencialTotal = await getTotalByClassType("RESIDENCIAL");
+                setAulaResidencialTotal(residencialTotal);
+
+                const academiaTotal = await getTotalByClassType("ACADEMIA");
+                setAulaAcademiaTotal(academiaTotal);
+            } catch (error) {
+                console.error("Error fetching total by class type:", error);
+            }
+        }
+
+        fetchAulaFuncionalTotal();
+    }, []);
+
+    function getBalance() {
+        const aulaFuncional = aulaFuncionalTotal;
+        const aulaResidencial = aulaResidencialTotal;
+        const aulaAcademia = aulaAcademiaTotal;
+
+        const balance = (
+            <div>
+                <p>Funcional: {aulaFuncional}</p>
+                <p>Residencial: {aulaResidencial}</p>
+                <p>Academia: {aulaAcademia}</p>
+            </div>
+        );
+        return balance;
+    }
 
     return (
         <>
@@ -58,19 +95,19 @@ export function Overview() {
                         {isMobile && (
                             <div className={styles.schedulePageUserActionsMobile}>
                                 <OverviewCard
+                                    title={"Agendamentos Restantes"}
+                                    subtitle={"123"}
+                                    type={"usuario"}
+                                    titletbn={"Agendamentos"}
+                                    onClick={() => nav("/schedule")}
+                                    isMobile={isMobile}
+                                />
+                                <OverviewCard
                                     title={"Status de planos"}
                                     subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
                                     type={"usuario"}
                                     titletbn={"Planos"}
                                     onClick={() => nav("/packages")}
-                                    isMobile={isMobile}
-                                />
-                                <OverviewCard
-                                    title={"Agendamentos Restantes"}
-                                    subtitle={"2"}
-                                    type={"usuario"}
-                                    titletbn={"Agendamentos"}
-                                    onClick={() => nav("/schedule")}
                                     isMobile={isMobile}
                                 />
                             </div>
@@ -100,19 +137,19 @@ export function Overview() {
                     {!isMobile && (
                         <div className={styles.schedulePageUserActions}>
                             <OverviewCard
+                                title={"Agendamentos Restantes"}
+                                subtitle={getBalance()}
+                                type={"usuario"}
+                                titletbn={"Agendamentos"}
+                                onClick={() => nav("/schedule")}
+                                isMobile={isMobile}
+                            />
+                            <OverviewCard
                                 title={"Status de planos"}
                                 subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
                                 type={"usuario"}
                                 titletbn={"Planos"}
                                 onClick={() => nav("/packages")}
-                                isMobile={isMobile}
-                            />
-                            <OverviewCard
-                                title={"Agendamentos Restantes"}
-                                subtitle={"2"}
-                                type={"usuario"}
-                                titletbn={"Agendamentos"}
-                                onClick={() => nav("/schedule")}
                                 isMobile={isMobile}
                             />
                         </div>

@@ -1,9 +1,10 @@
 import './mobile.css'
 import './desktop.css'
+import type { ReactNode } from 'react';
 
 type OverviewCardProps = {
     title: string;
-    subtitle: string;
+    subtitle: ReactNode;
     type: string;
     titletbn: string;
     onClick: () => void;
@@ -16,7 +17,7 @@ export function OverviewCard(props: OverviewCardProps) {
     return (
         <div className={`card-container${isMobile ? '-mobile' : ''}`}>
             <h2 className={`card-title${isMobile ? '-mobile' : ''}`}>{props.title}</h2>
-            <h1 className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</h1>
+             <div className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</div>
             {/* <p className={`card-paragraph${isMobile ? '-mobile' : ''}`}>{props.type}</p> */}
             {
                 props.titletbn == "" ? null :
