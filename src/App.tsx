@@ -20,6 +20,7 @@ import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
 import MoreOptions from "./routes/MoreOptions/MoreOptions";
 import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
 import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
+import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 
 // todo: 
 // safari support // deixa baixo
@@ -56,6 +57,7 @@ function App() {
 
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<ListUsers />} />
+              <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/edit-user" element={<EditUser />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />

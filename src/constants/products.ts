@@ -16,3 +16,8 @@ export function desactivateProductExhibition(id: number) {
 export function updateProductExhibition(id: number, data: Partial<ProductExhibition>) {
     return api.post(`/produtos-exibicoes/editar/${id}`, data);
 }
+
+
+export function actualPlan() {
+    return api.get(`/produtos-contratados/ativo`)
+}

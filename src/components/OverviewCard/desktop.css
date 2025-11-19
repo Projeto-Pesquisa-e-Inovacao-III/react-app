@@ -19,7 +19,7 @@
     }
 
     .card-subtitle {
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: bold;
         color: #666;
         margin-bottom: 15px;
@@ -41,6 +41,7 @@
         font-size: 1rem;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        width: 100%;
 
         &:hover {
             background-color: #0056b3;
@@ -48,6 +49,3 @@
     }
 
 }
-
-
-
