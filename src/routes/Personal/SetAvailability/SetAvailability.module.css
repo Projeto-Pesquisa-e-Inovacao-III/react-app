@@ -1,182 +1,480 @@
 .container {
-    width: 100%;
-    margin: 0 auto;
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .header {
-    background-color: var(--bg-blue);
-    color: #ffffff;
-    padding: 24px 32px;
+  background: hsl(210, 100%, 25%);
+  color: #ffffff;
+  padding: 24px 32px;
 }
 
 .title {
-    font-size: 28px;
-    font-weight: bold;
-    margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
 }
 
 .subtitle {
-    font-size: 14px;
-    opacity: 0.9;
-    margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.defaultsSection {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 32px;
+  background: hsl(210, 15%, 97%);
+  border-bottom: 1px solid hsl(220, 15%, 88%);
+}
+
+.defaultsLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: hsl(220, 15%, 20%);
+  font-size: 14px;
+}
+
+.clockIcon {
+  font-size: 18px;
+}
+
+.defaultsControls {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.controlLabel {
+  font-size: 14px;
+  color: hsl(220, 15%, 30%);
+  white-space: nowrap;
+}
+
+.select {
+  height: 36px;
+  padding: 8px 32px 8px 12px;
+  border: 1px solid hsl(220, 15%, 88%);
+  border-radius: 4px;
+  font-size: 14px;
+  background: #ffffff;
+  color: hsl(220, 15%, 20%);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23334155' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  min-width: 120px;
+}
+
+.select:hover {
+  border-color: hsl(210, 100%, 35%);
+}
+
+.select:focus {
+  outline: none;
+  border-color: hsl(210, 100%, 25%);
+  box-shadow: 0 0 0 3px hsla(210, 100%, 25%, 0.1);
 }
 
 .tableWrapper {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
 .tableHead {
-    background-color: var(--bg-blue);
-    color: #ffffff;
-    border-top: 1px solid #dcdfe5;
+  background: hsl(210, 100%, 25%);
+  color: #ffffff;
 }
 
 .tableHead th {
-    padding: 12px 16px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: 600;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 12px 16px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .tableHead th:first-child {
-    text-align: left;
+  text-align: left;
 }
 
 .tableHead th:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 .dayColumn {
-    min-width: 150px;
+  min-width: 150px;
 }
 
 .timeColumn {
-    min-width: 100px;
+  min-width: 100px;
 }
 
 .intervalColumn {
-    min-width: 120px;
+  min-width: 120px;
 }
 
 .actionsColumn {
-    min-width: 100px;
+  min-width: 100px;
 }
 
 .tableBody tr {
-    border-bottom: 1px solid #dcdfe5;
-    transition: background-color 0.2s;
+  border-bottom: 1px solid hsl(220, 15%, 88%);
+  transition: background-color 0.2s;
 }
 
 .tableBody tr:hover {
-    background-color: hsl(210, 15%, 97%);
+  background-color: hsl(210, 15%, 97%);
 }
 
 .tableCell {
-    text-align: center;
-    padding: 12px 16px;
-    border-right: 1px solid #dcdfe5;
+  padding: 12px 16px;
+  border-right: 1px solid hsl(220, 15%, 88%);
 }
 
 .tableCell:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 .dayCell {
-    font-weight: 500;
-    color: hsl(220, 15%, 20%);
+  font-weight: 500;
+  color: hsl(220, 15%, 20%);
 }
 
 .dayCellContent {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .input {
-    width: 100%;
-    height: 36px;
-    padding: 8px 12px;
-    border: 1px solid #dcdfe5;
-    border-radius: 4px;
-    font-size: 14px;
-    text-align: center;
-    background: #ffffff;
-    color: hsl(220, 15%, 20%);
-    transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  height: 36px;
+  padding: 8px 12px;
+  border: 1px solid hsl(220, 15%, 88%);
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+  background: #ffffff;
+  color: hsl(220, 15%, 20%);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input:focus {
-    outline: none;
-    border-color: hsl(210, 100%, 25%);
-    box-shadow: 0 0 0 3px hsla(210, 100%, 25%, 0.1);
+  outline: none;
+  border-color: hsl(210, 100%, 25%);
+  box-shadow: 0 0 0 3px hsla(210, 100%, 25%, 0.1);
 }
 
 .input:hover {
-    border-color: hsl(210, 100%, 35%);
+  border-color: hsl(210, 100%, 35%);
 }
 
 .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    background: transparent;
-    color: hsl(220, 15%, 40%);
-    cursor: pointer;
-    transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: hsl(220, 15%, 40%);
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
 .button:hover {
-    background: hsl(210, 15%, 92%);
-    color: hsl(210, 100%, 25%);
+  background: hsl(210, 15%, 92%);
+  color: hsl(210, 100%, 25%);
 }
 
 .button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .button:disabled:hover {
-    background: transparent;
-    color: hsl(220, 15%, 40%);
+  background: transparent;
+  color: hsl(220, 15%, 40%);
 }
 
 .addButton {
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    margin-left: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin-left: 8px;
 }
 
 .addButton:hover {
-    background: hsl(210, 100%, 25%);
-    color: #ffffff;
+  background: hsl(210, 100%, 25%);
+  color: #ffffff;
 }
 
 .deleteButton {
-    width: 32px;
-    height: 32px;
-    padding: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
 }
 
 .deleteButton:hover:not(:disabled) {
-    background: hsla(0, 72%, 51%, 0.1);
-    color: hsl(0, 72%, 51%);
+  background: hsla(0, 72%, 51%, 0.1);
+  color: hsl(0, 72%, 51%);
 }
 
 .icon {
-    width: 16px;
-    height: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Mobile Card View */
+.mobileView {
+  display: none;
+}
+
+.dayCard {
+  background: #ffffff;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dayCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: hsl(210, 100%, 25%);
+  color: #ffffff;
+  padding: 16px;
+}
+
+.dayCardTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.slotCard {
+  padding: 16px;
+  border-bottom: 1px solid hsl(220, 15%, 88%);
+}
+
+.slotCard:last-child {
+  border-bottom: none;
+}
+
+.slotHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.slotNumber {
+  font-size: 14px;
+  font-weight: 600;
+  color: hsl(220, 15%, 30%);
+}
+
+.slotFields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: hsl(220, 15%, 40%);
+}
+
+@media (max-width: 1024px) {
+  .tableWrapper {
+    display: none;
+  }
+
+  .mobileView {
+    display: block;
+    padding: 16px;
+  }
+
+  .header {
+    padding: 16px 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .defaultsSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
+  .defaultsControls {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .controlGroup {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .select {
+    width: 100%;
+  }
+
+  .input {
+    height: 40px;
+    font-size: 14px;
+  }
+
+  .addButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .deleteButton {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .defaultsSection {
+    padding: 12px 16px;
+  }
+
+  .mobileView {
+    padding: 12px;
+  }
+
+  .dayCard {
+    margin-bottom: 12px;
+  }
+
+  .dayCardHeader {
+    padding: 12px;
+  }
+
+  .dayCardTitle {
+    font-size: 15px;
+  }
+
+  .slotCard {
+    padding: 12px;
+  }
+
+  .defaultsLabel {
+    font-size: 13px;
+  }
+
+  .controlLabel {
+    font-size: 13px;
+  }
+
+  .select {
+    height: 36px;
+    padding: 6px 28px 6px 10px;
+    font-size: 13px;
+    min-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .defaultsSection {
+    padding: 12px 16px;
+  }
+
+  .defaultsLabel {
+    font-size: 13px;
+  }
+
+  .controlLabel {
+    font-size: 13px;
+  }
+
+  .select {
+    height: 32px;
+    padding: 6px 28px 6px 10px;
+    font-size: 13px;
+    min-width: 100px;
+  }
+
+  .tableHead th {
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .tableCell {
+    padding: 8px 10px;
+  }
+
+  .input {
+    height: 30px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
 }

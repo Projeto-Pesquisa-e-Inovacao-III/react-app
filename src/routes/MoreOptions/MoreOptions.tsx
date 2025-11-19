@@ -1,8 +1,8 @@
-import { Banknote, Boxes, Eye, HistoryIcon, IdCard, LogOut, MapPin, Package, User, Users } from 'lucide-react';
+import { Banknote, Boxes, Clock, Eye, HistoryIcon, Hourglass, HourglassIcon, IdCard, LogOut, MapPin, Package, User, Users } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { TypeContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import Logout from '../User/Logout/Logout';
@@ -14,6 +14,12 @@ export default function MoreOptions() {
     function handleNavigate(option: string) {
         nav(`${option}`);
     }
+
+    useEffect(() => {
+        if (!isMobile) {
+            nav("/edit-user");
+        }
+    }, [isMobile]);
 
     return (
         <>
@@ -36,6 +42,7 @@ export default function MoreOptions() {
                         <>
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                             <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
+                            <Button icon={<Clock />} type='button' classNameVariable={styles.buttonOption} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
                         </>
                     }
                     <Button icon={<LogOut />} type='button' classNameVariable={styles.buttonOption} title='Sair' onClick={() => nav("/logout")} />

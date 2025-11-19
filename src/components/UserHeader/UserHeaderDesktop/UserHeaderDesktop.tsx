@@ -79,6 +79,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
         <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
           <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
             <Link to="/edit-user">Editar perfil</Link>
+            {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
             <Link to="/logout">Sair</Link>
           </div>
         </div>
