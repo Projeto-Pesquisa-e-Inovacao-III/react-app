@@ -8,8 +8,13 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 
+type CardData = [
+    "success",
+    "done",
+    "decline",
+    
+]
 
-//todo: input de filtro tem um texto que está sobreponto o outro; i think the select at CardFilterCheckSchedule does not make sense
 export function CheckSchedule() {
     const isMobile = useMobile();
 

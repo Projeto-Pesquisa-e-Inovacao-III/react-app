@@ -33,12 +33,9 @@ const initialRegisterState = {
     confirmPassword: ""
 };
 
-// A função reducer foi removida daqui
-
 export default function Register() {
     const isMobile = useMobile();
 
-    // 1. Mudança aqui: useState com o objeto inicial
     const [register, setRegister] = useState(initialRegisterState);
 
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
@@ -256,7 +253,7 @@ export default function Register() {
                                     ))}
                                 </div>
                             )}
-                            <Button type="submit" title="Cadastrar" />
+                            <Button typeButton="other" type="submit" title="Cadastrar" />
                         </form>
                         <span>
                             Já tem uma conta? <Link to="/login">Faça login</Link>

@@ -178,7 +178,7 @@ export default function EditUser() {
 
               {userImage ?
                 <div >
-                  <Button title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setCallTimerModal(true)} />
+                  <Button typeButton="other" title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setCallTimerModal(true)} />
                 </div>
                 : null}
             </div>

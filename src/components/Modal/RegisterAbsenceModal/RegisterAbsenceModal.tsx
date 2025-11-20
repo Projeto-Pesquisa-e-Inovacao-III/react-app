@@ -43,8 +43,8 @@ export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.D
                 )}
 
                 <div className={styles.buttons}>
-                    <Button title="Enviar" type="button" classNameVariable="btn-send" onClick={() => closeThen(false)} />
-                    <Button title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
+                    <Button typeButton='accept' title="Enviar" type="button" classNameVariable="btn-send" onClick={() => closeThen(false)} />
+                    <Button typeButton='other' title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
                 </div>
             </div>
         </>
