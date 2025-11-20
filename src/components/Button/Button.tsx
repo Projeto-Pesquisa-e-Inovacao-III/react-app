@@ -1,4 +1,4 @@
-import "./style.css"
+import styles from "./Button.module.css"
 
 type Props = {
     type: "submit" | "button";
@@ -10,9 +10,13 @@ type Props = {
 
 export default function Button({ type, title, classNameVariable, onClick, icon }: Props) {
     return (
-        <div className="btn-generic">
-            <button className={`${type} ${classNameVariable}`} type={type} onClick={onClick}>
-                {icon && <span className="icon">{icon}</span>}
+        <div className={styles.btnGeneric}>
+            <button
+                className={`${styles[type] || ''} ${classNameVariable ? styles[classNameVariable] : ''}`}
+                type={type}
+                onClick={onClick}
+            >
+                {icon && <span className={styles.icon}>{icon}</span>}
                 {title}
             </button>
         </div>

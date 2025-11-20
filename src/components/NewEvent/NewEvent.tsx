@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { createEvent } from "../../constants/calendar";
 import { checkDebugConnection } from "../CheckConnection/CheckConnection";
@@ -27,6 +27,14 @@ type NewEventProps = {
     clickedDate?: string;
 };
 
+type AddressState = {
+    postalCode: string;
+    address: string;
+    city: string;
+    state: string;
+    number: string;
+    complement: string;
+};
 
 // todo: refacotr address state to a single object. 
 export default function NewEvent(
@@ -37,75 +45,70 @@ export default function NewEvent(
     const [selectedType, setSelectedType] = useState<string>("personal");
     const [selectedLocation, setSelectedLocation] = useState<string>("casa");
 
-    const [postalCode, setPostalCode] = useState<string>("");
-    const [address, setAddress] = useState<any>(null);
-    const [city, setCity] = useState<string>("");
-    const [number, setNumber] = useState<string>("");
-    const [complement, setComplement] = useState<string>("");
-    const [state, setState] = useState<string>("");
+    const [addressData, setAddressData] = useState<AddressState>({
+        postalCode: "",
+        address: "",
+        city: "",
+        state: "",
+        number: "",
+        complement: ""
+    });
+
     const [step, setStep] = useState<number>(1);
 
-    const [formattedDate, setFormattedDate] = useState<string>("");
 
     let eventToReschedule = insertedEvents?.find(event => event?.id === rescheduleId);
 
-    useEffect(() => {
+    const formattedDate = useMemo(() => {
         if (newEventDate && newEventStartHour) {
-            console.log("newEventDate:", newEventDate);
-            console.log("newEventStartHour:", newEventStartHour);
-
-            const dateStr = newEventDate;
-            const hourStr = newEventStartHour;
-
-            const date = new Date(`${dateStr}T${hourStr}`);
+            const date = new Date(`${newEventDate}T${newEventStartHour}`);
 
             const initialHour = date.toLocaleTimeString('pt-BR', {
                 hour: '2-digit',
                 minute: '2-digit',
             });
 
-            const finalHour = date.setHours(date.getHours() + 1); // assuming 1 hour duration
+            const finalHour = date.setHours(date.getHours() + 1);
 
-            const formatted = date.toLocaleString('pt-BR', {
+            return date.toLocaleString('pt-BR', {
                 day: '2-digit',
                 month: 'long',
                 year: 'numeric',
-
             }).replace(" às ", "") + ` das ${initialHour} às ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
-            setFormattedDate(formatted);
         }
     }, [newEventDate, newEventStartHour]);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
-        console.log("clickedDate no NewEvent:", clickedDate);
-        console.log("renderizando NewEvent component");
     }, []);
 
     useEffect(() => {
-        if (postalCode.length === 8) {
-            axios.get(`https://viacep.com.br/ws/${postalCode}/json/`)
+        if (addressData.postalCode.length === 8) {
+            axios.get(`https://viacep.com.br/ws/${addressData.postalCode}/json/`)
                 .then(response => {
-                    setAddress(`${response.data.logradouro} - ${response.data.bairro}`);
-                    setCity(response.data.localidade);
-                    setState(response.data.uf);
+                    setAddressData({
+                        ...addressData,
+                        address: `${response.data.logradouro} - ${response.data.bairro}`,
+                        city: response.data.localidade,
+                        state: response.data.uf
+                    });
                 })
                 .catch(error => {
                     console.error("Erro ao buscar endereço pelo CEP:", error);
                 });
         }
-    }, [postalCode]);
+    }, [addressData.postalCode]);
 
     async function handleInsertAddress(e: React.FormEvent) {
         e.preventDefault();
 
         const body: Address = {
-            numero: number,
-            complemento: complement,
+            numero: addressData.number,
+            complemento: addressData.complement,
             unidade: "",
             tipo: selectedLocation,
             cep: {
-                id: postalCode
+                id: addressData.postalCode
             }
         }
         await createAddress(body)
@@ -124,12 +127,12 @@ export default function NewEvent(
             return;
         }
 
-        if (!postalCode || address === null) {
+        if (!addressData.postalCode || addressData.address === null) {
             alert("Por favor, insira um CEP válido para o endereço.");
             return;
         }
 
-        if (!number) {
+        if (!addressData.number) {
             alert("Por favor, insira o número do endereço.");
             return;
         }
@@ -359,7 +362,7 @@ export default function NewEvent(
                                                     type="text"
                                                     id="cep"
                                                     placeholder="CEP"
-                                                    onChange={(e) => setPostalCode((e.target.value).split("-").join("").trim())}
+                                                    onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
                                                     onInput={cepMask}
                                                 />
                                             </div>
@@ -372,7 +375,7 @@ export default function NewEvent(
                                                         placeholder="Cidade"
                                                         className={classnames(styles.inputAddress, styles.disabled)}
                                                         disabled
-                                                        value={city || ""}
+                                                        value={addressData.city || ""}
                                                     />
 
                                                 </div>
@@ -384,8 +387,8 @@ export default function NewEvent(
                                                         id="state"
                                                         placeholder="UF"
                                                         disabled
-                                                        value={state || ""}
-                                                        onChange={(e) => setState(e.target.value)}
+                                                        value={addressData.state || ""}
+                                                        onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
                                                     />
                                                 </div>
                                             </div>
@@ -398,7 +401,7 @@ export default function NewEvent(
                                                         placeholder="Endereço"
                                                         className={classnames(styles.inputAddress, styles.disabled)}
                                                         disabled
-                                                        value={address || ""}
+                                                        value={addressData.address || ""}
                                                     />
                                                 </div>
 
@@ -409,8 +412,8 @@ export default function NewEvent(
                                                         type="text"
                                                         id="number"
                                                         placeholder="N°"
-                                                        value={number || ""}
-                                                        onChange={(e) => setNumber(e.target.value)}
+                                                        value={addressData.number || ""}
+                                                        onChange={(e) => setAddressData({ ...addressData, number: e.target.value })}
                                                     />
                                                 </div>
                                             </div>
@@ -421,8 +424,8 @@ export default function NewEvent(
                                                         type="text"
                                                         id="complement"
                                                         placeholder="Complemento"
-                                                        value={complement || ""}
-                                                        onChange={(e) => setComplement(e.target.value)}
+                                                        value={addressData.complement || ""}
+                                                        onChange={(e) => setAddressData({ ...addressData, complement: e.target.value })}
                                                     />
                                                 </div>
                                             </div>

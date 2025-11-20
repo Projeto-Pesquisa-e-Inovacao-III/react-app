@@ -1,27 +1,28 @@
 import { User } from 'lucide-react'
-import React, { useEffect } from 'react'
 import { UserImg } from '../UserImg/UserImg'
 import { BASE_URL } from '../../system';
 import { getUserImage } from '../../constants/user';
+import { useQuery } from '@tanstack/react-query';
 
 export default function UserAvatar() {
-  const [userImage, setUserImage] = React.useState<string>("");
-  useEffect(() => {
-    getUserImage().then((response) => {
-      if(response.data) {
-        setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+  const userImage = useQuery({
+    queryKey: ['userImage'],
+    queryFn: () => getUserImage(),
+    select: (response) => {
+      if (response.data) {
+        return `${BASE_URL}/usuarios/me/imagem`;
       }
-    }).catch((error) => {
-      console.error("Error fetching user image:", error);
-    });
-  }, []);
+      return undefined;
+    },
+    retry: false,
+  })
 
   return (
 
     <>
-      {userImage ?
+      {userImage.data ?
         <UserImg
-          Source={userImage}
+          Source={userImage.data || ""}
           Height={216}
           Width={216}
           Alt="foto"

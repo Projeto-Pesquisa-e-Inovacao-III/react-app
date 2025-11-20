@@ -11,6 +11,8 @@ import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
+import { useQueries, useQuery } from "@tanstack/react-query";
+
 export function Overview() {
     const isMobile = useMobile();
 
@@ -49,39 +51,29 @@ export function Overview() {
         getActualPlan();
     }, []);
 
-    const [aulaFuncionalTotal, setAulaFuncionalTotal] = useState<number>(0);
-    const [aulaResidencialTotal, setAulaResidencialTotal] = useState<number>(0);
-    const [aulaAcademiaTotal, setAulaAcademiaTotal] = useState<number>(0);
-    
-    useEffect(() => {
-        async function fetchAulaFuncionalTotal() {
-            try {
-                const funcionalTotal = await getTotalByClassType("FUNCIONAL");
-                setAulaFuncionalTotal(funcionalTotal);
-
-                const residencialTotal = await getTotalByClassType("RESIDENCIAL");
-                setAulaResidencialTotal(residencialTotal);
-
-                const academiaTotal = await getTotalByClassType("ACADEMIA");
-                setAulaAcademiaTotal(academiaTotal);
-            } catch (error) {
-                console.error("Error fetching total by class type:", error);
-            }
-        }
-
-        fetchAulaFuncionalTotal();
-    }, []);
-
     function getBalance() {
-        const aulaFuncional = aulaFuncionalTotal;
-        const aulaResidencial = aulaResidencialTotal;
-        const aulaAcademia = aulaAcademiaTotal;
+        const [aulaFuncional, aulaResidencial, aulaAcademia] = useQueries({
+            queries: [
+                {
+                    queryKey: ["total", "funcional"],
+                    queryFn: () => getTotalByClassType("Funcional")
+                },
+                {
+                    queryKey: ["total", "residencial"],
+                    queryFn: () => getTotalByClassType("Residencial")
+                },
+                {
+                    queryKey: ["total", "academia"],
+                    queryFn: () => getTotalByClassType("Academia")
+                }
+            ]
+        })
 
         const balance = (
             <div>
-                <p>Funcional: {aulaFuncional}</p>
-                <p>Residencial: {aulaResidencial}</p>
-                <p>Academia: {aulaAcademia}</p>
+                <p>Funcional: {aulaFuncional.data ?? 0}</p>
+                <p>Residencial: {aulaResidencial.data ?? 0}</p>
+                <p>Academia: {aulaAcademia.data ?? 0}</p>
             </div>
         );
         return balance;
