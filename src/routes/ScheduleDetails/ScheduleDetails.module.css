@@ -164,7 +164,7 @@
     gap: 12px;
 }
 
-.buttons :global(.btn-generic) {
+.buttons :global(.btnGeneric) {
     width: auto;
 }
 
@@ -173,16 +173,16 @@
     align-items: stretch;
 }
 
-.buttonsMobile :global(.btn-generic) {
+.buttonsMobile :global(.btnGeneric) {
     width: 100%;
 }
 
-.buttonsMobile :global(.btn-generic button) {
+.buttonsMobile :global(.btnGeneric button) {
     width: 100%;
     max-width: none;
 }
 
-.buttonAbsence :global(.btn-generic button) {
+.buttonAbsence :global(.btnGeneric button) {
     max-width: none;
 }
 

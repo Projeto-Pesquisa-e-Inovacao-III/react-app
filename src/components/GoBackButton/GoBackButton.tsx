@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import "./style.css"
+import styles from "./GoBackButton.module.css"
 export default function GoBackButton({to}: {to?: string}) {
 
     const navigate = useNavigate();
@@ -9,7 +9,7 @@ export default function GoBackButton({to}: {to?: string}) {
     }
 
     return (
-        <div className="go-back-login" onClick={!to ? handleGoBack : undefined}>
+        <div className={styles.goBackLogin} onClick={!to ? handleGoBack : undefined}>
             <Link to={to}>
                 <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
                     <path

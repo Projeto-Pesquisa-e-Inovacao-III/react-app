@@ -6,10 +6,6 @@ import { useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
-import TextareaModal from "../../../components/Modal/TextareaModal/TextareaModal";
-import Button from "../../../components/Button/Button";
-import Select from "../../../components/Inputs/Select";
-import classNames from "classnames";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 
 

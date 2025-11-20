@@ -96,7 +96,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                 packageCreated(prev => prev.filter(pkg => pkg.id !== values.id));
 
             }
-            onClose(false);
+            onClose(true);
         }).catch((error) => {
             console.error("Erro ao editar pacote:", error);
         });
@@ -132,8 +132,8 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                         </div>
                     ))}
 
-                    <div>
-                        <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={() => handleAddBenefit("")} />
+                    <div className={styles.buttonContainer}>
+                        <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={handleAddBenefit} />
                     </div>
 
                     <div className={styles.modalButtons}>

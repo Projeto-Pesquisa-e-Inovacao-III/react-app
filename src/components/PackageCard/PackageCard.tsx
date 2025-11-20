@@ -6,7 +6,7 @@ type PackageCardProps = {
     titlebtn?: string;
     descricao: string[];
     onClick: () => void;
-    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>>;
+    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     setHandleDelete: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     isMobile?: boolean;
     variant?: "consultoria" | "adicional";

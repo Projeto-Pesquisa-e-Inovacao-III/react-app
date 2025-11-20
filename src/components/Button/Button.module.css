@@ -2,6 +2,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .btnGeneric button {
@@ -21,35 +22,24 @@
     background-color: var(--btn-hover-bg);
 }
 
-.btnCheckSchedule {
-    background-color: var(--bg-blue);
-    max-width: 100px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    font-weight: bold;
-}
-
 .btnCheckSchedule:hover {
     background-color: #051128;
 }
 
 .accept {
-    background-color: var(--bg-green);
+    background-color: var(--bg-green) !important;
 }
 
 .accept:hover {
-    background-color: #16a34a;
+    background-color: #16a34a !important;
 }
 
 .decline {
-    background-color: var(--bg-orange);
+    background-color: var(--bg-orange) !important;
 }
 
 .decline:hover {
-    background-color: #e8590c;
+    background-color: #e8590c !important;
 }
 
 .rescheduleModal {

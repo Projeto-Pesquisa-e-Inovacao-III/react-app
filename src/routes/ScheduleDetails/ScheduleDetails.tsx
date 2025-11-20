@@ -98,14 +98,14 @@ export default function ScheduleDetails() {
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
                     {type === "personal" && today > formattedDate &&
                         <div className={styles.buttonAbsence}>
-                            <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)}/>
+                            <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
                         </div>
                     }
 
                     <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "student" })}>
-                        <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" />
-                        <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" />
-                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" />
+                        <Button type="button" typeButton="accept" title="Aceitar" classNameVariable="btn-check-schedule" />
+                        <Button type="button" typeButton="decline" title="Recusar" classNameVariable="btn-check-schedule" />
+                        <Button type="button" typeButton="other" title="Reagendar" classNameVariable="btn-check-schedule" />
                     </div>
                 </div>
             }

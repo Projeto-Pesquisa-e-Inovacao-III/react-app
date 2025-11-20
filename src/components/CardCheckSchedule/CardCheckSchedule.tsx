@@ -85,15 +85,15 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                 </div>
                 {cardData.status && cardData.status === "pending" && (
                     <div className={styles.buttons}>
-                        <Button type="button" title="Aceitar" classNameVariable="btn-check-schedule accept" onClick={handleAcceptClick} />
-                        <Button type="button" title="Recusar" classNameVariable="btn-check-schedule decline" onClick={handleDeclineClick} />
-                        <Button type="button" title="Reagendar" classNameVariable="btn-check-schedule reschedule" onClick={handleRescheduleClick} />
+                        <Button type="button" typeButton="accept" title="Aceitar" classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleAcceptClick} />
+                        <Button type="button" typeButton="decline" title="Recusar" classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleDeclineClick} />
+                        <Button type="button" typeButton="other" title="Reagendar" classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRescheduleClick} />
                     </div>
                 )}
 
                 {cardData.status && cardData.status === "schedule_pending" && scheduleDate < today && (
                     <div className={styles.buttons}>
-                        <Button type="button" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={handleRegisterAbsenceClick} />
+                        <Button type="button" typeButton="other" title="Registrar ausência" classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRegisterAbsenceClick} />
                     </div>
                 )}
 
