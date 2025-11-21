@@ -24,8 +24,6 @@ import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 
 // todo: 
 // safari support // deixa baixo
-// study if code is following best practices
-// remake personal cards at overview (statu) 
 
 //todo: warning maximum size of 5mb for user image
 

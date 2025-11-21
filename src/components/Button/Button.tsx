@@ -3,7 +3,7 @@ import styles from "./Button.module.css"
 
 type Props = {
     type: "submit" | "button";
-    typeButton: "accept" | "decline" | "other";
+    typeButton?: "accept" | "decline" | "other";
     title: string;
     icon?: React.ReactNode;
     classNameVariable?: string;

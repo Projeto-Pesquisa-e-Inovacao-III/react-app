@@ -6,14 +6,14 @@ import { useContext, useEffect } from 'react';
 import { TypeContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
 import Logout from '../User/Logout/Logout';
+import UserAvatar from '../../components/UserAvatar/UserAvatar';
+import { useQuery } from '@tanstack/react-query';
+import { findUserData } from '../../constants/user';
 
 export default function MoreOptions() {
     const isMobile = useMobile();
     const type = useContext(TypeContext);
     const nav = useNavigate();
-    function handleNavigate(option: string) {
-        nav(`${option}`);
-    }
 
     useEffect(() => {
         if (!isMobile) {
@@ -21,12 +21,23 @@ export default function MoreOptions() {
         }
     }, [isMobile]);
 
+  const userName = useQuery({
+    queryKey: ['user'],
+    queryFn: () => findUserData(),
+    select: (response) => {
+        return response.data.nome;
+    },
+    retry: false,
+  })
+
+
+
     return (
         <>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <img src="https://thispersondoesnotexist.com/" alt="" />
-                    <h2>Usuario</h2>
+                    <UserAvatar />
+                    <h2>{userName.data || "Usuario"}</h2>
                 </div>
                 <div className={styles.options}>
                     <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
