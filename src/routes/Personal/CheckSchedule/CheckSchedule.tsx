@@ -8,25 +8,23 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 
-type CardData = [
-    "success",
-    "done",
-    "decline",
-    
-]
+type modalTypes = "reschedule" | "accept" | "decline" | "success" | null;
 
 export function CheckSchedule() {
     const isMobile = useMobile();
 
-    const [openModal, setOpenModal] = useState<boolean>(false);
-    const [openModalAccept, setModalAccept] = useState<boolean>(false);
-    const [openModalDecline, setModalDecline] = useState<boolean>(false);
-    const [openSuccessReschedule, setSuccessReschedule] = useState<boolean>(false);
-    const [openSuccessAcceptModal, setOpenSuccessAcceptModal] = useState<boolean>(false);
-    const [openSuccessDeclineModal, setOpenSuccessDeclineModal] = useState<boolean>(false);
+    const [openModal, setOpenModal] = useState<modalTypes>(null);
 
     const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
+    const [successModalInfo, setSuccessModalInfo] = useState<{
+        title: string;
+        content: string;
+    } | null>(null);
 
+    function handleSuccessModal(title: string, content: string) {
+        setSuccessModalInfo({ title, content });
+        setOpenModal("success");
+    }
 
     const dataCard = [
         {
@@ -135,10 +133,6 @@ export function CheckSchedule() {
         },
     ];
 
-    function handleCallSucessReschedule() {
-        setSuccessReschedule(true)
-        setOpenModal(false)
-    }
 
     return (
         <>
@@ -154,21 +148,22 @@ export function CheckSchedule() {
                     {dataCard.map((card) => (
                         <CardCheckSchedule
                             key={card.id}
-                            RescheduleClick={setOpenModal}
-                            AcceptScheduleClick={setModalAccept}
-                            DeclineScheculeClick={setModalDecline}
+                            RescheduleClick={() => setOpenModal("reschedule")}
+                            AcceptScheduleClick={() => setOpenModal("accept")}
+                            DeclineScheculeClick={() => setOpenModal("decline")}
                             RegisterAbsenceClick={setRegisterAbsence}
                             cardData={card}
                         />
                     ))}
                 </div>
             </div>
-            {openModal && <CheckScheduleModal closeThen={setOpenModal} isMobile={isMobile} openSuccess={handleCallSucessReschedule} />}
-            {openModalAccept && <TimerModal callSuccessModal={setOpenSuccessAcceptModal} isMobile={isMobile} closeThen={setModalAccept} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
-            {openModalDecline && <TimerModal callSuccessModal={setOpenSuccessDeclineModal} isMobile={isMobile} closeThen={setModalDecline} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
-            {openSuccessReschedule && <SuccessModal isMobile={isMobile} closeThen={setSuccessReschedule} title="Reagendamento Confirmado" content="Seu reagendamento foi confirmado e enviado para o cliente" />}
-            {openSuccessAcceptModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessAcceptModal} title="Agendamento Aceito" content="Seu agendamento foi aceito e confirmado." />}
-            {openSuccessDeclineModal && <SuccessModal isMobile={isMobile} closeThen={setOpenSuccessDeclineModal} title="Agendamento Recusado" content="Seu agendamento foi recusado." />}
+            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Reagendamento enviado", "O reagendamento foi enviado com sucesso para o aluno.")} />}
+
+            {openModal === "accept" && <TimerModal callSuccessModal={() => handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito e confirmado.")} isMobile={isMobile} closeThen={() => setOpenModal("success")} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
+
+            {openModal === "decline" && <TimerModal callSuccessModal={() => handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.")} isMobile={isMobile} closeThen={() => setOpenModal("success")} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
+
+            {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
             {registerAbsence &&
                 <RegisterAbsenceModal closeThen={setRegisterAbsence} />
