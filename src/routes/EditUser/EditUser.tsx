@@ -192,7 +192,7 @@ export default function EditUser() {
               type="text"
               placeholder="Digite seu nome"
               icon={<User />}
-              label="Primeiro Nome"
+              label="Nome"
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
