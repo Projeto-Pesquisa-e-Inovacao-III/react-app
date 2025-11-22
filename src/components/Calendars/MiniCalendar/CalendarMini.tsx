@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 type Props = {
     clickedDate?: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
     createdEvents?: { title: string; start: string; end: string }[];
+    canGoPrev?: boolean;
 };
 
 
-export default function CalendarMini({ clickedDate, createdEvents }: Props) {
+export default function CalendarMini({ clickedDate, createdEvents, canGoPrev }: Props) {
     const databaseEvents = createdEvents?.map((event: { title: string; start: string; end: string }) => {
         const dateStr = event.start.split("T")[0];
         return { title: event.title, date: dateStr };   
@@ -35,8 +36,9 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
 
     useEffect(() => {
         clickedDate?.(newEventDate);
-        
     }, [newEventDate]);
+
+    const month = new Date().getMonth() + 1;
 
     return (
         <div className="mini-container-calendar">
@@ -64,9 +66,9 @@ export default function CalendarMini({ clickedDate, createdEvents }: Props) {
                         return [];
                     }}
                     headerToolbar={{
-                        start: `${selectedMonth >= actualMonth + 2 ? "prev" : ""}`,
+                        start: `${!canGoPrev && selectedMonth >= actualMonth + 2 ? "prev" : ""}${canGoPrev ? "prev" : ""}`,
                         center: "title",
-                        end: `${selectedMonth === 13 ? "" : "next"}`,
+                        end: `${selectedMonth > month ? "" : "next"}`,
                     }}
 
                     height="100%"

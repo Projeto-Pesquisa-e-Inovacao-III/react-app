@@ -4,29 +4,54 @@ import classNames from "classnames";
 
 import styles from "./ScheduleHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
+import { parse, isBefore, isAfter, isValid, startOfDay } from "date-fns";
 
 export default function ScheduleHistory() {
     const [initialDateFilter, setInitialDateFilter] = useState<string>("");
     const [finalDateFilter, setFinalDateFilter] = useState<string>("");
 
-    useEffect(() => {
-        console.log("Filtro de data inicial:", initialDateFilter);
-    }, [initialDateFilter]);
-
-    useEffect(() => {
-        console.log("Filtro de data final:", finalDateFilter);
-    }, [finalDateFilter]);
-
     const eventsMock = [
-        { id: 0, title: "Funcional", date: "2025-10-11", hour: "11:00:00", address: "Rua A, 123", status: "completed" },
-        { id: 1, title: "Personal", date: "2025-10-22", hour: "10:00:00", address: "Rua B, 456", status: "pending" },
+        { id: 0, title: "Funcional", date: "2025-11-11", hour: "11:00:00", address: "Rua A, 123", status: "completed" },
+        { id: 0, title: "Funcional", date: "2025-11-11", hour: "11:00:00", address: "Rua A, 123", status: "completed" },
+        { id: 1, title: "Personal", date: "2025-11-22", hour: "10:00:00", address: "Rua B, 456", status: "pending" },
     ];
 
-    const data = eventsMock.map((event) => ({
+
+    const filteredData = useMemo(() => eventsMock.filter((item) => {
+        const eventDate = startOfDay(new Date(item.date));
+
+        if (initialDateFilter) {
+            const startDate = startOfDay(parse(initialDateFilter, 'dd/MM/yyyy', new Date()));
+
+            if (isValid(startDate) && isBefore(eventDate, startDate)) {
+                return false;
+            }
+        }
+
+        if (finalDateFilter) {
+            const endDate = startOfDay(parse(finalDateFilter, 'dd/MM/yyyy', new Date()));
+
+            if (isValid(endDate) && isAfter(eventDate, endDate)) {
+                return false;
+            }
+        }
+
+        return true;
+    }), [initialDateFilter, finalDateFilter, eventsMock]);
+
+    function clearFilters() {
+        setInitialDateFilter("");
+        setFinalDateFilter("");
+    }
+
+    const hasFiltersApplied = initialDateFilter !== "" || finalDateFilter !== "";
+
+
+    const data = filteredData.map((event) => ({
         headerTitle: new Date(event.date).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
         title: event.title,
         subtitle: event.status === "completed" ?
@@ -46,6 +71,7 @@ export default function ScheduleHistory() {
                 <span>Endereço: {event.address}</span>
             </div>
     }));
+
     const nav = useNavigate();
 
     function handleDetailsClick() {
@@ -67,12 +93,14 @@ export default function ScheduleHistory() {
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={initialDateFilter} setSelectedDate={setInitialDateFilter} />
-                    <InputCalendar selectedDate={finalDateFilter} setSelectedDate={setFinalDateFilter} />
+                    <InputCalendar selectedDate={initialDateFilter} setSelectedDate={setInitialDateFilter} canGoPrev={true} />
+                    <InputCalendar selectedDate={finalDateFilter} setSelectedDate={setFinalDateFilter} canGoPrev={true} />
                 </div>
-                <div className={classNames(styles.searchButton)}>
-                    <SmallerButton title="Filtrar" />
-                </div>
+                {hasFiltersApplied && (
+                    <div className={classNames(styles.searchButton)}>
+                        <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters} />
+                    </div>
+                )}
             </div>
 
             <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
