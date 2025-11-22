@@ -23,7 +23,7 @@ export default function Schedule() {
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-11-22", hour: "10:00:00" },
+        { id: 1, title: "Aniversário", date: "2025-11-22", hour: "12:00:00" },
     ];
     const [events, setEvents] = useState(eventsMock);
 

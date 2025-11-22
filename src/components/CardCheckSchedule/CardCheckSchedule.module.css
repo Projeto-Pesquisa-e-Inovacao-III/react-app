@@ -19,6 +19,12 @@
     flex-direction: row;
     height: 50px;
     gap: 10px;
+    justify-content: center;
+
+}
+
+.buttons .buttonActions {
+    width: 100% !important;
 }
 
 .statusIndicatorCheckSchedule {

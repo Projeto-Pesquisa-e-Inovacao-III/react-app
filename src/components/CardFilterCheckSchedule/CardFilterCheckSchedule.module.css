@@ -31,6 +31,14 @@
     width: 100%;
 }
 
+.buttonFilter {
+    width: 100% !important;
+}
+
+.btnCheckSchedule {
+    padding: 9px !important;
+}
+
 @media (min-width: 600px) {
     .cardFilter {
         width: 60%;

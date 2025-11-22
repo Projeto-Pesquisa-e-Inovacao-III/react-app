@@ -7,12 +7,13 @@ type Props = {
     title: string;
     icon?: React.ReactNode;
     classNameVariable?: string;
+    classNameDiv?: string;
     onClick?: () => void;
 }
 
-export default function Button({ type, title, classNameVariable, onClick, icon, typeButton }: Props) {
+export default function Button({ type, title, classNameVariable, classNameDiv, onClick, icon, typeButton }: Props) {
     return (
-        <div className={styles.btnGeneric}>
+        <div className={classNames(styles.btnGeneric, classNameDiv)}>
             <button
                 className={classNames(styles[typeButton], classNameVariable)}
                 type={type}

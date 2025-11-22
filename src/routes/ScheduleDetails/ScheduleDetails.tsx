@@ -103,9 +103,9 @@ export default function ScheduleDetails() {
                     }
 
                     <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "student" })}>
-                        <Button type="button" typeButton="accept" title="Aceitar" classNameVariable="btn-check-schedule" />
-                        <Button type="button" typeButton="decline" title="Recusar" classNameVariable="btn-check-schedule" />
-                        <Button type="button" typeButton="other" title="Reagendar" classNameVariable="btn-check-schedule" />
+                        <Button type="button" typeButton="accept" title="Aceitar" classNameVariable={styles.btnCheckSchedule} />
+                        <Button type="button" typeButton="decline" title="Recusar" classNameVariable={styles.btnCheckSchedule} />
+                        <Button type="button" typeButton="other" title="Reagendar" classNameVariable={styles.btnCheckSchedule} />
                     </div>
                 </div>
             }

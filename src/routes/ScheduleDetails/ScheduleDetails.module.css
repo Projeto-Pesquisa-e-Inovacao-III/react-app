@@ -49,7 +49,9 @@
     border-radius: 8px;
 }
 
-
+.buttonGroup :global(.btnGeneric), .buttonGroupStudent :global(.btnGeneric) {
+    width: auto !important;
+}
 
 .container .content {
     display: flex;

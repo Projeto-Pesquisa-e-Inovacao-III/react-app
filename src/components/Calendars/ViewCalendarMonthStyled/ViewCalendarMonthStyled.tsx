@@ -13,6 +13,10 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
 
   const [clickedDate, setClickedDate] = useState<string>("");
 
+  const eventsTeste = [{
+    id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00"
+  }]
+
   const nav = useNavigate();
 
   return (
@@ -27,11 +31,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
           }}
-          
+
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
-            const hasEvent = events?.some(event => event.date === cellDate);
 
+            const hasEvent = events?.some(event => event.date === cellDate);
             return (
               <div style={{ textAlign: 'center' }}>
                 <div>{arg.dayNumberText}</div>
@@ -52,8 +56,18 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
             );
           }}
           dateClick={(arg) => {
+
             const clickedDate = arg.date.toISOString().split("T")[0];
+
+            const appointment = events?.find(event => event.date === clickedDate) || null;
+
+            if (appointment !== null) {
+              nav(`/schedule-details`);
+              return
+            }
+
             nav(`/schedule/?date=${clickedDate}`);
+
           }}
           headerToolbar={{
 
