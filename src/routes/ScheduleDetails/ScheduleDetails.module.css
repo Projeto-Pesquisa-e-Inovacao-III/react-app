@@ -53,6 +53,10 @@
     width: auto !important;
 }
 
+.buttonActions {
+    width: 100%;
+}
+
 .container .content {
     display: flex;
     flex-direction: column;
@@ -171,7 +175,7 @@
 }
 
 .buttonsMobile {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: stretch;
 }
 
@@ -182,6 +186,12 @@
 .buttonsMobile :global(.btnGeneric button) {
     width: 100%;
     max-width: none;
+}
+
+.buttonsMobile .buttonGroup {
+    flex-wrap: wrap;
+    max-width: none;
+    margin-bottom: 50px;
 }
 
 .buttonAbsence :global(.btnGeneric button) {
