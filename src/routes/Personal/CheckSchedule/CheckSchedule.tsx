@@ -2,20 +2,19 @@ import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardChe
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 
-type modalTypes = "reschedule" | "accept" | "decline" | "success" | null;
+type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
 
 export function CheckSchedule() {
     const isMobile = useMobile();
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
 
-    const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
         content: string;
@@ -25,6 +24,7 @@ export function CheckSchedule() {
         setSuccessModalInfo({ title, content });
         setOpenModal("success");
     }
+
 
     const dataCard = [
         {
@@ -133,6 +133,30 @@ export function CheckSchedule() {
         },
     ];
 
+    //filter
+    const [filterStatus, setFilterStatus] = useState<string>("");
+    const [filterSearch, setFilterSearch] = useState<string>("");
+
+    const filteredData = useMemo(() => {
+        const normalizedSearch = filterSearch.toLowerCase();
+        return dataCard.filter(card => {
+            const matchesStatus = card.status.toLowerCase().includes(filterStatus);
+            const matchesSearch = card.clientName.toLowerCase().includes(normalizedSearch) ||
+                card.local.toLowerCase().includes(normalizedSearch) ||
+                card.date.toLowerCase().includes(normalizedSearch);
+
+            console.log(`Card ID: ${card.id}, matchesStatus: ${matchesStatus}, matchesSearch: ${matchesSearch}`);
+            return matchesStatus && matchesSearch;
+        });
+    }, [filterStatus, filterSearch]);
+
+    function clearFilters() {
+        setFilterStatus("");
+        setFilterSearch("");
+    }
+
+    const hasFilters = filterStatus !== "" || filterSearch !== "";
+
 
     return (
         <>
@@ -140,21 +164,30 @@ export function CheckSchedule() {
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
                     <div className={styles.cardFilter}>
-                        <CardFilterCheckSchedule />
+                        <CardFilterCheckSchedule
+                            searchValue={filterSearch}
+                            onSearchChange={setFilterSearch}
+                            selectStatusValue={filterStatus}
+                            onSelectStatusChange={setFilterStatus}
+                            onClear={clearFilters}
+                            hasFilters={hasFilters}
+                        />
                     </div>
                 </div>
 
                 <div className={styles.cardsCheckSchedule}>
-                    {dataCard.map((card) => (
+                    {filteredData.length > 0 ? filteredData.map((card) => (
                         <CardCheckSchedule
                             key={card.id}
                             RescheduleClick={() => setOpenModal("reschedule")}
                             AcceptScheduleClick={() => setOpenModal("accept")}
                             DeclineScheculeClick={() => setOpenModal("decline")}
-                            RegisterAbsenceClick={setRegisterAbsence}
+                            RegisterAbsenceClick={() => setOpenModal("registerAbsence")}
                             cardData={card}
                         />
-                    ))}
+                    )) : <p>Nenhum agendamento encontrado.</p>}
+
+
                 </div>
             </div>
             {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Reagendamento enviado", "O reagendamento foi enviado com sucesso para o aluno.")} />}
@@ -165,8 +198,8 @@ export function CheckSchedule() {
 
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
-            {registerAbsence &&
-                <RegisterAbsenceModal closeThen={setRegisterAbsence} />
+            {openModal === "registerAbsence" &&
+                <RegisterAbsenceModal closeThen={() => setOpenModal(null)} callSuccessModal={() => handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.")} />
             }
         </>
     )

@@ -4,9 +4,13 @@ import classNames from 'classnames';
 import styles from './RegisterAbsenceModal.module.css'
 import Button from '../../Button/Button';
 
+type Props = {
+    closeThen: React.Dispatch<React.SetStateAction<boolean>>;
+    callSuccessModal?: () => void;
+}
 
-export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
+export default function RegisterAbsenceModal({ closeThen, callSuccessModal }: Props) {
     const [changeSelectType, setChangeSelectType] = useState<string>("Aluno");
     const [justified, setJustified] = useState<boolean>(false);
 
@@ -43,7 +47,7 @@ export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.D
                 )}
 
                 <div className={styles.buttons}>
-                    <Button typeButton='accept' title="Enviar" type="button" classNameVariable="btn-send" onClick={() => closeThen(false)} />
+                    <Button typeButton='accept' title="Enviar" type="button" classNameVariable="btn-send" onClick={() => callSuccessModal && callSuccessModal()} />
                     <Button typeButton='other' title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
                 </div>
             </div>
