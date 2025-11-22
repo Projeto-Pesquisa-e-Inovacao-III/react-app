@@ -21,7 +21,6 @@ type TimerModalProps = {
 export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle, isDelete }: TimerModalProps) {
     const [mounted, setMounted] = useState(false)
 
-    //vlw pedrão
     function unmount() {
         document.body.style.overflow = 'auto';
     }

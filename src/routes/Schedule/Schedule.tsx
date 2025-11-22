@@ -3,7 +3,6 @@ import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import NewEvent from "../../components/NewEvent/NewEvent";
-import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
@@ -11,7 +10,9 @@ import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
+type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | null;
 
 export default function Schedule() {
     const isMobile = useMobile();
@@ -21,42 +22,54 @@ export default function Schedule() {
     const isPersonal = type === "personal";
 
     const eventsMock = [
-        { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
+        { id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00" },
+        { id: 1, title: "Aniversário", date: "2025-11-22", hour: "10:00:00" },
     ];
     const [events, setEvents] = useState(eventsMock);
 
-    const [openNewEvent, setOpenNewEvent] = useState(false);
-    const [openReschedule, setOpenReschedule] = useState(false);
+    const [openModal, setOpenModal] = useState<ModalType>(null);
 
-    const [openSuccessModal, setOpenSuccessModal] = useState(false);
-    const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
-    const [openSuccessModalReschedule, setOpenSuccessModalReschedule] = useState(false);
-
+    const [clickedDate, setClickedDate] = useState<string>("");
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
+    const [successModalInfo, setSuccessModalInfo] = useState({ title: "", description: "" });
+    function handleSuccessModalInfo(title: string, description: string) {
+        setSuccessModalInfo({ title, description });
+        console.log(successModalInfo);
+        setOpenModal("success");
+        console.log(openModal);
+    }
+
     useEffect(() => {
         if (isMobile) window.scrollTo(0, 0);
-    }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
+    }, [openModal]);
 
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
-    const [clickedDate, setClickedDate] = useState<string>("");
 
     useEffect(() => {
         setClickedDate("");
 
         if (searchParams.get("date")) {
             setClickedDate(searchParams.get("date") || "");
-            setOpenNewEvent(true);
+            setOpenModal("newEvent");
         }
     }, [searchParams]);
+
+    // const eventsQuery = useQuery({
+    //     queryKey: ["events"],
+    //     queryFn: () => findEvents(),
+    //     select: (response) => {
+    //         return response.data;
+    //     },
+    //     retry: false,
+    // });
 
     return (
         <>
             {isPersonal ? (
-                <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
+                <CalendarWeek insertedEvents={events} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
@@ -83,7 +96,7 @@ export default function Schedule() {
                                         <path d="M12 5v14" />
                                     </svg>)}
                                     title={`Agendar`}
-                                    handleButtonClick={() => setOpenNewEvent(true)} />
+                                    handleButtonClick={() => setOpenModal("newEvent")} />
                             </div>
 
                             {events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
@@ -92,8 +105,8 @@ export default function Schedule() {
                                         date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
                                         initialHour={`${event.hour.replace(":", "h").split(":")[0]}`}
                                         finalHour={`${(parseInt(event.hour.replace(":", "h").split(":")[0]) + 1)}h00`}
-                                        handleCancel={setOpenCancelModal}
-                                        handleReschedule={setOpenReschedule}
+                                        handleCancel={() => setOpenModal("cancel")}
+                                        handleReschedule={() => setOpenModal("reschedule")}
                                         isMobile={isMobile}
                                     />
                                 </div>
@@ -103,12 +116,12 @@ export default function Schedule() {
                 </div>
             )}
 
-            {openNewEvent && (
+            {openModal === "newEvent" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
-                        close={setOpenNewEvent}
-                        openModal={setOpenSuccessModal}
+                        close={() => setOpenModal(null)}
+                        openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Agendar horário"
@@ -118,12 +131,12 @@ export default function Schedule() {
                 </>
             )}
 
-            {openReschedule && (
+            {openModal === "reschedule" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
-                        close={setOpenReschedule}
-                        openModal={setOpenSuccessModalReschedule}
+                        close={() => setOpenModal(null)}
+                        openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
                         insertedEvents={events}
                         insertEvent={setEvents}
                         title="Reagendar horário"
@@ -134,28 +147,19 @@ export default function Schedule() {
                 </>
             )}
 
-            {openSuccessModal && (
+            {openModal === "success" && (
                 <SuccessModal
                     isMobile={isMobile}
-                    closeThen={setOpenSuccessModal}
-                    title="Agendamento Feito Com Sucesso"
-                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
+                    closeThen={() => setOpenModal(null)}
+                    title={successModalInfo.title}
+                    content={successModalInfo.description}
                 />
             )}
 
-            {openSuccessModalReschedule && (
-                <SuccessModal
-                    isMobile={isMobile}
-                    closeThen={setOpenSuccessModalReschedule}
-                    title="Reagendamento Feito Com Sucesso"
-                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
-                />
-            )}
-
-            {openCancelModal && (
+            {openModal === "cancel" && (
                 <TimerModal
                     isMobile={isMobile}
-                    closeThen={setOpenCancelModal}
+                    closeThen={() => setOpenModal(null)}
                     title="Cancelar"
                     content={`Você tem certeza que quer cancelar o agendamento?\n
                         Agendamento:
@@ -168,7 +172,7 @@ export default function Schedule() {
                     events={events}
                     setEvents={setEvents}
                     buttonTitle="Cancelar agendamento"
-                    callSuccessModal={setOpenSuccessModal}
+                    callSuccessModal={() => handleSuccessModalInfo("Cancelado com sucesso", "Horário cancelado com sucesso")}
                     isDelete={true}
                 />
             )}

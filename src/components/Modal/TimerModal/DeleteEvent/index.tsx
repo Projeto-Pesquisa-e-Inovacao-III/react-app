@@ -17,8 +17,6 @@ export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, 
     function handleDeleteEvent() {
             setEvents?.(events!.filter(event => event.id !== id));
             callSuccessModal?.(true);
-
-            handleCloseModal();
     }
 
     return (

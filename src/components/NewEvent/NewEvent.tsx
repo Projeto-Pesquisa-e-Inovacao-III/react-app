@@ -16,8 +16,8 @@ import type { Address } from "../../models/address";
 
 type NewEventProps = {
     isMobile: boolean;
-    close: React.Dispatch<React.SetStateAction<boolean>>;
-    openModal: React.Dispatch<React.SetStateAction<boolean>>;
+    close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    openModal: (() => void);
     insertedEvents: any[];
     insertEvent: React.Dispatch<React.SetStateAction<any[]>>;
     title?: string;
@@ -169,8 +169,7 @@ export default function NewEvent(
         }
 
         if (calculatedTitle && newEventDate) {
-            openModal(true);
-            handleClose();
+            openModal();
         }
 
     }

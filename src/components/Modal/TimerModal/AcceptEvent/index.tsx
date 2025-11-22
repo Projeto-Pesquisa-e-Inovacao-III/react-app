@@ -16,8 +16,6 @@ export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, 
     function handleAcceptEvent() {
 
             callSuccessModal?.(true);
-            handleCloseModal();
-        
     }
 
     return (

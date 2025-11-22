@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import NewEvent from "../../NewEvent/NewEvent";
 export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { insertedEvents: any[], isMobile: boolean, openModal: React.Dispatch<React.SetStateAction<boolean>> }) {
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
+    // i could use just a react-query to get the events
     const [events, setEvents] = useState<any>(insertedEvents);
 
     useEffect(() => {
