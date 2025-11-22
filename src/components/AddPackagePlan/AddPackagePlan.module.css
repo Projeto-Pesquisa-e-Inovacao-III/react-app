@@ -65,6 +65,10 @@
     height: 100%;
 }
 
+.buttonsAction {
+    width: 100%;
+}
+
 @media (max-width: 1024px) {
     .inputContainer {
         flex-wrap: wrap;

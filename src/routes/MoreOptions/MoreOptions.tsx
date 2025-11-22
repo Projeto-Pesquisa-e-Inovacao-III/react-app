@@ -43,9 +43,8 @@ export default function MoreOptions() {
                     <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
                     {type == "student" &&
                         <>
-                            <Button icon={<MapPin />} type='button' classNameVariable={styles.buttonOption} title='Endereços Cadastrados' />
                             <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => nav("/plans-history")} />
-                            <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' />
+                            <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' onClick={() => nav("/schedule-history")} />
                         </>
                     }
 

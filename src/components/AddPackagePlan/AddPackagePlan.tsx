@@ -137,8 +137,8 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                     </div>
 
                     <div className={styles.modalButtons}>
-                        <Button type="button" title={isEdit ? "Editar" : "Adicionar"} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
-                        <Button type="button" title="Cancelar" classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
+                        <Button type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
+                        <Button type="button" title="Cancelar" classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
                     </div>
                 </form>
             </div>
