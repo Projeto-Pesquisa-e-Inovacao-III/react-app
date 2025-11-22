@@ -14,7 +14,7 @@ type FilterProps = {
 export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, searchValue, selectStatusValue, onClear, hasFilters }: FilterProps) {
 
     return (
-        <>
+        <div className={styles.containerCardFilterCheckSchedule}>
             <div className={styles.cardFilter}>
                 <div className={styles.searchBarDiv}><SearchBar search={searchValue} setSearch={onSearchChange} /></div>
                 <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
@@ -23,13 +23,13 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     <option value="done">Aprovado</option>
                     <option value="cancelled">Rejeitado</option>
                 </select>
-                {hasFilters &&
-                    <div className={styles.divButtonFilter}>
-                        <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => {onClear && onClear()}} />
-                    </div>
-                }
 
             </div>
-        </>
+            {hasFilters &&
+                <div className={styles.divButtonFilter}>
+                    <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => { onClear && onClear() }} />
+                </div>
+            }
+        </div>
     )
 }

@@ -2,11 +2,12 @@ import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardChe
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
 
@@ -134,29 +135,10 @@ export function CheckSchedule() {
     ];
 
     //filter
-    const [filterStatus, setFilterStatus] = useState<string>("");
-    const [filterSearch, setFilterSearch] = useState<string>("");
-
-    const filteredData = useMemo(() => {
-        const normalizedSearch = filterSearch.toLowerCase();
-        return dataCard.filter(card => {
-            const matchesStatus = card.status.toLowerCase().includes(filterStatus);
-            const matchesSearch = card.clientName.toLowerCase().includes(normalizedSearch) ||
-                card.local.toLowerCase().includes(normalizedSearch) ||
-                card.date.toLowerCase().includes(normalizedSearch);
-
-            console.log(`Card ID: ${card.id}, matchesStatus: ${matchesStatus}, matchesSearch: ${matchesSearch}`);
-            return matchesStatus && matchesSearch;
-        });
-    }, [filterStatus, filterSearch]);
-
-    function clearFilters() {
-        setFilterStatus("");
-        setFilterSearch("");
-    }
-
-    const hasFilters = filterStatus !== "" || filterSearch !== "";
-
+    const { filteredData, hasFilters, filterSearch, setFilterSearch, filterStatus, setFilterStatus, clearFilters } = useSearchFilter(dataCard, {
+        searchStatus: (item) => item.status,
+        searchName: (item) => [item.clientName, item.date],
+    });
 
     return (
         <>
