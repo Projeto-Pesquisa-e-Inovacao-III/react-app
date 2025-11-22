@@ -13,7 +13,7 @@ type Props = {
 }
 
 export default function Select({ placeholder, label, id, onInputChange, icon, value, name, options, className }: Props) {
-
+    
     return (
         <div className={`wrapper_inp ${className}`}>
             <label htmlFor={`${id}-select`}>{label}</label>

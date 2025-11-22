@@ -14,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
-import Select from "../../../components/Inputs/Select";
+import Select from "../../../components/Inputs/Select/Select";
 import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import classNames from "classnames";

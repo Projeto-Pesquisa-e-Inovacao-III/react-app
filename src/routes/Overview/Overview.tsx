@@ -12,6 +12,7 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
+import { appointmentAtCalendar } from "../../constants/schedule";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -38,46 +39,45 @@ export function Overview() {
 
     const [appointmentCards] = useState(appointmentCardsData);
 
-    useEffect(() => {
-        function getActualPlan() {
-            actualPlan().then(response => {
-                console.log(response.data);
-                setActualPlanData(response.data);
-            }).catch(error => {
-                console.error("Error fetching actual plan:", error);
-            });
-        }
+    const actualPlanQuery = useQuery({
+        queryKey: ["total", "actualPlan"],
+        queryFn: () => actualPlan(),
+    });
 
-        getActualPlan();
-    }, []);
+
+    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
+        queries: [
+            {
+                queryKey: ["total", "PRESENCIAL"],
+                queryFn: () => getTotalByClassType("PRESENCIAL")
+            },
+            {
+                queryKey: ["total", "RESIDENCIAL"],
+                queryFn: () => getTotalByClassType("RESIDENCIAL")
+            },
+            {
+                queryKey: ["total", "FUNCIONAL"],
+                queryFn: () => getTotalByClassType("FUNCIONAL")
+            }
+        ]
+    })
 
     function getBalance() {
-        const [aulaFuncional, aulaResidencial, aulaAcademia] = useQueries({
-            queries: [
-                {
-                    queryKey: ["total", "funcional"],
-                    queryFn: () => getTotalByClassType("Funcional")
-                },
-                {
-                    queryKey: ["total", "residencial"],
-                    queryFn: () => getTotalByClassType("Residencial")
-                },
-                {
-                    queryKey: ["total", "academia"],
-                    queryFn: () => getTotalByClassType("Academia")
-                }
-            ]
-        })
-
         const balance = (
             <div>
-                <p>Funcional: {aulaFuncional.data ?? 0}</p>
-                <p>Residencial: {aulaResidencial.data ?? 0}</p>
-                <p>Academia: {aulaAcademia.data ?? 0}</p>
+                <p>{`Presencial: ${aulaPresencial.data ?? 0}`}</p>
+                <p>{`Funcional: ${aulaFuncional.data ?? 0}`}</p>
+                <p>{`Residencial: ${aulaResidencial.data ?? 0}`}</p>
             </div>
         );
         return balance;
     }
+
+    const appointments = useQuery({
+        queryKey: ["appointmentsAtCalendar"],
+        queryFn: () => appointmentAtCalendar(),
+        retry: false,
+    })
 
     return (
         <>
@@ -96,7 +96,7 @@ export function Overview() {
                                 />
                                 <OverviewCard
                                     title={"Status de planos"}
-                                    subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
+                                    subtitle={actualPlanQuery.data?.data.nome ?? "Não possui assinatura"}
                                     type={"usuario"}
                                     titletbn={"Planos"}
                                     onClick={() => nav("/packages")}
@@ -105,7 +105,7 @@ export function Overview() {
                             </div>
                         )}
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
                         <div>
                             <h1>Agendamentos</h1>
@@ -138,7 +138,7 @@ export function Overview() {
                             />
                             <OverviewCard
                                 title={"Status de planos"}
-                                subtitle={actualPlanData ? actualPlanData : "Não possui assinatura"}
+                                subtitle={actualPlanQuery.data?.data.nome ?? "Não possui assinatura"}
                                 type={"usuario"}
                                 titletbn={"Planos"}
                                 onClick={() => nav("/packages")}

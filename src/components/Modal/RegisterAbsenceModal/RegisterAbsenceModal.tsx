@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Select from '../../Inputs/Select'
+import Select from '../../Inputs/Select/Select'
 import classNames from 'classnames';
 import styles from './RegisterAbsenceModal.module.css'
 import Button from '../../Button/Button';

@@ -4,18 +4,21 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { parseISO } from "date-fns";
 
-export default function ViewCalendarMonthStyled({ events, isMobile }: { events?: { title: string; date: string; hour: string }[]; isMobile?: boolean }) {
+type Props = {
+  events?: { title: string; data: string; hour: string }[];
+  isMobile?: boolean;
+}
 
+export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
   const actualMonth = new Date().getMonth() + 1;
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-  const [clickedDate, setClickedDate] = useState<string>("");
-
-  const eventsTeste = [{
-    id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00"
-  }]
+  useEffect(() => {
+    console.log(events?.[0].data)
+  }, []);
 
   const nav = useNavigate();
 
@@ -35,7 +38,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
 
-            const hasEvent = events?.some(event => event.date === cellDate);
+            const eventDate = events?.map(event => parseISO(event.data).toISOString().split("T")[0]);
+
+            const hasEvent = events?.some((event, index) => eventDate?.[index] === cellDate);
             return (
               <div style={{ textAlign: 'center' }}>
                 <div>{arg.dayNumberText}</div>
@@ -59,7 +64,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
 
             const clickedDate = arg.date.toISOString().split("T")[0];
 
-            const appointment = events?.find(event => event.date === clickedDate) || null;
+            const appointment = events?.find(event => event.data === clickedDate) || null;
 
             if (appointment !== null) {
               nav(`/schedule-details`);

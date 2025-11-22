@@ -10,7 +10,7 @@ import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
-import { desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
+import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 
 type ModalType = "add" | "addAdditional" | "edit" | "delete" | "success";
 
@@ -35,8 +35,17 @@ export function Packages() {
 
     const isPersonal = type === "personal";
 
-    const handleBuyClick = (packageTitle: string) => {
-        alert(`Você clicou para comprar o pacote: ${packageTitle}`);
+    function handleBuyClick(id: number, packageTitle: string) {
+        buyProductExhibition(id).then((response) => {
+            console.log(`Pacote ${packageTitle} comprado com sucesso!`, response);
+            setSuccessModalInfos({
+                title: "Compra Concluída",
+                content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
+            });
+            setOpenModal("success");
+        }).catch((error) => {
+            console.error("Erro ao comprar o pacote:", error);
+        });
     };
 
     function handleCloseModal() {
@@ -127,7 +136,7 @@ export function Packages() {
                             key={pacote.id! + pacote.titulo + index}
                             {...pacote}
                             descricao={JSON.parse(pacote.descricao)}
-                            onClick={() => handleBuyClick(pacote.titulo)}
+                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
                             setHandleDelete={() => handleDeletePackage(pacote.id!)}

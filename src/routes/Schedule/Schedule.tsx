@@ -11,6 +11,9 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
+import axios from "axios";
 
 type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | null;
 
@@ -57,25 +60,23 @@ export default function Schedule() {
         }
     }, [searchParams]);
 
-    // const eventsQuery = useQuery({
-    //     queryKey: ["events"],
-    //     queryFn: () => findEvents(),
-    //     select: (response) => {
-    //         return response.data;
-    //     },
-    //     retry: false,
-    // });
+    const appointments = useQuery({
+        queryKey: ["appointmentsAtCalendar"],
+        queryFn: () => appointmentAtCalendar(),
+        retry: false,
+    })
+
 
     return (
         <>
             {isPersonal ? (
-                <CalendarWeek insertedEvents={events} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
+                <CalendarWeek insertedEvents={appointments.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
                     <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
                         <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
                             <div className={styles.adjustButtonWSchedule}>

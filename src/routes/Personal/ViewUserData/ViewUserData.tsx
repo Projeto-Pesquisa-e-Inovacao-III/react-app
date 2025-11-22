@@ -4,7 +4,7 @@ import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
 import { useState } from "react";
 import Input from "../../../components/Inputs/Input/Input";
-import Select from "../../../components/Inputs/Select";
+import Select from "../../../components/Inputs/Select/Select";
 
 export default function ViewUserData() {
     const isMobile = useMobile();

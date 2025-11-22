@@ -6,7 +6,7 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
-import Select from "../../components/Inputs/Select";
+import Select from "../../components/Inputs/Select/Select";
 import { api, BASE_URL } from "../../system";
 import { findUserData, getUserImage, insertUserImage, removerUserImage, update } from "../../constants/user";
 import type { UpdateUserDTO, UserDTO } from "../../models/user";

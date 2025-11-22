@@ -1,18 +1,18 @@
 import { use, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { createEvent } from "../../constants/calendar";
-import { checkDebugConnection } from "../CheckConnection/CheckConnection";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
-import Select from "../Inputs/Select";
+import Select from "../Inputs/Select/Select";
 import { useNavigate } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { ArrowLeftIcon, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { createAddress } from "../../constants/address";
 import type { Address } from "../../models/address";
+import { insertAppointment } from "../../constants/schedule";
+import type { Schedule } from "../../models/schedule";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -42,8 +42,12 @@ export default function NewEvent(
 ) {
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
-    const [selectedType, setSelectedType] = useState<string>("personal");
-    const [selectedLocation, setSelectedLocation] = useState<string>("casa");
+    const [selectedType, setSelectedType] = useState<string>("");
+    const [selectedLocation, setSelectedLocation] = useState<string>("");
+
+    useEffect(() => {
+        console.log("selectedType", selectedType)
+    }, [selectedType]);
 
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
@@ -137,36 +141,43 @@ export default function NewEvent(
             return;
         }
 
-        //debugging - check if backend is reachable
-        const isDatabaseConnected = await checkDebugConnection();
-        console.log("isDatabaseConnected", isDatabaseConnected);
-
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
+        const payload: Schedule = {
+            data: new Date(`${newEventDate}T${newEventStartHour}`),
+            descricao: calculatedTitle,
+            novoEndereco: {
+                numero: addressData.number,
+                complemento: addressData.complement,
+                unidade: "",
+                tipo: selectedLocation,
+                cep: {
+                    id: addressData.postalCode,
+                    logradouro: addressData.address,
+                    bairro: "",
+                    localidade: addressData.city,
+                    uf: addressData.state
+                }
+            },
+            personalId: 8,
+            tipoAulaProdutoContratado: selectedType.toUpperCase()
+        }
 
-        if (isDatabaseConnected) {
-            console.log("tentando salvar no banco");
-            console.log(isDatabaseConnected)
-            await createEvent({ title: calculatedTitle, dateTime: `${newEventDate}T${newEventStartHour}` })
-                .then(response => {
-                    console.log("Evento salvo com sucesso:", response.data);
-                    console.log("seguindo para inserir na lista")
+
+
+        await insertAppointment(payload)
+            .then(async response => {
+                console.log("Evento salvo com sucesso:", response.data);
+                console.log("seguindo para inserir na lista")
+
+                await handleInsertAddress(e).then(() => {
+                    console.log("Endereço inserido com sucesso.");
                 }).catch(error => {
-                    console.error("Erro ao salvar evento:", error);
+                    console.error("Erro ao inserir endereço:", error);
                 });
-        }
-
-        if (isReschedule) {
-            const updateEvent = insertedEvents.map(event => {
-                return event.id === rescheduleId ? { ...event, date: newEventDate, hour: newEventStartHour } : event;
+            }).catch(error => {
+                console.error("Erro ao salvar evento:", error);
             });
-
-            insertEvent(updateEvent);
-        }
-
-        if (!isReschedule && insertedEvents) {
-            insertEvent([...insertedEvents, { id: Date.now(), title: calculatedTitle, date: `${newEventDate}`, hour: `${newEventStartHour}` }]);
-        }
 
         if (calculatedTitle && newEventDate) {
             openModal();
@@ -284,7 +295,7 @@ export default function NewEvent(
                                     <Select
                                         placeholder="Selecione o tipo"
                                         label="Tipo"
-                                        options={["Personal", "Consultoria", "Outro"]}
+                                        options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
                                         value={selectedType}
                                         onInputChange={setSelectedType}
                                         className={styles.selectComponent}
@@ -353,83 +364,81 @@ export default function NewEvent(
                                     handleNewEvent(e);
                                 }}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
-                                    {selectedLocation === "casa" && (
-                                        <div className={styles.inputGroupAddress}>
-                                            <div className={classnames(styles.inputGroup, styles.labelInput)}>
-                                                <label htmlFor="cep">CEP</label>
+                                    <div className={styles.inputGroupAddress}>
+                                        <div className={classnames(styles.inputGroup, styles.labelInput)}>
+                                            <label htmlFor="cep">CEP</label>
+                                            <input
+                                                type="text"
+                                                id="cep"
+                                                placeholder="CEP"
+                                                onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
+                                                onInput={cepMask}
+                                            />
+                                        </div>
+                                        <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
+                                            <div className={styles.labelInput}>
+                                                <label htmlFor="city">Cidade</label>
                                                 <input
                                                     type="text"
-                                                    id="cep"
-                                                    placeholder="CEP"
-                                                    onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
-                                                    onInput={cepMask}
+                                                    id="city"
+                                                    placeholder="Cidade"
+                                                    className={classnames(styles.inputAddress, styles.disabled)}
+                                                    disabled
+                                                    value={addressData.city || ""}
+                                                />
+
+                                            </div>
+                                            <div className={classnames(styles.labelInput, styles.smallInput)}>
+                                                <label htmlFor="state">UF</label>
+                                                <input
+                                                    className={classnames(styles.inputNumber, styles.disabled)}
+                                                    type="text"
+                                                    id="state"
+                                                    placeholder="UF"
+                                                    disabled
+                                                    value={addressData.state || ""}
+                                                    onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
                                                 />
                                             </div>
-                                            <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
-                                                <div className={styles.labelInput}>
-                                                    <label htmlFor="city">Cidade</label>
-                                                    <input
-                                                        type="text"
-                                                        id="city"
-                                                        placeholder="Cidade"
-                                                        className={classnames(styles.inputAddress, styles.disabled)}
-                                                        disabled
-                                                        value={addressData.city || ""}
-                                                    />
-
-                                                </div>
-                                                <div className={classnames(styles.labelInput, styles.smallInput)}>
-                                                    <label htmlFor="state">UF</label>
-                                                    <input
-                                                        className={classnames(styles.inputNumber, styles.disabled)}
-                                                        type="text"
-                                                        id="state"
-                                                        placeholder="UF"
-                                                        disabled
-                                                        value={addressData.state || ""}
-                                                        onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
-                                                    />
-                                                </div>
+                                        </div>
+                                        <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
+                                            <div className={styles.labelInput}>
+                                                <label htmlFor="address">Endereço</label>
+                                                <input
+                                                    type="text"
+                                                    id="address"
+                                                    placeholder="Endereço"
+                                                    className={classnames(styles.inputAddress, styles.disabled)}
+                                                    disabled
+                                                    value={addressData.address || ""}
+                                                />
                                             </div>
-                                            <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
-                                                <div className={styles.labelInput}>
-                                                    <label htmlFor="address">Endereço</label>
-                                                    <input
-                                                        type="text"
-                                                        id="address"
-                                                        placeholder="Endereço"
-                                                        className={classnames(styles.inputAddress, styles.disabled)}
-                                                        disabled
-                                                        value={addressData.address || ""}
-                                                    />
-                                                </div>
 
-                                                <div className={classnames(styles.labelInput, styles.smallInput)}>
-                                                    <label htmlFor="number">N°</label>
-                                                    <input
-                                                        className={styles.inputNumber}
-                                                        type="text"
-                                                        id="number"
-                                                        placeholder="N°"
-                                                        value={addressData.number || ""}
-                                                        onChange={(e) => setAddressData({ ...addressData, number: e.target.value })}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className={classnames(styles.inputGroup, styles.doubleInput)}>
-                                                <div className={styles.labelInput}>
-                                                    <label htmlFor="complement">Complemento</label>
-                                                    <input
-                                                        type="text"
-                                                        id="complement"
-                                                        placeholder="Complemento"
-                                                        value={addressData.complement || ""}
-                                                        onChange={(e) => setAddressData({ ...addressData, complement: e.target.value })}
-                                                    />
-                                                </div>
+                                            <div className={classnames(styles.labelInput, styles.smallInput)}>
+                                                <label htmlFor="number">N°</label>
+                                                <input
+                                                    className={styles.inputNumber}
+                                                    type="text"
+                                                    id="number"
+                                                    placeholder="N°"
+                                                    value={addressData.number || ""}
+                                                    onChange={(e) => setAddressData({ ...addressData, number: e.target.value })}
+                                                />
                                             </div>
                                         </div>
-                                    )}
+                                        <div className={classnames(styles.inputGroup, styles.doubleInput)}>
+                                            <div className={styles.labelInput}>
+                                                <label htmlFor="complement">Complemento</label>
+                                                <input
+                                                    type="text"
+                                                    id="complement"
+                                                    placeholder="Complemento"
+                                                    value={addressData.complement || ""}
+                                                    onChange={(e) => setAddressData({ ...addressData, complement: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className={classnames(styles.buttonNextStep)}>

@@ -17,6 +17,9 @@ export function updateProductExhibition(id: number, data: Partial<ProductExhibit
     return api.post(`/produtos-exibicoes/editar/${id}`, data);
 }
 
+export function buyProductExhibition(id: number) {
+    return api.post(`/produtos-contratados` , { produtoExibicaoId: id });
+}
 
 export function actualPlan() {
     return api.get(`/produtos-contratados/ativo`)
