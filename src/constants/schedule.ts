@@ -9,16 +9,16 @@ export function updateAppointment(data: any) {
     return api.put("/agendamentos/reagendar", data);
 }
 
-export function cancelAppointment(data: any) {
-    return api.put("/agendamentos/cancelar", data);
+export function refuseAppointment(id: number) {
+    return api.delete(`/agendamentos/${id}`);
 }
 
-export function doneAppointment(data: any) {
-    return api.put("/agendamentos/concluir", data);
+export async function acceptAppointment(id: number) {
+    return await api.put(`/agendamentos/${id}/aprovar`);
 }
 
-export function reportAbsenceStudent(data: any) {
-    return api.put("/agendamentos/relatar-ausencia/aluno", data);
+export async function reportAbsenceStudent(data: any) {
+    return await api.put("/agendamentos/relatar-ausencia/aluno", data);
 }
 
 export function reportAbsencePersonal(data: any) {
@@ -37,6 +37,6 @@ export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
 }
 
-export function findAppointmentById(id: number) {
-    return api.get(`/agendamentos/${id}`);
+export async function findAppointmentById(id: number) {
+    return await api.get(`/agendamentos/${id}`);
 }

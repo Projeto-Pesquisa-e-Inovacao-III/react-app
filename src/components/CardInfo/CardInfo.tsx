@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 import styles from './CardInfo.module.css'
 import React from 'react'
+import UserAvatar from '../UserAvatar/UserAvatar';
 
 type CardInfoProps = {
     isMobile: boolean;
@@ -8,6 +9,7 @@ type CardInfoProps = {
     title: string;
     subtitle?: string;
     includeImg?: boolean;
+    imgUrl?: string;
 }
 
 export default function CardInfo(props: CardInfoProps) {
@@ -19,11 +21,7 @@ export default function CardInfo(props: CardInfoProps) {
             <div className={classnames(styles.usersTableCard, { [styles.usersTableCardMobile]: props.isMobile })}>
                 <div className={classnames(styles.userDataFull, { [styles.userDataFullMobile]: props.isMobile })}>
                     {props.includeImg && (
-                        <img
-                            className={styles.userImage}
-                            src="https://placehold.co/50x50/png"
-                            alt=""
-                        />
+                        <UserAvatar foto={props.imgUrl} />
                     )}
                     <div className={styles.userData}>
                         <span>

@@ -8,7 +8,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { findPersonalRequests } from "../../../constants/schedule";
+import { acceptAppointment, findPersonalRequests, refuseAppointment } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
@@ -34,12 +34,6 @@ export function CheckSchedule() {
         retry: false,
     });
 
-    useEffect(() => {
-        if (personalRequests.data) {
-            // You can handle personalRequests.data here if needed
-        }
-    }, [personalRequests.data]);
-
     //filter
     const {
         filteredData,
@@ -54,6 +48,28 @@ export function CheckSchedule() {
         searchName: (item) => [item.nome, item.dataInicio],
     });
 
+    const [appointmentId, setAppointmentId] = useState<number>(0);
+
+    async function acceptAppointment(id: number) {
+        await acceptAppointment(id).then(() => {
+            handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+        }).catch((error) => {
+            console.error("Erro ao concluir o agendamento:", error);
+        });
+    }
+
+    async function declineAppointment(id:number) {
+        await refuseAppointment(id).then(() => {
+            handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
+        }).catch((error) => {
+            console.error("Erro ao recusar o agendamento:", error);
+        });
+    }
+
+    function handleModal(id: number, type: modalTypes) {
+        setAppointmentId(id);
+        setOpenModal(type);
+    }
     return (
         <>
             <div className={styles.containerCheckSchedule}>
@@ -75,22 +91,28 @@ export function CheckSchedule() {
                     {filteredData.length > 0 ? filteredData.map((card) => (
                         <CardCheckSchedule
                             key={card.agendamentoId}
-                            RescheduleClick={() => setOpenModal("reschedule")}
-                            AcceptScheduleClick={() => setOpenModal("accept")}
-                            DeclineScheculeClick={() => setOpenModal("decline")}
-                            RegisterAbsenceClick={() => setOpenModal("registerAbsence")}
+                            RescheduleClick={() => {
+                                handleModal(card.agendamentoId, "reschedule");
+                            }}
+                            AcceptScheduleClick={() => {
+                                handleModal(card.agendamentoId, "accept");
+                            }}
+                            DeclineScheculeClick={() => {
+                                handleModal(card.agendamentoId, "decline");
+                            }}
+                            RegisterAbsenceClick={() => {
+                                handleModal(card.agendamentoId, "registerAbsence");
+                            }}
                             cardData={card}
                         />
                     )) : <p>Nenhum agendamento encontrado.</p>}
-
-
                 </div>
             </div>
             {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Reagendamento enviado", "O reagendamento foi enviado com sucesso para o aluno.")} />}
 
-            {openModal === "accept" && <TimerModal callSuccessModal={() => handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito e confirmado.")} isMobile={isMobile} closeThen={() => setOpenModal("success")} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
+            {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 
-            {openModal === "decline" && <TimerModal callSuccessModal={() => handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.")} isMobile={isMobile} closeThen={() => setOpenModal("success")} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
+            {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal("success")} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
 
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 

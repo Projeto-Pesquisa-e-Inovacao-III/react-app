@@ -6,9 +6,10 @@ import { useEffect } from "react";
 import { format, parse, parseISO } from "date-fns";
 import UserAvatar from "../UserAvatar/UserAvatar";
 
-type dataCardProps = {
+export type dataCardProps = {
     agendamentoId?: number;
     nome?: string;
+    personalNome?: string;
     idade?: number;
     tipo?: string;
     local?: string;
@@ -33,7 +34,7 @@ type dataCardProps = {
     horaInicio?: string;
     horaFim?: string;
     tipoAula?: string;
-    status?: string | "PENDENTE_PERSONAL_APROVACAO" | "student_pending" | "schedule_pending" | "schedule_pending_past" | "done" | "cancelled";
+    status?: string | "PENDENTE_PERSONAL_APROVACAO" | "student_pending" | "APROVADO" | "schedule_pending_past" | "done" | "cancelled";
 }
 
 export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
@@ -70,9 +71,9 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                 <div className={styles.statusIndicatorCheckSchedule}>
                     {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação aluno)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
-                    {cardData.status === "schedule_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
+                    {cardData.status === "APROVADO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
                     {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
-                    {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
+                    {cardData.status === "CANCELADO_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo personal" />)}
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>

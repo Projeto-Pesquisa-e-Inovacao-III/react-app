@@ -169,11 +169,11 @@ export default function NewEvent(
                 console.log("Evento salvo com sucesso:", response.data);
                 console.log("seguindo para inserir na lista")
 
-                // await handleInsertAddress(e).then(() => {
-                //     console.log("Endereço inserido com sucesso.");
-                // }).catch(error => {
-                //     console.error("Erro ao inserir endereço:", error);
-                // });
+                await handleInsertAddress(e).then(() => {
+                    console.log("Endereço inserido com sucesso.");
+                }).catch(error => {
+                    console.error("Erro ao inserir endereço:", error);
+                });
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
             });

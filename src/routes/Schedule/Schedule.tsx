@@ -13,6 +13,8 @@ import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
+import { format, parse, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | null;
 
@@ -22,11 +24,7 @@ export default function Schedule() {
     const type = useContext(TypeContext);
     console.log("User type in Schedule:", type?.type);
 
-    const eventsMock = [
-        { id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-11-22", hour: "12:00:00" },
-    ];
-    const [events, setEvents] = useState(eventsMock);
+    const [events, setEvents] = useState([]);
 
     const [openModal, setOpenModal] = useState<ModalType>(null);
 
@@ -46,7 +44,6 @@ export default function Schedule() {
 
     const [searchParams] = useSearchParams();
 
-
     useEffect(() => {
         setClickedDate("");
 
@@ -62,7 +59,14 @@ export default function Schedule() {
         retry: false,
     })
 
+    const userAppointments = useQuery({
+        queryKey: ["userAppointments"],
+        queryFn: () => findUserAppointments(),
+        retry: false,
+        select: (res) => res.data
+    })
 
+    console.log("User appointments data:", appointments.data);
     return (
         <>
             {type?.type === "personal" ? (
@@ -96,12 +100,13 @@ export default function Schedule() {
                                     handleButtonClick={() => setOpenModal("newEvent")} />
                             </div>
 
-                            {events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
+                            {userAppointments.data?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
-                                        date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
-                                        initialHour={`${event.hour.replace(":", "h").split(":")[0]}`}
-                                        finalHour={`${(parseInt(event.hour.replace(":", "h").split(":")[0]) + 1)}h00`}
+                                        data={event}
+                                        date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", {locale: ptBR})}`}
+                                        initialHour={`${event.data.replace(":", "h").split("T")[1].slice(0, 5)}`}
+                                        finalHour={`${(parseInt(event.data.replace(":", "h").split("T")[1].slice(0, 2)) + 1)}h00`}
                                         handleCancel={() => setOpenModal("cancel")}
                                         handleReschedule={() => setOpenModal("reschedule")}
                                         isMobile={isMobile}

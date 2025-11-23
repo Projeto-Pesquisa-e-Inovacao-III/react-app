@@ -6,38 +6,44 @@ import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
 import { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
+import { findAppointmentById } from '../../constants/schedule';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
 
-
     const type: string = useOutletContext();
 
-    const dataMocked = {
-        id: 1,
-        clientName: "João Silva",
-        age: 28,
-        type: "Personal",
-        phone: "(11) 98765-4321",
-        local: "Academia FitLife",
-        address: "Rua das Flores, 123, São Paulo, SP",
-        date: "2025-11-15",
-        initialHour: "14:00",
-        finalHour: "15:00",
-        duration: "60 minutos",
-        status: "pending"
-    }
+    const [searchParams] = useSearchParams();
 
-    const date = new Date(`${dataMocked.date}T${dataMocked.initialHour}`);
+    useEffect(() => {
+        console.log("ID:", searchParams.get('id'));
+    }, []);
+
+    const appointment = useQuery({
+        queryKey: ['appointmentDetails', searchParams.get('id')],
+        queryFn: () => findAppointmentById(Number(searchParams.get('id'))),
+        enabled: !!searchParams.get('id'),
+        select: (res) => res.data,
+    });
+
+    useEffect(() => {
+        console.log("STATUS QUERY:", appointment.status);
+        console.log("DADOS:", appointment.data);
+        console.log("ERRO:", appointment.error);
+    }, [appointment.status]);
+
+
+    const date = new Date(`${appointment.data?.dataInicio}`);
     const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
     const formattedDate = `${date.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
-    })} das ${dataMocked.initialHour} às ${dataMocked.finalHour}`;
+    })} das ${appointment.data?.dataInicio.split('T')[1].slice(0, 5)} às ${appointment.data?.dataFim.split('T')[1].slice(0, 5)}`;
 
     const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
 
@@ -47,19 +53,19 @@ export default function ScheduleDetails() {
             <div className={styles.wrapperContent}>
                 <div className={styles.title}>
                     <h1>Detalhes do agendamento</h1>
-                    {dataMocked.status === "done" &&
+                    {appointment.data?.status === "done" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusDone}>Concluído</span>
                         </div>
                     }
 
-                    {dataMocked.status === "pending" &&
+                    {appointment.data?.status === "pending" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusPending}>Pendente</span>
                         </div>
                     }
 
-                    {dataMocked.status === "cancelled" &&
+                    {appointment.data?.status === "CANCELADO_PERSONAL" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusCancelled}>Cancelado</span>
                         </div>
@@ -71,13 +77,13 @@ export default function ScheduleDetails() {
                             <span><CalendarDays /></span><span>{formattedDate}</span>
                         </div>
                         <div className={styles.textWithIcon}>
-                            <span><Clock /></span><span>{dataMocked.duration}</span>
+                            <span><Clock /></span><span>{appointment.data?.duracaoMinutos} minutos</span>
                         </div>
                     </div>
                 </div>
 
-                {type === "student" &&
-                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
+                {type === "aluno" &&
+                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal.nome} subtitle={`Idade: ${appointment.data?.personal.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal.avatarUrl} />
                 }
 
                 {type === "personal" &&
@@ -87,13 +93,13 @@ export default function ScheduleDetails() {
                 <div className={styles.contentDetails}>
                     <h2 className={styles.subtitle}>Detalhes</h2>
                     <div className={styles.planDetails}>
-                        <span className={styles.planDetailsDescription}>Tipo: {dataMocked.type}</span>
-                        <span className={styles.planDetailsDescription}>Local: {dataMocked.local}</span>
-                        <span className={styles.planDetailsDescription}>Endereço: {dataMocked.address}</span>
+                        <span className={styles.planDetailsDescription}>Tipo: {appointment.data?.endereco.tipo}</span>
+                        {/* <span className={styles.planDetailsDescription}>Local: {dataMocked.local}</span> */}
+                        <span className={styles.planDetailsDescription}>Endereço: {appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
                     </div>
                 </div>
             </div>
-            {dataMocked.status === "pending" &&
+            {appointment.data?.status === "pending" &&
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
                     {type === "personal" && today > formattedDate &&

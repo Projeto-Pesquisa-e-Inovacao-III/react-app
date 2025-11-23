@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { parseISO } from "date-fns";
 
 type Props = {
-  events?: { title: string; data: string; hour: string }[];
+  events?: { agendamentoId: number; data: string; hour: string }[];
   isMobile?: boolean;
 }
 
@@ -17,6 +17,8 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
   const nav = useNavigate();
+
+  console.log("events in calendar:", events);
 
   return (
     <div className="container-calendar">
@@ -60,10 +62,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
             const clickedDate = arg.date.toISOString().split("T")[0];
 
-            const appointment = events?.find(event => event.data === clickedDate) || null;
-
+            const appointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
             if (appointment !== null) {
-              nav(`/schedule-details`);
+              nav(`/schedule-details?id=${appointment.agendamentoId}`);
               return
             }
 
