@@ -11,6 +11,7 @@ import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
+import { useQueryClient } from "@tanstack/react-query";
 
 const initialLoginState = {
   email: "",
@@ -32,7 +33,6 @@ function reducer(state: any, action: any) {
 export default function Login() {
   const isMobile = useMobile();
   
- 
   const [login, dispatch] = useReducer(reducer, initialLoginState);
 
   const [successLogin, setSuccessLogin] = useState<boolean>(false);
@@ -44,7 +44,10 @@ export default function Login() {
     dispatch({ type: 'setPassword', payload: "123456789aA!" });
   }
 
+  const queryClient = useQueryClient();
   function navToHome() {
+    queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
+
     nav("/home");
     setSuccessLogin(false);
     return;
@@ -52,7 +55,6 @@ export default function Login() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Handle login logic here
     userService
       .login(login.email, login.password)
       .then((res) => {
@@ -78,8 +80,6 @@ export default function Login() {
         console.log(err)
       });
   }
-
-  // ... (add this import at the top of the file)
 
   return (
     <>

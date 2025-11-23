@@ -57,3 +57,7 @@ export function verifyCode(number: string, code: string) {
 export function changePassword(oldPassword: string, newPassword: string) {
    return api.post(`/usuarios/mudar-senha`, { senhaAntiga: oldPassword, senhaNova: newPassword })
 }
+
+export async function isAuthenticated() {
+   return await api.get (`/usuarios/auth`)
+}

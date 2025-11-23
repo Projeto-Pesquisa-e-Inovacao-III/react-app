@@ -29,6 +29,10 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
+export function findPersonalRequests() {
+    return api.get("/agendamentos/solicitacoes");
+}
+
 export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
 }

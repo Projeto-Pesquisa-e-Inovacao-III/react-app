@@ -60,8 +60,12 @@ export function Packages() {
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
 
     async function handleGetProductsExhibitions() {
-        const response = await getProductsExhibitions();
-        setProductsExhibitions(response.data);
+        await getProductsExhibitions().then(
+            (res) => {
+                console.log("Produtos de Exibição obtidos com sucesso!", res);
+                setProductsExhibitions(res.data);
+            }
+        );
     }
 
     function handleSuccessModalInfos(title: string, content: string) {
@@ -105,9 +109,20 @@ export function Packages() {
         return productsExhibitions.find(pkg => pkg.id === id);
     }
 
+    //temp
+    function safeParseDescricao(descricao: string) {
+        try {
+            return JSON.parse(descricao);
+        } catch {
+            return descricao;
+        }
+    }
+
+
     useEffect(() => {
         handleGetProductsExhibitions();
-    }, [productsExhibitions]);
+        console.log("Fetched products exhibitions", productsExhibitions);
+    }, []);
 
 
     return (
@@ -130,19 +145,19 @@ export function Packages() {
                 </div>
 
                 <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
-                    {productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
+                    {productsExhibitions.length > 0 ? (productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
                         pacote.status === "ATIVO" &&
                         <PackageCard
                             key={pacote.id! + pacote.titulo + index}
                             {...pacote}
-                            descricao={JSON.parse(pacote.descricao)}
+                            descricao={safeParseDescricao(pacote.descricao)}
                             onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
                             setHandleDelete={() => handleDeletePackage(pacote.id!)}
                             setHandleEdit={() => handleUpdatePackage(pacote.id!)}
                         />
-                    ))}
+                    ))) : (<p>Não há pacotes disponíveis no momento.</p>)}
                     {/* dados mockados */}
                     {/* 
                     {packagesMock.map((pacote, index) => (

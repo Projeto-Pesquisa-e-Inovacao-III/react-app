@@ -2,12 +2,14 @@ import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardChe
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
+import { findPersonalRequests } from "../../../constants/schedule";
+import { useQuery } from "@tanstack/react-query";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
 
@@ -26,118 +28,30 @@ export function CheckSchedule() {
         setOpenModal("success");
     }
 
+    const personalRequests = useQuery({
+        queryKey: ["personalRequests"],
+        queryFn: () => findPersonalRequests(),
+        retry: false,
+    });
 
-    const dataCard = [
-        {
-            id: 1,
-            clientName: "João Silva",
-            age: 28,
-            type: "Personal",
-            phone: "(11) 98765-4321",
-            local: "Academia FitLife",
-            address: "Rua das Flores, 123, São Paulo, SP",
-            date: "15/11/2025",
-            initialHour: "14:00",
-            finalHour: "15:00",
-            status: "done"
-        },
-        {
-            id: 2,
-            clientName: "Maria Oliveiraaaaaa",
-            age: 32,
-            type: "Residencial",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "15/11/2025",
-            initialHour: "13:00",
-            finalHour: "14:00",
-            status: "cancelled"
-        },
-        {
-            id: 3,
-            clientName: "Maria Oliveira",
-            age: 32,
-            type: "Funcional",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "15/11/2025",
-            initialHour: "15:00",
-            finalHour: "16:00",
-            status: "pending"
-        },
-        {
-            id: 4,
-            clientName: "Maria Oliveira",
-            age: 32,
-            type: "Personal",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "16/11/2025",
-            initialHour: "14:00",
-            finalHour: "15:00",
-            status: "pending"
-        },
-        {
-            id: 5,
-            clientName: "Maria Oliveira",
-            age: 32,
-            type: "Residencial",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "17/11/2025",
-            initialHour: "13:00",
-            finalHour: "14:00",
-            status: "pending"
-        },
-        {
-            id: 6,
-            clientName: "Maria Oliveira",
-            age: 32,
-            type: "Funcional",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "18/11/2025",
-            initialHour: "15:00",
-            finalHour: "16:00",
-            status: "pending"
-        },
-        {
-            id: 7,
-            clientName: "Maria Oliveira",
-            age: 32,
-            type: "Personal",
-            phone: "(11) 91234-5678",
-            local: "Academia Power",
-            address: "Avenida Brasil, 456, São Paulo, SP",
-            date: "19/11/2025",
-            initialHour: "16:00",
-            finalHour: "17:00",
-            status: "student_pending"
-        },
-        {
-            id: 8,
-            clientName: "Carlos Pereira",
-            age: 40,
-            type: "Funcional",
-            phone: "(11) 99876-5432",
-            local: "Academia Strong",
-            address: "Rua das Palmeiras, 789, São Paulo, SP",
-            date: "11/11/2025",
-            initialHour: "17:00",
-            finalHour: "18:00",
-            status: "schedule_pending"
-        },
-    ];
+    useEffect(() => {
+        if (personalRequests.data) {
+            // You can handle personalRequests.data here if needed
+        }
+    }, [personalRequests.data]);
 
     //filter
-    const { filteredData, hasFilters, filterSearch, setFilterSearch, filterStatus, setFilterStatus, clearFilters } = useSearchFilter(dataCard, {
+    const {
+        filteredData,
+        hasFilters,
+        filterSearch,
+        setFilterSearch,
+        filterStatus,
+        setFilterStatus,
+        clearFilters
+    } = useSearchFilter(personalRequests.data?.data.content, {
         searchStatus: (item) => item.status,
-        searchName: (item) => [item.clientName, item.date],
+        searchName: (item) => [item.nome, item.dataInicio],
     });
 
     return (
@@ -160,7 +74,7 @@ export function CheckSchedule() {
                 <div className={styles.cardsCheckSchedule}>
                     {filteredData.length > 0 ? filteredData.map((card) => (
                         <CardCheckSchedule
-                            key={card.id}
+                            key={card.agendamentoId}
                             RescheduleClick={() => setOpenModal("reschedule")}
                             AcceptScheduleClick={() => setOpenModal("accept")}
                             DeclineScheculeClick={() => setOpenModal("decline")}

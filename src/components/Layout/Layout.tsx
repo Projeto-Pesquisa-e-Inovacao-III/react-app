@@ -2,10 +2,11 @@ import UserHeaderMobile from "../UserHeader/UserHeaderMobile/UserHeaderMobile";
 import UserHeaderDesktop from "../UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { isAuthenticated } from "../../services/authService";
 import { LogoHeaderMobile } from "../LogoHeaderMobile/LogoHeaderMobile";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
+import { isAuthenticated } from "../../constants/user";
+import { useQuery } from "@tanstack/react-query";
 
 
 const titles = {
@@ -33,26 +34,47 @@ const titles = {
 export default function Layout() {
     const isMobile = useMobile();
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-    const isLogged = isAuthenticated();
 
     const nav = useNavigate();
 
-    const type = useContext(TypeContext);
-
     const location = useLocation();
-
-    const hideLogoPaths = ["/more-options", "/", "/login", "/forgot-password", "/register", "/logout"].includes(location.pathname);
-    const exceptions = ["/", "/login", "/register", "/forgot-password"];
 
     useEffect(() => {
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 
-    // useEffect(() => {
-    //     if (!isLogged) {
-    //         nav("/login");
-    //     }
-    // }, []);
+    const exceptions = ["/", "/login", "/register", "/forgot-password"];
+    const hideLogoPaths = [...exceptions, "/more-options", "/logout"].includes(location.pathname);
+
+    const isLoggedIn = useQuery({
+        queryKey: ["isAuthenticated"],
+        queryFn: () => isAuthenticated(),
+        retry: false,
+        refetchOnWindowFocus: false,
+        select: (res) => res.data,
+    });
+
+
+    useEffect(() => {
+        const notAuthenticated = isLoggedIn.isError || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
+
+        if (notAuthenticated && !exceptions.includes(location.pathname)) {
+            nav("/login");
+        }
+    }, [isLoggedIn.isLoading, isLoggedIn.data, isLoggedIn.isError, location.pathname]);
+
+    const context = useContext(TypeContext);
+
+    if (!context) throw new Error("TypeContext não encontrado");
+
+    const { type, setType } = context;
+
+    useEffect(() => {
+        if (isLoggedIn.data?.autentificado) {
+            const backendType = isLoggedIn.data.user.tipo.toLowerCase();
+            setType(backendType === "personal" ? "personal" : "aluno");
+        }
+    }, [isLoggedIn.data]);
 
 
     return (

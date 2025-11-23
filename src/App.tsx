@@ -27,14 +27,21 @@ import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 
 //todo: warning maximum size of 5mb for user image
 
-export const TypeContext = createContext<"student" | "personal">("student");
+type UserType = "aluno" | "personal";
+
+type TypeContextType = {
+  type: UserType;
+  setType: React.Dispatch<React.SetStateAction<UserType>>;
+};
+
+export const TypeContext = createContext<TypeContextType | null>(null);
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("student");
+  const [type, setType] = useState<UserType>("aluno");
 
   return (
     <>
-      <TypeContext.Provider value={type}>
+      <TypeContext.Provider value={{ type, setType }}>
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>

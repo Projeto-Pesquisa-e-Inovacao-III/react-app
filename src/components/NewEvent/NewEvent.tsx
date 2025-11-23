@@ -36,7 +36,6 @@ type AddressState = {
     complement: string;
 };
 
-// todo: refacotr address state to a single object. 
 export default function NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
@@ -159,7 +158,7 @@ export default function NewEvent(
                     uf: addressData.state
                 }
             },
-            personalId: 8,
+            personalId: 1,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -170,17 +169,17 @@ export default function NewEvent(
                 console.log("Evento salvo com sucesso:", response.data);
                 console.log("seguindo para inserir na lista")
 
-                await handleInsertAddress(e).then(() => {
-                    console.log("Endereço inserido com sucesso.");
-                }).catch(error => {
-                    console.error("Erro ao inserir endereço:", error);
-                });
+                // await handleInsertAddress(e).then(() => {
+                //     console.log("Endereço inserido com sucesso.");
+                // }).catch(error => {
+                //     console.error("Erro ao inserir endereço:", error);
+                // });
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
             });
-
         if (calculatedTitle && newEventDate) {
             openModal();
+            return;
         }
 
     }

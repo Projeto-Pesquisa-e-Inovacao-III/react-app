@@ -42,6 +42,7 @@ export function Overview() {
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
+        retry: false,
     });
 
 
@@ -49,15 +50,18 @@ export function Overview() {
         queries: [
             {
                 queryKey: ["total", "PRESENCIAL"],
-                queryFn: () => getTotalByClassType("PRESENCIAL")
+                queryFn: () => getTotalByClassType("PRESENCIAL"),
+                retry: false,
             },
             {
                 queryKey: ["total", "RESIDENCIAL"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL")
+                queryFn: () => getTotalByClassType("RESIDENCIAL"),
+                retry: false,
             },
             {
                 queryKey: ["total", "FUNCIONAL"],
-                queryFn: () => getTotalByClassType("FUNCIONAL")
+                queryFn: () => getTotalByClassType("FUNCIONAL"),
+                retry: false,
             }
         ]
     })

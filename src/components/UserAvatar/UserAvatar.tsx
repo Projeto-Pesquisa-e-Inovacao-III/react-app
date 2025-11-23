@@ -3,8 +3,13 @@ import { UserImg } from '../UserImg/UserImg'
 import { BASE_URL } from '../../system';
 import { getUserImage } from '../../constants/user';
 import { useQuery } from '@tanstack/react-query';
+import styles from "./UserAvatar.module.css"
 
-export default function UserAvatar() {
+interface UserAvatarProps {
+  foto?: string;
+}
+
+export default function UserAvatar({ foto }: UserAvatarProps) {
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
@@ -16,13 +21,11 @@ export default function UserAvatar() {
     },
     retry: false,
   })
-
-  return (
-
-    <>
+return (
+    <div className={styles.userAvatar}>
       {userImage.data ?
         <UserImg
-          Source={userImage.data || ""}
+          Source={foto ? foto : userImage.data || ""}
           Height={216}
           Width={216}
           Alt="foto"
@@ -30,6 +33,6 @@ export default function UserAvatar() {
         :
         <User width={216} height={216} />
       }
-    </>
+    </div>
   )
 }

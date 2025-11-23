@@ -3,19 +3,37 @@ import Button from "../Button/Button";
 import StatusSchedule from "../StatusSchedule/StatusSchedule";
 import styles from "./CardCheckSchedule.module.css";
 import { useEffect } from "react";
+import { format, parse, parseISO } from "date-fns";
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 type dataCardProps = {
-    id?: number;
-    clientName?: string;
-    age?: number;
-    type?: string;
-    phone?: string;
+    agendamentoId?: number;
+    nome?: string;
+    idade?: number;
+    tipo?: string;
     local?: string;
-    address?: string;
-    date?: string;
-    initialHour?: string;
-    finalHour?: string;
-    status?: string | "pending" | "student_pending" | "schedule_pending" | "schedule_pending_past" | "done" | "cancelled";
+    telefone?: {
+        ddd: string;
+        numero: string;
+        pais?: string;
+    };
+    endereco: {
+        cep: {
+            bairro: string
+            id: string
+            localidade: string
+            logradouro: string
+            uf: string
+        };
+        numero: string
+    }
+    foto: string;
+    dataInicio: string;
+    dataFim?: string;
+    horaInicio?: string;
+    horaFim?: string;
+    tipoAula?: string;
+    status?: string | "PENDENTE_PERSONAL_APROVACAO" | "student_pending" | "schedule_pending" | "schedule_pending_past" | "done" | "cancelled";
 }
 
 export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
@@ -26,9 +44,8 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
     cardData: dataCardProps
 }) {
     const today = new Date();
-    const [day, month, year] = cardData.date?.split("/").map(Number) || [0, 0, 0];
+    const [year, month, day] = cardData.dataInicio?.split("T")[0].split("-").map(Number) || [0, 0, 0];
     const scheduleDate = new Date(year, month - 1, day);
-
     function handleRescheduleClick() {
         RescheduleClick?.(true);
     }
@@ -52,38 +69,38 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
             <div className={styles.personalCheckScheduleCard}>
                 <div className={styles.statusIndicatorCheckSchedule}>
                     {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação aluno)" />)}
-                    {cardData.status === "pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
+                    {cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
                     {cardData.status === "schedule_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
                     {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "cancelled" && (<StatusSchedule dotColor="#FF0000" statusText="Agendamento cancelado" />)}
                 </div>
-                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "pending"})}>
+                <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>
-                        <img className={styles.imgCard} src="https://placehold.co/60x60/png" alt="" />
+                        <UserAvatar {...{ foto: cardData.foto }} />
                     </div>
                     <div className={styles.content}>
                         <div className={styles.titleName}>
-                            <h1>{cardData.clientName}</h1>
+                            <h1>{cardData.nome}</h1>
                         </div>
 
                         <div className={styles.textInTheRowCheckSchedule}>
-                            <span>Data: <span className={styles.textInRowCheckSchedule}>{cardData.date}</span></span>
-                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.initialHour} - {cardData.finalHour}</span></span>
+                            <span>Data: <span className={styles.textInRowCheckSchedule}>{format(parseISO(cardData.dataInicio), "dd/MM/yyyy")}</span></span>
+                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.dataInicio?.split("T")[1].slice(0, 5)} - {cardData.dataFim?.split("T")[1].slice(0, 5)}</span></span>
                         </div>
                         <div className={styles.textInTheRowCheckSchedule}>
-                            {/* <span>Nome: <span className={styles.textInRowCheckSchedule}>{cardData.clientName}</span></span> */}
-                            <span>Idade: <span className={styles.textInRowCheckSchedule}>{cardData.age} anos</span></span>
+                            <span>Nome: <span className={styles.textInRowCheckSchedule}>{cardData.nome}</span></span>
+                            <span>Idade: <span className={styles.textInRowCheckSchedule}>{cardData.idade} anos</span></span>
                         </div>
                         <div className={styles.textInTheRowCheckSchedule}>
-                            <span>Tipo: <span className={styles.textInRowCheckSchedule}>{cardData.type}</span></span>
+                            <span>Tipo: <span className={styles.textInRowCheckSchedule}>{cardData.tipoAula}</span></span>
                         </div>
-                        <span>Celular: {cardData.phone}</span>
+                        <span>Celular: {cardData.telefone?.ddd} {cardData.telefone?.numero}</span>
                         <span>Local: {cardData.local}</span>
-                        <span>Endereço: {cardData.address}</span>
+                        <span>Endereço: {cardData.endereco.cep.logradouro}, {cardData.endereco.numero} - {cardData.endereco.cep.uf}</span>
 
                     </div>
                 </div>
-                {cardData.status && cardData.status === "pending" && (
+                {cardData.status && cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (
                     <div className={styles.buttons}>
                         <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleAcceptClick} />
                         <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleDeclineClick} />
@@ -91,7 +108,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     </div>
                 )}
 
-                {cardData.status && cardData.status === "schedule_pending" && scheduleDate < today && (
+                {cardData.status && cardData.status === "schedule_pending" && scheduleDate.getTime() < today.getTime() && (
                     <div className={styles.buttons}>
                         <Button type="button" typeButton="decline" title="Registrar ausência" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRegisterAbsenceClick} />
                     </div>

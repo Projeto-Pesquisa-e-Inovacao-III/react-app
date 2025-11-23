@@ -15,11 +15,16 @@ export default function useSearchFilter<T>(
     const [filterFinalDate, setFilterFinalDate] = useState<string>("");
 
     const filteredData = useMemo(() => {
+        if (!data) return [];
+        
         const normalizedSearch = filterSearch.toLowerCase();
+
+
         const normalizedStatus = filterStatus.toLowerCase();
 
         return data.filter(item => {
             const matchesStatus = filterConfig?.searchStatus ? filterConfig.searchStatus(item).toLowerCase().includes(normalizedStatus) : true;
+            
             const matchesSearch = filterConfig?.searchName ? filterConfig.searchName(item).some(field => field.toLowerCase().includes(normalizedSearch)) : true;
 
             if (filterConfig?.dateFilter) {

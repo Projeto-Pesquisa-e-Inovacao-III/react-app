@@ -32,5 +32,3 @@ export const cardsArray = (nav: (path: string) => void) => [
         typeUser: "usuario",
     },
 ];
-
-// type: Plano atual: Nenhum

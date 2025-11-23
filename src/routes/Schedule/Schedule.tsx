@@ -13,7 +13,6 @@ import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
-import axios from "axios";
 
 type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | null;
 
@@ -21,8 +20,7 @@ export default function Schedule() {
     const isMobile = useMobile();
 
     const type = useContext(TypeContext);
-
-    const isPersonal = type === "personal";
+    console.log("User type in Schedule:", type?.type);
 
     const eventsMock = [
         { id: 0, title: "Reunião", date: "2025-11-21", hour: "11:00:00" },
@@ -39,9 +37,7 @@ export default function Schedule() {
     const [successModalInfo, setSuccessModalInfo] = useState({ title: "", description: "" });
     function handleSuccessModalInfo(title: string, description: string) {
         setSuccessModalInfo({ title, description });
-        console.log(successModalInfo);
         setOpenModal("success");
-        console.log(openModal);
     }
 
     useEffect(() => {
@@ -69,8 +65,8 @@ export default function Schedule() {
 
     return (
         <>
-            {isPersonal ? (
-                <CalendarWeek insertedEvents={appointments.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
+            {type?.type === "personal" ? (
+                <CalendarWeek insertedEvents={appointments.data?.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
@@ -156,6 +152,8 @@ export default function Schedule() {
                     content={successModalInfo.description}
                 />
             )}
+
+            
 
             {openModal === "cancel" && (
                 <TimerModal

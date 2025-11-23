@@ -1,6 +1,7 @@
 import styles from './PackageCard.module.css'
 import SmallerButton from '../SmallerButton';
 import classnames from 'classnames';
+import { useEffect } from 'react';
 
 type PackageCardProps = {
     titlebtn?: string;
@@ -24,6 +25,12 @@ export function PackageCard(props: PackageCardProps) {
     function handleOpenDelete() {
         props.setHandleDelete(true);
     }
+
+    useEffect(() => {
+        if(typeof props.descricao === 'string'){
+            console.warn("PackageCard: 'descricao' prop should be an array of strings, but received a string.");
+        }
+    }, []);
 
     return (
         <div
@@ -67,7 +74,8 @@ export function PackageCard(props: PackageCardProps) {
                     [styles.cardBenefitsListMobile]: isMobile,
                 })}
             >
-                {(props.descricao || []).map((benefit, index) => (
+                {/* temp */}
+                {(typeof props.descricao === "string" ? [] : props.descricao ?? []).map((benefit, index) => (
                     <li
                         key={index}
                         className={classnames(styles.benefitItem, {

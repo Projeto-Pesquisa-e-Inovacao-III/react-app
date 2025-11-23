@@ -16,10 +16,6 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-  useEffect(() => {
-    console.log(events?.[0].data)
-  }, []);
-
   const nav = useNavigate();
 
   return (
