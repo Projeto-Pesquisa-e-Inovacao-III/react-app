@@ -2,7 +2,6 @@ import classNames from "classnames";
 import Button from "../Button/Button";
 import StatusSchedule from "../StatusSchedule/StatusSchedule";
 import styles from "./CardCheckSchedule.module.css";
-import { useEffect } from "react";
 import { format, parse, parseISO } from "date-fns";
 import UserAvatar from "../UserAvatar/UserAvatar";
 

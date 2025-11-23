@@ -2,7 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseISO } from "date-fns";
 
@@ -69,7 +69,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
             }
 
             nav(`/schedule/?date=${clickedDate}`);
-
+            return
           }}
           headerToolbar={{
 
