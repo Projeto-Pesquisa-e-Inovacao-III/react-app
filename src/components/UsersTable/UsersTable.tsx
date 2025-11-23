@@ -5,15 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../system";
 import styles from "./UsersTable.module.css";
 import classNames from "classnames";
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 export default function UsersTable(props) {
     const isMobile = useMobile();
 
     const nav = useNavigate();
 
-    function handleViewUserData() {
-        nav("/users/view-user-data");
+    function handleViewUserData(id: number) {
+        nav("/users/view-user-data?id=" + id);
     }
+
+    console.log("USERS TABLE PROPS:", props.users);
 
     return (
         <div className={classNames(styles.usersTableContainer, {
@@ -31,19 +34,7 @@ export default function UsersTable(props) {
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
                         })}>
-                            {user.caminhoFoto ? (
-                                <img
-                                    className={styles.userImage}
-                                    src={`${BASE_URL}/usuarios/foto/${user.caminhoFoto}`}
-                                    alt={user.nome}
-                                />
-                            ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={classNames(styles.lucideUserIcon, styles.lucideUser)}>
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
-                            )}
-
+                            <UserAvatar foto={user.caminhoFoto} />
                             <div className={styles.userData}>
                                 <b>
                                     {user.nome}
@@ -54,7 +45,7 @@ export default function UsersTable(props) {
                             </div>
                         </div>
                         <div>
-                            <SmallerButton handleButtonClick={handleViewUserData} title="Ver Dados" />
+                            <SmallerButton handleButtonClick={() => handleViewUserData(user.id)} title="Ver Dados"/>
                         </div>
                     </div>
                 ))}

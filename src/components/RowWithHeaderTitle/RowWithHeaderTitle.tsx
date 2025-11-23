@@ -30,7 +30,7 @@ export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
                             <p>{plan.subtitle}</p>
                         </div>
                         {props.includeDetailsButton && props.handleDetailsClick && (
-                            <div className={classNames(styles.rowButton)} onClick={props.handleDetailsClick}>
+                            <div className={classNames(styles.rowButton)} onClick={() => props.handleDetailsClick(plan.id)}>
                                 <SmallerButton title={props.buttonLabel || "Detalhes"} />
                             </div>
                         )}

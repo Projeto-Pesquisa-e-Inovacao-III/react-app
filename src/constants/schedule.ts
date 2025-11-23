@@ -5,7 +5,7 @@ export function insertAppointment(data: Schedule) {
     return api.post("/agendamentos", data);
 }
 
-export function updateAppointment(data: any) {
+export function rescheduleAppointment(data: Schedule) {
     return api.put("/agendamentos/reagendar", data);
 }
 

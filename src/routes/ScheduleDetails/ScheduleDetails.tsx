@@ -59,7 +59,7 @@ export default function ScheduleDetails() {
                         </div>
                     }
 
-                    {appointment.data?.status === "pending" &&
+                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusPending}>Pendente</span>
                         </div>
@@ -99,7 +99,7 @@ export default function ScheduleDetails() {
                     </div>
                 </div>
             </div>
-            {appointment.data?.status === "pending" &&
+            {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
                     {type === "personal" && today > formattedDate &&

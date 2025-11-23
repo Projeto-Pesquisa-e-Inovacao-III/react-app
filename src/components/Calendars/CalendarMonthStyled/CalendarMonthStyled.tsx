@@ -5,11 +5,12 @@ import "./mobile.css";
 import "./desktop.css";
 import { use, useEffect, useRef, useState } from "react";
 import type { EventDTO } from "../../../models/calendar";
+import type { Schedule } from "../../../models/schedule";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
   clickedDateStr?: string;
-  createdEvents?: EventDTO[];
+  createdEvents?: Schedule[];
   eventToReschedule?: string;
   isMobile: boolean;
 };
@@ -17,16 +18,17 @@ type Props = {
 
 export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile }: Props) {
 
-  const databaseEvents = createdEvents?.map((event: EventDTO) => {
-    return { title: event.title, date: event.date };
-  });
+  const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
+    return { 
+      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data 
+    };
+  }) : [];
 
-  const eventsMock = [
-    { title: "Reunião", date: "2025-09-15" },
-    { title: "Aniversário", date: "2025-09-22" },
-  ];
+  useEffect(() => {
+    console.log("databaseEvents", databaseEvents);
+  }, []);
 
-  const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
+  const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
   const [newEventDate, setNewEventDate] = useState<string>("");
   const calendarRef = useRef<FullCalendar>(null);
 
@@ -63,10 +65,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           dayHeaderFormat={{ weekday: 'short' }}
           dateClick={(info) => setNewEventDate(info.dateStr)}
           dayCellClassNames={(arg) => {
-            const disabledDays = events.map((e) => e.date);
+            const disabledDays = events.map((e) => e.data.split("T")[0]);
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            if (dateStr === eventToReschedule)
+            if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
               return ["disabled-day"];
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];

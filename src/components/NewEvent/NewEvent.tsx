@@ -11,7 +11,7 @@ import { MapPin } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { createAddress } from "../../constants/address";
 import type { Address } from "../../models/address";
-import { insertAppointment } from "../../constants/schedule";
+import { insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
 
 type NewEventProps = {
@@ -44,10 +44,6 @@ export default function NewEvent(
     const [selectedType, setSelectedType] = useState<string>("");
     const [selectedLocation, setSelectedLocation] = useState<string>("");
 
-    useEffect(() => {
-        console.log("selectedType", selectedType)
-    }, [selectedType]);
-
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
         address: "",
@@ -60,7 +56,7 @@ export default function NewEvent(
     const [step, setStep] = useState<number>(1);
 
 
-    let eventToReschedule = insertedEvents?.find(event => event?.id === rescheduleId);
+    let eventToReschedule = rescheduleId ? insertedEvents?.find(event => event?.agendamentoId === rescheduleId) : undefined;
 
     const formattedDate = useMemo(() => {
         if (newEventDate && newEventStartHour) {
@@ -182,6 +178,53 @@ export default function NewEvent(
             return;
         }
 
+    }
+
+    async function handleRescheduleEvent(e: React.FormEvent) {
+        console.log("Reagendando evento...");
+        e.preventDefault();
+
+        if (!newEventDate || !newEventStartHour) {
+            alert("Por favor, selecione uma data e horário para o evento.");
+            return;
+        }
+
+        const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
+
+
+        const payload: Schedule = {
+            idAgendamento: rescheduleId ? rescheduleId : undefined,
+            data: new Date(`${newEventDate}T${newEventStartHour}`),
+            descricao: calculatedTitle,
+            novoEndereco: {
+                numero: addressData.number,
+                complemento: addressData.complement,
+                unidade: "",
+                tipo: selectedLocation,
+                cep: {
+                    id: addressData.postalCode,
+                    logradouro: addressData.address,
+                    bairro: "",
+                    localidade: addressData.city,
+                    uf: addressData.state
+                }
+            },
+            personalId: 1,
+            tipoAulaProdutoContratado: selectedType.toUpperCase()
+        }
+
+
+        await rescheduleAppointment(payload).then(async response => {
+            console.log("Evento reagendado com sucesso:", response.data);
+
+            await handleInsertAddress(e).then(() => {
+                console.log("Endereço inserido com sucesso.");
+            }).catch(error => {
+                console.error("Erro ao inserir endereço:", error);
+            });
+        }).catch(error => {
+            console.error("Erro ao reagendar evento:", error);
+        });
     }
 
     const navigation = useNavigate();
@@ -318,7 +361,7 @@ export default function NewEvent(
                                         clickedDate={setNewEventDate}
                                         clickedDateStr={newEventDate ? newEventDate : clickedDate}
                                         createdEvents={insertedEvents}
-                                        eventToReschedule={eventToReschedule?.date}
+                                        eventToReschedule={eventToReschedule?.data}
                                         isMobile={isMobile}
                                     />
 
@@ -360,7 +403,12 @@ export default function NewEvent(
                             <form
                                 className={classnames(styles.inputInfosForm, { [styles.inputInfosFormMobile]: isMobile })}
                                 onSubmit={(e) => {
-                                    handleNewEvent(e);
+                                    if (!isReschedule) {
+                                        handleNewEvent(e);
+                                    }
+                                    if (isReschedule) {
+                                        handleRescheduleEvent(e);
+                                    }
                                 }}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                                     <div className={styles.inputGroupAddress}>

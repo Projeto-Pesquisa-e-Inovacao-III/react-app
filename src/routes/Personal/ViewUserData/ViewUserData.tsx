@@ -5,12 +5,26 @@ import styles from "./ViewUserData.module.css";
 import { useState } from "react";
 import Input from "../../../components/Inputs/Input/Input";
 import Select from "../../../components/Inputs/Select/Select";
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getById } from "../../../constants/user";
+import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
 
     const [openModalCreateTraining, setOpenModalCreateTraining] = useState(false);
     const [trainingDay, setTrainingDay] = useState("");
+
+    const [params] = useSearchParams();
+
+    const user = useQuery({
+        queryKey: ['userData', params.get("id")],
+        queryFn: () => getById(params.get("id") || ""),
+        enabled: !!params.get("id"),
+        select: (res) => res.data,
+    });
+    console.log(user.data)
 
     return (
         <>
@@ -20,15 +34,15 @@ export default function ViewUserData() {
                         <h1>Dados</h1>
                     </div>
                     <div className={styles.userDetails}>
-                        <img src="https://thispersondoesnotexist.com/" alt="" />
+                        <UserAvatar foto={user.data?.foto}/>
                         <div className={styles.wrapperInfos}>
                             <div className={styles.info}>
-                                <p><strong>Nome: </strong><span>João Silva</span></p>
-                                <p><strong>Idade: </strong><span> 30</span></p>
+                                <p><strong>Nome: </strong><span>{user.data?.nome}</span></p>
+                                <p><strong>Idade: </strong><span> {user.data?.idade}</span></p>
                             </div>
                             <div className={styles.info}>
-                                <p><strong>Email: </strong><span> joao.silva@example.com</span></p>
-                                <p><strong>Endereco: </strong><span> Rua das Flores, 123</span></p>
+                                <p><strong>Email: </strong><span> {user.data?.email}</span></p>
+                                <p><strong>Telefone: </strong><span> {user.data?.telefones[0].numeroCompleto}</span></p>
                             </div>
                         </div>
                     </div>

@@ -38,6 +38,10 @@ export function login(email: string, password: string) {
    return api.post(`/usuarios/login`, { email: email, senha: password })
 }
 
+export async function getById(id: string) {
+   return await api.get(`/alunos/${id}`)
+}
+
 export function softDelete(id: string) {
    return api.patch(`/usuarios/${id}`)
 }

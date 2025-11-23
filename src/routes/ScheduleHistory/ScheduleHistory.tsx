@@ -8,16 +8,20 @@ import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
+import { useQuery } from "@tanstack/react-query";
+import { findUserAppointments } from "../../constants/schedule";
+import type { Schedule } from "../../models/schedule";
 
 export default function ScheduleHistory() {
-    // const [initialDateFilter, setInitialDateFilter] = useState<string>("");
-    // const [finalDateFilter, setFinalDateFilter] = useState<string>("");
 
-    const eventsMock = [
-        { id: 0, title: "Funcional", date: "2025-11-11T00:00:00", hour: "11:00:00", address: "Rua A, 123", status: "concluido" },
-        { id: 0, title: "Funcional", date: "2025-11-11T00:00:00", hour: "11:00:00", address: "Rua A, 123", status: "concluido" },
-        { id: 1, title: "Personal", date: "2025-11-21T00:00:00", hour: "10:00:00", address: "Rua B, 456", status: "pendente" },
-    ];
+    // postalCode does not exist at this endpoint
+    const listOfAppointments = useQuery({
+        queryKey: ['userAppointments'],
+        queryFn: () => findUserAppointments(),
+        select: (res) => res.data,
+    })
+
+    console.log("APPOINTMENTS HISTORY:", listOfAppointments.data);
 
     const {
         filterSearch,
@@ -29,22 +33,23 @@ export default function ScheduleHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(eventsMock, {
-        searchName: (item) => [item.title, item.status],
-        dateFilter: (item) => item.date,
+    } = useSearchFilter(listOfAppointments.data ?? [], {
+        searchName: (item) => [item.tipoAula, item.agendamentoStatus],
+        dateFilter: (item) => item.data,
     });
 
 
     const data = filteredData.map((event) => ({
-        headerTitle: new Date(event.date).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
-        title: event.title,
-        subtitle: event.status === "concluido" ?
+        id: event.agendamentoId,
+        headerTitle: new Date(event.data).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
+        title: event.tipoAula,
+        subtitle: event.agendamentoStatus !== "APROVADO" ?
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                     <Dot color="#8BBE86" size={"30px"} />
                     <span>Status: Concluído</span>
                 </div>
-                <span>Endereço: {event.address}</span>
+                <span>Endereço: {event.endereco.bairro}</span>
             </div>
             :
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
@@ -52,14 +57,14 @@ export default function ScheduleHistory() {
                     <Dot color="#D7AC00" size={"30px"} />
                     <span>Status: Pendente</span>
                 </div>
-                <span>Endereço: {event.address}</span>
+                <span>Endereço: {event.endereco.bairro}</span>
             </div>
     }));
 
     const nav = useNavigate();
 
-    function handleDetailsClick() {
-        nav('/schedule-details');
+    function handleDetailsClick(id: number) {
+        nav('/schedule-details/?id=' + id);
     }
 
     return (

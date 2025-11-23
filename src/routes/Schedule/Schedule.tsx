@@ -46,7 +46,6 @@ export default function Schedule() {
 
     useEffect(() => {
         setClickedDate("");
-
         if (searchParams.get("date")) {
             setClickedDate(searchParams.get("date") || "");
             setOpenModal("newEvent");
@@ -57,6 +56,7 @@ export default function Schedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
         retry: false,
+        
     })
 
     const userAppointments = useQuery({
@@ -66,7 +66,7 @@ export default function Schedule() {
         select: (res) => res.data
     })
 
-    console.log("User appointments data:", appointments.data);
+    console.log("User appointments data:", userAppointments.data);
     return (
         <>
             {type?.type === "personal" ? (
@@ -101,7 +101,7 @@ export default function Schedule() {
                             </div>
 
                             {userAppointments.data?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
-                                <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
+                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         data={event}
                                         date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", {locale: ptBR})}`}
@@ -139,7 +139,7 @@ export default function Schedule() {
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
                         openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
-                        insertedEvents={events}
+                        insertedEvents={userAppointments.data}
                         insertEvent={setEvents}
                         title="Reagendar horário"
                         buttonTitle="Reagendar"

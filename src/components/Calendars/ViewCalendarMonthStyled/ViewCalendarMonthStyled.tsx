@@ -18,8 +18,6 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
   const nav = useNavigate();
 
-  console.log("events in calendar:", events);
-
   return (
     <div className="container-calendar">
       <div className="wrapper-callendar" id="wrapper-styled-callendar">

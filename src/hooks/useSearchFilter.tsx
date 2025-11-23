@@ -18,14 +18,16 @@ export default function useSearchFilter<T>(
         if (!data) return [];
         
         const normalizedSearch = filterSearch.toLowerCase();
-
-
         const normalizedStatus = filterStatus.toLowerCase();
 
         return data.filter(item => {
             const matchesStatus = filterConfig?.searchStatus ? filterConfig.searchStatus(item).toLowerCase().includes(normalizedStatus) : true;
             
             const matchesSearch = filterConfig?.searchName ? filterConfig.searchName(item).some(field => field.toLowerCase().includes(normalizedSearch)) : true;
+
+            if(!matchesStatus || !matchesSearch) {
+                return false;
+            }
 
             if (filterConfig?.dateFilter) {
                 const eventDate = startOfDay(parseISO(filterConfig.dateFilter(item)));
