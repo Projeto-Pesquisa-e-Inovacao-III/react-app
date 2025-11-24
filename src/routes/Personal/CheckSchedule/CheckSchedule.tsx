@@ -2,13 +2,13 @@ import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardChe
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { use, useEffect, useState } from "react";
+import { useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { acceptAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
+import { findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
@@ -68,9 +68,9 @@ export function CheckSchedule() {
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload = {
-            appointmentId: appointmentId,
-            absenceType: data.type,
-            description: data.description
+            idAgendamento: appointmentId,
+            tipoUsuario: data.type,
+            descricaoCancelamento: data.description
         };
         await reportAbsencePersonal({ payload }).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");

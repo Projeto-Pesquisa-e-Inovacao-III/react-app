@@ -17,32 +17,15 @@ import { appointmentAtCalendar } from "../../constants/schedule";
 export function Overview() {
     const isMobile = useMobile();
 
-    const eventsMock = [
-        { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
-    ];
     const nav = useNavigate();
 
-    const [events] = useState(eventsMock);
-
-    const [actualPlanData, setActualPlanData] = useState("");
-
-    const cards = cardsArray(nav);
-
     const type = useContext(TypeContext);
-
-    const isPrestador = type === "personal";
-
-    const filteredCards = isPrestador
-        ? cards.filter(card => card.typeUser === "personal")
-        : cards.filter(card => card.typeUser === "usuario");
 
     const [appointmentCards] = useState(appointmentCardsData);
 
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
-        retry: false,
     });
 
 
@@ -50,18 +33,15 @@ export function Overview() {
         queries: [
             {
                 queryKey: ["total", "PRESENCIAL"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                retry: false,
+                queryFn: () => getTotalByClassType("PRESENCIAL")
             },
             {
                 queryKey: ["total", "RESIDENCIAL"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                retry: false,
+                queryFn: () => getTotalByClassType("RESIDENCIAL")
             },
             {
                 queryKey: ["total", "FUNCIONAL"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                retry: false,
+                queryFn: () => getTotalByClassType("FUNCIONAL")
             }
         ]
     })
