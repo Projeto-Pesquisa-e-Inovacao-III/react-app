@@ -14,6 +14,8 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import { cellphoneMask, cpfMask } from "../../utils/mascara";
 import { TypeContext } from "../../App";
+import type { PersonalDTO } from "../../models/personal";
+import { editPersonalProfile } from "../../constants/personal";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -23,6 +25,8 @@ function reducer(state: any, action: any) {
       return { ...state, lastName: action.payload };
     case "setCPF":
       return { ...state, cpf: action.payload };
+    case "setCREF":
+      return { ...state, cref: action.payload };
     case "setPhone":
       return { ...state, phone: action.payload };
     case "setGender":
@@ -40,6 +44,7 @@ const initialEditUserState = {
   firstName: "",
   lastName: "",
   cpf: "",
+  cref: "",
   phone: "",
   gender: "",
   email: "",
@@ -99,6 +104,7 @@ export default function EditUser() {
       console.log("Dados do usuário:", userData);
       dispatch({ type: "setFirstName", payload: userData.nome });
       dispatch({ type: "setCPF", payload: userData.cpf });
+      dispatch({ type: "setCREF", payload: userData.cref });
       dispatch({ type: "setPhone", payload: userData.telefones[0].numeroCompleto });
       dispatch({ type: "setGender", payload: userData.sexo });
       dispatch({ type: "setEmail", payload: userData.email });
@@ -127,6 +133,34 @@ export default function EditUser() {
 
     update(options).then(() => {
       console.log("Dados do usuário atualizados com sucesso!");
+      setTextSuccessModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+      setCallSuccessModal(true);
+
+    }).catch((error) => {
+      console.error("Erro ao atualizar dados do usuário:", error);
+    });
+
+    if (userImageFormData.has("imagem")) {
+      insertUserImage(userImageFormData).then(() => {
+        console.log("Imagem do usuário atualizada com sucesso!");
+      }).catch((error) => {
+        console.error("Erro ao atualizar imagem do usuário:", error);
+      });
+    }
+  }
+
+  function handleUpdatePersonalInfo() {
+    const options: PersonalDTO = {
+      nome: state.firstName,
+      cref: state.cref,
+      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      sexo: state.gender,
+      email: state.email,
+      dataNascimento: "2000-01-01",
+      senha: "senhaStrong",
+    }
+
+    editPersonalProfile(options).then(() => {
       setTextSuccessModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setCallSuccessModal(true);
 
@@ -196,7 +230,7 @@ export default function EditUser() {
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
-            {type === "student" ? (<InputWithIcon
+            {type === "aluno" ? (<InputWithIcon
               id="cpf"
               type="text"
               placeholder="Digite seu CPF"
@@ -211,9 +245,8 @@ export default function EditUser() {
               placeholder="Digite seu CREF"
               icon={<IdCard />}
               label="CREF"
-              value={state.cpf}
-              onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
-              mask={cpfMask}
+              value={state.cref}
+              onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
             ></InputWithIcon>}
 
             <InputWithIcon
@@ -264,7 +297,7 @@ export default function EditUser() {
 
         <div className={styles.footer}>
           <div className={styles.dashLine}></div>
-          <Button title="Salvar Alterações" type="button" onClick={handleUpdateUserInfo} />
+          <Button title="Salvar Alterações" type="button" onClick={type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
         </div>
       </div>
 
