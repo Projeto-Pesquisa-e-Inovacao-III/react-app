@@ -37,6 +37,12 @@ export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
                     </div>
                 </div>
             ))}
+
+            {props.data.length === 0 && (
+                <div className={classNames(styles.noData)}>
+                    <p>Não há nada por aqui...</p>
+                </div>
+            )}
         </>
     )
 }

@@ -9,6 +9,8 @@ import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
+import { useQuery } from "@tanstack/react-query";
+import { getUserPlansHistory } from "../../constants/products";
 
 export default function PlansHistory() {
     const nav = useNavigate();
@@ -16,6 +18,13 @@ export default function PlansHistory() {
     function handleDetailsClick() {
         nav('/plans-history-details');
     }
+
+
+    const userPlans = useQuery({
+        queryKey: ['user-plans'],
+        queryFn: getUserPlansHistory,
+        select: (res) => res.data,
+    });
 
     const {
         filterSearch,
@@ -27,7 +36,7 @@ export default function PlansHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(PlansHistoryMock, {
+    } = useSearchFilter(userPlans.data, {
         searchName: (item) => [item.title],
         dateFilter: (item) => item.date,
     });
@@ -56,12 +65,12 @@ export default function PlansHistory() {
                 </div>
                 {hasFilters && (
                     <div className={classNames(styles.searchButton)}>
-                        <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters}/>
+                        <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters} />
                     </div>
                 )}
             </div>
 
-            <RowWithHeaderTitle data={filteredData.sort((a, b) => a.date.localeCompare(b.date))} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
+            <RowWithHeaderTitle data={filteredData.sort((a, b) => a.date.localeCompare(b.date)) ?? ["Não há planos disponíveis"]} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
         </div>
     );
 }

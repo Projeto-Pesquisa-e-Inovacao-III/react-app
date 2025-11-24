@@ -24,3 +24,7 @@ export function buyProductExhibition(id: number) {
 export function actualPlan() {
     return api.get(`/produtos-contratados/ativo`)
 }
+
+export function getUserPlansHistory() {
+    return api.get(`/produtos-contratados/aluno`)
+}
