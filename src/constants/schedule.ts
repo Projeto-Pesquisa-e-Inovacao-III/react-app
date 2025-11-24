@@ -22,7 +22,7 @@ export async function reportAbsenceStudent(data: any) {
 }
 
 export function reportAbsencePersonal(data: any) {
-    return api.put("/agendamentos/relatar-ausencia/personal", data);
+    return api.put("//agendamentos/ausencia", data);
 }
 
 export function findUserAppointments() {

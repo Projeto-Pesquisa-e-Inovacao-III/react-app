@@ -8,7 +8,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { acceptAppointment, findPersonalRequests, refuseAppointment } from "../../../constants/schedule";
+import { acceptAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
@@ -58,11 +58,24 @@ export function CheckSchedule() {
         });
     }
 
-    async function declineAppointment(id:number) {
+    async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
+        });
+    }
+
+    async function registerAbsenceAppointment(data: { type: string; description: string }) {
+        const payload = {
+            appointmentId: appointmentId,
+            absenceType: data.type,
+            description: data.description
+        };
+        await reportAbsencePersonal({ payload }).then(() => {
+            handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
+        }).catch((error) => {
+            console.error("Erro ao registrar a ausência:", error);
         });
     }
 
@@ -90,6 +103,7 @@ export function CheckSchedule() {
                 <div className={styles.cardsCheckSchedule}>
                     {filteredData.length > 0 ? filteredData.map((card) => (
                         <CardCheckSchedule
+                            id={card.agendamentoId}
                             key={card.agendamentoId}
                             RescheduleClick={() => {
                                 handleModal(card.agendamentoId, "reschedule");
@@ -117,7 +131,7 @@ export function CheckSchedule() {
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
             {openModal === "registerAbsence" &&
-                <RegisterAbsenceModal closeThen={() => setOpenModal(null)} callSuccessModal={() => handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.")} />
+                <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
             }
         </>
     )
