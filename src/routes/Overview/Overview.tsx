@@ -1,10 +1,9 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
 import { appointmentCardsData } from "./mocks/appointmentCardMock";
-import { cardsArray } from "./mocks/overviewCardMock";
 import { useNavigate } from "react-router-dom";
 import { TypeContext } from "../../App";
 import classNames from "classnames";
@@ -13,6 +12,7 @@ import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar } from "../../constants/schedule";
+import { appoitmentsCount } from "../../constants/personal";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -26,32 +26,35 @@ export function Overview() {
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
+        enabled: type?.type === "aluno"
     });
-
 
     const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
         queries: [
             {
                 queryKey: ["total", "PRESENCIAL"],
-                queryFn: () => getTotalByClassType("PRESENCIAL")
+                queryFn: () => getTotalByClassType("PRESENCIAL"),
+                enabled: type?.type === "aluno"
             },
             {
                 queryKey: ["total", "RESIDENCIAL"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL")
+                queryFn: () => getTotalByClassType("RESIDENCIAL"),
+                enabled: type?.type === "aluno"
             },
             {
                 queryKey: ["total", "FUNCIONAL"],
-                queryFn: () => getTotalByClassType("FUNCIONAL")
+                queryFn: () => getTotalByClassType("FUNCIONAL"),
+                enabled: type?.type === "aluno"
             }
         ]
-    })
+    });
 
     function getBalance() {
         const balance = (
             <div>
-                <p>{`Presencial: ${aulaPresencial.data ?? 0}`}</p>
-                <p>{`Funcional: ${aulaFuncional.data ?? 0}`}</p>
-                <p>{`Residencial: ${aulaResidencial.data ?? 0}`}</p>
+                <p>{`Presencial: ${aulaPresencial?.data ?? 0}`}</p>
+                <p>{`Funcional: ${aulaFuncional?.data ?? 0}`}</p>
+                <p>{`Residencial: ${aulaResidencial?.data ?? 0}`}</p>
             </div>
         );
         return balance;
@@ -62,6 +65,28 @@ export function Overview() {
         queryFn: () => appointmentAtCalendar(),
         retry: false,
     })
+
+
+    const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
+
+    function fetchAppointmentsCountToday() {
+
+        if (!type || type?.type !== "personal") return;
+
+        const today = new Date();
+        appoitmentsCount({ status: "APROVADO", data: today.toISOString().split("T")[0] }).then((response) => {
+            console.log("Personal appointments today count:", response);
+
+            setCountAppointmentsToday(response.data);
+        }).catch((error) => {
+            console.error("Error fetching personal appointments today count:", error);
+            return 0;
+        });
+    }
+
+    useEffect(() => {
+        fetchAppointmentsCountToday();
+    }, []);
 
     return (
         <>
@@ -80,7 +105,7 @@ export function Overview() {
                                 />
                                 <OverviewCard
                                     title={"Status de planos"}
-                                    subtitle={actualPlanQuery.data?.data.nome ?? "Não possui assinatura"}
+                                    subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
                                     type={"usuario"}
                                     titletbn={"Planos"}
                                     onClick={() => nav("/packages")}
@@ -110,7 +135,7 @@ export function Overview() {
                             </div>
                         </div>
                     </div>
-                    {!isMobile && (
+                    {!isMobile && type?.type === "aluno" && (
                         <div className={styles.schedulePageUserActions}>
                             <OverviewCard
                                 title={"Agendamentos Restantes"}
@@ -122,7 +147,7 @@ export function Overview() {
                             />
                             <OverviewCard
                                 title={"Status de planos"}
-                                subtitle={actualPlanQuery.data?.data.nome ?? "Não possui assinatura"}
+                                subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
                                 type={"usuario"}
                                 titletbn={"Planos"}
                                 onClick={() => nav("/packages")}
@@ -130,6 +155,19 @@ export function Overview() {
                             />
                         </div>
                     )}
+
+                    {!isMobile && type?.type !== "aluno" && (
+                        <div className={styles.schedulePageUserActions}>
+                            <OverviewCard
+                                title={"Aulas para realizar hoje"}
+                                subtitle={countAppointmentsToday ?? 0}
+                                titletbn={"Agendamentos"}
+                                onClick={() => nav("/schedule")}
+                                isMobile={isMobile}
+                            />
+                        </div>
+                    )}
+
                 </div>
             </div>
         </>

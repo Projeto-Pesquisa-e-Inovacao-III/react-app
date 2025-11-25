@@ -36,7 +36,7 @@ type AddressState = {
     complement: string;
 };
 
-export default function     NewEvent(
+export default function NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
@@ -175,6 +175,7 @@ export default function     NewEvent(
             });
         if (calculatedTitle && newEventDate) {
             openModal();
+            navigation("/schedule");
             return;
         }
 
@@ -196,7 +197,7 @@ export default function     NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: new Date(`${newEventDate}T${newEventStartHour}`),
             descricao: calculatedTitle,
-            novoEndereco: {
+            endereco: {
                 numero: addressData.number,
                 complemento: addressData.complement,
                 unidade: "",
@@ -225,6 +226,13 @@ export default function     NewEvent(
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
         });
+
+
+        if (calculatedTitle && newEventDate) {
+            openModal();
+            navigation("/schedule");
+            return;
+        }
     }
 
     const navigation = useNavigate();

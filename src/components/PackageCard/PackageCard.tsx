@@ -65,7 +65,7 @@ export function PackageCard(props: PackageCardProps) {
                         [styles.cardDurationMobile]: isMobile,
                     })}
                 >
-                    {props.periodo} meses
+                    {props.duracaoMes} meses
                 </span>
             </div>
 

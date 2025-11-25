@@ -12,7 +12,7 @@ import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
+import { appointmentAtCalendar, findPersonalRequests, findUserAppointments } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -66,11 +66,20 @@ export default function Schedule() {
         select: (res) => res.data
     })
 
+    const personalAppointments = useQuery({
+        queryKey: ["personalAppointments"],
+        queryFn: () => findPersonalRequests(),
+        retry: false,
+        select: (res) => res.data.content,
+        enabled: type?.type === "personal"
+    })
+
     console.log("User appointments data:", userAppointments.data);
+    console.log("Appointments data:", personalAppointments.data);
     return (
         <>
             {type?.type === "personal" ? (
-                <CalendarWeek insertedEvents={appointments.data?.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
+                <CalendarWeek insertedEvents={personalAppointments?.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 

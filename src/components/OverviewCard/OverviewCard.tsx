@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 type OverviewCardProps = {
     title: string;
     subtitle: ReactNode | string;
-    type: string;
+    type?: string;
     titletbn: string;
     onClick: () => void;
     isMobile?: boolean;
