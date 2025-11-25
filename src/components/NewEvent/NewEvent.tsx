@@ -233,7 +233,7 @@ export default function NewEvent(
             navigation("/schedule");
             return;
         }
-    }
+z    }
 
     const navigation = useNavigate();
     function handleClose() {

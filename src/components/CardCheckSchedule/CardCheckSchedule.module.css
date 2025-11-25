@@ -26,6 +26,10 @@
     width: 100% !important;
 }
 
+.buttons .buttonActions button {
+    max-width: unset !important;
+}
+
 .statusIndicatorCheckSchedule {
     display: flex;
     flex-direction: row;

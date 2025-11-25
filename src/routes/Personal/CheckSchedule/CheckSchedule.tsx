@@ -69,10 +69,11 @@ export function CheckSchedule() {
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload = {
-            idAgendamento: appointmentId,
+            idAgendamento: appointmentId.toString(),
             tipoUsuario: data.type,
             descricaoCancelamento: data.description
         };
+        console.log("Payload de ausência:", payload);
         await reportAbsencePersonal({ payload }).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
         }).catch((error) => {
