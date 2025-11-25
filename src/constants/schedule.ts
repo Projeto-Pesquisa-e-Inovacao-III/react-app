@@ -13,7 +13,7 @@ export function refuseAppointment(id: number) {
     return api.delete(`/agendamentos/${id}`);
 }
 
-export async function acceptAppointment(id: number) {
+export async function acceptUserAppointment(id: number) {
     return await api.put(`/agendamentos/${id}/aprovar`);
 }
 

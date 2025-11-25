@@ -8,7 +8,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
+import { acceptUserAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
 
 type modalTypes = "reschedule" | "accept" | "decline" | "success" | "registerAbsence" | null;
@@ -51,8 +51,9 @@ export function CheckSchedule() {
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
     async function acceptAppointment(id: number) {
-        await acceptAppointment(id).then(() => {
-            handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+        await acceptUserAppointment(id).then((res) => {
+            console.log("Agendamento aceito:", res);
+            handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });

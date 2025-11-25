@@ -36,7 +36,7 @@ type AddressState = {
     complement: string;
 };
 
-export default function NewEvent(
+export default function     NewEvent(
     { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
