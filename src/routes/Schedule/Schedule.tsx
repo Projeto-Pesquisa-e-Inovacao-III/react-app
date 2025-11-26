@@ -12,7 +12,7 @@ import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findPersonalRequests, findUserAppointments } from "../../constants/schedule";
+import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -22,7 +22,6 @@ export default function Schedule() {
     const isMobile = useMobile();
 
     const type = useContext(TypeContext);
-    console.log("User type in Schedule:", type?.type);
 
     const [events, setEvents] = useState([]);
 
@@ -33,9 +32,19 @@ export default function Schedule() {
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
     const [successModalInfo, setSuccessModalInfo] = useState({ title: "", description: "" });
+
     function handleSuccessModalInfo(title: string, description: string) {
         setSuccessModalInfo({ title, description });
         setOpenModal("success");
+    }
+
+    async function declineAppointment(id: number) {
+        await refuseAppointment(id).then(() => {
+            handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
+
+        }).catch((error) => {
+            console.error("Erro ao recusar o agendamento:", error);
+        });
     }
 
     useEffect(() => {
@@ -55,27 +64,23 @@ export default function Schedule() {
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
-        retry: false,
-        
     })
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
-        retry: false,
-        select: (res) => res.data
+        select: (res) => {
+            return [...res.data].sort((a, b) => new Date(b.date) - new Date(a.date))
+        }
     })
 
     const personalAppointments = useQuery({
         queryKey: ["personalAppointments"],
         queryFn: () => findPersonalRequests(),
-        retry: false,
         select: (res) => res.data.content,
         enabled: type?.type === "personal"
     })
 
-    console.log("User appointments data:", userAppointments.data);
-    console.log("Appointments data:", personalAppointments.data);
     return (
         <>
             {type?.type === "personal" ? (
@@ -109,11 +114,11 @@ export default function Schedule() {
                                     handleButtonClick={() => setOpenModal("newEvent")} />
                             </div>
 
-                            {userAppointments.data?.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
+                            {userAppointments.data?.map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         data={event}
-                                        date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", {locale: ptBR})}`}
+                                        date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", { locale: ptBR })}`}
                                         initialHour={`${event.data.replace(":", "h").split("T")[1].slice(0, 5)}`}
                                         finalHour={`${(parseInt(event.data.replace(":", "h").split("T")[1].slice(0, 2)) + 1)}h00`}
                                         handleCancel={() => setOpenModal("cancel")}
@@ -167,7 +172,7 @@ export default function Schedule() {
                 />
             )}
 
-            
+
 
             {openModal === "cancel" && (
                 <TimerModal
@@ -185,7 +190,7 @@ export default function Schedule() {
                     events={events}
                     setEvents={setEvents}
                     buttonTitle="Cancelar agendamento"
-                    callSuccessModal={() => handleSuccessModalInfo("Cancelado com sucesso", "Horário cancelado com sucesso")}
+                    callSuccessModal={() => declineAppointment(selectedEventId!)}
                     isDelete={true}
                 />
             )}

@@ -11,7 +11,7 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, getAppointmentByStatus } from "../../constants/schedule";
+import { appointmentAtCalendar, findPersonalRequests, getAppointmentByStatus } from "../../constants/schedule";
 import { appoitmentsCount } from "../../constants/personal";
 import { format, startOfDay } from "date-fns";
 

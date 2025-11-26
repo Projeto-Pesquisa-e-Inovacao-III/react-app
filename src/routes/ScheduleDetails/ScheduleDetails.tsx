@@ -59,9 +59,15 @@ export default function ScheduleDetails() {
                         </div>
                     }
 
-                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusPending}>Pendente</span>
+                        </div>
+                    }
+                    
+                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusPending}>Em análise</span>
                         </div>
                     }
 

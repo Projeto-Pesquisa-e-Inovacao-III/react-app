@@ -82,6 +82,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                     {cardData.status === "PENDENTE_PERSONAL_CONCLUIR" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (conclusão)" />)}
                     {cardData.status === "CONCLUIDO" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "CANCELADO_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo personal" />)}
+                    {cardData.status === "CANCELADO_CLIENTE" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo cliente" />)}
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>
