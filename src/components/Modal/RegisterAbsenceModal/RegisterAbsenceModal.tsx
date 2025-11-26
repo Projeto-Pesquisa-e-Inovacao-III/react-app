@@ -17,10 +17,12 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
     const [description, setDescription] = useState("");
 
     function handleSend() {
-        onSubmit({
-            type: changeSelectType,
+        const payload = {
+            type: changeSelectType.toUpperCase(),
             description,
-        });
+        };
+
+        onSubmit(payload);
         callSuccessModal && callSuccessModal();
     }
 

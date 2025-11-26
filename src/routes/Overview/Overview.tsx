@@ -11,9 +11,11 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findPersonalRequests, getAppointmentByStatus } from "../../constants/schedule";
+import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus } from "../../constants/schedule";
 import { appoitmentsCount } from "../../constants/personal";
-import { format, startOfDay } from "date-fns";
+import { format, parse, startOfDay } from "date-fns";
+import { locale } from "dayjs";
+import { ptBR } from "date-fns/locale";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -67,16 +69,16 @@ export function Overview() {
         retry: false,
     })
 
-    // useEffect(() => {
-    //     function getAppointment() {
-    //         getAppointmentByStatus({ data: { status: "APROVADO", data: format((new Date()), 'yyyy-MM-dd') } }).then((response) => {
-    //             console.log("Appointments by status response:", response);
-    //         }).catch((error) => {
-    //             console.error("Error fetching appointments by status:", error);
-    //         });
-    //     }
-    //     getAppointment();
-    // }, [appointments.data]);
+    const appointmentsCards = useQuery({
+        queryKey: ["findUserAppointments"],
+        queryFn: () => findUserAppointments(),
+        retry: false,
+        select: (res) => res.data,
+    })
+
+    useEffect(() => {
+        console.log("User appointments:", appointmentsCards.data);
+    }, [appointmentsCards.data]);
 
     const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
 
@@ -130,16 +132,16 @@ export function Overview() {
                         <div>
                             <h1>Agendamentos</h1>
                             <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
-                                {appointmentCards.map((card, index) => (
+                                {appointmentsCards.data?.map((card, index) => (
                                     <AppointmentCard
                                         key={index}
-                                        status={card.status}
-                                        name={card.name}
-                                        photoUrl={card.photoUrl}
-                                        type={card.type}
-                                        date={card.date}
-                                        time={card.time}
-                                        address={card.address}
+                                        status={card.agendamentoStatus}
+                                        name={card.personalNome}
+                                        photoUrl={card.fotoUsuario}
+                                        type={card.tipoAula}
+                                        date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
+                                        time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
+                                        address={card.endereco.bairro + ", " + card.endereco.cidade}
                                         isMobile={isMobile}
                                     />
                                 ))}

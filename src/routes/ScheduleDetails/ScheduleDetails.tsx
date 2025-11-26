@@ -29,13 +29,6 @@ export default function ScheduleDetails() {
         select: (res) => res.data,
     });
 
-    useEffect(() => {
-        console.log("STATUS QUERY:", appointment.status);
-        console.log("DADOS:", appointment.data);
-        console.log("ERRO:", appointment.error);
-    }, [appointment.status]);
-
-
     const date = new Date(`${appointment.data?.dataInicio}`);
     const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 

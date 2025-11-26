@@ -76,13 +76,15 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
         <>
             <div className={styles.personalCheckScheduleCard}>
                 <div className={styles.statusIndicatorCheckSchedule}>
+                    {cardData.status === "CONCLUIDO" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação aluno)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
                     {cardData.status === "APROVADO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_CONCLUIR" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (conclusão)" />)}
-                    {cardData.status === "CONCLUIDO" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "CANCELADO_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo personal" />)}
                     {cardData.status === "CANCELADO_CLIENTE" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo cliente" />)}
+                    {cardData.status === "AUSENCIA_CLIENTE" && (<StatusSchedule dotColor="#FF0000" statusText="Ausência (cliente)" />)}
+                    {cardData.status === "AUSENCIA_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Ausência (personal)" />)}
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>

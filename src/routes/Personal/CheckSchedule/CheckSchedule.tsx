@@ -34,6 +34,14 @@ export function CheckSchedule() {
         retry: false,
     });
 
+    // function handlePageChange(e: any) {
+    //     const bottom = e.target.scrollingElement.scrollHeight;
+    //     if(bottom) {
+    //         console.log("bottom reached");
+    //         setPage((prevPage) => prevPage + 1);
+    //     }
+    // }
+
     //filter
     const {
         filteredData,
@@ -69,12 +77,12 @@ export function CheckSchedule() {
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload = {
-            idAgendamento: appointmentId.toString(),
+            idAgendamento: appointmentId,
             tipoUsuario: data.type,
             descricaoCancelamento: data.description
         };
         console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal({ payload }).then(() => {
+        await reportAbsencePersonal( payload ).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
@@ -95,7 +103,7 @@ export function CheckSchedule() {
     }
     return (
         <>
-            <div className={styles.containerCheckSchedule}>
+            <div className={styles.containerCheckSchedule} >
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
                     <div className={styles.cardFilter}>
