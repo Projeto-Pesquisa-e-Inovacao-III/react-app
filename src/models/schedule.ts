@@ -1,6 +1,6 @@
 export type Schedule = {
     idAgendamento?: number,
-    data: Date,
+    data: Date | string,
     descricao: string,
     novoEndereco: {
         numero: string,

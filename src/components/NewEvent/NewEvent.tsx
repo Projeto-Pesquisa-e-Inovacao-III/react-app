@@ -138,8 +138,13 @@ export default function NewEvent(
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
+        console.log("Agendando novo evento...", {
+            date: newEventDate,
+            hour: newEventStartHour,
+        });
+
         const payload: Schedule = {
-            data: new Date(`${newEventDate}T${newEventStartHour}`),
+            data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             novoEndereco: {
                 numero: addressData.number,
@@ -233,7 +238,8 @@ export default function NewEvent(
             navigation("/schedule");
             return;
         }
-z    }
+        z
+    }
 
     const navigation = useNavigate();
     function handleClose() {

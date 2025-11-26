@@ -36,24 +36,27 @@ export type dataCardProps = {
     status?: string | "PENDENTE_PERSONAL_APROVACAO" | "student_pending" | "APROVADO" | "schedule_pending_past" | "done" | "cancelled";
 }
 
-export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: {
+
+type CardCheckScheduleProps = {
     RescheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     AcceptScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
+    ConcludeScheduleClick?: React.Dispatch<React.SetStateAction<boolean>>,
     DeclineScheculeClick?: React.Dispatch<React.SetStateAction<boolean>>,
     RegisterAbsenceClick?: React.Dispatch<React.SetStateAction<boolean>>,
     cardData: dataCardProps
-}) {
+}
+
+export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, ConcludeScheduleClick, DeclineScheculeClick, RegisterAbsenceClick, cardData }: CardCheckScheduleProps) {
     const today = new Date();
     const [year, month, day] = cardData.dataInicio?.split("T")[0].split("-").map(Number) || [0, 0, 0];
     const scheduleDate = new Date(year, month - 1, day);
+    
     function handleRescheduleClick() {
         RescheduleClick?.(true);
     }
 
     function handleAcceptClick() {
-
         AcceptScheduleClick?.(true)
-
     }
 
     function handleDeclineClick() {
@@ -64,6 +67,11 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
         RegisterAbsenceClick?.(true)
     }
 
+    function handleConcludeClick() {
+        ConcludeScheduleClick?.(true)
+    }
+    
+    
     return (
         <>
             <div className={styles.personalCheckScheduleCard}>
@@ -72,7 +80,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
                     {cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
                     {cardData.status === "APROVADO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_CONCLUIR" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (conclusão)" />)}
-                    {cardData.status === "done" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
+                    {cardData.status === "CONCLUIDO" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "CANCELADO_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo personal" />)}
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
@@ -111,6 +119,8 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Declin
 
                 {cardData.status && cardData.status === "PENDENTE_PERSONAL_CONCLUIR" && scheduleDate.getTime() < today.getTime() && (
                     <div className={styles.buttons}>
+                        <Button type="button" typeButton="accept" title="Concluir agendamento" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleConcludeClick} />
+
                         <Button type="button" typeButton="decline" title="Registrar ausência" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRegisterAbsenceClick} />
                     </div>
                 )}

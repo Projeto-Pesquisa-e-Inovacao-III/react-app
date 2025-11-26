@@ -9,6 +9,10 @@ export function rescheduleAppointment(data: Schedule) {
     return api.put("/agendamentos/reagendar", data);
 }
 
+export function concludeAppointment(id: number) {
+    return api.put(`/agendamentos/${id}/confirmar-conclusao`);
+}
+
 export function refuseAppointment(id: number) {
     return api.delete(`/agendamentos/${id}`);
 }
