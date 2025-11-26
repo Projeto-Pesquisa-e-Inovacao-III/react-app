@@ -29,6 +29,10 @@ export function reportAbsencePersonal(data: any) {
     return api.put("/agendamentos/ausencia", data);
 }
 
+export function getAppointmentByStatus({ data }: { data: { status: string, data: string } }) {
+    return api.post(`/agendamentos/contagem-status-data`, { data });
+}
+
 export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }

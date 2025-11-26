@@ -53,13 +53,13 @@ export default function ScheduleDetails() {
             <div className={styles.wrapperContent}>
                 <div className={styles.title}>
                     <h1>Detalhes do agendamento</h1>
-                    {appointment.data?.status === "done" &&
+                    {appointment.data?.status === "CONCLUIDO" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusDone}>Concluído</span>
                         </div>
                     }
 
-                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusPending}>Pendente</span>
                         </div>

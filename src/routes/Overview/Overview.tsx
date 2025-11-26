@@ -11,8 +11,9 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar } from "../../constants/schedule";
+import { appointmentAtCalendar, getAppointmentByStatus } from "../../constants/schedule";
 import { appoitmentsCount } from "../../constants/personal";
+import { format, startOfDay } from "date-fns";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -66,6 +67,16 @@ export function Overview() {
         retry: false,
     })
 
+    // useEffect(() => {
+    //     function getAppointment() {
+    //         getAppointmentByStatus({ data: { status: "APROVADO", data: format((new Date()), 'yyyy-MM-dd') } }).then((response) => {
+    //             console.log("Appointments by status response:", response);
+    //         }).catch((error) => {
+    //             console.error("Error fetching appointments by status:", error);
+    //         });
+    //     }
+    //     getAppointment();
+    // }, [appointments.data]);
 
     const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
 

@@ -5,12 +5,14 @@ import classNames from "classnames";
 import styles from "./ScheduleHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
 import { findUserAppointments } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
+import { format, parse } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function ScheduleHistory() {
 
@@ -22,6 +24,12 @@ export default function ScheduleHistory() {
     })
 
     console.log("APPOINTMENTS HISTORY:", listOfAppointments.data);
+
+    const [params] = useSearchParams()
+
+    const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
+
+    console.log("SEARCH PARAMS:", params.get('date') ? format(params.get('date')!, 'dd-MM-yyyy') : 'No date parameter');
 
     const {
         filterSearch,
@@ -84,8 +92,8 @@ export default function ScheduleHistory() {
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} />
-                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} />
+                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', {locale: ptBR}) : undefined} />
+                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', {locale: ptBR}) : undefined} />
                 </div>
                 {hasFilters && (
                     <div className={classNames(styles.searchButton)}>

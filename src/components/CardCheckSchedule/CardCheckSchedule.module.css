@@ -70,7 +70,6 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    min-width: 340px;
     text-overflow: ellipsis;
 }
 

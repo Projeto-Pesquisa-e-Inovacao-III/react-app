@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
 import styles from "./InputCalendar.module.css"
 import InputWithIcon from "../InputWithIcon/InputWithIcon";
@@ -8,10 +8,13 @@ type InputCalendarProps = {
     selectedDate: string;
     setSelectedDate: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
     canGoPrev?: boolean;
+    paramData?: string;
 }
 
-export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev }: InputCalendarProps) {
+export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev, paramData }: InputCalendarProps) {
     const [openCalendar, setOpenCalendar] = useState(false)
+
+
 
     function handleOpenCalendarInternal() {
         setOpenCalendar(true)
@@ -27,11 +30,23 @@ export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev
             console.log("Data selecionada no InputCalendar:", date);
             const formattedDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
                 timeZone: "UTC"
-            });
+            })
+            console.log("Data formatada:", formattedDate);
             setSelectedDate(formattedDate);
             handleCloseCalendar()
+            return;
         }
     }
+    
+    useEffect(() => {
+        if (paramData) {
+            console.log("Param data exists:", paramData);
+            setSelectedDate(paramData);
+            handleCloseCalendar()
+            return;
+        }
+    }, [paramData]);
+
 
     return (
         <div className={styles.containerInputCalendar}>
