@@ -19,9 +19,9 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                 <div className={styles.searchBarDiv}><SearchBar search={searchValue} setSearch={onSearchChange} /></div>
                 <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
                     <option value="" disabled>Selecione um status</option>
-                    <option value="pending">Pendente</option>
-                    <option value="done">Aprovado</option>
-                    <option value="cancelled">Rejeitado</option>
+                    <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
+                    <option value="APROVADO">Aprovado</option>
+                    <option value="CANCELADO_PERSONAL">Rejeitado</option>
                 </select>
 
             </div>

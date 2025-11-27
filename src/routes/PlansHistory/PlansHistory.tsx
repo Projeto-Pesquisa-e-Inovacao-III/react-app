@@ -11,12 +11,14 @@ import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeade
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
 import { getUserPlansHistory } from "../../constants/products";
+import { format, parse, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function PlansHistory() {
     const nav = useNavigate();
 
-    function handleDetailsClick() {
-        nav('/plans-history-details');
+    function handleDetailsClick(id: number) {
+        nav('/plans-history-details?id=' + id);
     }
 
 
@@ -37,8 +39,8 @@ export default function PlansHistory() {
         hasFilters,
         clearFilters,
     } = useSearchFilter(userPlans.data, {
-        searchName: (item) => [item.title],
-        dateFilter: (item) => item.date,
+        searchName: (item) => [item.produtoExibicao.titulo],
+        dateFilter: (item) => item.dataCompra,
     });
 
 
@@ -70,7 +72,24 @@ export default function PlansHistory() {
                 )}
             </div>
 
-            <RowWithHeaderTitle data={filteredData.sort((a, b) => a.date.localeCompare(b.date)) ?? ["Não há planos disponíveis"]} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
+            {filteredData && filteredData.length > 0 ? (
+                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item, index) => (
+                    <RowWithHeaderTitle 
+                        key={index}
+                        data={[
+                            {headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
+                            title: item.produtoExibicao.titulo, 
+                            subtitle: item.produtoExibicao.subtitulo }
+                        ]} 
+                        includeDetailsButton={true} 
+                        buttonLabel="Ver Detalhes" 
+                        handleDetailsClick={() => handleDetailsClick(item.id)} 
+                    />
+                ))
+            ) : (
+                <p>Não há planos disponíveis</p>
+            )}
+            
         </div>
     );
 }

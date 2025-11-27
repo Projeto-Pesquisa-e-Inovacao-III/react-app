@@ -5,23 +5,27 @@ import classNames from "classnames";
 import styles from "./ScheduleHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
-import { findUserAppointments } from "../../constants/schedule";
+import { findPersonalRequests, findUserAppointments } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
+import { format, parse } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function ScheduleHistory() {
 
     // postalCode does not exist at this endpoint
     const listOfAppointments = useQuery({
         queryKey: ['userAppointments'],
-        queryFn: () => findUserAppointments(),
+        queryFn: () => findPersonalRequests(),
         select: (res) => res.data,
     })
 
-    console.log("APPOINTMENTS HISTORY:", listOfAppointments.data);
+    const [params] = useSearchParams()
+
+    const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
 
     const {
         filterSearch,
@@ -33,31 +37,57 @@ export default function ScheduleHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(listOfAppointments.data ?? [], {
-        searchName: (item) => [item.tipoAula, item.agendamentoStatus],
-        dateFilter: (item) => item.data,
+    } = useSearchFilter(listOfAppointments.data?.content ?? [], {
+        searchName: (item) => [item.tipoAula, item.status],
+        dateFilter: (item) => item.dataInicio,
     });
 
 
     const data = filteredData.map((event) => ({
         id: event.agendamentoId,
-        headerTitle: new Date(event.data).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
+        headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
         title: event.tipoAula,
-        subtitle: event.agendamentoStatus !== "APROVADO" ?
+        subtitle: event.status &&
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    <Dot color="#8BBE86" size={"30px"} />
-                    <span>Status: Concluído</span>
+                    {event.status === "CONCLUIDO" &&
+                        <>
+                            <Dot color="#8BBE86" size={"30px"} />
+                            <span>Status: Concluído</span>
+                        </>
+                    }
+
+                    {event.status === "APROVADO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: pendente</span>
+                        </>
+                    }
+
+
+                    {event.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: em análise</span>
+                        </>
+                    }
+
+                    {event.status.includes("CANCELADO") &&
+                        <>
+                            <Dot color="#c33" size={"30px"} />
+                            <span>Status: cancelado</span>
+                        </>
+                    }
+
+                    {
+                        event.status === "AUSENCIA_CLIENTE" || event.status === "AUSENCIA_PERSONAL" &&
+                        <>
+                            <Dot color="#c33" size={"30px"} />
+                            <span>Status: Ausência registrada</span>
+                        </>
+                    }
                 </div>
-                <span>Endereço: {event.endereco.bairro}</span>
-            </div>
-            :
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <Dot color="#D7AC00" size={"30px"} />
-                    <span>Status: Pendente</span>
-                </div>
-                <span>Endereço: {event.endereco.bairro}</span>
+                <span>Endereço: {event.endereco.cep.logradouro}, {event.endereco.numero} - {event.endereco.cep.bairro}</span>
             </div>
     }));
 
@@ -84,8 +114,8 @@ export default function ScheduleHistory() {
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} />
-                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} />
+                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
+                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
                 </div>
                 {hasFilters && (
                     <div className={classNames(styles.searchButton)}>

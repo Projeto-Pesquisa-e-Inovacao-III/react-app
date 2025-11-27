@@ -16,6 +16,7 @@ type RowWithHeaderTitleProps = {
 }
 
 export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
+    console.log("Rendering RowWithHeaderTitle with data:", props.data);
     return (
         <>
             {props.data.map((plan: any, index: number) => (

@@ -22,7 +22,7 @@ export default function useSearchFilter<T>(
 
         return data.filter(item => {
             const matchesStatus = filterConfig?.searchStatus ? filterConfig.searchStatus(item).toLowerCase().includes(normalizedStatus) : true;
-            
+            console.log("Item being checked:", item);
             const matchesSearch = filterConfig?.searchName ? filterConfig.searchName(item).some(field => field.toLowerCase().includes(normalizedSearch)) : true;
 
             if(!matchesStatus || !matchesSearch) {

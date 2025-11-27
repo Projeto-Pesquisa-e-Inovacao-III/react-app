@@ -33,7 +33,7 @@ export function Packages() {
         }
     }, [openModal]);
 
-    const isPersonal = type === "personal";
+    const isPersonal = type?.type === "personal";
 
     function handleBuyClick(id: number, packageTitle: string) {
         buyProductExhibition(id).then((response) => {

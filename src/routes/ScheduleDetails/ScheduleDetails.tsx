@@ -29,13 +29,6 @@ export default function ScheduleDetails() {
         select: (res) => res.data,
     });
 
-    useEffect(() => {
-        console.log("STATUS QUERY:", appointment.status);
-        console.log("DADOS:", appointment.data);
-        console.log("ERRO:", appointment.error);
-    }, [appointment.status]);
-
-
     const date = new Date(`${appointment.data?.dataInicio}`);
     const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
@@ -53,15 +46,27 @@ export default function ScheduleDetails() {
             <div className={styles.wrapperContent}>
                 <div className={styles.title}>
                     <h1>Detalhes do agendamento</h1>
-                    {appointment.data?.status === "done" &&
+                    {appointment.data?.status === "CONCLUIDO" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusDone}>Concluído</span>
                         </div>
                     }
 
-                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                    {appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                             <span className={styles.statusPending}>Pendente</span>
+                        </div>
+                    }
+
+                    {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusPending}>Em análise</span>
+                        </div>
+                    }
+
+                    {appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO" &&
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            <span className={styles.statusPending}>Aprovação pendente</span>
                         </div>
                     }
 

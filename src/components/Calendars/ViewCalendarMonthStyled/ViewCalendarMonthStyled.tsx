@@ -60,9 +60,17 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
             const clickedDate = arg.date.toISOString().split("T")[0];
 
-            const appointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
-            if (appointment !== null) {
-              nav(`/schedule-details?id=${appointment.agendamentoId}`);
+            const appointment = events?.filter(event => event.data.split("T")[0] === clickedDate) || null;
+
+            if (appointment && appointment.length > 1) {
+              nav(`/schedule-history/?date=${clickedDate}`);
+              return
+            }
+
+            const findAppointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
+
+            if (findAppointment !== null) {
+              nav(`/schedule-details?id=${findAppointment.agendamentoId}`);
               return
             }
 

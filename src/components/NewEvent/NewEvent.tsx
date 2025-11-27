@@ -18,8 +18,8 @@ type NewEventProps = {
     isMobile: boolean;
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModal: (() => void);
+    errorModal: (() => void);
     insertedEvents: any[];
-    insertEvent: React.Dispatch<React.SetStateAction<any[]>>;
     title?: string;
     buttonTitle?: string;
     isReschedule?: boolean;
@@ -37,7 +37,7 @@ type AddressState = {
 };
 
 export default function NewEvent(
-    { isMobile, close, openModal, insertedEvents, insertEvent, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
+    { isMobile, close, openModal, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
@@ -138,8 +138,13 @@ export default function NewEvent(
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
+        console.log("Agendando novo evento...", {
+            date: newEventDate,
+            hour: newEventStartHour,
+        });
+
         const payload: Schedule = {
-            data: new Date(`${newEventDate}T${newEventStartHour}`),
+            data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             novoEndereco: {
                 numero: addressData.number,
@@ -163,20 +168,25 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-                console.log("seguindo para inserir na lista")
 
                 await handleInsertAddress(e).then(() => {
                     console.log("Endereço inserido com sucesso.");
                 }).catch(error => {
                     console.error("Erro ao inserir endereço:", error);
                 });
+
+                if (calculatedTitle && newEventDate) {
+                    openModal();
+                    navigation("/schedule");
+                    return;
+                }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
+                errorModal();
+                navigation("/schedule");
+
             });
-        if (calculatedTitle && newEventDate) {
-            openModal();
-            return;
-        }
+
 
     }
 
@@ -196,7 +206,7 @@ export default function NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: new Date(`${newEventDate}T${newEventStartHour}`),
             descricao: calculatedTitle,
-            novoEndereco: {
+            endereco: {
                 numero: addressData.number,
                 complemento: addressData.complement,
                 unidade: "",
@@ -225,6 +235,13 @@ export default function NewEvent(
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
         });
+
+
+        if (calculatedTitle && newEventDate) {
+            openModal();
+            navigation("/schedule");
+            return;
+        }
     }
 
     const navigation = useNavigate();

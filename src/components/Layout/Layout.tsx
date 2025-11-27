@@ -57,7 +57,11 @@ export default function Layout() {
 
     useEffect(() => {
         const notAuthenticated = isLoggedIn.isError || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
-
+        console.log("Authentication check:", {
+            isLoading: isLoggedIn.isLoading,
+            data: isLoggedIn.data,
+            isError: isLoggedIn.isError
+        });
         if (notAuthenticated && !exceptions.includes(location.pathname)) {
             nav("/login");
         }
