@@ -37,11 +37,13 @@ export function Packages() {
 
     function handleBuyClick(id: number, packageTitle: string) {
         buyProductExhibition(id).then((response) => {
-            console.log(`Pacote ${packageTitle} comprado com sucesso!`, response);
-            setSuccessModalInfos({
-                title: "Compra Concluída",
-                content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-            });
+            const href: string = response.data.href
+            window.location.href = href;
+            // setSuccessModalInfos({
+            //     title: "Compra Concluída",
+            //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
+            // });
+            // TODO: return with data?
             setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
