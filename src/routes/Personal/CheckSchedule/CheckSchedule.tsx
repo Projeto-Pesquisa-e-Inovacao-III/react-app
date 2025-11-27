@@ -10,6 +10,7 @@ import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, concludeAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
+import { findByEmail } from "../../../constants/user";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
 
@@ -143,7 +144,7 @@ export function CheckSchedule() {
                     )) : <p>Nenhum agendamento encontrado.</p>}
                 </div>
             </div>
-            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Reagendamento enviado", "O reagendamento foi enviado com sucesso para o aluno.")} />}
+            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado","Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 

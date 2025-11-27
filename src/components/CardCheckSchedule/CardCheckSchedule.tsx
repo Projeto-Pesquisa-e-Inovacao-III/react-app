@@ -79,6 +79,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                     {cardData.status === "CONCLUIDO" && (<StatusSchedule dotColor="#4CAF50" statusText="Agendamento concluído" />)}
                     {cardData.status === "student_pending" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação aluno)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do personal)" />)}
+                    {cardData.status === "PENDENTE_CLIENTE_APROVACAO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aprovação do aluno)" />)}
                     {cardData.status === "APROVADO" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (aula)" />)}
                     {cardData.status === "PENDENTE_PERSONAL_CONCLUIR" && (<StatusSchedule dotColor="#D7AC00" statusText="Pendente (conclusão)" />)}
                     {cardData.status === "CANCELADO_PERSONAL" && (<StatusSchedule dotColor="#FF0000" statusText="Cancelado pelo personal" />)}

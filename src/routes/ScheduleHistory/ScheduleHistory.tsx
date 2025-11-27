@@ -64,6 +64,14 @@ export default function ScheduleHistory() {
                         </>
                     }
 
+
+                    {event.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: em análise</span>
+                        </>
+                    }
+
                     {event.status.includes("CANCELADO") &&
                         <>
                             <Dot color="#c33" size={"30px"} />

@@ -25,6 +25,13 @@
     width: 100%;
 }
 
+.titleX h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+
+}
+
 .inputModal {
     width: 80%;
     padding: 10px;
@@ -118,9 +125,16 @@
     z-index: 1004;
 }
 
-.textFormModal {
-    align-self: start;
+.buttonHourNewEventSelected :global(button){
+    background-color: #1a74b1;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
+
 
 @media (max-width: 1024px) {
     .modalCheckSchedule {

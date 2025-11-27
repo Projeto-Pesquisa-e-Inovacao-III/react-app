@@ -15,8 +15,9 @@ import { useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 
-type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | null;
+type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | null;
 
 export default function Schedule() {
     const isMobile = useMobile();
@@ -31,12 +32,19 @@ export default function Schedule() {
 
     const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
 
-    const [successModalInfo, setSuccessModalInfo] = useState({ title: "", description: "" });
+    const [modalInfo, setModalInfo] = useState({ title: "", description: "" });
 
     function handleSuccessModalInfo(title: string, description: string) {
-        setSuccessModalInfo({ title, description });
+        setModalInfo({ title, description });
         setOpenModal("success");
     }
+
+    function handleErrorModalInfo(title: string, description: string) {
+        console.log("Erro ao agendar/reagendar");
+        setModalInfo({ title, description });
+        setOpenModal("error");
+    }
+
 
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
@@ -138,8 +146,8 @@ export default function Schedule() {
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
                         openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
+                        errorModal={() => handleErrorModalInfo("Erro ao agendar", "Não foi possível agendar o horário")}
                         insertedEvents={events}
-                        insertEvent={setEvents}
                         title="Agendar horário"
                         buttonTitle="Avançar"
                         clickedDate={clickedDate}
@@ -153,8 +161,8 @@ export default function Schedule() {
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
                         openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                        errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                         insertedEvents={userAppointments.data}
-                        insertEvent={setEvents}
                         title="Reagendar horário"
                         buttonTitle="Reagendar"
                         isReschedule={true}
@@ -167,10 +175,19 @@ export default function Schedule() {
                 <SuccessModal
                     isMobile={isMobile}
                     closeThen={() => setOpenModal(null)}
-                    title={successModalInfo.title}
-                    content={successModalInfo.description}
+                    title={modalInfo.title}
+                    content={modalInfo.description}
                 />
             )}
+
+            {openModal === "error" && (
+                <ErrorModal
+                    closeThen={() => setOpenModal(null)}
+                    title={modalInfo.title}
+                    content={modalInfo.description}
+                />
+            )}
+
 
 
 
