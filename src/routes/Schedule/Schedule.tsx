@@ -11,7 +11,7 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -34,6 +34,8 @@ export default function Schedule() {
 
     const [modalInfo, setModalInfo] = useState({ title: "", description: "" });
 
+    const queryClient = useQueryClient();
+
     function handleSuccessModalInfo(title: string, description: string) {
         setModalInfo({ title, description });
         setOpenModal("success");
@@ -49,6 +51,7 @@ export default function Schedule() {
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
             handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
 
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
@@ -69,6 +72,7 @@ export default function Schedule() {
         }
     }, [searchParams]);
 
+
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
@@ -78,10 +82,9 @@ export default function Schedule() {
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
         select: (res) => {
-            return [...res.data].sort((a, b) => new Date(b.date) - new Date(a.date))
+            return [...res.data].sort((a, b) => new Date(b.dataInicio) - new Date(a.dataInicio))
         }
     })
-
 
     const personalAppointments = useQuery({
         queryKey: ["personalAppointments"],
@@ -91,15 +94,15 @@ export default function Schedule() {
         enabled: type?.type === "personal"
     })
 
-    const rescheduleRequests = useQuery({
-        queryKey: ["rescheduleRequests"],
-        queryFn: () => getAppointmentByStatus({ data: { status: "PENDENTE_CLIENTE_APROVACAO", data: "2025-11-27" } }),
-        select: (res) => res.data.content,
-        retry: false,
-        enabled: type?.type === "aluno"
-    })
+    //todo:
+    // const rescheduleRequests = useQuery({
+    //     queryKey: ["rescheduleRequests"],
+    //     queryFn: () => getAppointmentByStatus({ data: { status: "PENDENTE_CLIENTE_APROVACAO", data: "2025-11-27" } }),
+    //     select: (res) => res.data.content,
+    //     retry: false,
+    //     enabled: type?.type === "aluno"
+    // })
 
-    console.log("personalAppointments", rescheduleRequests.data);
     return (
         <>
             {type?.type === "personal" ? (
@@ -130,6 +133,7 @@ export default function Schedule() {
                                         <path d="M12 5v14" />
                                     </svg>)}
                                     title={`Agendar`}
+                                    classname={styles.btnAgendar}
                                     handleButtonClick={() => setOpenModal("newEvent")} />
                             </div>
 

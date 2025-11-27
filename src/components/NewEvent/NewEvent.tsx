@@ -13,6 +13,7 @@ import { createAddress } from "../../constants/address";
 import type { Address } from "../../models/address";
 import { insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
+import { useQueryClient } from "@tanstack/react-query";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -54,6 +55,9 @@ export default function NewEvent(
     });
 
     const [step, setStep] = useState<number>(1);
+
+
+    const queryClient = useQueryClient();
 
 
     let eventToReschedule = rescheduleId ? insertedEvents?.find(event => event?.agendamentoId === rescheduleId) : undefined;
@@ -168,7 +172,6 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-
                 await handleInsertAddress(e).then(() => {
                     console.log("Endereço inserido com sucesso.");
                 }).catch(error => {
@@ -176,6 +179,7 @@ export default function NewEvent(
                 });
 
                 if (calculatedTitle && newEventDate) {
+                    queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments"] });
                     openModal();
                     navigation("/schedule");
                     return;
@@ -238,6 +242,7 @@ export default function NewEvent(
 
 
         if (calculatedTitle && newEventDate) {
+            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments"] });
             openModal();
             navigation("/schedule");
             return;

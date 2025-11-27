@@ -230,7 +230,7 @@ export default function EditUser() {
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
-            {type === "aluno" ? (<InputWithIcon
+            {type?.type === "aluno" ? (<InputWithIcon
               id="cpf"
               type="text"
               placeholder="Digite seu CPF"

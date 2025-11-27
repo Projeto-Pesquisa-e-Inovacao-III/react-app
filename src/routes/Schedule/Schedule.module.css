@@ -85,6 +85,10 @@
     width: 15vw;
 }
 
+.btnAgendar {
+    width: unset !important;
+}
+
 @media (max-width: 475px) {
     .scheduleView {
         flex-direction: column;

@@ -9,13 +9,14 @@ import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, concludeAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { findByEmail } from "../../../constants/user";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
 
 export function CheckSchedule() {
     const isMobile = useMobile();
+    const queryClient = useQueryClient();
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
 
@@ -63,6 +64,7 @@ export function CheckSchedule() {
         await acceptUserAppointment(id).then((res) => {
             console.log("Agendamento aceito:", res);
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
@@ -71,6 +73,7 @@ export function CheckSchedule() {
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
         });
@@ -85,6 +88,8 @@ export function CheckSchedule() {
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal( payload ).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
         });
@@ -93,6 +98,7 @@ export function CheckSchedule() {
     function handleConcludeAppointment(id: number) {
         concludeAppointment(id).then(() => {
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });

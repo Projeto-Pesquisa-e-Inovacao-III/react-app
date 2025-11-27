@@ -81,6 +81,7 @@ export function Overview() {
     }, [appointmentsCards.data]);
 
     const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
+    const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
     function fetchAppointmentsCountToday() {
 
@@ -91,6 +92,14 @@ export function Overview() {
             console.log("Personal appointments today count:", response);
 
             setCountAppointmentsToday(response.data);
+        }).catch((error) => {
+            console.error("Error fetching personal appointments today count:", error);
+            return 0;
+        });
+
+        appoitmentsCount({ status: "PENDENTE_PERSONAL_APROVACAO" }).then((response) => {
+            console.log("Personal appointments pending count:", response);
+            setCountAppointmentsPending(response.data);
         }).catch((error) => {
             console.error("Error fetching personal appointments today count:", error);
             return 0;
@@ -174,6 +183,13 @@ export function Overview() {
                             <OverviewCard
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? 0}
+                                titletbn={"Agendamentos"}
+                                onClick={() => nav("/schedule")}
+                                isMobile={isMobile}
+                            />
+                            <OverviewCard
+                                title={"Aulas pendentes de aprovação"}
+                                subtitle={countAppointmentsPending ?? 0}
                                 titletbn={"Agendamentos"}
                                 onClick={() => nav("/schedule")}
                                 isMobile={isMobile}
