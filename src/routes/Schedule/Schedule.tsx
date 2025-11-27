@@ -12,12 +12,12 @@ import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
+import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 
-type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | null;
+type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
 export default function Schedule() {
     const isMobile = useMobile();
@@ -82,13 +82,24 @@ export default function Schedule() {
         }
     })
 
+
     const personalAppointments = useQuery({
         queryKey: ["personalAppointments"],
         queryFn: () => findPersonalRequests(),
         select: (res) => res.data.content,
+        retry: false,
         enabled: type?.type === "personal"
     })
 
+    const rescheduleRequests = useQuery({
+        queryKey: ["rescheduleRequests"],
+        queryFn: () => getAppointmentByStatus({ data: { status: "PENDENTE_CLIENTE_APROVACAO", data: "2025-11-27" } }),
+        select: (res) => res.data.content,
+        retry: false,
+        enabled: type?.type === "aluno"
+    })
+
+    console.log("personalAppointments", rescheduleRequests.data);
     return (
         <>
             {type?.type === "personal" ? (
