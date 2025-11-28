@@ -7,25 +7,30 @@ import styles from "./UserAvatar.module.css"
 
 interface UserAvatarProps {
   foto?: string;
+  useUserImage?: boolean;
 }
 
-export default function UserAvatar({ foto }: UserAvatarProps) {
+export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
+
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
     select: (response) => {
+      if (!useUserImage) return undefined;
+      
       if (response.data) {
         return `${BASE_URL}/usuarios/me/imagem`;
       }
+
       return undefined;
     },
     retry: false,
   })
-return (
+  return (
     <div className={styles.userAvatar}>
-      {userImage.data ?
+      {userImage.data || foto ?
         <UserImg
-          Source={foto ? foto : userImage.data || ""}
+          Source={`${foto ? `${BASE_URL}/usuarios/foto/${foto}` : userImage.data || ""}`}
           Height={216}
           Width={216}
           Alt="foto"

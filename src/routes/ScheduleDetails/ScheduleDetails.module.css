@@ -131,9 +131,9 @@
     }
 }
 
-
 .planDetailsDescription {
     width: 70%;
+    text-transform: capitalize !important;
 }
 
 .cardDetails .highlight {

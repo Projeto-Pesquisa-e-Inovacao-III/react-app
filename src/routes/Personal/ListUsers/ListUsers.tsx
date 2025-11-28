@@ -1,11 +1,11 @@
-import UsersTable from "../../components/UsersTable/UsersTable";
+import UsersTable from "../../../components/UsersTable/UsersTable";
 import styles from "./ListUsers.module.css"
 import { useEffect, useState } from "react";
-import { SearchBar } from "../../components/SearchBar/SearchBar";
-import useMobile from "../../hooks/isMobile";
+import { SearchBar } from "../../../components/SearchBar/SearchBar";
+import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
-import { listStudents } from "../../constants/personal";
-import useSearchFilter from "../../hooks/useSearchFilter";
+import { listStudents } from "../../../constants/personal";
+import useSearchFilter from "../../../hooks/useSearchFilter";
 
 export default function ListUsers() {
     const isMobile = useMobile();

@@ -89,7 +89,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>
-                        <UserAvatar {...{ foto: `http://localhost:8080/usuarios/foto/${cardData.foto}` }} />
+                        <UserAvatar foto={cardData.foto ? `${cardData.foto}` : undefined} />
                     </div>
                     <div className={styles.content}>
                         <div className={styles.titleName}>

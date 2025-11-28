@@ -19,29 +19,17 @@ const initialLoginState = {
 };
 
 
-function reducer(state: any, action: any) {
-  switch (action.type) {
-    case 'setEmail':
-      return { ...state, email: action.payload };
-    case 'setPassword':
-      return { ...state, password: action.payload };
-    default:
-      return state;
-  }
-}
-
 export default function Login() {
   const isMobile = useMobile();
-  
-  const [login, dispatch] = useReducer(reducer, initialLoginState);
+
+  const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
   const [successLogin, setSuccessLogin] = useState<boolean>(false);
 
   const nav = useNavigate();
 
   function handleAutoFill() {
-    dispatch({ type: 'setEmail', payload: "joao.silva@example.com" });
-    dispatch({ type: 'setPassword', payload: "123456789aA!" });
+    setLoginInfo({ email: "joao.silva@example.com", password: "123456789aA!" });
   }
 
   const queryClient = useQueryClient();
@@ -56,16 +44,11 @@ export default function Login() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     userService
-      .login(login.email, login.password)
-      .then((res) => {
+      .login(loginInfo.email, loginInfo.password)
+      .then(async (res) => {
         if (res.status == 200) {
+          await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
           setSuccessLogin(true);
-
-          setTimeout(() => {
-            if (successLogin) {
-              nav("/home")
-            }
-          }, 4000)
         }
 
       })
@@ -98,8 +81,8 @@ export default function Login() {
             </div>
             <form onSubmit={handleSubmit}>
               <div className={styles.wrapperInputsLoginPage}>
-                <InputWithIcon value={login.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => dispatch({ type: 'setEmail', payload: email })} icon={<Mail />} />
-                <InputWithIcon value={login.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => dispatch({ type: 'setPassword', payload: password })} icon={<Lock />} />
+                <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
+                <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />
               </div>
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>

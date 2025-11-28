@@ -3,6 +3,7 @@ import SmallerButton from "../SmallerButton";
 import "./style.css"
 import type { dataCardProps } from "../CardCheckSchedule/CardCheckSchedule";
 import UserAvatar from "../UserAvatar/UserAvatar";
+import { BASE_URL } from "../../system";
 
 type UserScheduleCardProps = {
     data: dataCardProps;
@@ -21,7 +22,7 @@ export default function UserScheduleCard({ data, date, initialHour, finalHour, h
             <div className="left">
                 <span className="user-personal">{data.tipoAula}</span>
                 <div className="schedule-page-user">
-                    <UserAvatar foto={data.foto} />
+                    <UserAvatar foto={data.foto ? `${data.foto}` : undefined} useUserImage={false} />
                     <span>{data.personalNome}</span>
                 </div>
                 <div className="btn-actions">

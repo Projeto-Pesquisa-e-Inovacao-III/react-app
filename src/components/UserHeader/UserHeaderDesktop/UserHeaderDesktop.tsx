@@ -64,7 +64,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
             <Bell />
           </div> */}
           <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
-            <UserAvatar />
+            <UserAvatar useUserImage={true} />
           </div>
         </div>
 

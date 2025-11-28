@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
 import { useNavigate } from "react-router-dom";
+import Select from "../Inputs/Select/Select";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
     title?: string;
     values?: {
         name: string;
+        type: string;
         price: string;
         deadline: string;
         benefits: string[];
@@ -25,39 +27,53 @@ type AddPackagePlanProps = {
 
 export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit }: AddPackagePlanProps) {
 
-    const [name, setName] = useState<string>(values?.titulo || "");
-    const [price, setPrice] = useState<string>(values?.preco || "");
-    const [deadline, setDeadline] = useState<string>(values?.duracaoMes || "");
-    const [quantity, setQuantity] = useState<number>(values?.quantidadeAula || 0);
-    const [benefits, setBenefits] = useState<string[]>(values?.descricao ? JSON.parse(values.descricao) : [""]);
+    const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number }>({
+        name: values?.name || "",
+        type: values?.type || "PRESENCIAL",
+        price: values?.price || "",
+        deadline: values?.deadline || "",
+        benefits: values?.benefits || [""],
+        quantity: values?.quantity || 0
+    });
 
     const navigate = useNavigate();
 
+    function handleAutoFill() {
+        setPackageInfo({
+            name: "Pacote Exemplo",
+            type: "PRESENCIAL",
+            price: "100",
+            deadline: "12",
+            benefits: ["Benefício 1", "Benefício 2"],
+            quantity: 10
+        });
+    }
+
     function handleAddBenefit() {
-        setBenefits([...benefits, ""]);
+        setPackageInfo(prev => ({ ...prev, benefits: [...prev.benefits, ""] }));
     }
 
     function handleBenefitChange(index: number, value: string) {
-        const updated = [...benefits];
+        const updated = [...packageInfo.benefits];
         updated[index] = value;
-        setBenefits(updated);
+        setPackageInfo(prev => ({ ...prev, benefits: updated }));
     }
 
 
     function handleAddPackage() {
         const data: ProductExhibition = {
-            titulo: name,
+            titulo: packageInfo.name,
             subtitulo: "",
-            descricao: JSON.stringify(benefits),
-            preco: price,
-            periodo: deadline,
+            descricao: JSON.stringify(packageInfo.benefits),
+            preco: packageInfo.price,
+            periodo: packageInfo.deadline,
             status: "ATIVO",
-            tipoAula: "ONLINE",
-            quantidadeAula: quantity,
-            duracaoMes: parseInt(deadline || "12")
+            tipoAula: packageInfo.type,
+            quantidadeAula: packageInfo.quantity,
+            duracaoMes: parseInt(packageInfo.deadline || "12")
         }
 
-        if (benefits.includes("")) {
+        if (packageInfo.benefits.includes("")) {
             alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
             return;
         }
@@ -68,7 +84,6 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             if (packageCreated) {
                 packageCreated(prev => [...prev, data]);
             }
-            onClose(false);
         }).catch((error) => {
             console.error("Erro ao adicionar pacote:", error);
         });
@@ -76,15 +91,15 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
     function handleEditPackage() {
         const data: ProductExhibition = {
-            titulo: name,
+            titulo: packageInfo.name,
             subtitulo: "",
-            descricao: JSON.stringify(benefits),
-            preco: price,
-            periodo: deadline,
+            descricao: JSON.stringify(packageInfo.benefits),
+            preco: packageInfo.price,
+            periodo: packageInfo.deadline,
             status: "ATIVO",
-            tipoAula: "ONLINE",
-            quantidadeAula: quantity,
-            duracaoMes: parseInt(deadline || "12")
+            tipoAula: packageInfo.type,
+            quantidadeAula: packageInfo.quantity,
+            duracaoMes: parseInt(packageInfo.deadline || "12")
         }
 
         updateProductExhibition(values.id, data).then(() => {
@@ -105,27 +120,31 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
+            <button onClick={handleAutoFill} className="border-2">Auto Preencher</button>
                 <h1>{title}</h1>
                 {/* Formulário para adicionar pacote */}
                 <form className={styles.addPackageForm}>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packageName">Nome:</label>
-                        <Input type="text" value={name} onInputChange={setName} />
+                        <Input type="text" value={packageInfo.name} onInputChange={(value) => setPackageInfo({ ...packageInfo, name: value })} />
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <Select className={styles.selectType} options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]} valuesName={["Presencial", "Residencial", "Funcional"]} label="Tipo de aula:" value={packageInfo.type} placeholder={"Selecione o tipo"} onInputChange={(value) => setPackageInfo({ ...packageInfo, type: value })} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Preço:</label>
-                        <Input type="text" value={price} onInputChange={setPrice} />
+                        <Input type="text" value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Quantidade de aulas:</label>
-                        <Input type="number" value={quantity} onInputChange={setQuantity} />
+                        <Input type="number" value={packageInfo.quantity} onInputChange={(value) => setPackageInfo({ ...packageInfo, quantity: value })} />
                     </div>
                     <div className={styles.inputContainer}>
                         <label htmlFor="packagePrice">Prazo:</label>
-                        <Input type="number" value={deadline} onInputChange={setDeadline} />
+                        <Input type="number" value={packageInfo.deadline} onInputChange={(value) => setPackageInfo({ ...packageInfo, deadline: value })} />
                     </div>
 
-                    {benefits.map((benefit, index) => (
+                    {packageInfo.benefits.map((benefit, index) => (
                         <div className={styles.inputContainer}>
                             <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
                             <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} />

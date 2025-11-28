@@ -197,6 +197,7 @@ export function Overview() {
                                     {type?.type === "personal" && appointmentsCards.data?.map((card, index) => (
                                         <AppointmentCard
                                             key={index}
+                                            agendamentoId={card.agendamentoId}
                                             status={card.agendamentoStatus}
                                             name={card.alunoNome}
                                             photoUrl={card.fotoUsuario}

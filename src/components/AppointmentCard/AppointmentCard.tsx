@@ -2,8 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import StatusSchedule from '../StatusSchedule/StatusSchedule';
 import styles from './AppointmentCard.module.css';
 import classNames from 'classnames';
+import UserAvatar from '../UserAvatar/UserAvatar';
 
 type Index = {
+    agendamentoId: number;
     status: 'APROVADO' | 'Confirmado' | 'Cancelado';
     name: string;
     photoUrl: string;
@@ -20,7 +22,7 @@ export function AppointmentCard(props: Index) {
     const nav = useNavigate();
 
     function handleNavigateToDetail() {
-        nav('/schedule-details');
+        nav(`/schedule-details?id=${props.agendamentoId}`); // Adjust the query parameter as needed
     }
     return (
         <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
@@ -29,7 +31,7 @@ export function AppointmentCard(props: Index) {
                 <div className={classNames(styles.sessionCardLeft, { [styles.sessionCardLeftMobile]: isMobile })}>
                     <p className={styles.sessionCardStatus}>{props.type}</p>
                     <div className={styles.sessionCardUser}>
-                        <img src={props.photoUrl} alt={props.name} className={styles.sessionCardAvatar} />
+                        <UserAvatar foto={props.photoUrl ? `${props.photoUrl}` : undefined} useUserImage={false} />
                         <div>
                             <p className={styles.sessionCardName}>{props.name}</p>
                             <p className={styles.sessionCardAddress}>{props.address}</p>

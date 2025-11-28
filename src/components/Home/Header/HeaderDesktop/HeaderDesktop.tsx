@@ -1,8 +1,23 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop/LogoHeaderDesktop";
 import { User } from "lucide-react";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {
+
+    const queryClient = useQueryClient();
+
+    async function invalidateAuth() {
+        if (!userLoggedIn) {
+            await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
+        }
+    }
+
+    useEffect(() => {
+        invalidateAuth();
+    }, [userLoggedIn]);
+
     return (
         <>
             <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white">

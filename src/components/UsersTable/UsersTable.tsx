@@ -34,7 +34,7 @@ export default function UsersTable(props) {
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
                         })}>
-                            <UserAvatar foto={`http://localhost:8080/usuarios/foto/${user.caminhoFoto}`} />
+                            <UserAvatar foto={user.caminhoFoto ? `${user.caminhoFoto}` : undefined} useUserImage={false} />
                             <div className={styles.userData}>
                                 <b>
                                     {user.nome}

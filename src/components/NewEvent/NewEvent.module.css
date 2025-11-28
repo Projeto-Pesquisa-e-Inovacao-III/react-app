@@ -126,6 +126,10 @@
   width: 30%;
 }
 
+.calendarSmallMobile .buttonHourNewEvent {
+  width: max-content !important;
+}
+
 .buttonHourNewEvent button {
   height: 45px !important;
 
@@ -183,6 +187,12 @@
   padding: 2px 16px;
 }
 
+
+.wrappeSelectsMobile {
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+
 .selectComponent {
   flex-direction: row !important;
   align-items: center !important;
@@ -222,6 +232,11 @@
   margin: 10px 0;
   width: 40%;
 }
+
+.inputGroup :global(label) {
+  font-size: 16px;
+}
+
 
 .inputGroup #cep {
   width: 100%;
@@ -264,6 +279,12 @@
 }
 
 .inputGroupMax input {
+  width: 100%;
+}
+
+
+.inputGroupMobile {
+  flex-direction: column !important;
   width: 100%;
 }
 

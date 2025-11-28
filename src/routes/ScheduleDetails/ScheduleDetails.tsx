@@ -10,6 +10,7 @@ import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { findAppointmentById } from '../../constants/schedule';
 import { useQuery } from '@tanstack/react-query';
+import { BASE_URL } from '../../system';
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
@@ -28,6 +29,8 @@ export default function ScheduleDetails() {
         enabled: !!searchParams.get('id'),
         select: (res) => res.data,
     });
+
+    console.log(appointment.data);
 
     const date = new Date(`${appointment.data?.dataInicio}`);
     const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
@@ -88,18 +91,30 @@ export default function ScheduleDetails() {
                 </div>
 
                 {type === "aluno" &&
-                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal.nome} subtitle={`Idade: ${appointment.data?.personal.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal.avatarUrl} />
+                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal.nome} subtitle={`Idade: ${appointment.data?.personal.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal.avatarUrl ? appointment.data?.personal.avatarUrl : undefined} />
                 }
 
                 {type === "personal" &&
-                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title="Rapaz" subtitle="Idade: 48 anos" includeImg={true} />
+                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno.nome} subtitle={`Idade: ${appointment.data?.aluno.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno.avatarUrl ? appointment.data?.aluno.avatarUrl : undefined} />
                 }
 
                 <div className={styles.contentDetails}>
                     <h2 className={styles.subtitle}>Detalhes</h2>
                     <div className={styles.planDetails}>
-                        <span className={styles.planDetailsDescription}>Tipo: {appointment.data?.endereco.tipo}</span>
-                        {/* <span className={styles.planDetailsDescription}>Local: {dataMocked.local}</span> */}
+                        <span className={styles.planDetailsDescription}>
+                            Tipo:
+                            <span className={styles.planDetailsText}>{appointment.data?.tipoAula
+                                ?.toLowerCase()
+                                ?.replace(/^\w/, (c) => c.toUpperCase())}
+                            </span>
+                        </span>
+                        <span className={styles.planDetailsDescription}>
+                            Local:
+                            <span className={styles.planDetailsText}>
+                                {appointment.data?.endereco.tipo?.toLowerCase()
+                                    ?.replace(/^\w/, (c) => c.toUpperCase())}
+                            </span>
+                        </span>
                         <span className={styles.planDetailsDescription}>Endereço: {appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
                     </div>
                 </div>

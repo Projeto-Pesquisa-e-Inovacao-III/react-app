@@ -16,6 +16,7 @@ import { cellphoneMask, cpfMask } from "../../utils/mascara";
 import { TypeContext } from "../../App";
 import type { PersonalDTO } from "../../models/personal";
 import { editPersonalProfile } from "../../constants/personal";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 
 function reducer(state: any, action: any) {
   switch (action.type) {
@@ -52,6 +53,7 @@ const initialEditUserState = {
   birthDate: "",
 };
 
+type modalTypes = "timer" | "success" | "error" | null;
 
 export default function EditUser() {
   const isMobile = useMobile();
@@ -64,9 +66,8 @@ export default function EditUser() {
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
-  const [callSuccessModal, setCallSuccessModal] = useState(false);
-  const [callTimerModal, setCallTimerModal] = useState(false);
-  const [textSuccessModal, setTextSuccessModal] = useState({ title: "", content: "" });
+  const [openModal, setOpenModal] = useState<modalTypes>(null);
+  const [textModal, setTextModal] = useState({ title: "", content: "" });
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -92,9 +93,8 @@ export default function EditUser() {
       console.error("Erro ao remover imagem do usuário:", error);
     });
 
-    setTextSuccessModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
-    setCallTimerModal(false);
-    setCallSuccessModal(true);
+    setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
+    setOpenModal("success");
 
   }
 
@@ -132,22 +132,33 @@ export default function EditUser() {
     }
 
     update(options).then(() => {
-      console.log("Dados do usuário atualizados com sucesso!");
-      setTextSuccessModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-      setCallSuccessModal(true);
+      if (userImageFormData.has("imagem")) {
+        insertUserImage(userImageFormData).then(() => {
+          console.log("Imagem do usuário atualizada com sucesso!");
+
+          setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+          setOpenModal("success");
+        }).catch((error) => {
+          console.error("Erro ao atualizar imagem do usuário:", error);
+          setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+          setOpenModal("error");
+          return;
+        });
+      }
+
+
 
     }).catch((error) => {
       console.error("Erro ao atualizar dados do usuário:", error);
+      setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
+      setOpenModal("error");
+      return;
     });
 
-    if (userImageFormData.has("imagem")) {
-      insertUserImage(userImageFormData).then(() => {
-        console.log("Imagem do usuário atualizada com sucesso!");
-      }).catch((error) => {
-        console.error("Erro ao atualizar imagem do usuário:", error);
-      });
-    }
+
+
   }
+
 
   function handleUpdatePersonalInfo() {
     const options: PersonalDTO = {
@@ -161,20 +172,26 @@ export default function EditUser() {
     }
 
     editPersonalProfile(options).then(() => {
-      setTextSuccessModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-      setCallSuccessModal(true);
-
+      setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
     }).catch((error) => {
       console.error("Erro ao atualizar dados do usuário:", error);
+      setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
+      setOpenModal("error");
     });
 
     if (userImageFormData.has("imagem")) {
+      console.log("inserting image");
       insertUserImage(userImageFormData).then(() => {
         console.log("Imagem do usuário atualizada com sucesso!");
       }).catch((error) => {
         console.error("Erro ao atualizar imagem do usuário:", error);
+        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+        setOpenModal("error");
+        return;
       });
     }
+    setOpenModal("success");
+
   }
 
   useEffect(() => {
@@ -212,7 +229,7 @@ export default function EditUser() {
 
               {userImage ?
                 <div >
-                  <Button typeButton="other" title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setCallTimerModal(true)} />
+                  <Button typeButton="other" title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setOpenModal("timer")} />
                 </div>
                 : null}
             </div>
@@ -301,23 +318,31 @@ export default function EditUser() {
         </div>
       </div>
 
-      {callSuccessModal && (
+      {openModal === "success" && (
         <SuccessModal
           isMobile={isMobile}
-          closeThen={setCallSuccessModal}
-          title={textSuccessModal.title}
-          content={textSuccessModal.content}
+          closeThen={() => setOpenModal(null)}
+          title={textModal.title}
+          content={textModal.content}
         />
       )}
 
-      {callTimerModal && (
+      {openModal === "timer" && (
         <TimerModal
           isMobile={isMobile}
-          closeThen={() => setCallTimerModal(false)}
+          closeThen={() => setOpenModal(null)}
           callSuccessModal={handleRemoveImage}
           title="Remover imagem?"
           buttonTitle="Remover"
           content="Tem certeza que deseja remover sua imagem de perfil?"
+        />
+      )}
+
+      {openModal === "error" && (
+        <ErrorModal
+          closeThen={() => setOpenModal(null)}
+          title={textModal.title}
+          content={textModal.content}
         />
       )}
     </>

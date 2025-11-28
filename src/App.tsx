@@ -10,7 +10,7 @@ import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
 import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
-import ListUsers from "./routes/ListUsers/ListUsers"
+import ListUsers from "./routes/Personal/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";

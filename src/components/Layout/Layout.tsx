@@ -6,7 +6,7 @@ import { LogoHeaderMobile } from "../LogoHeaderMobile/LogoHeaderMobile";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import { isAuthenticated } from "../../constants/user";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 const titles = {
@@ -21,6 +21,7 @@ const titles = {
     "/schedule-history": "Histórico de Agendamentos | CSF Treinamentos",
     "/schedule-history/": "Histórico de Agendamentos | CSF Treinamentos",
     "/schedule-details": "Detalhes do Agendamento | CSF Treinamentos",
+    "/schedule-details/": "Detalhes do Agendamento | CSF Treinamentos",
     "/plans-history-details": "Detalhes do Plano | CSF Treinamentos",
     "/packages": "Pacotes | CSF Treinamentos",
     "/home": "Visão Geral | CSF Treinamentos",
@@ -45,8 +46,8 @@ export default function Layout() {
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 
-    const exceptions = ["/", "/login", "/register", "/forgot-password"];
-    const hideLogoPaths = [...exceptions, "/more-options", "/logout"].includes(location.pathname);
+    const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout"];
+    const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
 
     const isLoggedIn = useQuery({
         queryKey: ["isAuthenticated"],
@@ -56,24 +57,18 @@ export default function Layout() {
         select: (res) => res.data,
     });
 
-
-    useEffect(() => {
-        const notAuthenticated = isLoggedIn.isError || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
-        console.log("Authentication check:", {
-            isLoading: isLoggedIn.isLoading,
-            data: isLoggedIn.data,
-            isError: isLoggedIn.isError
-        });
-        if (notAuthenticated && !exceptions.includes(location.pathname)) {
-            nav("/login");
-        }
-    }, [isLoggedIn.isLoading, isLoggedIn.data, isLoggedIn.isError, location.pathname]);
-
     const context = useContext(TypeContext);
 
     if (!context) throw new Error("TypeContext não encontrado");
 
     const { type, setType } = context;
+
+    useEffect(() => {
+        const notAuthenticated = (isLoggedIn.isError && !isLoggedIn.isLoading) || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
+        if (notAuthenticated && !exceptions.includes(location.pathname)) {
+            nav("/login");
+        }
+    }, [isLoggedIn, location.pathname, isLoggedIn.data, isLoggedIn.isError, isLoggedIn.isLoading, type]);
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {

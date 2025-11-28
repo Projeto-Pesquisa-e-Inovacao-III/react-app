@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
-import UserScheduleCard from "../../components/UserScheduleCard";
+import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";

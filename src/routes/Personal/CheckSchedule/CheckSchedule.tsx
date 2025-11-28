@@ -86,7 +86,7 @@ export function CheckSchedule() {
             descricaoCancelamento: data.description
         };
         console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal( payload ).then(() => {
+        await reportAbsencePersonal(payload).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
             queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
 
@@ -150,7 +150,7 @@ export function CheckSchedule() {
                     )) : <p>Nenhum agendamento encontrado.</p>}
                 </div>
             </div>
-            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado","Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
+            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado", "Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 
