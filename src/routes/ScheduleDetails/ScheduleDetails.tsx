@@ -104,16 +104,22 @@ export default function ScheduleDetails() {
                     </div>
                 </div>
             </div>
-            {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+            {type === "personal" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
                     {type === "personal" && today > formattedDate &&
-                        <div className={styles.buttonAbsence}>
-                            <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
-                        </div>
+                        <>
+                            <div className={styles.buttonAbsence}>
+                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => setRegisterAbsence(true)} />
+                            </div>
+
+                            <div className={styles.buttonAbsence}>
+                                <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
+                            </div>
+                        </>
                     }
 
-                    <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "student" })}>
+                    <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" })}>
                         <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} />
                         <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} />
                         <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} />

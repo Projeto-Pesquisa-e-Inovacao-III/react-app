@@ -53,10 +53,6 @@
     width: auto !important;
 }
 
-.buttonActions {
-    width: 100%;
-}
-
 .container .content {
     display: flex;
     flex-direction: column;

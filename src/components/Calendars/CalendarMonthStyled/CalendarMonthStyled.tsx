@@ -6,6 +6,7 @@ import "./desktop.css";
 import { use, useEffect, useRef, useState } from "react";
 import type { EventDTO } from "../../../models/calendar";
 import type { Schedule } from "../../../models/schedule";
+import { parseISO } from "date-fns";
 
 type Props = {
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
@@ -19,8 +20,8 @@ type Props = {
 export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile }: Props) {
 
   const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
-    return { 
-      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data 
+    return {
+      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data
     };
   }) : [];
 
@@ -65,15 +66,46 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           dayHeaderFormat={{ weekday: 'short' }}
           dateClick={(info) => setNewEventDate(info.dateStr)}
           dayCellClassNames={(arg) => {
-            const disabledDays = events.map((e) => e.data.split("T")[0]);
+            // const disabledDays = events.map((e) => e.data.split("T")[0]);
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
+            // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
+            //   return ["disabled-day"];
+
+            const now = new Date().toISOString().split("T")[0];
+            if (dateStr < now || dateStr === now)
               return ["disabled-day"];
+            // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
+            //   return ["disabled-day"];
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];
 
             return [];
+          }}
+          dayCellContent={(arg) => {
+            const cellDate = arg.date.toISOString().split("T")[0];
+
+            const eventDate = events?.map(event => parseISO(event.data).toISOString().split("T")[0]);
+
+            const hasEvent = events?.some((event, index) => eventDate?.[index] === cellDate);
+            return (
+              <div style={{ textAlign: 'center' }}>
+                <div>{arg.dayNumberText}</div>
+                {hasEvent && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: '#1e40af',
+                    borderRadius: '50%',
+                    margin: '4px auto 0'
+                  }}></div>
+                )}
+              </div>
+            );
           }}
           headerToolbar={{
             start: "title",

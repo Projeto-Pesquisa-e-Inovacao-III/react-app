@@ -54,7 +54,7 @@ export default function ScheduleHistory() {
 
     const data = (filteredData as ScheduleAfterInserted[]).map((event) => ({
         id: event.agendamentoId,
-        headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
+        headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
         title: event.tipoAula,
         subtitle: event.status &&
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>

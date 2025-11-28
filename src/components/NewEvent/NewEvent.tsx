@@ -14,12 +14,14 @@ import type { Address } from "../../models/address";
 import { insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
 import { useQueryClient } from "@tanstack/react-query";
+import ErrorModal from "../Modal/ErrorModal/ErrorModal";
+import { format, parse, startOfDay } from "date-fns";
 
 type NewEventProps = {
     isMobile: boolean;
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModal: (() => void);
-    errorModal: (() => void);
+    errorModal: ((title: string, description: string) => void);
     insertedEvents: any[];
     title?: string;
     buttonTitle?: string;
@@ -37,13 +39,19 @@ type AddressState = {
     complement: string;
 };
 
+type modalTypes = "error" | null;
+
 export default function NewEvent(
     { isMobile, close, openModal, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
 ) {
+    const [modal, setModal] = useState<modalTypes>(null);
+
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
-    const [newEventStartHour, setNewEventStartHour] = useState<string>("");
+    const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
     const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+
+    console.log("Inserted Events: ", insertedEvents);
 
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
@@ -56,6 +64,10 @@ export default function NewEvent(
 
     const [step, setStep] = useState<number>(1);
 
+    const [modalInfo, setModalInfo] = useState<{
+        title: string,
+        description: string
+    }>({ title: "Houve um erro", description: "Ocorreu um erro inesperado." });
 
     const queryClient = useQueryClient();
 
@@ -125,11 +137,6 @@ export default function NewEvent(
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
 
-        if (!newEventDate || !newEventStartHour) {
-            alert("Por favor, selecione uma data e horário para o evento.");
-            return;
-        }
-
         if (!addressData.postalCode || addressData.address === null) {
             alert("Por favor, insira um CEP válido para o endereço.");
             return;
@@ -141,11 +148,6 @@ export default function NewEvent(
         }
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
-
-        console.log("Agendando novo evento...", {
-            date: newEventDate,
-            hour: newEventStartHour,
-        });
 
         const payload: Schedule = {
             data: `${newEventDate}T${newEventStartHour}`,
@@ -186,7 +188,16 @@ export default function NewEvent(
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
-                errorModal();
+                if (error.status === 400) {
+                    setModalInfo({
+                        title: "Erro ao agendar",
+                        description: "Horário indisponível para agendamento"
+                    });
+                    setModal("error");
+                    return;
+                }
+
+                errorModal("Erro ao agendar", "Ocorreu um erro ao tentar agendar o evento.");
                 navigation("/schedule");
 
             });
@@ -238,6 +249,7 @@ export default function NewEvent(
             });
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
+            //errorModal();
         });
 
 
@@ -261,10 +273,30 @@ export default function NewEvent(
     }
 
     function handleStepChange(stepNumber: number) {
-        if (!newEventDate && !newEventStartHour) {
-            alert("Por favor, selecione uma data e horário para o evento.");
+        // choose date and hour validation
+        if (!newEventDate || !newEventStartHour) {
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Selecione uma data e horário para o evento."
+            });
+            setModal("error");
             return;
         }
+
+        //24hrs
+        const selectedDateTime = new Date(`${newEventDate}T${newEventStartHour}`);
+        const now = new Date();
+        now.setDate(now.getDate() + 1);
+
+        if (selectedDateTime <= now) {
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "O agendamento deve ser feito com pelo menos 24 horas de antecedência."
+            });
+            setModal("error");
+            return;
+        }
+
         setStep(stepNumber);
     }
 
@@ -274,7 +306,7 @@ export default function NewEvent(
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
                 <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
-                    {isMobile && (
+                    {step === 1 && isMobile && (
                         <div onClick={handleClose} className={styles.goBackButton}>
                             <svg
 
@@ -287,6 +319,21 @@ export default function NewEvent(
                             <span>Voltar</span>
                         </div>
                     )}
+
+                    {step === 2 && isMobile && (
+                        <div onClick={() => handleStepChange(1)} className={styles.goBackButton}>
+                            <svg
+
+                                width="14" height="12" viewBox="0 0 14 12" fill="none">
+                                <path
+                                    d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
+                                    stroke="black"
+                                />
+                            </svg>
+                            <span>Voltar</span>
+                        </div>
+                    )}
+
 
                     {step === 1 && !isMobile && (
 
@@ -354,7 +401,7 @@ export default function NewEvent(
                             <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
 
                             {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                            <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
+                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
                                 <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
                                     <Select
                                         placeholder="Selecione o tipo"
@@ -511,7 +558,7 @@ export default function NewEvent(
                                     </div>
                                 </div>
 
-                                <div className={classnames(styles.buttonNextStep)}>
+                                <div className={classnames(styles.buttonNextStep, { [styles.buttonNextStepMobile]: isMobile })}>
                                     <SmallerButton type="submit" title={"Confirmar agendamento"} />
                                 </div>
                             </form>
@@ -520,6 +567,14 @@ export default function NewEvent(
 
                 </div>
             </div>
+
+            {modal === "error" && (
+                <ErrorModal
+                    closeThen={() => setModal(null)}
+                    title={modalInfo.title}
+                    content={modalInfo.description}
+                />
+            )}
         </>
     );
 }

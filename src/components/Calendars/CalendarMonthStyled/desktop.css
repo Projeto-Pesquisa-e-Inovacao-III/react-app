@@ -10,7 +10,7 @@
 }
 
 .selected-day, .fc-highlight {
-  background-color: #2e2e2e !important;
+  background-color: var(--bg-blue) !important;
   color: white !important;
   border-radius: 5px;
   padding: 6px 10px;

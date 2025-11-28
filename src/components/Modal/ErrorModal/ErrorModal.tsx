@@ -19,7 +19,7 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
 
     return (
         <>
-            <div className="overlay"></div>
+            <div className={`overlay ${styles.overlayError}`}></div>
             <div className={`${styles.modalEventCreated} ${isMobileDevice ? styles.modalEventCreatedMobile : ''}`}>
                 <h2>{title || "Evento criado com sucesso!"}</h2>
                 <p className={styles.contentModal}>{content || "Erro."}</p>

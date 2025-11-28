@@ -1,3 +1,7 @@
+.overlayError {
+    z-index: 1000;
+}
+
 .modalEventCreated {
     position: fixed;
     top: 50%;

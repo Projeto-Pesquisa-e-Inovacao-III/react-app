@@ -161,8 +161,8 @@ export default function Schedule() {
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
                         openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
-                        errorModal={() => handleErrorModalInfo("Erro ao agendar", "Não foi possível agendar o horário")}
-                        insertedEvents={events}
+                        errorModal={(title, description) => handleErrorModalInfo(title, description)}
+                        insertedEvents={appointments.data?.data}
                         title="Agendar horário"
                         buttonTitle="Avançar"
                         clickedDate={clickedDate}
