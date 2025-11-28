@@ -15,12 +15,13 @@ type UserScheduleCardProps = {
 }
 
 export default function UserScheduleCard({ data, date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
+    console.log("dataCardProps", data);
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">
                 <span className="user-personal">{data.tipoAula}</span>
                 <div className="schedule-page-user">
-                    <UserAvatar foto={data.foto}/>
+                    <UserAvatar foto={data.foto} />
                     <span>{data.personalNome}</span>
                 </div>
                 <div className="btn-actions">

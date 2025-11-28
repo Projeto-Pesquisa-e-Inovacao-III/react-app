@@ -4,7 +4,7 @@ import styles from './AppointmentCard.module.css';
 import classNames from 'classnames';
 
 type Index = {
-    status: 'Pendente' | 'Confirmado' | 'Cancelado';
+    status: 'APROVADO' | 'Confirmado' | 'Cancelado';
     name: string;
     photoUrl: string;
     date: string;
@@ -24,7 +24,7 @@ export function AppointmentCard(props: Index) {
     }
     return (
         <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
-            <StatusSchedule dotColor={props.status === 'Pendente' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status} />
+            <StatusSchedule dotColor={props.status === 'APROVADO' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status === 'APROVADO' ? 'Pendente' : props.status} />
             <div className={styles.sessionCardInfo}>
                 <div className={classNames(styles.sessionCardLeft, { [styles.sessionCardLeftMobile]: isMobile })}>
                     <p className={styles.sessionCardStatus}>{props.type}</p>

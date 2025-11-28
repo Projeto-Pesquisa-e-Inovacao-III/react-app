@@ -79,6 +79,9 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: Ca
                             navigate(`/schedule-details?id=${events.find(event => event.start === dataISO)?.id}`);
                         }
                     }}
+                    eventClassNames={() => {
+                        return ["event-custom-calendar-week"];
+                    }}
                 />
             </div>
         </div>

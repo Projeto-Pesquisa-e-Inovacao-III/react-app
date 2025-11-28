@@ -42,8 +42,8 @@ export default function NewEvent(
 ) {
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>("");
-    const [selectedType, setSelectedType] = useState<string>("");
-    const [selectedLocation, setSelectedLocation] = useState<string>("");
+    const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
+    const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
 
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
@@ -360,6 +360,7 @@ export default function NewEvent(
                                         placeholder="Selecione o tipo"
                                         label="Tipo"
                                         options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
+                                        valuesName={["Presencial", "Residencial", "Funcional"]}
                                         value={selectedType}
                                         onInputChange={setSelectedType}
                                         className={styles.selectComponent}

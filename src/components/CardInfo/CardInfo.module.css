@@ -19,7 +19,7 @@
     display: flex;
     align-items: center;
     gap: 20px;
-
+    width: 100%;
 }
 
 .cardInfo .userDataFull img {
@@ -31,7 +31,6 @@
 .cardInfo .userData {
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .cardInfo .userData span {

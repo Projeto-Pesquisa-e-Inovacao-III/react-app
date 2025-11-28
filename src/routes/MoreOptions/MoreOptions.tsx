@@ -5,7 +5,6 @@ import useMobile from '../../hooks/isMobile';
 import { useContext, useEffect } from 'react';
 import { TypeContext } from '../../App';
 import { useNavigate } from 'react-router-dom';
-import Logout from '../User/Logout/Logout';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
 import { useQuery } from '@tanstack/react-query';
 import { findUserData } from '../../constants/user';
@@ -21,16 +20,14 @@ export default function MoreOptions() {
         }
     }, [isMobile]);
 
-  const userName = useQuery({
-    queryKey: ['user'],
-    queryFn: () => findUserData(),
-    select: (response) => {
-        return response.data.nome;
-    },
-    retry: false,
-  })
-
-
+    const userName = useQuery({
+        queryKey: ['user'],
+        queryFn: () => findUserData(),
+        select: (response) => {
+            return response.data.nome;
+        },
+        retry: false,
+    })
 
     return (
         <>
@@ -41,14 +38,14 @@ export default function MoreOptions() {
                 </div>
                 <div className={styles.options}>
                     <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
-                    {type == "student" &&
+                    {type?.type === "aluno" &&
                         <>
                             <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => nav("/plans-history")} />
                             <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' onClick={() => nav("/schedule-history")} />
                         </>
                     }
 
-                    {type == "personal" &&
+                    {type?.type === "personal" &&
                         <>
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                             <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />

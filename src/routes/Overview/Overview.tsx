@@ -10,11 +10,10 @@ import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
-import { useQueries, useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus } from "../../constants/schedule";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
-import { locale } from "dayjs";
 import { ptBR } from "date-fns/locale";
 
 export function Overview() {
@@ -84,13 +83,10 @@ export function Overview() {
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
     function fetchAppointmentsCountToday() {
+        if (type?.type !== "personal") return;
 
-        if (!type || type?.type !== "personal") return;
-
-        const today = new Date();
-        appoitmentsCount({ status: "APROVADO", data: today.toISOString().split("T")[0] }).then((response) => {
-            console.log("Personal appointments today count:", response);
-
+        const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
+        appoitmentsCount({ status: "APROVADO", data: today }).then((response) => {
             setCountAppointmentsToday(response.data);
         }).catch((error) => {
             console.error("Error fetching personal appointments today count:", error);
@@ -98,7 +94,6 @@ export function Overview() {
         });
 
         appoitmentsCount({ status: "PENDENTE_PERSONAL_APROVACAO" }).then((response) => {
-            console.log("Personal appointments pending count:", response);
             setCountAppointmentsPending(response.data);
         }).catch((error) => {
             console.error("Error fetching personal appointments today count:", error);
@@ -108,18 +103,39 @@ export function Overview() {
 
     useEffect(() => {
         fetchAppointmentsCountToday();
-    }, []);
+    }, [type]);
 
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
                 <div className={classNames(styles.containerContent, { [styles.containerContentMobile]: isMobile })}>
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
-                        {isMobile && (
+                        {/* {isMobile && (
                             <div className={styles.schedulePageUserActionsMobile}>
                                 <OverviewCard
                                     title={"Agendamentos Restantes"}
-                                    subtitle={"123"}
+                                    subtitle={getBalance()}
+                                    type={"usuario"}
+                                    titletbn={"Agendamentos"}
+                                    onClick={() => nav("/schedule")}
+                                    isMobile={isMobile}
+                                />
+                                <OverviewCard
+                                    title={"Status de planos"}
+                                    subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
+                                    type={"usuario"}
+                                    titletbn={"Planos"}
+                                    onClick={() => nav("/packages")}
+                                    isMobile={isMobile}
+                                />
+                            </div>
+                        )} */}
+
+                        {isMobile && type?.type === "aluno" && (
+                            <div className={styles.schedulePageUserActionsMobile}>
+                                <OverviewCard
+                                    title={"Agendamentos Restantes"}
+                                    subtitle={getBalance()}
                                     type={"usuario"}
                                     titletbn={"Agendamentos"}
                                     onClick={() => nav("/schedule")}
@@ -135,26 +151,64 @@ export function Overview() {
                                 />
                             </div>
                         )}
+
+                        {isMobile && type?.type !== "aluno" && (
+                            <div className={styles.schedulePageUserActionsMobile}>
+                                <OverviewCard
+                                    title={"Aulas para realizar hoje"}
+                                    subtitle={countAppointmentsToday ?? 0}
+                                    titletbn={"Agendamentos"}
+                                    onClick={() => nav("/schedule")}
+                                    isMobile={isMobile}
+                                />
+                                <OverviewCard
+                                    title={"pendencia de aprovação"}
+                                    subtitle={countAppointmentsPending ?? 0}
+                                    titletbn={"Solicitações"}
+                                    onClick={() => nav("/personal/check-schedule")}
+                                    isMobile={isMobile}
+                                />
+                            </div>
+                        )}
+
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
                         <div>
                             <h1>Agendamentos</h1>
-                            <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
-                                {appointmentsCards.data?.map((card, index) => (
-                                    <AppointmentCard
-                                        key={index}
-                                        status={card.agendamentoStatus}
-                                        name={card.personalNome}
-                                        photoUrl={card.fotoUsuario}
-                                        type={card.tipoAula}
-                                        date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
-                                        time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
-                                        address={card.endereco.bairro + ", " + card.endereco.cidade}
-                                        isMobile={isMobile}
-                                    />
-                                ))}
-                            </div>
+                            {appointmentsCards.data?.length === 0 ? (
+                                <p>Você não possui agendamentos.</p>
+                            ) : (
+                                <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
+                                    {type?.type === "aluno" && appointmentsCards.data?.map((card, index) => (
+                                        <AppointmentCard
+                                            key={index}
+                                            status={card.agendamentoStatus}
+                                            name={card.personalNome}
+                                            photoUrl={card.fotoUsuario}
+                                            type={card.tipoAula}
+                                            date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
+                                            time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
+                                            address={card.endereco.bairro + ", " + card.endereco.cidade}
+                                            isMobile={isMobile}
+                                        />
+                                    ))}
+
+                                    {type?.type === "personal" && appointmentsCards.data?.map((card, index) => (
+                                        <AppointmentCard
+                                            key={index}
+                                            status={card.agendamentoStatus}
+                                            name={card.alunoNome}
+                                            photoUrl={card.fotoUsuario}
+                                            type={card.tipoAula}
+                                            date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
+                                            time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
+                                            address={card.endereco.bairro + ", " + card.endereco.cidade}
+                                            isMobile={isMobile}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                     {!isMobile && type?.type === "aluno" && (
@@ -190,8 +244,8 @@ export function Overview() {
                             <OverviewCard
                                 title={"Aulas pendentes de aprovação"}
                                 subtitle={countAppointmentsPending ?? 0}
-                                titletbn={"Agendamentos"}
-                                onClick={() => nav("/schedule")}
+                                titletbn={"Solicitações"}
+                                onClick={() => nav("/personal/check-schedule")}
                                 isMobile={isMobile}
                             />
                         </div>

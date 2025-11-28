@@ -9,8 +9,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
-import { findPersonalRequests, findUserAppointments } from "../../constants/schedule";
-import type { Schedule } from "../../models/schedule";
+import { findPersonalRequests } from "../../constants/schedule";
+import type { ScheduleAfterInserted } from "../../models/schedule";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -27,6 +27,15 @@ export default function ScheduleHistory() {
 
     const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
 
+
+    const navigate = useNavigate();
+
+    function clearDateParam() {
+        params.delete("date");
+        navigate("/schedule-history");
+        clearFilters();
+    }
+
     const {
         filterSearch,
         setFilterSearch,
@@ -38,12 +47,12 @@ export default function ScheduleHistory() {
         hasFilters,
         clearFilters,
     } = useSearchFilter(listOfAppointments.data?.content ?? [], {
-        searchName: (item) => [item.tipoAula, item.status],
-        dateFilter: (item) => item.dataInicio,
+        searchName: (item: ScheduleAfterInserted) => [item.tipoAula, item.status],
+        dateFilter: (item: ScheduleAfterInserted) => typeof item.dataInicio === 'string' ? item.dataInicio : item.dataInicio.toISOString(),
     });
 
 
-    const data = filteredData.map((event) => ({
+    const data = (filteredData as ScheduleAfterInserted[]).map((event) => ({
         id: event.agendamentoId,
         headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
         title: event.tipoAula,
@@ -57,12 +66,12 @@ export default function ScheduleHistory() {
                         </>
                     }
 
-                    {event.status === "APROVADO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {(event.status === "APROVADO" || event.status === "PENDENTE_PERSONAL_CONCLUIR") && (
                         <>
                             <Dot color="#D7AC00" size={"30px"} />
                             <span>Status: pendente</span>
                         </>
-                    }
+                    )}
 
 
                     {event.status === "PENDENTE_PERSONAL_APROVACAO" &&
@@ -79,13 +88,12 @@ export default function ScheduleHistory() {
                         </>
                     }
 
-                    {
-                        event.status === "AUSENCIA_CLIENTE" || event.status === "AUSENCIA_PERSONAL" &&
+                    {(event.status === "AUSENCIA_CLIENTE" || event.status === "AUSENCIA_PERSONAL") && (
                         <>
                             <Dot color="#c33" size={"30px"} />
                             <span>Status: Ausência registrada</span>
                         </>
-                    }
+                    )}
                 </div>
                 <span>Endereço: {event.endereco.cep.logradouro}, {event.endereco.numero} - {event.endereco.cep.bairro}</span>
             </div>
@@ -119,7 +127,7 @@ export default function ScheduleHistory() {
                 </div>
                 {hasFilters && (
                     <div className={classNames(styles.searchButton)}>
-                        <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters} />
+                        <SmallerButton title="Limpar filtros" handleButtonClick={clearDateParam} />
                     </div>
                 )}
             </div>

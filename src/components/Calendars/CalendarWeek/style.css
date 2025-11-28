@@ -15,6 +15,19 @@
     background-color: rgba(15, 71, 177, 0.15);
 }
 
+.event-custom-calendar-week {
+    cursor: pointer;
+    background-color: var(--bg-blue);
+    transition: background-color 0.3s ease;
+    padding: 4px 8px 0 8px !important;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.event-custom-calendar-week:hover {
+    background-color: #001e4e !important;
+}
+
 @media (max-width: 1024px) {
 
     .fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack {

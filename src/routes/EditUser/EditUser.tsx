@@ -204,7 +204,7 @@ export default function EditUser() {
             }
             <div className={styles.atualizarFotoContainer}>
               <div>
-                <input type="file" name="" accept="image/*" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
                 <label htmlFor="upload-photo">
                   <span>Atualizar Foto</span>
                 </label>
@@ -297,7 +297,7 @@ export default function EditUser() {
 
         <div className={styles.footer}>
           <div className={styles.dashLine}></div>
-          <Button title="Salvar Alterações" type="button" onClick={type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+          <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
         </div>
       </div>
 

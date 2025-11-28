@@ -8,6 +8,7 @@ import classNames from "classnames";
 import { findAppointmentById, rescheduleAppointment } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
 import type { Schedule } from "../../../models/schedule";
+import useMobile from "../../../hooks/isMobile";
 
 type CheckScheduleModalProps = {
     closeThen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -18,7 +19,7 @@ type CheckScheduleModalProps = {
 
 
 export default function CheckScheduleModal({ closeThen, openSuccess, appointmentId }: CheckScheduleModalProps) {
-
+    const isMobile = useMobile();
     const [openCalendar, setOpenCalendar] = useState(false)
     const [selectedDate, setSelectedDate] = useState("")
     const [rescheduleReason, setRescheduleReason] = useState("")
@@ -144,7 +145,7 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
                 {openCalendar && (
                     <>
                         <div className={styles.calendarOverlay} onClick={handleCloseCalendar}></div>
-                        <div className={styles.miniCalendar}>
+                        <div className={classNames(styles.miniCalendar, { [styles.miniCalendarMobile]: isMobile })}>
                             <svg
                                 className={styles.calendarExitIcon}
                                 width="20"

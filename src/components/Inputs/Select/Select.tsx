@@ -8,12 +8,13 @@ type Props = {
     icon?: React.ReactNode;
     value?: string;
     name?: string;
+    valuesName?: string[];
     options?: string[];
     className?: string;
 }
 
-export default function Select({ placeholder, label, id, onInputChange, icon, value, name, options, className }: Props) {
-    
+export default function Select({ placeholder, label, id, onInputChange, icon, value, name, options, valuesName, className }: Props) {
+
     return (
         <div className={`wrapper_inp ${className}`}>
             <label htmlFor={`${id}-select`}>{label}</label>
@@ -27,7 +28,7 @@ export default function Select({ placeholder, label, id, onInputChange, icon, va
             >
                 <option value="" disabled>{placeholder}</option>
                 {options?.map((option, index) => (
-                    <option key={index} value={option}>{option}</option>
+                    <option key={index} value={option} >{valuesName ? valuesName[index] : option}</option>
                 ))}
             </select>
         </div>

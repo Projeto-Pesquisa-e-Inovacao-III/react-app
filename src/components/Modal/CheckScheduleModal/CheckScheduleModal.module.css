@@ -117,6 +117,10 @@
     max-height: 90%;
 }
 
+.miniCalendarMobile {
+    position: block !important;
+}
+
 .calendarExitIcon {
     position: absolute;
     top: 10px;
@@ -125,7 +129,13 @@
     z-index: 1004;
 }
 
-.buttonHourNewEventSelected :global(button){
+.buttonHourNewEventSelected,
+.buttonHourNewEvent {
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.buttonHourNewEventSelected :global(button) {
     background-color: #1a74b1;
     color: white;
     border: none;
@@ -134,7 +144,15 @@
     transition: background-color 0.2s ease;
 }
 
+.hours {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
 
+.hours :global(button) {
+    width: 100%;
+}
 
 @media (max-width: 1024px) {
     .modalCheckSchedule {
@@ -144,9 +162,12 @@
     }
 
     .lineFormModal {
+        display: block;
         flex-direction: column;
-        align-self: start;
-        justify-content: start;
+    }
+
+    .lineFormModal p {
+        width: fit-content;
     }
 
     .inputModal {
