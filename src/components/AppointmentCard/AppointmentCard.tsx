@@ -24,6 +24,9 @@ export function AppointmentCard(props: Index) {
     function handleNavigateToDetail() {
         nav(`/schedule-details?id=${props.agendamentoId}`); // Adjust the query parameter as needed
     }
+
+    console.log("AppointmentCard props:", props);
+
     return (
         <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
             <StatusSchedule dotColor={props.status === 'APROVADO' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status === 'APROVADO' ? 'Pendente' : props.status} />

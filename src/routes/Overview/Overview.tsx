@@ -110,26 +110,6 @@ export function Overview() {
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
                 <div className={classNames(styles.containerContent, { [styles.containerContentMobile]: isMobile })}>
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
-                        {/* {isMobile && (
-                            <div className={styles.schedulePageUserActionsMobile}>
-                                <OverviewCard
-                                    title={"Agendamentos Restantes"}
-                                    subtitle={getBalance()}
-                                    type={"usuario"}
-                                    titletbn={"Agendamentos"}
-                                    onClick={() => nav("/schedule")}
-                                    isMobile={isMobile}
-                                />
-                                <OverviewCard
-                                    title={"Status de planos"}
-                                    subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
-                                    type={"usuario"}
-                                    titletbn={"Planos"}
-                                    onClick={() => nav("/packages")}
-                                    isMobile={isMobile}
-                                />
-                            </div>
-                        )} */}
 
                         {isMobile && type?.type === "aluno" && (
                             <div className={styles.schedulePageUserActionsMobile}>
@@ -180,27 +160,13 @@ export function Overview() {
                                 <p>Você não possui agendamentos.</p>
                             ) : (
                                 <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
-                                    {type?.type === "aluno" && appointmentsCards.data?.map((card, index) => (
-                                        <AppointmentCard
-                                            key={index}
-                                            status={card.agendamentoStatus}
-                                            name={card.personalNome}
-                                            photoUrl={card.fotoUsuario}
-                                            type={card.tipoAula}
-                                            date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
-                                            time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
-                                            address={card.endereco.bairro + ", " + card.endereco.cidade}
-                                            isMobile={isMobile}
-                                        />
-                                    ))}
-
-                                    {type?.type === "personal" && appointmentsCards.data?.map((card, index) => (
+                                    {appointmentsCards.data?.map((card, index) => (
                                         <AppointmentCard
                                             key={index}
                                             agendamentoId={card.agendamentoId}
                                             status={card.agendamentoStatus}
-                                            name={card.alunoNome}
-                                            photoUrl={card.fotoUsuario}
+                                            name={type?.type === "personal" ? card.alunoNome : card.personalNome}
+                                            photoUrl={card.caminhoFoto}
                                             type={card.tipoAula}
                                             date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
                                             time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}

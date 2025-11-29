@@ -34,6 +34,8 @@ export default function ScheduleDetails() {
         select: (res) => res.data,
     });
 
+    console.log("Detalhes do agendamento:", appointment.data);
+
     const date = new Date(`${appointment.data?.dataInicio}`);
     const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
@@ -185,34 +187,35 @@ export default function ScheduleDetails() {
                         </div>
                     </div>
                 </div>
-                {type === "personal" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
 
-                    <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
-                        {type === "personal" && today > formattedDate &&
-                            <>
-                                <div className={styles.buttonAbsence}>
-                                    <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => setRegisterAbsence(true)} />
-                                </div>
+                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
+                    {type === "personal" && today >= date.toLocaleDateString('pt-BR') && appointment.data?.status === "APROVADO" &&
+                        <>
+                            <div className={styles.buttonAbsence}>
+                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => setRegisterAbsence(true)} />
+                            </div>
 
-                                <div className={styles.buttonAbsence}>
-                                    <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
-                                </div>
-                            </>
-                        }
+                            <div className={styles.buttonAbsence}>
+                                <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
+                            </div>
+                        </>
+                    }
 
+                    {type === "personal" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
                         <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" })}>
                             <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.agendamentoId, "accept");
+                                handleModal(appointment.data?.id, "accept");
                             }} />
                             <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.agendamentoId, "decline");
+                                handleModal(appointment.data?.id, "decline");
                             }} />
                             <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.agendamentoId, "reschedule");
+                                handleModal(appointment.data?.id, "reschedule");
                             }} />
                         </div>
-                    </div>
-                }
+
+                    }
+                </div>
 
                 {registerAbsence &&
                     <RegisterAbsenceModal closeThen={setRegisterAbsence} />
