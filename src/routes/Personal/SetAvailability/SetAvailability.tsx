@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Trash2, Plus, Clock } from "lucide-react";
 import styles from "./SetAvailability.module.css";
+import { getPersonalProfile } from "../../../constants/personal";
+import { useQuery } from "@tanstack/react-query";
 
 interface TimeSlot {
     id: string;
@@ -64,9 +66,16 @@ export default function SetAvailability() {
         setSchedule(newSchedule);
     };
 
-    useEffect(() => {
-        console.log("Current Schedule:", schedule);
-    }), [schedule]
+    const getInitialSchedule = useQuery({
+        queryKey: ['personalProfile'],
+        queryFn: async () => {
+            const response = await getPersonalProfile(1, "2025-11-30");
+            return response.data;
+        },
+    });
+
+    console.log("getInitialSchedule", getInitialSchedule.data);
+
     return (
         <div className={styles.container}>
             <div className={styles.header}>

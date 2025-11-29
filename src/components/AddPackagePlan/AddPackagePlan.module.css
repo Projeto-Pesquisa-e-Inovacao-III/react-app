@@ -35,10 +35,15 @@
 
 .inputContainer label,
 .selectType :global(label) {
+    font-size: 16px !important;
     margin-right: 10px;
     font-weight: 500;
     color: #333;
     flex: 1;
+}
+
+.selectType :global(label) {
+    max-width: 35.2%;
 }
 
 .inputContainer input,
@@ -74,15 +79,19 @@
 /* select */
 .selectType {
     align-items: center;
-
     flex-direction: row !important;
     width: 100%;
 }
 
-.selectType :global(label) {
-    font-size: unset;
+.selectType :global(select) {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    padding-left: 8px !important;
+    
 }
-
 
 @media (max-width: 1024px) {
     .inputContainer {
@@ -114,5 +123,10 @@
     .modalButtons {
         flex-direction: column;
         gap: 10px;
+    }
+
+    .selectType {
+        flex-direction: column !important;
+        align-items: flex-start !important;
     }
 }

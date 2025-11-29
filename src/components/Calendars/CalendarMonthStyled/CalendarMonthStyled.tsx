@@ -72,7 +72,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
             //   return ["disabled-day"];
 
-            const now = new Date().toISOString().split("T")[0];
+            const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
+            console.log("DATE STR:", dateStr, "NOW:", now);
             if (dateStr < now || dateStr === now)
               return ["disabled-day"];
             // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))

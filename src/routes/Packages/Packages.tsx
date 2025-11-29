@@ -152,7 +152,7 @@ export function Packages() {
                             onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
-                            setHandleDelete={() => setOpenModal("delete")}
+                            setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                             setHandleEdit={() => handleUpdatePackage(pacote.id!)}
                         />
                     ))) : (<p>Não há pacotes disponíveis no momento.</p>)}

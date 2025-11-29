@@ -4,6 +4,7 @@ export type ProductExhibition = {
     subtitulo: string,
     descricao: string,
     preco: string,
+    tipoProduto: string,
     periodo: string,
     status: string,
     tipoAula: string,

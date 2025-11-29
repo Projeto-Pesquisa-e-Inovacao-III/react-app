@@ -18,7 +18,7 @@ export default function Select({ placeholder, label, id, onInputChange, icon, va
     return (
         <div className={`wrapper_inp ${className}`}>
             <label htmlFor={`${id}-select`}>{label}</label>
-            <div className="select-icon">{icon}</div>
+            {icon && <div className="select-icon">{icon}</div>}
             <select
                 id={`${id}-select`}
                 name={name}

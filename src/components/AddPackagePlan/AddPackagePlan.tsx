@@ -13,12 +13,12 @@ type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
     title?: string;
     values?: {
-        name: string;
-        type: string;
-        price: string;
-        deadline: string;
-        benefits: string[];
-        quantity: number;
+        titulo: string;
+        tipoAula: string;
+        preco: string;
+        duracaoMes: string;
+        descricao: string[];
+        quantidadeAula: number;
     };
     isEdit?: boolean;
     packageCreated?: React.Dispatch<React.SetStateAction<ProductExhibition[]>>;
@@ -28,13 +28,15 @@ type AddPackagePlanProps = {
 export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit }: AddPackagePlanProps) {
 
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number }>({
-        name: values?.name || "",
-        type: values?.type || "PRESENCIAL",
-        price: values?.price || "",
-        deadline: values?.deadline || "",
-        benefits: values?.benefits || [""],
-        quantity: values?.quantity || 0
+        name: values?.titulo || "",
+        type: values?.tipoAula || "PRESENCIAL",
+        price: values?.preco || "",
+        deadline: values?.duracaoMes || "",
+        benefits: values?.descricao ? JSON.parse(values.descricao) : [""],
+        quantity: values?.quantidadeAula || 0
     });
+    console.log("packageInfo", packageInfo);
+    console.log("values", values);
 
     const navigate = useNavigate();
 
@@ -67,6 +69,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             descricao: JSON.stringify(packageInfo.benefits),
             preco: packageInfo.price,
             periodo: packageInfo.deadline,
+            tipoProduto: "PACOTE",
             status: "ATIVO",
             tipoAula: packageInfo.type,
             quantidadeAula: packageInfo.quantity,
@@ -96,6 +99,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             descricao: JSON.stringify(packageInfo.benefits),
             preco: packageInfo.price,
             periodo: packageInfo.deadline,
+            tipoProduto: "PACOTE",
             status: "ATIVO",
             tipoAula: packageInfo.type,
             quantidadeAula: packageInfo.quantity,
@@ -120,7 +124,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
-            <button onClick={handleAutoFill} className="border-2">Auto Preencher</button>
+                <button onClick={handleAutoFill} className="border-2">Auto Preencher</button>
                 <h1>{title}</h1>
                 {/* Formulário para adicionar pacote */}
                 <form className={styles.addPackageForm}>
