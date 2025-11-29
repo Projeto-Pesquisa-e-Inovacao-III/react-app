@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar";
+import { differenceInYears, parse } from "date-fns";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
@@ -34,11 +35,11 @@ export default function ViewUserData() {
                         <h1>Dados</h1>
                     </div>
                     <div className={styles.userDetails}>
-                        <UserAvatar foto={user.data?.foto}/>
+                        <UserAvatar foto={user.data?.caminhoFoto}/>
                         <div className={styles.wrapperInfos}>
                             <div className={styles.info}>
                                 <p><strong>Nome: </strong><span>{user.data?.nome}</span></p>
-                                <p><strong>Idade: </strong><span> {user.data?.idade}</span></p>
+                                <p><strong>Idade: </strong><span> {user.data?.dataNascimento ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"}</span></p>
                             </div>
                             <div className={styles.info}>
                                 <p><strong>Email: </strong><span> {user.data?.email}</span></p>

@@ -10,7 +10,6 @@ import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, concludeAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { findByEmail } from "../../../constants/user";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
 
