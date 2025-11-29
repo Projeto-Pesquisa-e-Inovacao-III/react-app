@@ -21,11 +21,12 @@ type AddPackagePlanProps = {
         quantidadeAula: number;
     };
     isEdit?: boolean;
+    typePackage: "PACOTE" | "ADICIONAL";
     packageCreated?: React.Dispatch<React.SetStateAction<ProductExhibition[]>>;
     callSuccessModal: () => void;
 };
 
-export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit }: AddPackagePlanProps) {
+export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
 
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number }>({
         name: values?.titulo || "",
@@ -69,12 +70,14 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             descricao: JSON.stringify(packageInfo.benefits),
             preco: packageInfo.price,
             periodo: packageInfo.deadline,
-            tipoProduto: "PACOTE",
+            tipoProduto: typePackage,
             status: "ATIVO",
             tipoAula: packageInfo.type,
             quantidadeAula: packageInfo.quantity,
             duracaoMes: parseInt(packageInfo.deadline || "12")
         }
+
+        console.log("data to be sent:", data);
 
         if (packageInfo.benefits.includes("")) {
             alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
@@ -99,21 +102,21 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             descricao: JSON.stringify(packageInfo.benefits),
             preco: packageInfo.price,
             periodo: packageInfo.deadline,
-            tipoProduto: "PACOTE",
+            tipoProduto: typePackage,
             status: "ATIVO",
             tipoAula: packageInfo.type,
             quantidadeAula: packageInfo.quantity,
             duracaoMes: parseInt(packageInfo.deadline || "12")
         }
 
-        updateProductExhibition(values.id, data).then(() => {
+        updateProductExhibition(values.id, data).then((res) => {
             console.log("Pacote editado com sucesso!");
+            console.log("Response:", res);
             callSuccessModal();
 
             if (packageCreated) {
-
                 packageCreated(prev => prev.filter(pkg => pkg.id !== values.id));
-
+                packageCreated(prev => [...prev, res.data]);
             }
             onClose(true);
         }).catch((error) => {

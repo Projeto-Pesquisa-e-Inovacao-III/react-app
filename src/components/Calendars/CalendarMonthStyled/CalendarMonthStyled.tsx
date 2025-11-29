@@ -59,6 +59,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
   const actualMonth = new Date().getMonth();
 
+  const [selectedMonth, setSelectedMonth] = useState<number>(0);
+
 
   return (
     <div className={`container-calendar${isMobile ? "-mobile" : ""}`}>
@@ -70,6 +72,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           locale="pt-br"
           dayHeaderFormat={{ weekday: 'short' }}
           dateClick={(info) => setNewEventDate(info.dateStr)}
+          datesSet={function (info) {
+            const month = info.start.getMonth() + 1;
+            setSelectedMonth(month);
+          }}
           dayCellClassNames={(arg) => {
             // const disabledDays = events.map((e) => e.data.split("T")[0]);
             const dateStr = arg.date.toISOString().split("T")[0];
@@ -114,7 +120,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           headerToolbar={{
             start: "title",
-            end: isMobile ? "prev,next" : "prev,next",
+            end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`,
           }}
           height="auto"
         />

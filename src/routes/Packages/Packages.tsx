@@ -55,17 +55,21 @@ export function Packages() {
         setPackageId(null);
     }
 
-    function handleAddAdditionalPackage() {
-        setOpenModal("addAdditional");
-    }
-
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
+    const [productsExhibitionsAdicional, setProductsExhibitionsAdicional] = useState<ProductExhibition[]>([]);
+
+    useEffect(() => {
+        console.log("productsExhibitions state updated:", productsExhibitions);
+    }, [productsExhibitions]);
 
     async function handleGetProductsExhibitions() {
         await getProductsExhibitions().then(
             (res) => {
                 console.log("Produtos de Exibição obtidos com sucesso!", res);
-                setProductsExhibitions(res.data);
+
+                setProductsExhibitions(res.data.filter((product: ProductExhibition) => product.tipoProduto === "PACOTE"));
+                setProductsExhibitionsAdicional(res.data.filter((product: ProductExhibition) => product.tipoProduto === "ADICIONAL"));
+
             }
         );
     }
@@ -77,11 +81,10 @@ export function Packages() {
 
 
     function handleDeletePackage(id: number) {
-
-
         desactivateProductExhibition(id).then((response) => {
             console.log("Pacote desativado com sucesso! ", response);
             setProductsExhibitions(prev => prev.filter(pkg => pkg.id !== id));
+            setProductsExhibitionsAdicional(prev => prev.filter(pkg => pkg.id !== id));
             setPackageId(null);
             handleSuccessModalInfos("Exclusão concluída", "O pacote foi excluído com sucesso");
             setOpenModal("success");
@@ -168,38 +171,41 @@ export function Packages() {
                     <h1>Pacotes Adicionais</h1>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={handleAddAdditionalPackage} />
+                            <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
                         </div>
                     )}
                 </div>
 
-                {/* <div className={classnames(styles.packagesListWrapperDesktop, { [styles.packagesListWrapperMobile]: isMobile })}>
-                    {packagesMockAdicional.map((pacote, index) => (
-                        <PackageCard
-                            key={`adicional-${index}`}
-                            {...pacote}
-                            onClick={() => handleBuyClick(pacote.title)}
-                            isMobile={isMobile}
-                            variant="adicional"
-                            setHandleEdit={() => setOpenModal("edit")}
-                            setHandleDelete={() => setOpenModal("delete")}
-                            isPersonal={isPersonal}
-                        />
-                    ))}
-                </div> */}
+                <div className={classnames(styles.packagesListWrapperDesktop, { [styles.packagesListWrapperMobile]: isMobile })}>
+                    {productsExhibitionsAdicional.length > 0 ? (productsExhibitionsAdicional.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
+                        pacote.status === "ATIVO" &&
+                        pacote.status === "ATIVO" && (
+                            <PackageCard
+                                key={`adicional-${index}-` + pacote.id! + pacote.titulo}
+                                {...pacote}
+                                descricao={safeParseDescricao(pacote.descricao)}
+                                onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
+                                isMobile={isMobile}
+                                setHandleEdit={() => setOpenModal("edit")}
+                                setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                isPersonal={isPersonal}
+                            />
+                        )
+                    ))) : (<p>Não há pacotes adicionais disponíveis no momento.</p>)}
+                </div>
             </div>
 
 
             {openModal === "add" && (
-                <AddPackagePlan title="Adicionar Pacote" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
+                <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
             )}
 
             {openModal === "addAdditional" && (
-                <AddPackagePlan title="Adicionar Pacote Adicional" onClose={handleCloseModal} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
+                <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
             )}
 
             {openModal === "edit" && (
-                <AddPackagePlan title="Editar Pacote" onClose={handleCloseModal} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} />
+                <AddPackagePlan title="Editar Pacote" typePackage="PACOTE" onClose={handleCloseModal} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} />
             )}
 
 
