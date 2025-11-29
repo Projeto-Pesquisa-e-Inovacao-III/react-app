@@ -22,7 +22,7 @@ export default function UserScheduleCard({ data, date, initialHour, finalHour, h
             <div className="left">
                 <span className="user-personal">{data.tipoAula}</span>
                 <div className="schedule-page-user">
-                    <UserAvatar foto={data.foto ? `${data.foto}` : undefined} useUserImage={false} />
+                    <UserAvatar foto={data.caminhoFoto ? `${data.caminhoFoto}` : undefined} useUserImage={false} />
                     <span>{data.personalNome}</span>
                 </div>
                 <div className="btn-actions">

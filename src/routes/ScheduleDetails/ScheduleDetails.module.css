@@ -161,6 +161,10 @@
     width: 100%;
 }
 
+.buttonsActionsPersonal {
+    justify-content: flex-start;
+}
+
 .buttonGroup {
     display: flex;
     gap: 12px;

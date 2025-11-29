@@ -68,7 +68,7 @@ export default function CalendarMini({ clickedDate, createdEvents, canGoPrev }: 
                     headerToolbar={{
                         start: `${!canGoPrev && selectedMonth >= actualMonth + 2 ? "prev" : ""}${canGoPrev ? "prev" : ""}`,
                         center: "title",
-                        end: `${selectedMonth > month ? "" : "next"}`,
+                        end: `${selectedMonth > actualMonth + 1 ? "" : "next"}`,
                     }}
 
                     height="100%"

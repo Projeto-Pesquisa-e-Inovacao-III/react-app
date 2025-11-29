@@ -7,15 +7,16 @@ import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";
 import { useNavigate } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { MapPin } from "lucide-react";
+import { Clock, MapPin } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { createAddress } from "../../constants/address";
 import type { Address } from "../../models/address";
-import { insertAppointment, rescheduleAppointment } from "../../constants/schedule";
+import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { format, parse, startOfDay } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -205,6 +206,13 @@ export default function NewEvent(
 
     }
 
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
+    });
+    console.log(personalList.data)
+
     async function handleRescheduleEvent(e: React.FormEvent) {
         console.log("Reagendando evento...");
         e.preventDefault();
@@ -300,163 +308,121 @@ export default function NewEvent(
         setStep(stepNumber);
     }
 
+    useEffect(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }, [step]);
+
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
-                <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
-                    {step === 1 && isMobile && (
-                        <div onClick={handleClose} className={styles.goBackButton}>
-                            <svg
 
-                                width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                <path
-                                    d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                    stroke="black"
-                                />
-                            </svg>
-                            <span>Voltar</span>
-                        </div>
-                    )}
-
-                    {step === 2 && isMobile && (
-                        <div onClick={() => handleStepChange(1)} className={styles.goBackButton}>
-                            <svg
-
-                                width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                <path
-                                    d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                    stroke="black"
-                                />
-                            </svg>
-                            <span>Voltar</span>
-                        </div>
-                    )}
-
-
-                    {step === 1 && !isMobile && (
-
-                        <>
-                            <svg
-                                onClick={handleClose}
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                        </>
-                    )}
-
-
-                    {step === 2 && !isMobile && (
-                        <div className={styles.goBackButton} onClick={() => handleStepChange(1)}>
-                            <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                <path
-                                    d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                    stroke="black"
-                                />
-                            </svg>
-                            <span>Voltar</span>
-                        </div>
-                    )}
-
-
-                    {step === 2 && (
-
-                        <>
-                            <svg
-                                onClick={handleClose}
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                        </>
-                    )}
-
-                </div>
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
+                        {step === 2 && (
+                            <div className={styles.goBackButton} onClick={() => handleStepChange(1)}>
+                                <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
+                                    <path
+                                        d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
+                                        stroke="black"
+                                    />
+                                </svg>
+                                <span>Voltar</span>
+                            </div>
+                        )}
+
                         <h1>{title}</h1>
+                        <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
+
+                            <div className={styles.closeButtonHeader}>
+                                <svg
+                                    onClick={handleClose}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M18 6 6 18" />
+                                    <path d="m6 6 12 12" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                     {step === 1 && (
                         <>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Personal" title="Fábio" subtitle="Idade: 88 anos" includeImg={true} />
+                            <div className={styles.containerForm}>
+                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0].nome : ""} subtitle="Idade: 88 anos" includeImg={true} imgUrl={personalList.data ? personalList.data[0].caminhoFoto : ""} />
 
-                            {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                    <Select
-                                        placeholder="Selecione o tipo"
-                                        label="Tipo"
-                                        options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
-                                        valuesName={["Presencial", "Residencial", "Funcional"]}
-                                        value={selectedType}
-                                        onInputChange={setSelectedType}
-                                        className={styles.selectComponent}
-                                    />
-                                </div>
+                                {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
+                                <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                    <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                        <Select
+                                            placeholder="Selecione o tipo"
+                                            label="Tipo"
+                                            options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
+                                            valuesName={["Presencial", "Residencial", "Funcional"]}
+                                            value={selectedType}
+                                            onInputChange={setSelectedType}
+                                            className={styles.selectComponent}
+                                        />
+                                    </div>
 
-                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                    <Select
-                                        placeholder="Selecione o local"
-                                        label="Local"
-                                        options={["Casa", "Academia", "Outro"]}
-                                        value={selectedLocation}
-                                        onInputChange={setSelectedLocation}
-                                        className={styles.selectComponent}
-                                    />
-                                </div>
-                            </div>
-                            <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
-                                <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
-                                    <CalendarMonthStyled
-                                        clickedDate={setNewEventDate}
-                                        clickedDateStr={newEventDate ? newEventDate : clickedDate}
-                                        createdEvents={insertedEvents}
-                                        eventToReschedule={eventToReschedule?.data}
-                                        isMobile={isMobile}
-                                    />
-
-                                    <div className={styles.hours}>
-                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
-                                            <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
-                                                handleButtonClick={handleButtonClick} />
-                                        </div>
-                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
-                                            <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
-                                                handleButtonClick={handleButtonClick} />
-                                        </div>
-                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
-                                            <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
-                                                handleButtonClick={handleButtonClick} />
-                                        </div>
-                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
-                                            <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
-                                                handleButtonClick={handleButtonClick} />
-                                        </div>
+                                    <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                        <Select
+                                            placeholder="Selecione o local"
+                                            label="Local"
+                                            options={["Casa", "Academia", "Outro"]}
+                                            value={selectedLocation}
+                                            onInputChange={setSelectedLocation}
+                                            className={styles.selectComponent}
+                                        />
                                     </div>
                                 </div>
+                                <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
+                                    <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
+                                        <div className="border-2 border-gray-200 rounded-md p-5">
+                                            <CalendarMonthStyled
+                                                clickedDate={setNewEventDate}
+                                                clickedDateStr={newEventDate ? newEventDate : clickedDate}
+                                                createdEvents={insertedEvents}
+                                                eventToReschedule={eventToReschedule?.data}
+                                                isMobile={isMobile}
+                                            />
+                                        </div>
+                                        {newEventDate && (
+                                            <>
+                                                <span className="flex gap-1 mt-5"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
 
+                                                <div className={styles.hours}>
+                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
+                                                        <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
+                                                            handleButtonClick={handleButtonClick} />
+                                                    </div>
+                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
+                                                        <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
+                                                            handleButtonClick={handleButtonClick} />
+                                                    </div>
+                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
+                                                        <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                                            handleButtonClick={handleButtonClick} />
+                                                    </div>
+                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
+                                                        <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                                            handleButtonClick={handleButtonClick} />
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                                 <div className={classnames(styles.buttonNextStep)}>
-                                    <SmallerButton type="button" title={buttonTitle || "Avançar"} handleButtonClick={() => handleStepChange(2)} />
+                                    <SmallerButton type="button" title={buttonTitle || "Avançar"} handleButtonClick={() => handleStepChange(2)} classname={newEventStartHour && newEventDate && selectedType && selectedLocation ? styles.enabled : styles.disabled} />
                                 </div>
 
                             </div>

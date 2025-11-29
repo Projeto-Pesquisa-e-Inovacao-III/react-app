@@ -6,14 +6,14 @@ import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
 import { useEffect, useState } from 'react';
-import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { BASE_URL } from '../../system';
 import CheckScheduleModal from '../../components/Modal/CheckScheduleModal/CheckScheduleModal';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
+import { startOfDay } from 'date-fns';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
 
@@ -26,7 +26,6 @@ export default function ScheduleDetails() {
     const [searchParams] = useSearchParams();
 
 
-
     const appointment = useQuery({
         queryKey: ['appointmentDetails', searchParams.get('id')],
         queryFn: () => findAppointmentById(Number(searchParams.get('id'))),
@@ -34,18 +33,23 @@ export default function ScheduleDetails() {
         select: (res) => res.data,
     });
 
-    console.log("Detalhes do agendamento:", appointment.data);
+    const [buttonsActionsCondition, setButtonsActionsCondition] = useState<boolean>(false);
 
-    const date = new Date(`${appointment.data?.dataInicio}`);
-    const today = new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    const location = useLocation();
 
-    const formattedDate = `${date.toLocaleDateString('pt-BR', {
+    useEffect(() => {
+        const today = new Date(startOfDay(new Date()));
+
+        const appt = new Date(startOfDay(appointment.data?.dataInicio));
+
+        setButtonsActionsCondition(today >= appt);
+    }, [location.pathname, appointment.data?.dataInicio]);
+
+    const formattedDate = `${new Date(`${appointment.data?.dataInicio}`).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
     })} das ${appointment.data?.dataInicio.split('T')[1].slice(0, 5)} às ${appointment.data?.dataFim.split('T')[1].slice(0, 5)}`;
-
-    const [registerAbsence, setRegisterAbsence] = useState<boolean>(false);
 
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
@@ -66,7 +70,7 @@ export default function ScheduleDetails() {
         await acceptUserAppointment(id).then((res) => {
             console.log("Agendamento aceito:", res);
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
@@ -75,7 +79,7 @@ export default function ScheduleDetails() {
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
         });
@@ -90,7 +94,7 @@ export default function ScheduleDetails() {
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(() => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
 
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
@@ -100,7 +104,7 @@ export default function ScheduleDetails() {
     function handleConcludeAppointment(id: number) {
         concludeAppointment(id).then(() => {
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
@@ -173,30 +177,33 @@ export default function ScheduleDetails() {
                                 Tipo:
                                 <span className={styles.planDetailsText}>{appointment.data?.tipoAula
                                     ?.toLowerCase()
-                                    ?.replace(/^\w/, (c) => c.toUpperCase())}
+                                    ?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                 </span>
                             </span>
                             <span className={styles.planDetailsDescription}>
                                 Local:
                                 <span className={styles.planDetailsText}>
                                     {appointment.data?.endereco.tipo?.toLowerCase()
-                                        ?.replace(/^\w/, (c) => c.toUpperCase())}
+                                        ?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                 </span>
                             </span>
                             <span className={styles.planDetailsDescription}>Endereço: {appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
+                            {appointment.data?.endereco.complemento && <span className={styles.planDetailsDescription}>Complemento: {appointment.data?.endereco.complemento}</span>}
                         </div>
                     </div>
                 </div>
 
-                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile })}>
-                    {type === "personal" && today >= date.toLocaleDateString('pt-BR') && appointment.data?.status === "APROVADO" &&
+                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "APROVADO" && buttonsActionsCondition })}>
+                    {type === "personal" && buttonsActionsCondition && appointment.data?.status === "APROVADO" &&
                         <>
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => setRegisterAbsence(true)} />
+                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" />
                             </div>
 
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => setRegisterAbsence(true)} />
+                                <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => {
+                                    handleModal(appointment.data?.id, "registerAbsence");
+                                }} />
                             </div>
                         </>
                     }
@@ -216,11 +223,6 @@ export default function ScheduleDetails() {
 
                     }
                 </div>
-
-                {registerAbsence &&
-                    <RegisterAbsenceModal closeThen={setRegisterAbsence} />
-                }
-
                 {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado", "Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
 
                 {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}

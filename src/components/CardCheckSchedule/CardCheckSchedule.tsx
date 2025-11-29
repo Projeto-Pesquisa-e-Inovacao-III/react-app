@@ -28,6 +28,7 @@ export type dataCardProps = {
         numero: string
     }
     foto: string;
+    caminhoFoto?: string;
     dataInicio: string;
     dataFim?: string;
     horaInicio?: string;

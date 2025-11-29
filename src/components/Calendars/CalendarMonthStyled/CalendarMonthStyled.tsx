@@ -9,6 +9,7 @@ import type { Schedule } from "../../../models/schedule";
 import { parseISO } from "date-fns";
 
 type Props = {
+  className?: string;
   clickedDate: React.Dispatch<React.SetStateAction<string>>;
   clickedDateStr?: string;
   createdEvents?: Schedule[];
@@ -55,6 +56,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
     }
   }, [newEventDate]);
 
+
+  const actualMonth = new Date().getMonth();
+
+
   return (
     <div className={`container-calendar${isMobile ? "-mobile" : ""}`}>
       <div className="wrapper-callendar" id="wrapper-styled-callendar">
@@ -73,7 +78,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             //   return ["disabled-day"];
 
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
-            console.log("DATE STR:", dateStr, "NOW:", now);
             if (dateStr < now || dateStr === now)
               return ["disabled-day"];
             // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
@@ -110,7 +114,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           headerToolbar={{
             start: "title",
-            end: isMobile ? "prev,next" : "today prev,next",
+            end: isMobile ? "prev,next" : "prev,next",
           }}
           height="auto"
         />

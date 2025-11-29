@@ -48,3 +48,7 @@ export function appointmentAtCalendar() {
 export async function findAppointmentById(id: number) {
     return await api.get(`/agendamentos/${id}`);
 }
+
+export function getPersonalList() {
+    return api.get(`/personais`);
+}

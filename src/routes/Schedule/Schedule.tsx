@@ -78,6 +78,8 @@ export default function Schedule() {
         queryFn: () => appointmentAtCalendar(),
     })
 
+    console.log("appointments.data?.data", appointments.data?.data);
+
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),

@@ -22,7 +22,7 @@ export function AppointmentCard(props: Index) {
     const nav = useNavigate();
 
     function handleNavigateToDetail() {
-        nav(`/schedule-details?id=${props.agendamentoId}`); // Adjust the query parameter as needed
+        nav(`/schedule-details?id=${props.agendamentoId}`); 
     }
 
     console.log("AppointmentCard props:", props);
