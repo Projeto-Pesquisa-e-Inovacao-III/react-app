@@ -1,4 +1,5 @@
 import type { PersonalDTO } from "../models/personal";
+import type { TimeSlot } from "../routes/Personal/SetAvailability/SetAvailability";
 import { api } from "../system";
 
 export function listStudents() {
@@ -15,4 +16,16 @@ export function appoitmentsCount(payload?: { status: string; data?: string; }) {
 
 export function getPersonalProfile(personalId: number, date: string) {
     return api.get<PersonalDTO>(`/personais/${personalId}/horarios-disponiveis`, { params: {data: date} });
+}
+
+export async function getPersonalCronogram() {
+    return await api.get(`/personais/me/cronograma`);
+}
+
+export function updatePersonalCronogram(data: TimeSlot, id: string) {
+    return api.put(`/personais/horarios/${id}`, data);
+}
+
+export function updateBuffer(buffer: string) {
+    return api.put(`personais/1/buffer`, { buffer });
 }

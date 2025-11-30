@@ -296,14 +296,14 @@ export default function NewEvent(
         const now = new Date();
         now.setDate(now.getDate() + 1);
 
-        if (selectedDateTime <= now) {
-            setModalInfo({
-                title: "Erro ao agendar",
-                description: "O agendamento deve ser feito com pelo menos 24 horas de antecedência."
-            });
-            setModal("error");
-            return;
-        }
+        // if (selectedDateTime <= now) {
+        //     setModalInfo({
+        //         title: "Erro ao agendar",
+        //         description: "O agendamento deve ser feito com pelo menos 24 horas de antecedência."
+        //     });
+        //     setModal("error");
+        //     return;
+        // }
 
         setStep(stepNumber);
     }
@@ -357,7 +357,7 @@ export default function NewEvent(
                     {step === 1 && (
                         <>
                             <div className={styles.containerForm}>
-                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0].nome : ""} subtitle="Idade: 88 anos" includeImg={true} imgUrl={personalList.data ? personalList.data[0].caminhoFoto : ""} />
+                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle="Idade: 88 anos" includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
 
                                 {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
                                 <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>

@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
-import { Trash2, Plus, Clock } from "lucide-react";
 import styles from "./SetAvailability.module.css";
-import { getPersonalProfile } from "../../../constants/personal";
+import { getPersonalCronogram, getPersonalProfile, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery } from "@tanstack/react-query";
+import { Clock } from "lucide-react";
 
-interface TimeSlot {
-    id: string;
-    from: string;
-    entryInterval: string;
-    exitInterval: string;
-    until: string;
-    sessionInterval: string;
+export interface TimeSlot {
+    id?: string;
+    horaInicio: string;
+    horaFim: string;
+    diaSemana: string;
+    tipo: "DISPONIVEL" | "RESTRITO";
 }
 
 interface DaySchedule {
@@ -19,6 +18,16 @@ interface DaySchedule {
 }
 
 const DAYS_OF_WEEK = [
+    "DOMINGO",
+    "SEGUNDA",
+    "TERCA",
+    "QUARTA",
+    "QUINTA",
+    "SEXTA",
+    "SABADO",
+];
+
+const DAYS_OF_WEEK_DISPLAY = [
     "Domingo",
     "Segunda-feira",
     "Terça-feira",
@@ -28,53 +37,80 @@ const DAYS_OF_WEEK = [
     "Sábado",
 ];
 
-function createDefaultSlot(): TimeSlot {
-    return {
-        id: Math.random().toString(36).substr(2, 9),
-        from: "06:00",
-        entryInterval: "",
-        exitInterval: "",
-        until: "23:00",
-        sessionInterval: "",
-    };
-}
 
 export default function SetAvailability() {
-    const [schedule, setSchedule] = useState<DaySchedule[]>(
-        DAYS_OF_WEEK.map((day) => ({
-            day,
-            slots: [createDefaultSlot()],
-        }))
-    );
 
-    const [studentInterval, setStudentInterval] = useState("10");
-    const [classDuration, setClassDuration] = useState("60");
+    const getInitialCronogram = useQuery({
+        queryKey: ['personalCronogram'],
+        queryFn: getPersonalCronogram,
+        select: (res) => res.data,
+    });
+
+    
+    const [schedule, setSchedule] = useState<DaySchedule[]>([]);
+
+
+    const test = useQuery({
+        queryKey: ['personal'],
+        queryFn: () => getPersonalProfile(1, "2025=11=30"),
+    });
+
+    console.log("test", test.data);
+
+    useEffect(() => {
+        if (!getInitialCronogram.data) return;
+
+        const formatted = DAYS_OF_WEEK.map((day) => ({
+            day,
+            slots: getInitialCronogram.data.filter(
+                (slot: TimeSlot) => slot.diaSemana === day
+            ),
+        }));
+
+        setSchedule(formatted);
+    }, [getInitialCronogram.data]);
 
     function updateSlot(
         dayIndex: number,
         slotIndex: number,
         field: keyof TimeSlot,
-        value: string
+        value: string,
+        id: string
     ) {
+        console.log("Updating slot:", { dayIndex, slotIndex, field, value });
+
         const newSchedule = [...schedule];
         newSchedule[dayIndex].slots[slotIndex] = {
             ...newSchedule[dayIndex].slots[slotIndex],
             [field]: value,
         };
 
+        console.log("newSchedule[dayIndex].slots", schedule);
 
         setSchedule(newSchedule);
+        console.log("Updating slot with API call:", newSchedule[dayIndex].slots[slotIndex]);
+        const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
+        updatePersonalCronogram({diaSemana: updatedSlot.diaSemana, horaInicio: updatedSlot.horaInicio, horaFim: updatedSlot.horaFim, tipo: updatedSlot.tipo}, id)
+            .then(() => {
+                console.log("Cronograma atualizado com sucesso");
+            })
+            .catch((error) => {
+                console.error("Erro ao atualizar cronograma:", error);
+            });
+
     };
 
-    const getInitialSchedule = useQuery({
-        queryKey: ['personalProfile'],
-        queryFn: async () => {
-            const response = await getPersonalProfile(1, "2025-11-30");
-            return response.data;
-        },
-    });
+    function handleUpdateBuffer(value: string) {
+        updateBuffer(value)
+            .then(() => {
+                console.log("Buffer atualizado com sucesso");
+            })
+            .catch((error) => {
+                console.error("Erro ao atualizar buffer:", error);
+            });
 
-    console.log("getInitialSchedule", getInitialSchedule.data);
+    }
+
 
     return (
         <div className={styles.container}>
@@ -93,34 +129,21 @@ export default function SetAvailability() {
                         <label className={styles.controlLabel}>Intervalo entre alunos:</label>
                         <select
                             className={styles.select}
-                            value={studentInterval}
-                            onChange={(e) => setStudentInterval(e.target.value)}
+                            defaultValue="15"
+                            onChange={(e) => handleUpdateBuffer(e.target.value)}
                         >
                             <option value="5">5 min</option>
                             <option value="10">10 min</option>
                             <option value="15">15 min</option>
                             <option value="20">20 min</option>
                             <option value="30">30 min</option>
-                        </select>
-                    </div>
-                    <div className={styles.controlGroup}>
-                        <label className={styles.controlLabel}>Duração da aula:</label>
-                        <select
-                            className={styles.select}
-                            value={classDuration}
-                            onChange={(e) => setClassDuration(e.target.value)}
-                        >
-                            <option value="30">30 min</option>
                             <option value="45">45 min</option>
                             <option value="60">1 hora</option>
-                            <option value="90">1 hora 30 min</option>
-                            <option value="120">2 horas</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            {/* Desktop Table View */}
             <div className={styles.tableWrapper}>
                 <table className={styles.table}>
                     <thead className={styles.tableHead}>
@@ -130,93 +153,70 @@ export default function SetAvailability() {
                             <th className={styles.intervalColumn}>Intervalo Entrada</th>
                             <th className={styles.intervalColumn}>Intervalo Saída</th>
                             <th className={styles.timeColumn}>Até</th>
-                            <th className={styles.intervalColumn}>Intervalo Sessões</th>
                         </tr>
                     </thead>
                     <tbody className={styles.tableBody}>
-                        {schedule.map((daySchedule, dayIndex) => (
-                            <>
-                                {daySchedule.slots.map((slot, slotIndex) => (
-                                    <tr key={slot.id}>
-                                        {slotIndex === 0 && (
-                                            <td
-                                                className={`${styles.tableCell} ${styles.dayCell}`}
-                                                rowSpan={daySchedule.slots.length}
-                                            >
-                                                <div className={styles.dayCellContent}>
-                                                    <span>{daySchedule.day}</span>
-                                                </div>
-                                            </td>
-                                        )}
-                                        <td className={styles.tableCell}>
-                                            <input
-                                                type="time"
-                                                value={slot.from}
-                                                onChange={(e) =>
-                                                    updateSlot(dayIndex, slotIndex, "from", e.target.value)
-                                                }
-                                                className={styles.input}
-                                            />
-                                        </td>
-                                        <td className={styles.tableCell}>
-                                            <input
-                                                type="time"
-                                                value={slot.entryInterval}
-                                                onChange={(e) =>
-                                                    updateSlot(
-                                                        dayIndex,
-                                                        slotIndex,
-                                                        "entryInterval",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className={styles.input}
-                                            />
-                                        </td>
-                                        <td className={styles.tableCell}>
-                                            <input
-                                                type="time"
-                                                value={slot.exitInterval}
-                                                onChange={(e) =>
-                                                    updateSlot(
-                                                        dayIndex,
-                                                        slotIndex,
-                                                        "exitInterval",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className={styles.input}
-                                            />
-                                        </td>
-                                        <td className={styles.tableCell}>
-                                            <input
-                                                type="time"
-                                                value={slot.until}
-                                                onChange={(e) =>
-                                                    updateSlot(dayIndex, slotIndex, "until", e.target.value)
-                                                }
-                                                className={styles.input}
-                                            />
-                                        </td>
-                                        <td className={styles.tableCell}>
-                                            <input
-                                                type="time"
-                                                value={slot.sessionInterval}
-                                                onChange={(e) =>
-                                                    updateSlot(
-                                                        dayIndex,
-                                                        slotIndex,
-                                                        "sessionInterval",
-                                                        e.target.value
-                                                    )
-                                                }
-                                                className={styles.input}
-                                            />
-                                        </td>
-                                    </tr>
-                                ))}
-                            </>
-                        ))}
+                        {schedule.map((daySchedule, dayIndex) => {
+                            const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
+                            const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
+
+                            const workSlot = daySchedule.slots[workIndex] || {};
+                            const breakSlot = daySchedule.slots[breakIndex] || {};
+
+                            return (
+                                <tr key={dayIndex}>
+                                    <td className={`${styles.tableCell} ${styles.dayCell}`}>
+                                        <div className={styles.dayCellContent}>
+                                            <span>{DAYS_OF_WEEK_DISPLAY[dayIndex]}</span>
+                                        </div>
+                                    </td>
+
+                                    <td className={styles.tableCell}>
+                                        <input
+                                            type="time"
+                                            value={workSlot.horaInicio || ""}
+                                            onChange={(e) =>
+                                                updateSlot(dayIndex, workIndex, "horaInicio", e.target.value, workSlot.id!)
+                                            }
+                                            className={styles.input}
+                                        />
+                                    </td>
+
+                                    <td className={styles.tableCell}>
+                                        <input
+                                            type="time"
+                                            value={breakSlot.horaInicio || ""}
+                                            onChange={(e) =>
+                                                updateSlot(dayIndex, breakIndex, "horaInicio", e.target.value, breakSlot.id!)
+                                            }
+                                            className={styles.input}
+                                        />
+                                    </td>
+
+                                    <td className={styles.tableCell}>
+                                        <input
+                                            type="time"
+                                            value={breakSlot.horaFim || ""}
+                                            onChange={(e) =>
+                                                updateSlot(dayIndex, breakIndex, "horaFim", e.target.value, breakSlot.id!)
+                                            }
+                                            className={styles.input}
+                                        />
+                                    </td>
+
+                                    <td className={styles.tableCell}>
+                                        <input
+                                            type="time"
+                                            value={workSlot.horaFim || ""}
+                                            onChange={(e) =>
+                                                updateSlot(dayIndex, workIndex, "horaFim", e.target.value, workSlot.id!)
+                                            }
+                                            className={styles.input}
+                                        />
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -229,15 +229,14 @@ export default function SetAvailability() {
                         </div>
 
                         {daySchedule.slots.map((slot, slotIndex) => (
-                            <div key={slot.id} className={styles.slotCard}>
+                            <div key={slotIndex} className={styles.slotCard}>
                                 <div className={styles.slotFields}>
                                     <div className={styles.fieldGroup}>
                                         <label className={styles.fieldLabel}>De</label>
                                         <input
                                             type="time"
-                                            value={slot.from}
                                             onChange={(e) =>
-                                                updateSlot(dayIndex, slotIndex, "from", e.target.value)
+                                                updateSlot(dayIndex, slotIndex, "horaInicio", e.target.value)
                                             }
                                             className={styles.input}
                                         />
@@ -247,9 +246,8 @@ export default function SetAvailability() {
                                         <label className={styles.fieldLabel}>Até</label>
                                         <input
                                             type="time"
-                                            value={slot.until}
                                             onChange={(e) =>
-                                                updateSlot(dayIndex, slotIndex, "until", e.target.value)
+                                                updateSlot(dayIndex, slotIndex, "horaFim", e.target.value)
                                             }
                                             className={styles.input}
                                         />
@@ -259,12 +257,11 @@ export default function SetAvailability() {
                                         <label className={styles.fieldLabel}>Intervalo Entrada</label>
                                         <input
                                             type="time"
-                                            value={slot.entryInterval}
                                             onChange={(e) =>
                                                 updateSlot(
                                                     dayIndex,
                                                     slotIndex,
-                                                    "entryInterval",
+                                                    "horaInicio",
                                                     e.target.value
                                                 )
                                             }
@@ -276,12 +273,11 @@ export default function SetAvailability() {
                                         <label className={styles.fieldLabel}>Intervalo Saída</label>
                                         <input
                                             type="time"
-                                            value={slot.exitInterval}
                                             onChange={(e) =>
                                                 updateSlot(
                                                     dayIndex,
                                                     slotIndex,
-                                                    "exitInterval",
+                                                    "horaFim",
                                                     e.target.value
                                                 )
                                             }
@@ -293,12 +289,11 @@ export default function SetAvailability() {
                                         <label className={styles.fieldLabel}>Intervalo Sessões</label>
                                         <input
                                             type="time"
-                                            value={slot.sessionInterval}
                                             onChange={(e) =>
                                                 updateSlot(
                                                     dayIndex,
                                                     slotIndex,
-                                                    "sessionInterval",
+                                                    "horaFim",
                                                     e.target.value
                                                 )
                                             }
