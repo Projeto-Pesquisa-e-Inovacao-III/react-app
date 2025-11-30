@@ -7,9 +7,9 @@ import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
-import { api, BASE_URL } from "../../system";
-import { findUserData, getUserImage, insertUserImage, removerUserImage, update } from "../../constants/user";
-import type { UpdateUserDTO, UserDTO } from "../../models/user";
+import {  BASE_URL } from "../../system";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete, logout, changePassword } from "../../constants/user";
+import type { UpdateUserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import { cellphoneMask, cpfMask } from "../../utils/mascara";
@@ -69,6 +69,10 @@ export default function EditUser() {
   const [openModal, setOpenModal] = useState<modalTypes>(null);
   const [textModal, setTextModal] = useState({ title: "", content: "" });
 
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
@@ -124,7 +128,7 @@ export default function EditUser() {
     const options: UpdateUserDTO = {
       nome: state.firstName,
       cpf: state.cpf,
-      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      telefone: {numero: state.phone, ddd: "11", pais: "55"},
       sexo: state.gender,
       email: state.email,
       dataNascimento: "2000-01-01", //is this necessary? can we update birthdate?,
@@ -136,29 +140,83 @@ export default function EditUser() {
         insertUserImage(userImageFormData).then(() => {
           console.log("Imagem do usuário atualizada com sucesso!");
 
-          setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+          setTextModal({title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso."});
           setOpenModal("success");
         }).catch((error) => {
           console.error("Erro ao atualizar imagem do usuário:", error);
-          setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+          setTextModal({title: "Houve um erro", content: "A imagem é muito pesada para ser carregada."});
           setOpenModal("error");
           return;
         });
       }
 
 
-
     }).catch((error) => {
       console.error("Erro ao atualizar dados do usuário:", error);
-      setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
+      setTextModal({
+        title: "Houve um erro",
+        content: error.response.data.Exception || "Não foi possível atualizar seu perfil."
+      });
       setOpenModal("error");
       return;
     });
-
-
-
   }
 
+  function deleteUser() {
+    softDelete()
+        .then(() => {
+          setTextModal({
+            title: "Perfil apagado",
+            content: "Seu perfil foi apagado com sucesso.",
+          });
+          setOpenModal("success");
+          logout();
+        })
+        .catch((_error: unknown) => {
+          console.error("Erro ao apagar usuário:", _error);
+          setTextModal({ title: "Houve um erro", content: "Erro ao apagar usuário." });
+          setOpenModal("error");
+        });
+  }
+
+  function updatePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
+    if (!currentPassword) {
+      setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
+      setOpenModal("error");
+      return;
+    }
+
+    if (!newPassword || !confirmPassword) {
+      setTextModal({ title: "Houve um erro", content: "Preencha os campos de nova senha e confirmação." });
+      setOpenModal("error");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setTextModal({ title: "Houve um erro", content: "As senhas não coincidem." });
+      setOpenModal("error");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setTextModal({ title: "Houve um erro", content: "A nova senha deve ter no mínimo 6 caracteres." });
+      setOpenModal("error");
+      return;
+    }
+
+    changePassword(currentPassword, newPassword)
+        .then(() => {
+          setNewPassword("");
+          setConfirmPassword("");
+          setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
+          setOpenModal("success");
+        })
+        .catch((error) => {
+          console.error("Erro ao atualizar senha:", error);
+          setTextModal({ title: "Houve um erro", content: "Não foi possível atualizar sua senha." });
+          setOpenModal("error");
+        });
+  }
 
   function handleUpdatePersonalInfo() {
     const options: PersonalDTO = {
@@ -191,7 +249,6 @@ export default function EditUser() {
       });
     }
     setOpenModal("success");
-
   }
 
   useEffect(() => {
@@ -303,18 +360,39 @@ export default function EditUser() {
               onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
-              id="senha"
-              type="password"
-              placeholder="*************"
-              icon={<LockKeyhole />}
-              label="Senha"
+                id="senha-nova"
+                type="password"
+                placeholder="*************"
+                icon={<LockKeyhole />}
+                label="Nova Senha"
+                value={newPassword}
+                onInputChange={(value: string) => setNewPassword(value)}
             ></InputWithIcon>
+            <InputWithIcon
+                id="senha-confirm"
+                type="password"
+                placeholder="*************"
+                icon={<LockKeyhole />}
+                label="Confirma Senha"
+                value={confirmPassword}
+                onInputChange={(value: string) => setConfirmPassword(value)}
+            ></InputWithIcon>
+            <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
+                title="Alterar Senha" type="button" onClick={updatePassword} />
           </WhiteContainer>
         </div>
 
         <div className={styles.footer}>
           <div className={styles.dashLine}></div>
-          <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+          <div className={styles.divButtons}>
+            <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+            <Button
+                title="Apagar Perfil"
+                type="button"
+                classNameVariable="buttonDanger"
+                onClick={deleteUser}
+            />
+          </div>
         </div>
       </div>
 
