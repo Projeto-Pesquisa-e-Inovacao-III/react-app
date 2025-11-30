@@ -2,9 +2,10 @@ import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "../Notification/Notification";
 import UserAvatar from "../../UserAvatar/UserAvatar";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UserType = {
   type: "personal" | "student"
@@ -31,6 +32,13 @@ export default function UserHeaderDesktop({ type }: UserType) {
   //     isRead: false
   //   }
   // ];
+
+
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['userImage'] });
+  }, []);
 
   return (
     <>
@@ -69,7 +77,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
         </div>
 
       </header >
-{/* 
+      {/* 
       {openNotification && (
         <Notification notifications={notifications} />
       )

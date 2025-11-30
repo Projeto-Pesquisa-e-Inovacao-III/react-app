@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";
 import { useNavigate } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { createAddress } from "../../constants/address";
 import type { Address } from "../../models/address";
@@ -17,6 +17,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { getPersonalProfile } from "../../constants/personal";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -312,6 +313,17 @@ export default function NewEvent(
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, [step]);
 
+    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
+
+    const availabilityHours = useQuery({
+        queryKey: ["availabilityHours", newEventDate],
+        queryFn: () => getPersonalProfile(1, newEventDate ? newEventDate : ""),
+        enabled: !!newEventDate,
+        select: (res) => res.data,
+    });
+
+    console.log("Availability Hours: ", availabilityHours.data);
+
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
@@ -397,26 +409,33 @@ export default function NewEvent(
                                         </div>
                                         {newEventDate && (
                                             <>
-                                                <span className="flex gap-1 mt-5"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
+                                                <span className="flex gap-1 mt-5 text-sm items-center"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
 
-                                                <div className={styles.hours}>
-                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
-                                                        <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"}
-                                                            handleButtonClick={handleButtonClick} />
-                                                    </div>
-                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
-                                                        <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"}
-                                                            handleButtonClick={handleButtonClick} />
-                                                    </div>
-                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
-                                                        <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
-                                                            handleButtonClick={handleButtonClick} />
-                                                    </div>
-                                                    <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
-                                                        <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
-                                                            handleButtonClick={handleButtonClick} />
-                                                    </div>
+                                                <div className="flex gap-2 mt-3 mb-5">
+                                                    <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ"})} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />
+                                                    <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE"})} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />
+                                                    <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE"})} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />
                                                 </div>
+
+                                                {chooseTimeOfDay !== null && (
+                                                    <div className={styles.hours}>
+                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
+                                                            <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"} handleButtonClick={handleButtonClick} />
+                                                        </div>
+                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
+                                                            <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"} handleButtonClick={handleButtonClick} />
+                                                        </div>
+                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
+                                                            <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
+                                                                handleButtonClick={handleButtonClick} />
+                                                        </div>
+                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
+                                                            <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
+                                                                handleButtonClick={handleButtonClick} />
+                                                        </div>
+                                                    </div>
+                                                )}
+
                                             </>
                                         )}
                                     </div>

@@ -522,3 +522,25 @@
 .buttonNextStepMobile :global(button) {
   width: 100% !important;
 }
+
+
+.buttonTimeOfDaySelect {
+  padding: 10px 15px !important;
+  background-color: #fff !important;
+  border: 1px solid #b1b1b194 !important;
+  color: black !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: border-color 0.2s;
+}
+
+.buttonTimeOfDaySelect:hover {
+  border-color: var(--indigo) !important;
+}
+
+.buttonTimeOfDaySelectSelected {
+  transition: background-color 0.2s;
+  background-color: var(--bg-blue) !important;
+  color: #fff !important;
+}
