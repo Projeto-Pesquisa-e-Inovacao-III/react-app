@@ -2,6 +2,7 @@ import classNames from "classnames";
 import styles from "./Button.module.css"
 
 type Props = {
+
     type: "submit" | "button";
     typeButton?: "accept" | "decline" | "other";
     title: string;

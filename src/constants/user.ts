@@ -42,8 +42,8 @@ export async function getById(id: string) {
    return await api.get(`/alunos/${id}`)
 }
 
-export function softDelete(id: string) {
-   return api.patch(`/usuarios/${id}`)
+export function softDelete() {
+   return api.patch(`/usuarios`)
 }
 
 export function logout() {
