@@ -55,6 +55,14 @@ export default function NewEvent(
 
     console.log("Inserted Events: ", insertedEvents);
 
+
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
+    });
+    console.log(personalList.data[0]?.id)
+
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
         address: "",
@@ -119,9 +127,7 @@ export default function NewEvent(
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
 
-        console.log("ENDEREÇOOOO", addressData)
-
-        if(addressData.address.includes("undefined")) {
+        if (addressData.address.includes("undefined")) {
             setModal("error");
             setModalInfo({
                 title: "Erro ao agendar",
@@ -148,7 +154,7 @@ export default function NewEvent(
             return;
         }
 
-        
+
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
@@ -168,7 +174,7 @@ export default function NewEvent(
                     uf: addressData.state
                 }
             },
-            personalId: 1,
+            personalId: personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -203,12 +209,6 @@ export default function NewEvent(
 
     }
 
-    const personalList = useQuery({
-        queryKey: ["personalList"],
-        queryFn: getPersonalList,
-        select: (res) => res.data,
-    });
-    console.log(personalList.data)
 
     async function handleRescheduleEvent(e: React.FormEvent) {
         console.log("Reagendando evento...");
@@ -239,7 +239,7 @@ export default function NewEvent(
                     uf: addressData.state
                 }
             },
-            personalId: 1,
+            personalId: personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 

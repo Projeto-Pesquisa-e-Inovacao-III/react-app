@@ -36,9 +36,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ['userImage'] });
-  }, []);
+  queryClient.invalidateQueries({ queryKey: ['userImage'] });
 
   return (
     <>
