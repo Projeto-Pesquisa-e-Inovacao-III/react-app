@@ -401,6 +401,7 @@ export default function EditUser() {
                   placeholder="*************"
                   icon={<LockKeyhole />}
                   label="Senha Atual"
+                  isPassword={currentPassword ? true : false}
                   value={currentPassword}
                   onInputChange={(value: string) => setCurrentPassword(value)}
               ></InputWithIcon>
@@ -410,6 +411,7 @@ export default function EditUser() {
                   placeholder="*************"
                   icon={<LockKeyhole />}
                   label="Nova Senha"
+                  isPassword={confirmPassword ? true : false}
                   value={confirmPassword}
                   onInputChange={(value: string) => setConfirmPassword(value)}
               ></InputWithIcon>

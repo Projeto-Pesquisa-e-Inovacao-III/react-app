@@ -37,11 +37,6 @@
   justify-content: center;
 }
 
-/* inside white container */
-.editUserGrid :global(.input-icon) {
-  top: 64% !important;
-}
-
 .profileSection {
   max-width: 364px;
   max-height: 369px;

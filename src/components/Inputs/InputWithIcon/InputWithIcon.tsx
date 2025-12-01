@@ -16,7 +16,7 @@ type Props = {
     disabled?: boolean;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask,disabled }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -24,27 +24,29 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
             {label &&
                 <label htmlFor={`${id}-input`}>{label}</label>
             }
-            <div className="input-icon">{icon}</div>
-            <input
-                id={`${id}-input`}
-                type={isPassword && showPassword ? "text" : type}
-                className={`${isPassword ? `password-input` : ``}`}
-                placeholder={placeholder}
-                onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
-                onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
-                onInput={(e) => mask ? mask(e) : undefined}
-                value={value}
-                disabled={disabled}
-            />
-            {isPassword && (
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="password-toggle"
-                >
-                    {showPassword ? <EyeOff /> : <Eye />}
-                </button>
-            )}
+            <div className="relative">
+                <div className="input-icon">{icon}</div>
+                <input
+                    id={`${id}-input`}
+                    type={isPassword && showPassword ? "text" : type}
+                    className={`${isPassword ? `password-input` : ``}`}
+                    placeholder={placeholder}
+                    onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
+                    onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
+                    onInput={(e) => mask ? mask(e) : undefined}
+                    value={value}
+                    disabled={disabled}
+                />
+                {isPassword && (
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="password-toggle"
+                    >
+                        {showPassword ? <EyeOff /> : <Eye />}
+                    </button>
+                )}
+            </div>
         </div>
     )
 }
