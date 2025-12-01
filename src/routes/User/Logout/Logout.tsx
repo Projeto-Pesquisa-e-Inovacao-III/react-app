@@ -13,6 +13,9 @@ export default function Logout() {
     logout().then(() => {
       queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
       nav("/");
+    }).catch((error) => {
+      console.error("Erro ao fazer logout:", error);
+      nav("/");
     });
   }, []);
 

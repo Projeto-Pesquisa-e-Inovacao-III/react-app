@@ -11,6 +11,7 @@ import Select from "../Inputs/Select/Select";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
+    idOnCreate?: React.Dispatch<React.SetStateAction<number | null>>;
     title?: string;
     values?: {
         titulo: string;
@@ -26,7 +27,7 @@ type AddPackagePlanProps = {
     callSuccessModal: () => void;
 };
 
-export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
+export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit, typePackage, idOnCreate }: AddPackagePlanProps) {
 
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number }>({
         name: values?.titulo || "",
@@ -84,18 +85,19 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             return;
         }
 
-        newProductExhibition(data).then(() => {
-            console.log("Pacote adicionado com sucesso!");
-            callSuccessModal();
+        newProductExhibition(data).then((res) => {
+            console.log("Pacote adicionado com sucesso!", res);
             if (packageCreated) {
-                packageCreated(prev => [...prev, data]);
+                packageCreated(prev => [...prev, res.data]);
             }
+            callSuccessModal();
         }).catch((error) => {
             console.error("Erro ao adicionar pacote:", error);
         });
     }
 
     function handleEditPackage() {
+        console.log("Editing package with id:", typePackage);
         const data: ProductExhibition = {
             titulo: packageInfo.name,
             subtitulo: "",
@@ -109,7 +111,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             duracaoMes: parseInt(packageInfo.deadline || "12")
         }
 
-        updateProductExhibition(values.id, data).then((res) => {
+        updateProductExhibition(values?.id, data).then((res) => {
             console.log("Pacote editado com sucesso!");
             console.log("Response:", res);
             callSuccessModal();

@@ -384,17 +384,6 @@ export default function NewEvent(
                                             className={styles.selectComponent}
                                         />
                                     </div>
-
-                                    <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                        <Select
-                                            placeholder="Selecione o local"
-                                            label="Local"
-                                            options={["Casa", "Academia", "Outro"]}
-                                            value={selectedLocation}
-                                            onInputChange={setSelectedLocation}
-                                            className={styles.selectComponent}
-                                        />
-                                    </div>
                                 </div>
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>

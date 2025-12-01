@@ -360,7 +360,7 @@ export default function EditUser() {
               onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
             ></InputWithIcon>
             <InputWithIcon
-                id="senha"
+                id="senha-nova"
                 type="password"
                 placeholder="*************"
                 icon={<LockKeyhole />}
@@ -369,7 +369,7 @@ export default function EditUser() {
                 onInputChange={(value: string) => setNewPassword(value)}
             ></InputWithIcon>
             <InputWithIcon
-                id="senha"
+                id="senha-confirm"
                 type="password"
                 placeholder="*************"
                 icon={<LockKeyhole />}

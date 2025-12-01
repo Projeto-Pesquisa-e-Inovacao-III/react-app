@@ -4,7 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { parseISO } from "date-fns";
+import { parseISO, startOfDay } from "date-fns";
 
 type Props = {
   events?: { agendamentoId: number; data: string; hour: string }[];
@@ -62,6 +62,10 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
             const appointment = events?.filter(event => event.data.split("T")[0] === clickedDate) || null;
 
+            const today = startOfDay(new Date());
+            console.log(today)
+            if(appointment)
+
             if (appointment && appointment.length > 1) {
               nav(`/schedule-history/?date=${clickedDate}`);
               return
@@ -80,7 +84,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
           headerToolbar={{
 
             start: "title",
-            end: `${selectedMonth >= actualMonth ? `${isMobile ? '' : 'today '}` : ""}${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
+            end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
           }}
           height={"auto"}
 
