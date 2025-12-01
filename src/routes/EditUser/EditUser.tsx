@@ -8,7 +8,7 @@ import { useContext, useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
 import {  BASE_URL } from "../../system";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete, logout, changePassword } from "../../constants/user";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword } from "../../constants/user";
 import type { UpdateUserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";

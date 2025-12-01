@@ -96,7 +96,7 @@ export function Packages() {
     }
 
     function handleUpdatePackage(id: number) {
-
+        console.log("Editing package with id:", id);
         if (!packageId) {
             setPackageId(id)
             setOpenModal("edit");
@@ -104,7 +104,6 @@ export function Packages() {
         }
 
     }
-
 
     function productsExhibitionsFindById(id: number) {
         return productsExhibitions.find(pkg => pkg.id === id);
@@ -186,7 +185,7 @@ export function Packages() {
                                 descricao={safeParseDescricao(pacote.descricao)}
                                 onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
                                 isMobile={isMobile}
-                                setHandleEdit={() => setOpenModal("edit")}
+                                setHandleEdit={(e) => { setPackageId(pacote.id!); setOpenModal("edit") }}
                                 setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                 isPersonal={isPersonal}
                             />
@@ -197,7 +196,7 @@ export function Packages() {
 
 
             {openModal === "add" && (
-                <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} />
+                <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
             )}
 
             {openModal === "addAdditional" && (
@@ -227,7 +226,7 @@ export function Packages() {
                     <AddPackagePlan title="Editar Pacote" onClose={(e) => {
                         setOpenModal(e ? "success" : null)
                         setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 </>
             )}
 
