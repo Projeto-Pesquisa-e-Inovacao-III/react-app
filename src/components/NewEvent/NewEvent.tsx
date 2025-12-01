@@ -116,38 +116,39 @@ export default function NewEvent(
         }
     }, [addressData.postalCode]);
 
-    async function handleInsertAddress(e: React.FormEvent) {
-        e.preventDefault();
-
-        const body: Address = {
-            numero: addressData.number,
-            complemento: addressData.complement,
-            unidade: "",
-            tipo: selectedLocation,
-            cep: {
-                id: addressData.postalCode
-            }
-        }
-        await createAddress(body)
-            .then(response => {
-                console.log("Endereço criado com sucesso:", response.data);
-            }).catch(error => {
-                console.error("Erro ao criar endereço:", error);
-            });
-    }
-
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
 
+        console.log("ENDEREÇOOOO", addressData)
+
+        if(addressData.address.includes("undefined")) {
+            setModal("error");
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "CEP inválido. Por favor, verifique o CEP informado."
+            });
+            return;
+        }
+
         if (!addressData.postalCode || addressData.address === null) {
-            alert("Por favor, insira um CEP válido para o endereço.");
+            setModal("error");
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Por favor, preencha um CEP válido."
+            });
             return;
         }
 
         if (!addressData.number) {
-            alert("Por favor, insira o número do endereço.");
+            setModal("error");
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Por favor, preencha o número do endereço."
+            });
             return;
         }
+
+        
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
@@ -176,11 +177,6 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-                await handleInsertAddress(e).then(() => {
-                    console.log("Endereço inserido com sucesso.");
-                }).catch(error => {
-                    console.error("Erro ao inserir endereço:", error);
-                });
 
                 if (calculatedTitle && newEventDate) {
                     queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments"] });
@@ -251,11 +247,6 @@ export default function NewEvent(
         await rescheduleAppointment(payload).then(async response => {
             console.log("Evento reagendado com sucesso:", response.data);
 
-            await handleInsertAddress(e).then(() => {
-                console.log("Endereço inserido com sucesso.");
-            }).catch(error => {
-                console.error("Erro ao inserir endereço:", error);
-            });
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
             //errorModal();

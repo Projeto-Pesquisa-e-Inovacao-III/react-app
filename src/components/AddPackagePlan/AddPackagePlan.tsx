@@ -34,7 +34,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
         type: values?.tipoAula || "PRESENCIAL",
         price: values?.preco || "",
         deadline: values?.duracaoMes || "",
-        benefits: values?.descricao ? JSON.parse(values.descricao) : [""],
+        benefits: values?.descricao ? JSON.parse(values?.descricao) : [""],
         quantity: values?.quantidadeAula || 0
     });
     console.log("packageInfo", packageInfo);

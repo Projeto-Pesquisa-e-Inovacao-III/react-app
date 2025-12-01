@@ -12,7 +12,7 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 
-type ModalType = "add" | "addAdditional" | "edit" | "delete" | "success" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -95,17 +95,20 @@ export function Packages() {
 
     }
 
-    function handleUpdatePackage(id: number) {
+    function handleUpdatePackage(id: number, isAdicional: boolean = false) {
         console.log("Editing package with id:", id);
         if (!packageId) {
             setPackageId(id)
-            setOpenModal("edit");
+            setOpenModal(isAdicional ? "editAdditional" : "edit");
             return;
         }
 
     }
 
-    function productsExhibitionsFindById(id: number) {
+    function productsExhibitionsFindById(id: number, additional: boolean = false) {
+        if (additional) {
+            return productsExhibitionsAdicional.find(pkg => pkg.id === id);
+        }
         return productsExhibitions.find(pkg => pkg.id === id);
     }
 
@@ -155,7 +158,7 @@ export function Packages() {
                             isMobile={isMobile}
                             isPersonal={isPersonal}
                             setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                            setHandleEdit={() => handleUpdatePackage(pacote.id!)}
+                            setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                         />
                     ))) : (<p>Não há pacotes disponíveis no momento.</p>)}
                 </div>
@@ -185,7 +188,7 @@ export function Packages() {
                                 descricao={safeParseDescricao(pacote.descricao)}
                                 onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
                                 isMobile={isMobile}
-                                setHandleEdit={(e) => { setPackageId(pacote.id!); setOpenModal("edit") }}
+                                setHandleEdit={(e) => { handleUpdatePackage(pacote.id!, true) }}
                                 setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                 isPersonal={isPersonal}
                             />
@@ -203,8 +206,23 @@ export function Packages() {
                 <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
             )}
 
+
             {openModal === "edit" && (
-                <AddPackagePlan title="Editar Pacote" typePackage="PACOTE" onClose={handleCloseModal} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} />
+                <>
+                    <AddPackagePlan title="Editar Pacote" onClose={(e) => {
+                        setOpenModal(e ? "success" : null)
+                        setPackageId(null)
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                </>
+            )}
+
+            {openModal === "editAdditional" && (
+                <>
+                    <AddPackagePlan title="Editar Adicional" onClose={(e) => {
+                        setOpenModal(e ? "success" : null)
+                        setPackageId(null)
+                    }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
+                </>
             )}
 
 
@@ -219,15 +237,6 @@ export function Packages() {
                     buttonTitle="Excluir Pacote"
                     callSuccessModal={() => handleDeletePackage(packageId)}
                 />
-            )}
-
-            {openModal === "edit" && (
-                <>
-                    <AddPackagePlan title="Editar Pacote" onClose={(e) => {
-                        setOpenModal(e ? "success" : null)
-                        setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
-                </>
             )}
 
             {openModal === "success" && (

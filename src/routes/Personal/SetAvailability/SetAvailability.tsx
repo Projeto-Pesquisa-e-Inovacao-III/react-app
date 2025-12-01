@@ -49,14 +49,6 @@ export default function SetAvailability() {
     
     const [schedule, setSchedule] = useState<DaySchedule[]>([]);
 
-
-    const test = useQuery({
-        queryKey: ['personal'],
-        queryFn: () => getPersonalProfile(1, "2025=11=30"),
-    });
-
-    console.log("test", test.data);
-
     useEffect(() => {
         if (!getInitialCronogram.data) return;
 
