@@ -17,8 +17,32 @@ import { TypeContext } from "../../App";
 import type { PersonalDTO } from "../../models/personal";
 import { editPersonalProfile } from "../../constants/personal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import { useNavigate } from "react-router-dom";
+import {validatePassword} from "../../utils/validacao.ts";
+type EditUserState = {
+  firstName: string;
+  lastName: string;
+  cpf: string;
+  cref: string;
+  phone: string;
+  gender: string;
+  email: string;
+  password: string;
+  birthDate: string;
+};
 
-function reducer(state: any, action: any) {
+type EditUserAction =
+    | { type: "setFirstName"; payload: string }
+    | { type: "setLastName"; payload: string }
+    | { type: "setCPF"; payload: string }
+    | { type: "setCREF"; payload: string }
+    | { type: "setPhone"; payload: string }
+    | { type: "setGender"; payload: string }
+    | { type: "setEmail"; payload: string }
+    | { type: "setPassword"; payload: string }
+    | { type: "setBirthDate"; payload: string };
+
+function reducer(state: EditUserState, action: EditUserAction): EditUserState {
   switch (action.type) {
     case "setFirstName":
       return { ...state, firstName: action.payload };
@@ -36,12 +60,14 @@ function reducer(state: any, action: any) {
       return { ...state, email: action.payload };
     case "setPassword":
       return { ...state, password: action.payload };
+    case "setBirthDate":
+      return { ...state, birthDate: action.payload };
     default:
       return state;
   }
 }
 
-const initialEditUserState = {
+const initialEditUserState: EditUserState = {
   firstName: "",
   lastName: "",
   cpf: "",
@@ -57,8 +83,11 @@ type modalTypes = "timer" | "success" | "error" | null;
 
 export default function EditUser() {
   const isMobile = useMobile();
+  const navigator = useNavigate();
 
   const type = useContext(TypeContext);
+
+  const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
 
 
   const [userImage, setUserImage] = useState<string>("");
@@ -69,9 +98,8 @@ export default function EditUser() {
   const [openModal, setOpenModal] = useState<modalTypes>(null);
   const [textModal, setTextModal] = useState({ title: "", content: "" });
 
-  const [newPassword, setNewPassword] = useState<string>("");
+  const [currentPassword, setCurrentPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -127,39 +155,38 @@ export default function EditUser() {
   function handleUpdateUserInfo() {
     const options: UpdateUserDTO = {
       nome: state.firstName,
-      cpf: state.cpf,
-      telefone: {numero: state.phone, ddd: "11", pais: "55"},
+      telefone: { numero: state.phone, ddd: "11", pais: "55" },
       sexo: state.gender,
       email: state.email,
-      dataNascimento: "2000-01-01", //is this necessary? can we update birthdate?,
-      senha: "123456789aA!",  //is this right? are we gonna update password here?
-    }
+    };
 
-    update(options).then(() => {
-      if (userImageFormData.has("imagem")) {
-        insertUserImage(userImageFormData).then(() => {
-          console.log("Imagem do usuário atualizada com sucesso!");
-
-          setTextModal({title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso."});
-          setOpenModal("success");
-        }).catch((error) => {
-          console.error("Erro ao atualizar imagem do usuário:", error);
-          setTextModal({title: "Houve um erro", content: "A imagem é muito pesada para ser carregada."});
+    update(options)
+        .then(() => {
+          if (userImageFormData.has("imagem")) {
+            insertUserImage(userImageFormData)
+                .then(() => {
+                  console.log("Imagem do usuário atualizada com sucesso!");
+                  setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+                  setOpenModal("success");
+                })
+                .catch((error) => {
+                  console.error("Erro ao atualizar imagem do usuário:", error);
+                  setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+                  setOpenModal("error");
+                });
+          } else {
+            setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+            setOpenModal("success");
+          }
+        })
+        .catch((error) => {
+          console.error("Erro ao atualizar dados do usuário:", error);
+          setTextModal({
+            title: "Houve um erro",
+            content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
+          });
           setOpenModal("error");
-          return;
         });
-      }
-
-
-    }).catch((error) => {
-      console.error("Erro ao atualizar dados do usuário:", error);
-      setTextModal({
-        title: "Houve um erro",
-        content: error.response.data.Exception || "Não foi possível atualizar seu perfil."
-      });
-      setOpenModal("error");
-      return;
-    });
   }
 
   function deleteUser() {
@@ -170,7 +197,7 @@ export default function EditUser() {
             content: "Seu perfil foi apagado com sucesso.",
           });
           setOpenModal("success");
-          logout();
+          navigator("/logout");
         })
         .catch((_error: unknown) => {
           console.error("Erro ao apagar usuário:", _error);
@@ -179,35 +206,32 @@ export default function EditUser() {
         });
   }
 
-  function updatePassword(currentPassword: string, newPassword: string, confirmPassword: string) {
-    if (!currentPassword) {
+  function updatePassword() {
+    const current = currentPassword ?? "";
+    const newP = confirmPassword ?? "";
+
+    if (!current) {
       setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
       setOpenModal("error");
       return;
     }
 
-    if (!newPassword || !confirmPassword) {
-      setTextModal({ title: "Houve um erro", content: "Preencha os campos de nova senha e confirmação." });
+    if (!newP) {
+      setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
       setOpenModal("error");
       return;
     }
 
-    if (newPassword !== confirmPassword) {
-      setTextModal({ title: "Houve um erro", content: "As senhas não coincidem." });
+    const validation = validatePassword(newP);
+    if (validation !== "password válida!") {
+      setTextModal({ title: "Houve um erro", content: validation });
       setOpenModal("error");
       return;
     }
-
-    if (newPassword.length < 6) {
-      setTextModal({ title: "Houve um erro", content: "A nova senha deve ter no mínimo 6 caracteres." });
-      setOpenModal("error");
-      return;
-    }
-
-    changePassword(currentPassword, newPassword)
+    changePassword(current, newP)
         .then(() => {
-          setNewPassword("");
-          setConfirmPassword("");
+          setCurrentPassword("");
+          setConfirmPassword("")
           setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
           setOpenModal("success");
         })
@@ -221,12 +245,9 @@ export default function EditUser() {
   function handleUpdatePersonalInfo() {
     const options: PersonalDTO = {
       nome: state.firstName,
-      cref: state.cref,
       telefone: { numero: state.phone, ddd: "11", pais: "55" },
       sexo: state.gender,
       email: state.email,
-      dataNascimento: "2000-01-01",
-      senha: "senhaStrong",
     }
 
     editPersonalProfile(options).then(() => {
@@ -256,173 +277,207 @@ export default function EditUser() {
   }, []);
 
   return (
-    <>
-      <div className={styles.editUserGrid}>
-        {!isMobile &&
-          <div className={styles.goBackContainer}>
-            <h2>Editar Perfil</h2>
-          </div>
-        }
-
-        <div className={styles.profileSection}>
-          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
-            {userImage ?
-              <UserImg
-                Source={userImage}
-                Height={216}
-                Width={216}
-                Alt="foto"
-              />
-              :
-              <User width={216} height={216} />
-            }
-            <div className={styles.atualizarFotoContainer}>
-              <div>
-                <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-                <label htmlFor="upload-photo">
-                  <span>Atualizar Foto</span>
-                </label>
+      <>
+        <div className={styles.editUserGrid}>
+          {!isMobile &&
+              <div className={styles.goBackContainer}>
+                <h2>Editar Perfil</h2>
               </div>
+          }
 
+          <div className={styles.profileSection}>
+            <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
               {userImage ?
-                <div >
-                  <Button typeButton="other" title="Remover Foto" type="button" classNameVariable="buttonRemoveImage" onClick={() => setOpenModal("timer")} />
+                  <UserImg
+                      Source={userImage}
+                      Height={216}
+                      Width={216}
+                      Alt="foto"
+                  />
+                  :
+                  <User width={216} height={216} />
+              }
+              <div className={styles.atualizarFotoContainer}>
+                <div>
+                  <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                  <label htmlFor="upload-photo">
+                    <span>Atualizar Foto</span>
+                  </label>
                 </div>
-                : null}
+
+                {userImage ?
+                    <div >
+                      <Button
+                          typeButton="other"
+                          title="Remover Foto"
+                          type="button"
+                          classNameVariable="buttonRemoveImage"
+                          onClick={() => {
+                            setConfirmingDelete(false);
+                            setOpenModal("timer");
+                          }}
+                      />
+                    </div>
+                    : null}
+              </div>
+            </WhiteContainer>
+          </div>
+
+          <div className={styles.personalInfo}>
+            <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
+              <InputWithIcon
+                  id="nome"
+                  type="text"
+                  placeholder="Digite seu nome"
+                  icon={<User />}
+                  label="Nome"
+                  value={state.firstName}
+                  onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
+              ></InputWithIcon>
+              {type?.type === "aluno" ? (
+                  <InputWithIcon
+                      id="cpf"
+                      type="text"
+                      placeholder="Digite seu CPF"
+                      icon={<IdCard />}
+                      label="CPF"
+                      value={state.cpf}
+                      onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
+                      mask={cpfMask}
+                      disabled={true}
+                  />
+              ) : (
+                  <InputWithIcon
+                      id="cref"
+                      type="text"
+                      placeholder="Digite seu CREF"
+                      icon={<IdCard />}
+                      label="CREF"
+                      value={state.cref}
+                      onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
+                      disabled={true}
+                  />
+              )}
+
+              <InputWithIcon
+                  id="telefone"
+                  type="text"
+                  placeholder="Digite seu telefone"
+                  icon={<Phone />}
+                  label="Telefone"
+                  value={state.phone}
+                  onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
+                  mask={cellphoneMask}
+              ></InputWithIcon>
+              <Select
+                  id="genero"
+                  label="Gênero"
+                  options={[
+                    "Masculino",
+                    "Feminino",
+                    "Outro",
+                  ]}
+                  placeholder="Selecione seu gênero"
+                  value={state.gender}
+                  onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
+              />
+            </WhiteContainer>
+          </div>
+
+          <div className={styles.loginInfo}>
+            <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
+              <InputWithIcon
+                  id="email"
+                  type="email"
+                  placeholder="Digite seu email"
+                  icon={<Mail />}
+                  label="Email"
+                  value={state.email}
+                  onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
+              ></InputWithIcon>
+              <InputWithIcon
+                  id="senha"
+                  type="password"
+                  placeholder="*************"
+                  icon={<LockKeyhole />}
+                  label="Senha Atual"
+                  value={currentPassword}
+                  onInputChange={(value: string) => setCurrentPassword(value)}
+              ></InputWithIcon>
+              <InputWithIcon
+                  id="senha"
+                  type="password"
+                  placeholder="*************"
+                  icon={<LockKeyhole />}
+                  label="Nova Senha"
+                  value={confirmPassword}
+                  onInputChange={(value: string) => setConfirmPassword(value)}
+              ></InputWithIcon>
+              <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
+                      title="Alterar Senha" type="button"   onClick={() => updatePassword()}
+              />
+            </WhiteContainer>
+          </div>
+
+          <div className={styles.footer}>
+            <div className={styles.dashLine}></div>
+            <div className={styles.divButtons}>
+              <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+              <Button
+                  title="Apagar Perfil"
+                  type="button"
+                  classNameVariable="buttonDanger"
+                  onClick={() => {
+                    setConfirmingDelete(true);
+                    setOpenModal("timer");
+                  }}
+              />
             </div>
-          </WhiteContainer>
-        </div>
-
-        <div className={styles.personalInfo}>
-          <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
-            <InputWithIcon
-              id="nome"
-              type="text"
-              placeholder="Digite seu nome"
-              icon={<User />}
-              label="Nome"
-              value={state.firstName}
-              onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
-            ></InputWithIcon>
-            {type?.type === "aluno" ? (<InputWithIcon
-              id="cpf"
-              type="text"
-              placeholder="Digite seu CPF"
-              icon={<IdCard />}
-              label="CPF"
-              value={state.cpf}
-              onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
-              mask={cpfMask}
-            ></InputWithIcon>) : <InputWithIcon
-              id="cpf"
-              type="text"
-              placeholder="Digite seu CREF"
-              icon={<IdCard />}
-              label="CREF"
-              value={state.cref}
-              onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
-            ></InputWithIcon>}
-
-            <InputWithIcon
-              id="telefone"
-              type="text"
-              placeholder="Digite seu telefone"
-              icon={<Phone />}
-              label="Telefone"
-              value={state.phone}
-              onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
-              mask={cellphoneMask}
-            ></InputWithIcon>
-            <Select
-              id="genero"
-              label="Gênero"
-              options={[
-                "Masculino",
-                "Feminino",
-                "Outro",
-              ]}
-              placeholder="Selecione seu gênero"
-              value={state.gender}
-              onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
-            />
-          </WhiteContainer>
-        </div>
-
-        <div className={styles.loginInfo}>
-          <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
-            <InputWithIcon
-              id="email"
-              type="email"
-              placeholder="Digite seu email"
-              icon={<Mail />}
-              label="Email"
-              value={state.email}
-              onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
-            ></InputWithIcon>
-            <InputWithIcon
-                id="senha"
-                type="password"
-                placeholder="*************"
-                icon={<LockKeyhole />}
-                label="Nova Senha"
-                value={newPassword}
-                onInputChange={(value: string) => setNewPassword(value)}
-            ></InputWithIcon>
-            <InputWithIcon
-                id="senha"
-                type="password"
-                placeholder="*************"
-                icon={<LockKeyhole />}
-                label="Confirma Senha"
-                value={confirmPassword}
-                onInputChange={(value: string) => setConfirmPassword(value)}
-            ></InputWithIcon>
-            <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
-                title="Alterar Senha" type="button" onClick={updatePassword} />
-          </WhiteContainer>
-        </div>
-
-        <div className={styles.footer}>
-          <div className={styles.dashLine}></div>
-          <div className={styles.divButtons}>
-            <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
-            <Button
-                title="Apagar Perfil"
-                type="button"
-                classNameVariable="buttonDanger"
-                onClick={deleteUser}
-            />
           </div>
         </div>
-      </div>
 
-      {openModal === "success" && (
-        <SuccessModal
-          isMobile={isMobile}
-          closeThen={() => setOpenModal(null)}
-          title={textModal.title}
-          content={textModal.content}
-        />
-      )}
+        {openModal === "success" && (
+            <SuccessModal
+                isMobile={isMobile}
+                closeThen={() => setOpenModal(null)}
+                title={textModal.title}
+                content={textModal.content}
+            />
+        )}
 
-      {openModal === "timer" && (
-        <TimerModal
-          isMobile={isMobile}
-          closeThen={() => setOpenModal(null)}
-          callSuccessModal={handleRemoveImage}
-          title="Remover imagem?"
-          buttonTitle="Remover"
-          content="Tem certeza que deseja remover sua imagem de perfil?"
-        />
-      )}
+        {openModal === "timer" && (
+            <TimerModal
+                isMobile={isMobile}
+                closeThen={() => {
+                  setOpenModal(null);
+                  setConfirmingDelete(false);
+                }}
+                callSuccessModal={() => {
+                  if (confirmingDelete) {
+                    deleteUser();
+                  } else {
+                    handleRemoveImage();
+                  }
+                  setConfirmingDelete(false);
+                  setOpenModal(null);
+                }}
+                title={confirmingDelete ? "Apagar perfil?" : "Remover imagem?"}
+                buttonTitle={confirmingDelete ? "Apagar" : "Remover"}
+                content={
+                  confirmingDelete
+                      ? "Tem certeza que deseja apagar seu perfil? Isso é irreversível."
+                      : "Tem certeza que deseja remover sua imagem de perfil?"
+                }
+            />
+        )}
 
-      {openModal === "error" && (
-        <ErrorModal
-          closeThen={() => setOpenModal(null)}
-          title={textModal.title}
-          content={textModal.content}
-        />
-      )}
-    </>
+        {openModal === "error" && (
+            <ErrorModal
+                closeThen={() => setOpenModal(null)}
+                title={textModal.title}
+                content={textModal.content}
+            />
+        )}
+      </>
   );
 }

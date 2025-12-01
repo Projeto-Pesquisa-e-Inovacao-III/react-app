@@ -27,7 +27,7 @@ export function insertUserImage(imageData: FormData) {
 }
 
 export function update(userdata: UpdateUserDTO) {
-   return api.put(`/alunos/me`, userdata)
+   return api.put(`/alunos/me/`, userdata)
 }
 
 export function register(userdata: UserDTO) {
@@ -59,7 +59,10 @@ export function verifyCode(number: string, code: string) {
 }
 
 export function changePassword(oldPassword: string, newPassword: string) {
-   return api.post(`/usuarios/mudar-senha`, { senhaAntiga: oldPassword, senhaNova: newPassword })
+   return api.patch(`/usuarios/me/alterar-senha`, {
+      senhaAtual: oldPassword,
+      senhaNova: newPassword,
+   });
 }
 
 export async function isAuthenticated() {
