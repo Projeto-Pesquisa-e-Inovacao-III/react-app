@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./SetAvailability.module.css";
-import { getPersonalCronogram, getPersonalProfile, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
+import { getPersonalBuffer, getPersonalCronogram, getPersonalProfile, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery } from "@tanstack/react-query";
 import { Clock } from "lucide-react";
 
@@ -46,7 +46,14 @@ export default function SetAvailability() {
         select: (res) => res.data,
     });
 
-    
+    const personalBuffer = useQuery({
+        queryKey: ['personalBuffer'],
+        queryFn: getPersonalBuffer,
+        select: (res) => res.data.bufferMinutos,
+    });
+
+    console.log("Personal Buffer: ", personalBuffer.data);
+
     const [schedule, setSchedule] = useState<DaySchedule[]>([]);
 
     useEffect(() => {
@@ -82,7 +89,7 @@ export default function SetAvailability() {
         setSchedule(newSchedule);
         console.log("Updating slot with API call:", newSchedule[dayIndex].slots[slotIndex]);
         const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
-        updatePersonalCronogram({diaSemana: updatedSlot.diaSemana, horaInicio: updatedSlot.horaInicio, horaFim: updatedSlot.horaFim, tipo: updatedSlot.tipo}, id)
+        updatePersonalCronogram({ diaSemana: updatedSlot.diaSemana, horaInicio: updatedSlot.horaInicio, horaFim: updatedSlot.horaFim, tipo: updatedSlot.tipo }, id)
             .then(() => {
                 console.log("Cronograma atualizado com sucesso");
             })
@@ -121,11 +128,9 @@ export default function SetAvailability() {
                         <label className={styles.controlLabel}>Intervalo entre alunos:</label>
                         <select
                             className={styles.select}
-                            defaultValue="15"
+                            defaultValue={personalBuffer.data}
                             onChange={(e) => handleUpdateBuffer(e.target.value)}
                         >
-                            <option value="5">5 min</option>
-                            <option value="10">10 min</option>
                             <option value="15">15 min</option>
                             <option value="20">20 min</option>
                             <option value="30">30 min</option>
