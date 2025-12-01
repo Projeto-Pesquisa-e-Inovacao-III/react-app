@@ -15,7 +15,7 @@ import { getPersonalList, insertAppointment, rescheduleAppointment } from "../..
 import type { Schedule } from "../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
-import { format, parse, startOfDay } from "date-fns";
+import { differenceInYears, format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getPersonalProfile } from "../../constants/personal";
 
@@ -369,7 +369,7 @@ export default function NewEvent(
                     {step === 1 && (
                         <>
                             <div className={styles.containerForm}>
-                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle="Idade: 88 anos" includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
 
                                 {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
                                 <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
@@ -412,9 +412,9 @@ export default function NewEvent(
                                                 <span className="flex gap-1 mt-5 text-sm items-center"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ"})} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />
-                                                    <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE"})} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />
-                                                    <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, {[styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE"})} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />
+                                                    <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />
+                                                    <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />
+                                                    <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />
                                                 </div>
 
                                                 {chooseTimeOfDay !== null && (
@@ -450,7 +450,7 @@ export default function NewEvent(
 
                     {step === 2 && (
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate} subtitle="Personal: Fábio" />
+                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
                             <div className={styles.title}>
                                 <MapPin />
                                 <span>Endereço do local</span>

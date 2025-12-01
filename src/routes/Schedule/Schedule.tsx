@@ -16,6 +16,7 @@ import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getA
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import { actualPlan } from "../../constants/products";
 
 type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
@@ -45,6 +46,21 @@ export default function Schedule() {
         console.log("Erro ao agendar/reagendar");
         setModalInfo({ title, description });
         setOpenModal("error");
+    }
+
+    const actualPlanQuery = useQuery({
+        queryKey: ["total", "actualPlan"],
+        queryFn: () => actualPlan(),
+        enabled: type?.type === "aluno"
+    });
+
+    function handleOpenNewEventModal() {
+        if (actualPlanQuery?.data?.data.nome) {
+            setOpenModal("newEvent");
+            return
+        }
+
+        handleErrorModalInfo("Plano necessário", "Você precisa ter um plano ativo para agendar um horário.");
     }
 
 
@@ -136,7 +152,7 @@ export default function Schedule() {
                                     </svg>)}
                                     title={`Agendar`}
                                     classname={styles.btnAgendar}
-                                    handleButtonClick={() => setOpenModal("newEvent")} />
+                                    handleButtonClick={() => handleOpenNewEventModal()} />
                             </div>
 
                             {userAppointments.data?.map((event, index) => (
