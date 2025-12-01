@@ -95,7 +95,14 @@
 
 
 .planDetailsDescription {
+    display: flex;
     width: 70%;
+    max-width: 600px;
+}
+
+.planDetailsDescriptionMobile {
+    width: 100%;
+    max-width: none;
 }
 
 .cardDetails .highlight {

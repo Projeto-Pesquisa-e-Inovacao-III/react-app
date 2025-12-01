@@ -28,3 +28,7 @@ export function actualPlan() {
 export function getUserPlansHistory() {
     return api.get(`/produtos-contratados/aluno`)
 }
+
+export function BoughtPlanDetails(id: number) {
+    return api.get(`/produtos-contratados/detalhado/${id}`)
+}
