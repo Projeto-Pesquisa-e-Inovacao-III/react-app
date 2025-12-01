@@ -61,7 +61,6 @@ export default function NewEvent(
         queryFn: getPersonalList,
         select: (res) => res.data,
     });
-    console.log(personalList.data[0]?.id)
 
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",

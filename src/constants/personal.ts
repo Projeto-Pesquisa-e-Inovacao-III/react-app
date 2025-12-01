@@ -27,5 +27,5 @@ export function updatePersonalCronogram(data: TimeSlot, id: string) {
 }
 
 export function updateBuffer(buffer: string) {
-    return api.put(`personais/1/buffer`, { buffer });
+    return api.put(`personais/1/buffer`,  { bufferMinutos: buffer });
 }
