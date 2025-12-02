@@ -14,8 +14,8 @@ export function appoitmentsCount(payload?: { status: string; data?: string; }) {
     return api.post(`/agendamentos/contagem-status-data`, payload);
 }
 
-export function getPersonalProfile(personalId: number, date: string) {
-    return api.get<PersonalDTO>(`/personais/${personalId}/horarios-disponiveis`, { params: {data: date} });
+export function getPersonalHours(personalId: number, date: string) {
+    return api.get(`/personais/${personalId}/horarios-disponiveis`, { params: {data: date} });
 }
 
 export async function getPersonalCronogram() {

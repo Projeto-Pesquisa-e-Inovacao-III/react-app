@@ -8,15 +8,9 @@ export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean 
 
     const queryClient = useQueryClient();
 
-    async function invalidateAuth() {
-        if (!userLoggedIn) {
-            await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        }
-    }
-
     useEffect(() => {
-        invalidateAuth();
-    }, [userLoggedIn]);
+        queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
+    }, []);
 
     return (
         <>
