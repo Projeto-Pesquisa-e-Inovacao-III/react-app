@@ -9,15 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
 import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
-import { createAddress } from "../../constants/address";
-import type { Address } from "../../models/address";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule } from "../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { differenceInYears, format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { getPersonalProfile } from "../../constants/personal";
+import { getPersonalHours } from "../../constants/personal";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -184,7 +182,7 @@ export default function NewEvent(
                 console.log("Evento salvo com sucesso:", response.data);
 
                 if (calculatedTitle && newEventDate) {
-                    queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments"] });
+                    queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
                     openModal();
                     navigation("/schedule");
                     return;
@@ -253,7 +251,7 @@ export default function NewEvent(
 
 
         if (calculatedTitle && newEventDate) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
             openModal();
             navigation("/schedule");
             return;
@@ -306,13 +304,16 @@ export default function NewEvent(
     const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
 
     const availabilityHours = useQuery({
-        queryKey: ["availabilityHours", newEventDate],
-        queryFn: () => getPersonalProfile(1, newEventDate ? newEventDate : ""),
-        enabled: !!newEventDate,
+        queryKey: ["availabilityHours"],
+        queryFn: () => getPersonalHours(1, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
 
     console.log("Availability Hours: ", availabilityHours.data);
+
+    useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+    }, [chooseTimeOfDay, newEventDate, selectedType]);
 
     return (
         <>
@@ -396,25 +397,39 @@ export default function NewEvent(
                                                     <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />
                                                 </div>
 
-                                                {chooseTimeOfDay !== null && (
+                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "08:00:00" })}>
-                                                            <SmallerButton type="button" title="08:00 - 09:00" value="08:00:00" selected={eventToReschedule?.hour === "08:00:00" ? true : newEventStartHour === "08:00:00"} handleButtonClick={handleButtonClick} />
-                                                        </div>
-                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "09:00:00" })}>
-                                                            <SmallerButton type="button" title="09:00 - 10:00" value="09:00:00" selected={eventToReschedule?.hour === "09:00:00" ? true : newEventStartHour === "09:00:00"} handleButtonClick={handleButtonClick} />
-                                                        </div>
-                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "10:00:00" })}>
-                                                            <SmallerButton type="button" title="10:00 - 11:00" value="10:00:00" selected={eventToReschedule?.hour === "10:00:00" ? true : newEventStartHour === "10:00:00"}
-                                                                handleButtonClick={handleButtonClick} />
-                                                        </div>
-                                                        <div className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === "11:00:00" })}>
-                                                            <SmallerButton type="button" title="11:00 - 12:00" value="11:00:00" selected={eventToReschedule?.hour === "11:00:00" ? true : newEventStartHour === "11:00:00"}
-                                                                handleButtonClick={handleButtonClick} />
-                                                        </div>
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+
+                                                        {availabilityHours.data?.map((hourBlock, index) => {
+                                                            if (hourBlock.inicio.includes(":00") && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
+                                                                const initialHour = parseInt(hourBlock.inicio.split(":")[0]);
+                                                                return (
+                                                                    <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${initialHour < 9 ? "0" + (initialHour + 1) : initialHour + 1}:00`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        })}
                                                     </div>
                                                 )}
 
+                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "TARDE" && (
+                                                    <div className={styles.hours}>
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+
+                                                        {availabilityHours.data?.map((hourBlock, index) => {
+                                                            if (hourBlock.inicio.includes(":00") && parseInt(hourBlock.inicio.split(":")[0]) >= 12 && parseInt(hourBlock.inicio.split(":")[0]) < 18) {
+                                                                const initialHour = parseInt(hourBlock.inicio.split(":")[0]);
+                                                                return (
+                                                                    <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${initialHour < 10 ? "0" + (initialHour + 1) : initialHour + 1}:00`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        })}
+                                                    </div>
+                                                )}
                                             </>
                                         )}
                                     </div>
@@ -429,7 +444,7 @@ export default function NewEvent(
 
                     {step === 2 && (
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
+                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate ? formattedDate : ""} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
                             <div className={styles.title}>
                                 <MapPin />
                                 <span>Endereço do local</span>

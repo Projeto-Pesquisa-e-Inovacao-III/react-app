@@ -41,8 +41,9 @@ export default function Layout() {
     const nav = useNavigate();
 
     const location = useLocation();
-
+    const queryClient = useQueryClient();
     useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 

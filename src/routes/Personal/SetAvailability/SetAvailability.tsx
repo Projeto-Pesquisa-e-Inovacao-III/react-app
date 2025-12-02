@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./SetAvailability.module.css";
-import { getPersonalBuffer, getPersonalCronogram, getPersonalProfile, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
-import { useQuery } from "@tanstack/react-query";
+import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock } from "lucide-react";
 
 export interface TimeSlot {
@@ -99,9 +99,12 @@ export default function SetAvailability() {
 
     };
 
+    const queryClient = useQueryClient();
+
     function handleUpdateBuffer(value: string) {
         updateBuffer(value)
             .then(() => {
+                queryClient.invalidateQueries(['personalBuffer']);
                 console.log("Buffer atualizado com sucesso");
             })
             .catch((error) => {
@@ -128,7 +131,7 @@ export default function SetAvailability() {
                         <label className={styles.controlLabel}>Intervalo entre alunos:</label>
                         <select
                             className={styles.select}
-                            defaultValue={personalBuffer.data}
+                            value={personalBuffer.data ?? "0"}
                             onChange={(e) => handleUpdateBuffer(e.target.value)}
                         >
                             <option value="15">15 min</option>

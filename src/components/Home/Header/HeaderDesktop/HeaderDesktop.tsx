@@ -1,22 +1,8 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop/LogoHeaderDesktop";
-import { User } from "lucide-react";
-import { useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import UserAvatar from "../../../UserAvatar/UserAvatar";
 
 export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {
-
-    const queryClient = useQueryClient();
-
-    async function invalidateAuth() {
-        if (!userLoggedIn) {
-            await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        }
-    }
-
-    useEffect(() => {
-        invalidateAuth();
-    }, [userLoggedIn]);
 
     return (
         <>
@@ -35,9 +21,9 @@ export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean 
                     {userLoggedIn ? (
                         <div className="flex gap-3 items-center">
                             <Link to="/home" className="border-2 p-1 rounded-full">
-                                <User />
+                                <UserAvatar useUserImage={true} />
                             </Link>
-                            <Link to="/logout" className="p-3 bg-white text-black h-full rounded-md">Logout</Link>
+                            <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Logout</Link>
 
                         </div>
                     ) : (

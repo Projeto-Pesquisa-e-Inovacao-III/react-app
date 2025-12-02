@@ -13,26 +13,7 @@ type UserType = {
 
 export default function UserHeaderDesktop({ type }: UserType) {
 
-  const [openNotification, setOpenNotification] = useState<boolean>(false);
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
-
-  // const notifications = [
-  //   {
-  //     notificationTitle: "Título da Notificação",
-  //     message: "Nova notificação!",
-  //     icon: <Bell />,
-  //     date: "2023-10-01",
-  //     isRead: false
-  //   },
-  //   {
-  //     notificationTitle: "Outro Título",
-  //     message: "Outra notificação!",
-  //     icon: <Bell />,
-  //     date: "2023-10-02",
-  //     isRead: false
-  //   }
-  // ];
-
 
   const queryClient = useQueryClient();
 

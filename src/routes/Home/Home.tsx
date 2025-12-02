@@ -7,9 +7,10 @@ import FAQSection from "./FAQSection";
 import Footer from "../../components/Home/Footer/Footer";
 import HeaderMobile from "../../components/Home/Header/HeaderMobile/HeaderMobile";
 import HeaderDesktop from "../../components/Home/Header/HeaderDesktop/HeaderDesktop";
-import { isAuthenticated } from "../../services/authService";
 import useMobile from "../../hooks/isMobile";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { isAuthenticated } from "../../constants/user";
+import { useEffect } from "react";
 
 //todo: update images; 
 // remake header mobile; 
@@ -20,8 +21,7 @@ export default function Home() {
     const isLoggedIn = useQuery({
         queryKey: ["isAuthenticated"],
         queryFn: () => isAuthenticated(),
-        retry: false,
-        refetchOnWindowFocus: false,
+        select: (res) => res.data?.autentificado
     });
 
     console.log("Home authentication check:", {
@@ -29,8 +29,7 @@ export default function Home() {
         data: isLoggedIn.data,
         isError: isLoggedIn.isError
     });
-
-
+    
     return (
         <>
             <Header userLoggedIn={isLoggedIn.data} />
