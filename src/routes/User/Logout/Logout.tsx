@@ -9,14 +9,22 @@ export default function Logout() {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    
-    logout().then(() => {
-      queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-      nav("/");
-    }).catch((error) => {
-      console.error("Erro ao fazer logout:", error);
-      nav("/");
-    });
+
+    const handleLogout = async () => {
+      try {
+        await logout();
+        queryClient.setQueryData(["isAuthenticated"], false);
+        await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"], refetchType: "all" });
+        console.log("Logout bem-sucedido — cache atualizado");
+        nav("/");
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+        queryClient.setQueryData(["isAuthenticated"], false);
+        nav("/");
+      }
+    };
+
+    handleLogout();
   }, []);
 
   return null;
