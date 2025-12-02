@@ -145,7 +145,7 @@ export default function ScheduleDetails() {
                             </div>
                         }
 
-                        {appointment.data?.status === "CANCELADO_PERSONAL" || appointment.data?.status === "CANCELADO_CLIENTE" &&
+                        {(appointment.data?.status === "CANCELADO_PERSONAL" || appointment.data?.status === "CANCELADO_CLIENTE") &&
                             <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                                 <span className={styles.statusCancelled}>Cancelado</span>
                             </div>
