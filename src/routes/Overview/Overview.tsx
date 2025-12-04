@@ -34,17 +34,17 @@ export function Overview() {
     const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
         queries: [
             {
-                queryKey: ["total", "PRESENCIAL"],
+                queryKey: ["totalPRESENCIAL"],
                 queryFn: () => getTotalByClassType("PRESENCIAL"),
                 enabled: type?.type === "aluno"
             },
             {
-                queryKey: ["total", "RESIDENCIAL"],
+                queryKey: ["totalRESIDENCIAL"],
                 queryFn: () => getTotalByClassType("RESIDENCIAL"),
                 enabled: type?.type === "aluno"
             },
             {
-                queryKey: ["total", "FUNCIONAL"],
+                queryKey: ["totalFUNCIONAL"],
                 queryFn: () => getTotalByClassType("FUNCIONAL"),
                 enabled: type?.type === "aluno"
             }

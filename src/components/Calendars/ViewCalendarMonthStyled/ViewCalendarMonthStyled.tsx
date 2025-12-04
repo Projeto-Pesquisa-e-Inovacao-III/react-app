@@ -2,12 +2,13 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { parseISO, startOfDay } from "date-fns";
+import { TypeContext } from "../../../App";
 
 type Props = {
-  events?: { agendamentoId: number; data: string; hour: string }[];
+  events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
 }
 
@@ -15,6 +16,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
   const actualMonth = new Date().getMonth() + 1;
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
+
+  const type = useContext(TypeContext);
+
 
   const nav = useNavigate();
 
@@ -34,28 +38,38 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
 
-            const eventDate = events?.map(event => parseISO(event.data).toISOString().split("T")[0]);
+            const eventsOfDay = events?.filter(event =>
+              event.data.split("T")[0] === cellDate
+            ) || [];
 
-            const hasEvent = events?.some((event, index) => eventDate?.[index] === cellDate);
             return (
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                {hasEvent && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '8px',
-                    height: '8px',
-                    backgroundColor: '#1e40af',
-                    borderRadius: '50%',
-                    margin: '4px auto 0'
-                  }}></div>
-                )}
+
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", marginTop: "4px" }}>
+                  {eventsOfDay.map((event) => (
+                    <div
+                      key={event.agendamentoId}
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor:
+                          event.status === "PENDENTE_PERSONAL_APROVACAO"
+                            ? "#D7AC00"
+                            : event.status === "CANCELADO"
+                              ? "red"
+                              : event.status === "CONFIRMADO"
+                                ? "green"
+                                : "gray",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             );
           }}
+
           dateClick={(arg) => {
 
             const clickedDate = arg.date.toISOString().split("T")[0];
@@ -64,7 +78,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
 
             const today = startOfDay(new Date());
             console.log(today)
-            if(appointment)
+
 
             if (appointment && appointment.length > 1) {
               nav(`/schedule-history/?date=${clickedDate}`);
@@ -78,7 +92,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
               return
             }
 
-            nav(`/schedule/?date=${clickedDate}`);
+            if (type?.type === "aluno") {
+              nav(`/schedule/?date=${clickedDate}`);
+            }
             return
           }}
           headerToolbar={{

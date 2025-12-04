@@ -4,7 +4,7 @@ import styles from './PlansHistoryDetails.module.css';
 import useMobile from '../../hooks/isMobile';
 import { useQuery } from '@tanstack/react-query';
 import { BoughtPlanDetails } from '../../constants/products';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 export default function PlansHistoryDetails() {
@@ -12,11 +12,21 @@ export default function PlansHistoryDetails() {
 
     const [searchParams] = useSearchParams();
 
+    const nav = useNavigate();
+
     const productDetails = useQuery({
         queryKey: ['planDetails'],
         queryFn: () => BoughtPlanDetails(Number(searchParams.get("id"))),
         select: (res) => res.data,
+        retry: 1,
+        retryDelay: 0,
     });
+
+    if (productDetails.isError) {
+        console.error('Failed to fetch plan details:', productDetails.error);
+        nav('/plans-history');
+    }
+
 
     console.log(productDetails.data);
 

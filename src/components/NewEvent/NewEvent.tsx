@@ -312,7 +312,7 @@ export default function NewEvent(
     console.log("Availability Hours: ", availabilityHours.data);
 
     useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+        queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
     return (
@@ -392,21 +392,29 @@ export default function NewEvent(
                                                 <span className="flex gap-1 mt-5 text-sm items-center"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />
-                                                    <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />
-                                                    <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />
+                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
+                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
+                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
-                                                            if (hourBlock.inicio.includes(":00") && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
-                                                                const initialHour = parseInt(hourBlock.inicio.split(":")[0]);
+                                                            if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
+                                                                const [hours, minutes] = hourBlock.inicio.split(":");
+                                                                const startHour = parseInt(hours);
+                                                                const startMinute = parseInt(minutes);
+
+                                                                const endHour = startHour + 1;
+                                                                const endMinute = startMinute;
+
+                                                                const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
                                                                 return (
                                                                     <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
-                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${initialHour < 9 ? "0" + (initialHour + 1) : initialHour + 1}:00`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
                                                             }
@@ -416,17 +424,51 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "TARDE" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
-                                                            if (hourBlock.inicio.includes(":00") && parseInt(hourBlock.inicio.split(":")[0]) >= 12 && parseInt(hourBlock.inicio.split(":")[0]) < 18) {
-                                                                const initialHour = parseInt(hourBlock.inicio.split(":")[0]);
+                                                            if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 12 && parseInt(hourBlock.inicio.split(":")[0]) < 18) {
+                                                                const [hours, minutes] = hourBlock.inicio.split(":");
+                                                                const startHour = parseInt(hours);
+                                                                const startMinute = parseInt(minutes);
+
+                                                                const endHour = startHour + 1;
+                                                                const endMinute = startMinute;
+
+                                                                const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
                                                                 return (
                                                                     <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
-                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${initialHour < 10 ? "0" + (initialHour + 1) : initialHour + 1}:00`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
                                                             }
+                                                        })}
+                                                    </div>
+                                                )}
+
+                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "Noite" && (
+                                                    <div className={styles.hours}>
+                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+
+                                                        {availabilityHours.data?.map((hourBlock, index) => {
+                                                            if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 18 && parseInt(hourBlock.inicio.split(":")[0]) < 24) {
+                                                                const [hours, minutes] = hourBlock.inicio.split(":");
+                                                                const startHour = parseInt(hours);
+                                                                const startMinute = parseInt(minutes);
+
+                                                                const endHour = startHour + 1;
+                                                                const endMinute = startMinute;
+
+                                                                const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
+                                                                return (
+                                                                    <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                    </div>
+                                                                );
+                                                            } 
+                                                            return null;
                                                         })}
                                                     </div>
                                                 )}
