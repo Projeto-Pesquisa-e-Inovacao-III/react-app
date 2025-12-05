@@ -1,4 +1,6 @@
+import { SearchIcon } from "lucide-react";
 import Button from "../Button/Button";
+import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
 import { SearchBar } from "../SearchBar/SearchBar";
 import styles from "./CardFilterCheckSchedule.module.css"
 
@@ -16,7 +18,13 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
             <div className={styles.cardFilter}>
-                <div className={styles.searchBarDiv}><SearchBar search={searchValue} setSearch={onSearchChange} /></div>
+                <InputWithIcon
+                    type="text"
+                    placeholder="Buscar..."
+                    icon={<SearchIcon />}
+                    value={searchValue}
+                    onInputChange={onSearchChange}
+                />
                 <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
                     <option value="" disabled>Selecione um status</option>
                     <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
