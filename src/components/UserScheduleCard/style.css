@@ -3,6 +3,7 @@
     background-color: white;
     padding: 20px;
     margin-top: 20px;
+    border-radius: 8px;
 
     .left {
         width: 100%;
@@ -53,18 +54,25 @@
     justify-content: space-between;
 
     .border-division {
-display: block;
+        display: block;
         border-left: none;
         height: 1px !important;
         background-color: black;
         width: 100% !important;
         margin: 15px 0 !important;
     }
+
     .right-mobile {
         width: 100%;
         text-align: center;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .btn-actions {
+        flex-wrap: wrap;
     }
 }

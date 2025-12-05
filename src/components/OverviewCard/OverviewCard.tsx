@@ -1,10 +1,11 @@
-import './mobile.css'
-import './desktop.css'
+import type { ReactNode } from 'react';
+import styles from './OverviewCard.module.css';
+import classNames from 'classnames';
 
 type OverviewCardProps = {
     title: string;
-    subtitle: string;
-    type: string;
+    subtitle: ReactNode | string;
+    type?: string;
     titletbn: string;
     onClick: () => void;
     isMobile?: boolean;
@@ -13,14 +14,15 @@ type OverviewCardProps = {
 export function OverviewCard(props: OverviewCardProps) {
     const { isMobile = false } = props;
 
+    // ... rest of imports and types ...
+
     return (
-        <div className={`card-container${isMobile ? '-mobile' : ''}`}>
-            <h2 className={`card-title${isMobile ? '-mobile' : ''}`}>{props.title}</h2>
-            <h1 className={`card-subtitle${isMobile ? '-mobile' : ''}`}>{props.subtitle}</h1>
-            <p className={`card-paragraph${isMobile ? '-mobile' : ''}`}>{props.type}</p>
+        <div className={classNames(styles.cardContainer, { [styles.cardContainerMobile]: isMobile })}>
+            <h2 className={classNames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>{props.title}</h2>
+            <div className={classNames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>{props.subtitle}</div>
             {
-                props.titletbn == "" ? null :
-                    <button className={`card-btn${isMobile ? '-mobile' : ''}`} onClick={props.onClick}>
+                props.titletbn === "" ? null :
+                    <button className={classNames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })} onClick={props.onClick}>
                         {props.titletbn}
                     </button>
             }

@@ -2,16 +2,23 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { parseISO, startOfDay } from "date-fns";
+import { TypeContext } from "../../../App";
 
-export default function ViewCalendarMonthStyled({ events, isMobile }: { events?: { title: string; date: string; hour: string }[]; isMobile?: boolean }) {
+type Props = {
+  events?: { agendamentoId: number; data: string; status: string }[];
+  isMobile?: boolean;
+}
 
+export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
   const actualMonth = new Date().getMonth() + 1;
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-  const [clickedDate, setClickedDate] = useState<string>("");
+  const type = useContext(TypeContext);
+
 
   const nav = useNavigate();
 
@@ -27,38 +34,74 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: { events?:
             const month = info.start.getMonth() + 2;
             setSelectedMonth(month);
           }}
-          
+
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
-            const hasEvent = events?.some(event => event.date === cellDate);
+
+            const eventsOfDay = events?.filter(event =>
+              event.data.split("T")[0] === cellDate
+            ) || [];
 
             return (
-              <div style={{ textAlign: 'center' }}>
+              <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                {hasEvent && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '8px',
-                    height: '8px',
-                    backgroundColor: '#1e40af',
-                    borderRadius: '50%',
-                    margin: '4px auto 0'
-                  }}></div>
-                )}
+
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", marginTop: "4px" }}>
+                  {eventsOfDay.map((event) => (
+                    <div
+                      key={event.agendamentoId}
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor:
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
+                            event.status === "APROVADO"
+                            ? "#F2B138"
+                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
+                              ? "#B3393A"
+                              : event.status === "CONFIRMADO"
+                                ? "green"
+                                : "gray",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             );
           }}
+
           dateClick={(arg) => {
+
             const clickedDate = arg.date.toISOString().split("T")[0];
-            nav(`/schedule/?date=${clickedDate}`);
+
+            const appointment = events?.filter(event => event.data.split("T")[0] === clickedDate) || null;
+
+            const today = startOfDay(new Date());
+            console.log(today)
+
+
+            if (appointment && appointment.length > 1) {
+              nav(`/schedule-history/?date=${clickedDate}`);
+              return
+            }
+
+            const findAppointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
+
+            if (findAppointment !== null) {
+              nav(`/schedule-details?id=${findAppointment.agendamentoId}`);
+              return
+            }
+
+            if (type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+              nav(`/schedule/?date=${clickedDate}`);
+            }
+            return
           }}
           headerToolbar={{
 
             start: "title",
-            end: `${selectedMonth >= actualMonth ? `${isMobile ? '' : 'today '}` : ""}${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
+            end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
           }}
           height={"auto"}
 

@@ -9,10 +9,13 @@
     padding: 20px;
 }
 
-.header img {
-    width: 100px;
-    height: 100px;
+.header :global(img), .header :global(svg) {
+    width: 100px !important;
+    height: 100px !important;
     border-radius: 50%;
+}
+.header svg {
+    background-color: #ccc;
 }
 
 .header h2 {

@@ -10,7 +10,7 @@ import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
 import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
 import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
-import ListUsers from "./routes/ListUsers/ListUsers"
+import ListUsers from "./routes/Personal/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
 import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
@@ -20,21 +20,28 @@ import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
 import MoreOptions from "./routes/MoreOptions/MoreOptions";
 import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
 import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
+import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 
 // todo: 
 // safari support // deixa baixo
-// study if code is following best practices
-// remake personal cards at overview (statu) 
 
+//todo: warning maximum size of 5mb for user image
 
-export const TypeContext = createContext<"student" | "personal">("student");
+type UserType = "aluno" | "personal";
+
+type TypeContextType = {
+  type: UserType;
+  setType: React.Dispatch<React.SetStateAction<UserType>>;
+};
+
+export const TypeContext = createContext<TypeContextType | null>(null);
 
 function App() {
-  const [type, setType] = useState<"student" | "personal">("personal");
+  const [type, setType] = useState<UserType>("aluno");
 
   return (
     <>
-      <TypeContext.Provider value={type}>
+      <TypeContext.Provider value={{ type, setType }}>
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
@@ -55,6 +62,7 @@ function App() {
 
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<ListUsers />} />
+              <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/edit-user" element={<EditUser />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />

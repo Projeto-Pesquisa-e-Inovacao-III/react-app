@@ -6,6 +6,10 @@
     flex-direction: column;
     justify-content: space-between;
     height: auto;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
 .containerMobile {
@@ -49,7 +53,10 @@
     border-radius: 8px;
 }
 
-
+.buttonGroup :global(.btnGeneric),
+.buttonGroupStudent :global(.btnGeneric) {
+    width: auto !important;
+}
 
 .container .content {
     display: flex;
@@ -129,9 +136,9 @@
     }
 }
 
-
 .planDetailsDescription {
     width: 70%;
+    text-transform: capitalize !important;
 }
 
 .cardDetails .highlight {
@@ -159,30 +166,40 @@
     width: 100%;
 }
 
+.buttonsActionsPersonal {
+    justify-content: flex-start;
+}
+
 .buttonGroup {
     display: flex;
     gap: 12px;
 }
 
-.buttons :global(.btn-generic) {
+.buttons :global(.btnGeneric) {
     width: auto;
 }
 
 .buttonsMobile {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: stretch;
 }
 
-.buttonsMobile :global(.btn-generic) {
+.buttonsMobile :global(.btnGeneric) {
     width: 100%;
 }
 
-.buttonsMobile :global(.btn-generic button) {
+.buttonsMobile :global(.btnGeneric button) {
     width: 100%;
     max-width: none;
 }
 
-.buttonAbsence :global(.btn-generic button) {
+.buttonsMobile .buttonGroup {
+    flex-wrap: wrap;
+    max-width: none;
+    margin-bottom: 50px;
+}
+
+.buttonAbsence :global(.btnGeneric button) {
     max-width: none;
 }
 

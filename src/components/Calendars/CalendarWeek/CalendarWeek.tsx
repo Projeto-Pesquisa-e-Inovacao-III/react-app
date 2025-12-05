@@ -4,17 +4,43 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import "./style.css";
 import { useEffect, useState } from "react";
 import NewEvent from "../../NewEvent/NewEvent";
-export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { insertedEvents: any[], isMobile: boolean, openModal: React.Dispatch<React.SetStateAction<boolean>> }) {
+import { useQuery } from "@tanstack/react-query";
+import { locale } from "dayjs";
+import { ptBR } from "date-fns/locale";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+
+type CalendarWeekProps = {
+    insertedEvents: any[];
+    isMobile: boolean;
+    openModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+type EventType = {
+    id: string;
+    title: string;
+    start: string;
+    end: string;
+};
+
+export default function CalendarWeek({ insertedEvents, isMobile, openModal }: CalendarWeekProps) {
+
     const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
-    const [events, setEvents] = useState<any>(insertedEvents);
+    // i could use just a react-query to get the events
+    const [events, setEvents] = useState<EventType[]>([]);
+
+    const navigate = useNavigate();
+
 
     useEffect(() => {
-        const eventsMock = insertedEvents.map(event => ({
-            title: event.title,
-            start: `${event.date}T${event.hour}`,
-            end: `${event.date}T${event.hour}`,
+        console.log("Inserted events changed:", insertedEvents);
+        const formattedEvents = insertedEvents.map((event: any) => ({
+            id: event.agendamentoId?.toString() || "",
+            title: event.tipoAula,
+            start: event.dataInicio,
+            end: event.dataFim,
         }));
-        setEvents(eventsMock);
+        setEvents(formattedEvents);
     }, [insertedEvents]);
 
     return (
@@ -32,9 +58,9 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { 
                     businessHours={true}
                     events={events}
                     headerToolbar={{
-                        start: "newEvent",
+                        start: "",
                         center: "title",
-                        end:  `${isMobile ? '' : 'today '}prev,next`,
+                        end: `${isMobile ? '' : 'today '}prev,next`,
                     }}
                     customButtons={{
                         newEvent: {
@@ -44,12 +70,20 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: { 
                             },
                         },
                     }}
+                    eventClick={(arg) => {
+                        if (!arg.event.start) return;
+                        const dataISO = format(arg.event.start, "yyyy-MM-dd'T'HH:mm:ss", { locale: ptBR });
+                        const isEventPresent = events.some(event => event.start === dataISO);
+
+                        if (isEventPresent) {
+                            navigate(`/schedule-details?id=${events.find(event => event.start === dataISO)?.id}`);
+                        }
+                    }}
+                    eventClassNames={() => {
+                        return ["event-custom-calendar-week"];
+                    }}
                 />
             </div>
-            {openNewEvent ? (
-                <NewEvent openModal={openModal} isMobile={isMobile} close={setOpenNewEvent} insertedEvents={events} insertEvent={setEvents} />
-
-            ) : null}
         </div>
     );
 }

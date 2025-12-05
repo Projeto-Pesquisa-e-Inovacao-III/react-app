@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
 import styles from "./InputCalendar.module.css"
 import InputWithIcon from "../InputWithIcon/InputWithIcon";
@@ -7,10 +7,14 @@ import { Calendar } from "lucide-react";
 type InputCalendarProps = {
     selectedDate: string;
     setSelectedDate: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
+    canGoPrev?: boolean;
+    paramData?: string;
 }
 
-export default function InputCalendar({ selectedDate, setSelectedDate }: InputCalendarProps) {
+export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev, paramData }: InputCalendarProps) {
     const [openCalendar, setOpenCalendar] = useState(false)
+
+
 
     function handleOpenCalendarInternal() {
         setOpenCalendar(true)
@@ -26,11 +30,23 @@ export default function InputCalendar({ selectedDate, setSelectedDate }: InputCa
             console.log("Data selecionada no InputCalendar:", date);
             const formattedDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
                 timeZone: "UTC"
-            });
+            })
+            console.log("Data formatada:", formattedDate);
             setSelectedDate(formattedDate);
             handleCloseCalendar()
+            return;
         }
     }
+    
+    useEffect(() => {
+        if (paramData) {
+            console.log("Param data exists:", paramData);
+            setSelectedDate(paramData);
+            handleCloseCalendar()
+            return;
+        }
+    }, [paramData]);
+
 
     return (
         <div className={styles.containerInputCalendar}>
@@ -53,7 +69,7 @@ export default function InputCalendar({ selectedDate, setSelectedDate }: InputCa
                         >
                             <path d="M2 20L11 11M20 2L11 11M11 11L20 20M11 11L2 2" stroke="#858D9D" strokeWidth="3" />
                         </svg>
-                        <MiniCalendar clickedDate={handleDateSelect} />
+                        <MiniCalendar clickedDate={handleDateSelect} canGoPrev={canGoPrev} />
                     </div>
                 </>
             )}

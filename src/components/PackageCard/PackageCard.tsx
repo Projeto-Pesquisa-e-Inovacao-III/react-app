@@ -1,17 +1,14 @@
 import styles from './PackageCard.module.css'
 import SmallerButton from '../SmallerButton';
 import classnames from 'classnames';
+import { useEffect } from 'react';
 
 type PackageCardProps = {
-    title: string;
-    subtitle?: string;
-    price: string;
-    duration: string;
-    benefits: string[];
     titlebtn?: string;
+    descricao: string[];
     onClick: () => void;
-    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>>;
-    setHandleDelete: React.Dispatch<React.SetStateAction<boolean>>;
+    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    setHandleDelete: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     isMobile?: boolean;
     variant?: "consultoria" | "adicional";
     isPersonal?: boolean;
@@ -29,6 +26,12 @@ export function PackageCard(props: PackageCardProps) {
         props.setHandleDelete(true);
     }
 
+    useEffect(() => {
+        if(typeof props.descricao === 'string'){
+            console.warn("PackageCard: 'descricao' prop should be an array of strings, but received a string.");
+        }
+    }, []);
+
     return (
         <div
             className={classnames(
@@ -38,11 +41,11 @@ export function PackageCard(props: PackageCardProps) {
             )}
         >
             <h2 className={classnames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>
-                {props.title}
+                {props.titulo}
             </h2>
 
             <p className={classnames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>
-                {props.subtitle || "Esse pacote é adquirido de forma única e não possui cobrança automática."}
+                {props.subtitulo || "Esse pacote é adquirido de forma única e não possui cobrança automática."}
             </p>
 
             <div
@@ -55,14 +58,14 @@ export function PackageCard(props: PackageCardProps) {
                         [styles.cardPriceValueMobile]: isMobile,
                     })}
                 >
-                    R${props.price}
+                    R${props.preco}
                 </span>
                 <span
                     className={classnames(styles.cardDuration, {
                         [styles.cardDurationMobile]: isMobile,
                     })}
                 >
-                    {props.duration} meses
+                    {props.duracaoMes} meses
                 </span>
             </div>
 
@@ -71,7 +74,8 @@ export function PackageCard(props: PackageCardProps) {
                     [styles.cardBenefitsListMobile]: isMobile,
                 })}
             >
-                {props.benefits.map((benefit, index) => (
+                {/* temp */}
+                {(typeof props.descricao === "string" ? [] : props.descricao ?? []).map((benefit, index) => (
                     <li
                         key={index}
                         className={classnames(styles.benefitItem, {
@@ -110,7 +114,7 @@ export function PackageCard(props: PackageCardProps) {
                     className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
                     onClick={props.onClick}
                 >
-                    Comprar 
+                    Comprar
                 </button>
             }
         </div>

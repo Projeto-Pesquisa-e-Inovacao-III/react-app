@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
-import UserScheduleCard from "../../components/UserScheduleCard";
+import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import NewEvent from "../../components/NewEvent/NewEvent";
-import { useMediaQuery } from "@mui/material";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton";
@@ -11,58 +10,127 @@ import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
+import { format, parse, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import { actualPlan } from "../../constants/products";
+
+type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
 export default function Schedule() {
     const isMobile = useMobile();
 
     const type = useContext(TypeContext);
 
-    const isPersonal = type === "personal";
+    const [events, setEvents] = useState([]);
 
-    const eventsMock = [
-        { id: 0, title: "Reunião", date: "2025-10-11", hour: "11:00:00" },
-        { id: 1, title: "Aniversário", date: "2025-10-22", hour: "10:00:00" },
-    ];
-    const [events, setEvents] = useState(eventsMock);
-
-    const [openNewEvent, setOpenNewEvent] = useState(false);
-    const [openReschedule, setOpenReschedule] = useState(false);
-
-    const [openSuccessModal, setOpenSuccessModal] = useState(false);
-    const [openCancelModal, setOpenCancelModal] = useState<boolean>(false);
-    const [openSuccessModalReschedule, setOpenSuccessModalReschedule] = useState(false);
-
-
-    const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
-
-    useEffect(() => {
-        if (isMobile) window.scrollTo(0, 0);
-    }, [openSuccessModal, openCancelModal, isMobile, openSuccessModalReschedule]);
-
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [openModal, setOpenModal] = useState<ModalType>(null);
 
     const [clickedDate, setClickedDate] = useState<string>("");
 
+    const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+
+    const [modalInfo, setModalInfo] = useState({ title: "", description: "" });
+
+    const queryClient = useQueryClient();
+
+    function handleSuccessModalInfo(title: string, description: string) {
+        setModalInfo({ title, description });
+        setOpenModal("success");
+    }
+
+    function handleErrorModalInfo(title: string, description: string) {
+        console.log("Erro ao agendar/reagendar");
+        setModalInfo({ title, description });
+        setOpenModal("error");
+    }
+
+    const actualPlanQuery = useQuery({
+        queryKey: ["total", "actualPlan"],
+        queryFn: () => actualPlan(),
+        enabled: type?.type === "aluno"
+    });
+
+    function handleOpenNewEventModal() {
+        if (actualPlanQuery?.data?.data.nome) {
+            setOpenModal("newEvent");
+            return
+        }
+
+        handleErrorModalInfo("Plano necessário", "Você precisa ter um plano ativo para agendar um horário.");
+    }
+
+
+    async function declineAppointment(id: number) {
+        await refuseAppointment(id).then(() => {
+            handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
+            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+
+        }).catch((error) => {
+            console.error("Erro ao recusar o agendamento:", error);
+        });
+    }
+
+    useEffect(() => {
+        if (isMobile) window.scrollTo(0, 0);
+    }, [openModal]);
+
+    const [searchParams] = useSearchParams();
+
     useEffect(() => {
         setClickedDate("");
-
         if (searchParams.get("date")) {
             setClickedDate(searchParams.get("date") || "");
-            setOpenNewEvent(true);
+            setOpenModal("newEvent");
         }
     }, [searchParams]);
 
+
+    const appointments = useQuery({
+        queryKey: ["appointmentsAtCalendar"],
+        queryFn: () => appointmentAtCalendar(),
+    })
+
+    console.log("appointments.data?.data", appointments.data?.data);
+
+    const userAppointments = useQuery({
+        queryKey: ["userAppointments"],
+        queryFn: () => findUserAppointments(),
+        select: (res) => {
+            return [...res.data].sort((a, b) => new Date(b.dataInicio) - new Date(a.dataInicio))
+        }
+    })
+
+    const personalAppointments = useQuery({
+        queryKey: ["personalAppointments"],
+        queryFn: () => findPersonalRequests(),
+        select: (res) => res.data.content,
+        retry: false,
+        enabled: type?.type === "personal"
+    })
+
+    //todo:
+    // const rescheduleRequests = useQuery({
+    //     queryKey: ["rescheduleRequests"],
+    //     queryFn: () => getAppointmentByStatus({ data: { status: "PENDENTE_CLIENTE_APROVACAO", data: "2025-11-27" } }),
+    //     select: (res) => res.data.content,
+    //     retry: false,
+    //     enabled: type?.type === "aluno"
+    // })
+
     return (
         <>
-            {isPersonal ? (
-                <CalendarWeek insertedEvents={events} openModal={setOpenNewEvent} isMobile={isMobile} />
+            {type?.type === "personal" ? (
+                <CalendarWeek insertedEvents={personalAppointments?.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
                     <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
                         <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={events} />
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
                             <div className={styles.adjustButtonWSchedule}>
@@ -83,17 +151,19 @@ export default function Schedule() {
                                         <path d="M12 5v14" />
                                     </svg>)}
                                     title={`Agendar`}
-                                    handleButtonClick={() => setOpenNewEvent(true)} />
+                                    classname={styles.btnAgendar}
+                                    handleButtonClick={() => handleOpenNewEventModal()} />
                             </div>
 
-                            {events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).map((event, index) => (
-                                <div onClick={() => setSelectedEventId(event.id)} key={`${event.title}-${index}`}>
+                            {userAppointments.data?.map((event, index) => (
+                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
-                                        date={`${event.date.split("-").reverse()[0]} de ${new Intl.DateTimeFormat("pt-BR", { month: "long" }).format(new Date(event.date))}`}
-                                        initialHour={`${event.hour.replace(":", "h").split(":")[0]}`}
-                                        finalHour={`${(parseInt(event.hour.replace(":", "h").split(":")[0]) + 1)}h00`}
-                                        handleCancel={setOpenCancelModal}
-                                        handleReschedule={setOpenReschedule}
+                                        data={event}
+                                        date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", { locale: ptBR })}`}
+                                        initialHour={`${event.data.replace(":", "h").split("T")[1].slice(0, 5)}`}
+                                        finalHour={`${(parseInt(event.data.replace(":", "h").split("T")[1].slice(0, 2)) + 1)}h00`}
+                                        handleCancel={() => setOpenModal("cancel")}
+                                        handleReschedule={() => setOpenModal("reschedule")}
                                         isMobile={isMobile}
                                     />
                                 </div>
@@ -103,14 +173,14 @@ export default function Schedule() {
                 </div>
             )}
 
-            {openNewEvent && (
+            {openModal === "newEvent" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
-                        close={setOpenNewEvent}
-                        openModal={setOpenSuccessModal}
-                        insertedEvents={events}
-                        insertEvent={setEvents}
+                        close={() => setOpenModal(null)}
+                        openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
+                        errorModal={(title, description) => handleErrorModalInfo(title, description)}
+                        insertedEvents={appointments.data?.data}
                         title="Agendar horário"
                         buttonTitle="Avançar"
                         clickedDate={clickedDate}
@@ -118,14 +188,14 @@ export default function Schedule() {
                 </>
             )}
 
-            {openReschedule && (
+            {openModal === "reschedule" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
-                        close={setOpenReschedule}
-                        openModal={setOpenSuccessModalReschedule}
-                        insertedEvents={events}
-                        insertEvent={setEvents}
+                        close={() => setOpenModal(null)}
+                        openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                        errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
+                        insertedEvents={userAppointments.data}
                         title="Reagendar horário"
                         buttonTitle="Reagendar"
                         isReschedule={true}
@@ -134,28 +204,30 @@ export default function Schedule() {
                 </>
             )}
 
-            {openSuccessModal && (
+            {openModal === "success" && (
                 <SuccessModal
                     isMobile={isMobile}
-                    closeThen={setOpenSuccessModal}
-                    title="Agendamento Feito Com Sucesso"
-                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
+                    closeThen={() => setOpenModal(null)}
+                    title={modalInfo.title}
+                    content={modalInfo.description}
                 />
             )}
 
-            {openSuccessModalReschedule && (
-                <SuccessModal
-                    isMobile={isMobile}
-                    closeThen={setOpenSuccessModalReschedule}
-                    title="Reagendamento Feito Com Sucesso"
-                    content="Enviamos uma notificação para o seu Personal e avisaremos você assim que ele aceitar"
+            {openModal === "error" && (
+                <ErrorModal
+                    closeThen={() => setOpenModal(null)}
+                    title={modalInfo.title}
+                    content={modalInfo.description}
                 />
             )}
 
-            {openCancelModal && (
+
+
+
+            {openModal === "cancel" && (
                 <TimerModal
                     isMobile={isMobile}
-                    closeThen={setOpenCancelModal}
+                    closeThen={() => setOpenModal(null)}
                     title="Cancelar"
                     content={`Você tem certeza que quer cancelar o agendamento?\n
                         Agendamento:
@@ -168,7 +240,7 @@ export default function Schedule() {
                     events={events}
                     setEvents={setEvents}
                     buttonTitle="Cancelar agendamento"
-                    callSuccessModal={setOpenSuccessModal}
+                    callSuccessModal={() => declineAppointment(selectedEventId!)}
                     isDelete={true}
                 />
             )}

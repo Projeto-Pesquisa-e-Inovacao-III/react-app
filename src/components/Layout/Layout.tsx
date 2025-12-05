@@ -2,10 +2,11 @@ import UserHeaderMobile from "../UserHeader/UserHeaderMobile/UserHeaderMobile";
 import UserHeaderDesktop from "../UserHeader/UserHeaderDesktop/UserHeaderDesktop";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { isAuthenticated } from "../../services/authService";
 import { LogoHeaderMobile } from "../LogoHeaderMobile/LogoHeaderMobile";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
+import { isAuthenticated } from "../../constants/user";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 const titles = {
@@ -15,10 +16,13 @@ const titles = {
     "/forgot-password": "Esqueci a senha | CSF Treinamentos",
     "/logout": "Saindo... | CSF Treinamentos",
     "/plans-history": "Histórico de Planos | CSF Treinamentos",
-    "/schedule-history": "Histórico de Agendamentos | CSF Treinamentos",
-    "/schedule-details": "Detalhes do Agendamento | CSF Treinamentos",
-    "/plans-history-details": "Detalhes do Plano | CSF Treinamentos",
     "/schedule": "Agenda | CSF Treinamentos",
+    "/schedule/": "Agenda | CSF Treinamentos",
+    "/schedule-history": "Histórico de Agendamentos | CSF Treinamentos",
+    "/schedule-history/": "Histórico de Agendamentos | CSF Treinamentos",
+    "/schedule-details": "Detalhes do Agendamento | CSF Treinamentos",
+    "/schedule-details/": "Detalhes do Agendamento | CSF Treinamentos",
+    "/plans-history-details": "Detalhes do Plano | CSF Treinamentos",
     "/packages": "Pacotes | CSF Treinamentos",
     "/home": "Visão Geral | CSF Treinamentos",
     "/dashboard": "Dashboard | CSF Treinamentos",
@@ -27,45 +31,64 @@ const titles = {
     "/edit-user": "Editar Usuário | CSF Treinamentos",
     "/personal/check-schedule": "Solicitações | CSF Treinamentos",
     "/more-options": "Mais Opções | CSF Treinamentos",
+    "/set-availability": "Definir Horário | CSF Treinamentos",
 };
 
 export default function Layout() {
     const isMobile = useMobile();
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;
-    const isLogged = isAuthenticated();
 
     const nav = useNavigate();
 
-    const type = useContext(TypeContext);
-
     const location = useLocation();
-
-    const hideLogoPaths = ["/more-options", "/", "/login", "/forgot-password", "/register", "/logout"].includes(location.pathname);
-    const exceptions = ["/", "/login", "/register", "/forgot-password"];
-
+    const queryClient = useQueryClient();
     useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 
-    // useEffect(() => {
-    //     if (!isLogged) {
-    //         nav("/login");
-    //     }
-    // }, []);
+    const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout"];
+    const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
+
+    const isLoggedIn = useQuery({
+        queryKey: ["isAuthenticated"],
+        queryFn: () => isAuthenticated(),
+        retry: false,
+        refetchOnWindowFocus: false,
+        select: (res) => res.data,
+    });
+
+    const context = useContext(TypeContext);
+
+    if (!context) throw new Error("TypeContext não encontrado");
+
+    const { type, setType } = context;
+
+    useEffect(() => {
+        const notAuthenticated = (isLoggedIn.isError && !isLoggedIn.isLoading) || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
+        if (notAuthenticated && !exceptions.includes(location.pathname)) {
+            nav("/login");
+        }
+    }, [isLoggedIn, location.pathname, isLoggedIn.data, isLoggedIn.isError, isLoggedIn.isLoading, type]);
+
+    useEffect(() => {
+        if (isLoggedIn.data?.autentificado) {
+            const backendType = isLoggedIn.data.user.tipo.toLowerCase();
+            setType(backendType === "personal" ? "personal" : "aluno");
+        }
+    }, [isLoggedIn.data]);
 
 
     return (
         <div>
-            {/* {isLogged && ( */}
-                <>
-                    {!isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
-                    {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
-                        <LogoHeaderMobile />
-                    </div>}
-                    <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
-                    {isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
-                </>
-            {/* )} */}
+            <>
+                {!isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+                {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
+                    <LogoHeaderMobile />
+                </div>}
+                <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
+                {isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+            </>
         </div>
     )
 }

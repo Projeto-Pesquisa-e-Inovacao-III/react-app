@@ -12,6 +12,7 @@ export default function SuccessModal({ isMobile, closeThen, title, content }: { 
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
+        console.log("Modal aberto");
     }, []);
 
     return (

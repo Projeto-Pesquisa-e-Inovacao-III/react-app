@@ -5,20 +5,44 @@ import classNames from "classnames";
 import styles from "./PlansHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
 import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
-import { useState } from "react";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import { useQuery } from "@tanstack/react-query";
+import { getUserPlansHistory } from "../../constants/products";
+import { format, parse, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function PlansHistory() {
-    const [initialDateFilter, setInitialDateFilter] = useState<string>("");
-    const [finalDateFilter, setFinalDateFilter] = useState<string>("");
-
     const nav = useNavigate();
 
-    function handleDetailsClick() {
-        nav('/plans-history-details');
+    function handleDetailsClick(id: number) {
+        nav('/plans-history-details?id=' + id);
     }
+
+
+    const userPlans = useQuery({
+        queryKey: ['user-plans'],
+        queryFn: getUserPlansHistory,
+        select: (res) => res.data,
+    });
+
+    const {
+        filterSearch,
+        setFilterSearch,
+        filterInitialDate,
+        setFilterInitialDate,
+        filterFinalDate,
+        setFilterFinalDate,
+        filteredData,
+        hasFilters,
+        clearFilters,
+    } = useSearchFilter(userPlans.data, {
+        searchName: (item) => [item.produtoExibicao.titulo],
+        dateFilter: (item) => item.dataCompra,
+    });
+
 
     return (
         <div className={classNames(styles.container)}>
@@ -33,18 +57,39 @@ export default function PlansHistory() {
                         type="text"
                         placeholder="Buscar..."
                         icon={<SearchIcon />}
+                        value={filterSearch}
+                        onInputChange={setFilterSearch}
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={initialDateFilter} setSelectedDate={setInitialDateFilter} />
-                    <InputCalendar selectedDate={finalDateFilter} setSelectedDate={setFinalDateFilter} />
+                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} />
+                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} />
                 </div>
-                <div className={classNames(styles.searchButton)}>
-                    <SmallerButton title="Filtrar" />
-                </div>
+                {hasFilters && (
+                    <div className={classNames(styles.searchButton)}>
+                        <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters} />
+                    </div>
+                )}
             </div>
 
-            <RowWithHeaderTitle data={PlansHistoryMock} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
+            {filteredData && filteredData.length > 0 ? (
+                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item, index) => (
+                    <RowWithHeaderTitle 
+                        key={index}
+                        data={[
+                            {headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
+                            title: item.produtoExibicao.titulo, 
+                            subtitle: item.produtoExibicao.subtitulo }
+                        ]} 
+                        includeDetailsButton={true} 
+                        buttonLabel="Ver Detalhes" 
+                        handleDetailsClick={() => handleDetailsClick(item.id)} 
+                    />
+                ))
+            ) : (
+                <p>Não há planos disponíveis</p>
+            )}
+            
         </div>
     );
 }

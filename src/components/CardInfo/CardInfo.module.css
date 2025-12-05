@@ -5,21 +5,21 @@
 
 .cardInfo .rowHeader {
     border-bottom: 1px solid #b3b3b3;
-    padding: 0px 16px;
-    font-size: 0.9rem;
+    padding: 4px 16px;
+    font-size: 1.2rem;
 }
 
 .cardInfo .usersTableCard {
     display: flex;
     align-items: center;
-    padding: 2px 16px;
+    padding: 8px 16px;
 }
 
 .cardInfo .userDataFull {
     display: flex;
     align-items: center;
     gap: 20px;
-
+    width: 100%;
 }
 
 .cardInfo .userDataFull img {
@@ -31,7 +31,6 @@
 .cardInfo .userData {
     display: flex;
     flex-direction: column;
-    width: 100%;
 }
 
 .cardInfo .userData span {

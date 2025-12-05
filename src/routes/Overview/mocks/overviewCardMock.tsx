@@ -1,6 +1,3 @@
-import { useNavigate } from "react-router-dom";
-import type {OverviewCardType} from "../../../models/overviewCardType";
-
 export const cardsArray = (nav: (path: string) => void) => [
     {
         title: "Aulas para realizar hoje",
@@ -35,5 +32,3 @@ export const cardsArray = (nav: (path: string) => void) => [
         typeUser: "usuario",
     },
 ];
-
-// type: Plano atual: Nenhum

@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import "./style.css"
 import { Bell } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "../Notification/Notification";
+import UserAvatar from "../../UserAvatar/UserAvatar";
+import { useQueryClient } from "@tanstack/react-query";
 
 type UserType = {
   type: "personal" | "student"
@@ -11,25 +13,11 @@ type UserType = {
 
 export default function UserHeaderDesktop({ type }: UserType) {
 
-  const [openNotification, setOpenNotification] = useState<boolean>(false);
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
-  const notifications = [
-    {
-      notificationTitle: "Título da Notificação",
-      message: "Nova notificação!",
-      icon: <Bell />,
-      date: "2023-10-01",
-      isRead: false
-    },
-    {
-      notificationTitle: "Outro Título",
-      message: "Outra notificação!",
-      icon: <Bell />,
-      date: "2023-10-02",
-      isRead: false
-    }
-  ];
+  const queryClient = useQueryClient();
+
+  queryClient.invalidateQueries({ queryKey: ['userImage'] });
 
   return (
     <>
@@ -59,25 +47,26 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
         <div className="auth-links">
           {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
-          <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
+          {/* <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
             <Bell />
-          </div>
-          <div className="user-info-desktop" onClick={() => setOpenHeaderModal(!openHeaderModal)}>
-            <img src="https://thispersondoesnotexist.com" alt="" />
+          </div> */}
+          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
+            <UserAvatar useUserImage={true} />
           </div>
         </div>
 
       </header >
-
+      {/* 
       {openNotification && (
         <Notification notifications={notifications} />
       )
-      }
+      } */}
 
       {openHeaderModal && (
         <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
           <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
             <Link to="/edit-user">Editar perfil</Link>
+            {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
             <Link to="/logout">Sair</Link>
           </div>
         </div>

@@ -1,8 +1,12 @@
 import classNames from "classnames";
 import SmallerButton from "../SmallerButton";
 import "./style.css"
+import type { dataCardProps } from "../CardCheckSchedule/CardCheckSchedule";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import { BASE_URL } from "../../system";
 
 type UserScheduleCardProps = {
+    data: dataCardProps;
     date: string;
     initialHour: string;
     finalHour: string;
@@ -11,14 +15,15 @@ type UserScheduleCardProps = {
     isMobile: boolean;
 }
 
-export default function UserScheduleCard({ date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
+export default function UserScheduleCard({ data, date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
+    console.log("dataCardProps", data);
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">
-                <span className="user-personal">Personal</span>
+                <span className="user-personal">{data.tipoAula}</span>
                 <div className="schedule-page-user">
-                    <img src="https://placehold.co/60x60/png" alt="" />
-                    <span>Nome</span>
+                    <UserAvatar foto={data.caminhoFoto ? `${data.caminhoFoto}` : undefined} useUserImage={false} />
+                    <span>{data.personalNome}</span>
                 </div>
                 <div className="btn-actions">
                     <SmallerButton type="button" title="Reagendar" handleButtonClick={() => handleReschedule(true)} />

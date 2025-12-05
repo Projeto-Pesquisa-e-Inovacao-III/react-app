@@ -4,7 +4,7 @@ import "./style.css"
 
 
 type UserType = {
-    type: "personal" | "student"
+    type: "personal" | "aluno"
 }
 
 export default function UserHeaderMobile({ type }: UserType) {

@@ -1,8 +1,20 @@
 .wrapper_inp {
-    position: relative;
     display: flex;
     flex-direction: column;
+    position: relative;
     background: none;
+
+
+    input {
+        padding: 12px 16px 12px 40px;
+        background-color: #ffffff !important;
+        color: black;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        font-size: .95rem;
+        text-overflow: ellipsis;
+    }
 
     .input-icon {
         display: flex;
@@ -20,16 +32,6 @@
         }
     }
 
-    input {
-        padding: 12px 16px 12px 40px;
-        background-color: #ffffff !important;
-        color: black;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        width: 100%;
-        font-size: .95rem;
-        text-overflow: ellipsis;
-    }
 
     label {
         font-size: 14px;

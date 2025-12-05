@@ -4,52 +4,105 @@ import classNames from "classnames";
 
 import styles from "./ScheduleHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
-import { useEffect, useState } from "react";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
+import useSearchFilter from "../../hooks/useSearchFilter";
+import { useQuery } from "@tanstack/react-query";
+import { findPersonalRequests } from "../../constants/schedule";
+import type { ScheduleAfterInserted } from "../../models/schedule";
+import { format, parse } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function ScheduleHistory() {
-    const [initialDateFilter, setInitialDateFilter] = useState<string>("");
-    const [finalDateFilter, setFinalDateFilter] = useState<string>("");
 
-    useEffect(() => {
-        console.log("Filtro de data inicial:", initialDateFilter);
-    }, [initialDateFilter]);
+    // postalCode does not exist at this endpoint
+    const listOfAppointments = useQuery({
+        queryKey: ['userAppointments'],
+        queryFn: () => findPersonalRequests(),
+        select: (res) => res.data,
+    })
 
-    useEffect(() => {
-        console.log("Filtro de data final:", finalDateFilter);
-    }, [finalDateFilter]);
+    const [params] = useSearchParams()
 
-    const eventsMock = [
-        { id: 0, title: "Funcional", date: "2025-10-11", hour: "11:00:00", address: "Rua A, 123", status: "completed" },
-        { id: 1, title: "Personal", date: "2025-10-22", hour: "10:00:00", address: "Rua B, 456", status: "pending" },
-    ];
+    const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
 
-    const data = eventsMock.map((event) => ({
-        headerTitle: new Date(event.date).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric" }),
-        title: event.title,
-        subtitle: event.status === "completed" ?
+
+    const navigate = useNavigate();
+
+    function clearDateParam() {
+        params.delete("date");
+        navigate("/schedule-history");
+        clearFilters();
+    }
+
+    const {
+        filterSearch,
+        setFilterSearch,
+        filterInitialDate,
+        setFilterInitialDate,
+        filterFinalDate,
+        setFilterFinalDate,
+        filteredData,
+        hasFilters,
+        clearFilters,
+    } = useSearchFilter(listOfAppointments.data?.content ?? [], {
+        searchName: (item: ScheduleAfterInserted) => [item.tipoAula, item.status],
+        dateFilter: (item: ScheduleAfterInserted) => typeof item.dataInicio === 'string' ? item.dataInicio : item.dataInicio.toISOString(),
+    });
+
+
+    const data = (filteredData as ScheduleAfterInserted[]).map((event) => ({
+        id: event.agendamentoId,
+        headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+        title: event.tipoAula,
+        subtitle: event.status &&
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                    <Dot color="#8BBE86" size={"30px"} />
-                    <span>Status: Concluído</span>
+                    {event.status === "CONCLUIDO" &&
+                        <>
+                            <Dot color="#8BBE86" size={"30px"} />
+                            <span>Status: Concluído</span>
+                        </>
+                    }
+
+                    {(event.status === "APROVADO" || event.status === "PENDENTE_PERSONAL_CONCLUIR") && (
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: pendente</span>
+                        </>
+                    )}
+
+
+                    {(event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO") &&
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: em análise</span>
+                        </>
+                    }
+
+                    {event.status.includes("CANCELADO") &&
+                        <>
+                            <Dot color="#c33" size={"30px"} />
+                            <span>Status: cancelado</span>
+                        </>
+                    }
+
+                    {(event.status === "AUSENCIA_CLIENTE") || (event.status === "AUSENCIA_PERSONAL") && (
+                        <>
+                            <Dot color="#c33" size={"30px"} />
+                            <span>Status: Ausência registrada</span>
+                        </>
+                    )}
                 </div>
-                <span>Endereço: {event.address}</span>
-            </div>
-            :
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "8px" }}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    <Dot color="#D7AC00" size={"30px"} />
-                    <span>Status: Pendente</span>
-                </div>
-                <span>Endereço: {event.address}</span>
+                <span>Endereço: {event.endereco.cep.logradouro}, {event.endereco.numero} - {event.endereco.cep.bairro}</span>
             </div>
     }));
+
     const nav = useNavigate();
 
-    function handleDetailsClick() {
-        nav('/schedule-details');
+    function handleDetailsClick(id: number) {
+        nav('/schedule-details/?id=' + id);
     }
 
     return (
@@ -64,15 +117,19 @@ export default function ScheduleHistory() {
                         type="text"
                         placeholder="Buscar..."
                         icon={<SearchIcon />}
+                        value={filterSearch}
+                        onInputChange={setFilterSearch}
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={initialDateFilter} setSelectedDate={setInitialDateFilter} />
-                    <InputCalendar selectedDate={finalDateFilter} setSelectedDate={setFinalDateFilter} />
+                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
+                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
                 </div>
-                <div className={classNames(styles.searchButton)}>
-                    <SmallerButton title="Filtrar" />
-                </div>
+                {hasFilters && (
+                    <div className={classNames(styles.searchButton)}>
+                        <SmallerButton title="Limpar filtros" handleButtonClick={clearDateParam} />
+                    </div>
+                )}
             </div>
 
             <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />

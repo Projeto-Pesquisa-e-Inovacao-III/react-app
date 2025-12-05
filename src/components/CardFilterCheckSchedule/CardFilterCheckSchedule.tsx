@@ -1,23 +1,43 @@
+import { SearchIcon } from "lucide-react";
 import Button from "../Button/Button";
+import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
 import { SearchBar } from "../SearchBar/SearchBar";
-import "./style.css"
+import styles from "./CardFilterCheckSchedule.module.css"
 
-export function CardFilterCheckSchedule(){
+type FilterProps = {
+    onSearchChange?: (filter: string) => void;
+    onSelectStatusChange?: (status: string) => void;
+    searchValue?: string;
+    selectStatusValue?: string;
+    onClear?: () => void;
+    hasFilters?: boolean;
+}
 
-    return(
-        <>
-        <div className="cardFilter">
-            <div className="searchBarDiv"><SearchBar /></div>
-            <select className="selectStatus" name="" id="">
-                <option value="pendente">Pendente</option>
-                <option value="aprovado">Aprovado</option>
-                <option value="rejeitado">Rejeitado</option>
-            </select>
-            <div className="divButtonFilter">
-                  <Button type="button" title="Filtrar" classNameVariable="btn-check-schedule" onClick={() => {}} />
+export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, searchValue, selectStatusValue, onClear, hasFilters }: FilterProps) {
+
+    return (
+        <div className={styles.containerCardFilterCheckSchedule}>
+            <div className={styles.cardFilter}>
+                <InputWithIcon
+                    type="text"
+                    placeholder="Buscar..."
+                    icon={<SearchIcon />}
+                    value={searchValue}
+                    onInputChange={onSearchChange}
+                />
+                <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
+                    <option value="" disabled>Selecione um status</option>
+                    <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
+                    <option value="APROVADO">Aprovado</option>
+                    <option value="CANCELADO_PERSONAL">Rejeitado</option>
+                </select>
+
             </div>
-          
+            {hasFilters &&
+                <div className={styles.divButtonFilter}>
+                    <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => { onClear && onClear() }} />
+                </div>
+            }
         </div>
-        </>
     )
 }

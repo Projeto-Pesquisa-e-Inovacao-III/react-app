@@ -1,14 +1,30 @@
 import React, { useState } from 'react'
-import Select from '../../Inputs/Select'
+import Select from '../../Inputs/Select/Select'
 import classNames from 'classnames';
 import styles from './RegisterAbsenceModal.module.css'
 import Button from '../../Button/Button';
 
+type Props = {
+    closeThen: React.Dispatch<React.SetStateAction<boolean>>;
+    callSuccessModal?: () => void;
+    onSubmit: (data: { type: string; description: string; }) => void;
+}
 
-export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
+export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSubmit }: Props) {
     const [changeSelectType, setChangeSelectType] = useState<string>("Aluno");
     const [justified, setJustified] = useState<boolean>(false);
+    const [description, setDescription] = useState("");
+
+    function handleSend() {
+        const payload = {
+            type: changeSelectType.toUpperCase(),
+            description,
+        };
+
+        onSubmit(payload);
+        callSuccessModal && callSuccessModal();
+    }
 
     return (
         <>
@@ -28,7 +44,7 @@ export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.D
                         <label className={styles.label}>Motivo: </label>
                         <div className={classNames(styles.reasonText, { [styles.reasonTextNotJustified]: justified })}>
                             <button onClick={() => setJustified(!justified)}>{justified ? "Justificado" : "Não justificado"}</button>
-                            <span contentEditable={!justified}></span>
+                            <span contentEditable={!justified} onInput={(e) => setDescription(e.currentTarget.textContent || "")}></span>
                         </div>
                     </div>
                 )}
@@ -37,14 +53,14 @@ export default function RegisterAbsenceModal({ closeThen }: { closeThen: React.D
                     <div className={styles.fieldGroup}>
                         <label className={styles.label}>Motivo: </label>
                         <div className={classNames(styles.reasonText)}>
-                            <span contentEditable="true"></span>
+                            <span contentEditable="true" onInput={(e) => setDescription(e.currentTarget.textContent || "")}></span>
                         </div>
                     </div>
                 )}
 
                 <div className={styles.buttons}>
-                    <Button title="Enviar" type="button" classNameVariable="btn-send" onClick={() => closeThen(false)} />
-                    <Button title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
+                    <Button typeButton='accept' title="Enviar" type="button" classNameVariable="btn-send" onClick={handleSend} />
+                    <Button typeButton='other' title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
                 </div>
             </div>
         </>

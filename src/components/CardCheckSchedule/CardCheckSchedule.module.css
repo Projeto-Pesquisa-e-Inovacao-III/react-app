@@ -1,6 +1,5 @@
 .personalCheckScheduleCard {
     background-color: #fff;
-    width: fit-content;
     border-radius: 12px;
     padding: 10px;
     display: flex;
@@ -17,8 +16,18 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    height: 40px;
+    height: 50px;
     gap: 10px;
+    justify-content: center;
+
+}
+
+.buttons .buttonActions {
+    width: 100% !important;
+}
+
+.buttons .buttonActions button {
+    max-width: unset !important;
 }
 
 .statusIndicatorCheckSchedule {
@@ -61,7 +70,6 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    min-width: 340px;
     text-overflow: ellipsis;
 }
 
@@ -111,9 +119,25 @@
     border-radius: 50%;
 }
 
+
+.btnCheckSchedule {
+    background-color: var(--bg-blue);
+    max-width: 100px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+
 @media (max-width: 1024px) {
     .card {
         width: 60% !important;
+    }
+
+    .personalCheckScheduleCard {
+        width: 100%;
     }
 }
 
@@ -121,6 +145,8 @@
     .card {
         width: 100% !important;
     }
+
+
 }
 
 @media (max-width: 468px) {
@@ -128,9 +154,14 @@
         font-size: 16px;
         min-width: unset;
     }
+
+    .personalCheckScheduleCard {
+        min-width: unset;
+    }
 }
 
 @media (max-width: 350px) {
+
     .buttons,
     .statusIndicatorCheckSchedule {
         flex-wrap: wrap;

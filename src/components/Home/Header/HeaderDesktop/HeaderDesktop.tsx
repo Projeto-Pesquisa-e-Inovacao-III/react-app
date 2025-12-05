@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop/LogoHeaderDesktop";
-import { User } from "lucide-react";
+import UserAvatar from "../../../UserAvatar/UserAvatar";
 
 export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {
+
     return (
         <>
             <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white">
@@ -20,9 +21,9 @@ export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean 
                     {userLoggedIn ? (
                         <div className="flex gap-3 items-center">
                             <Link to="/home" className="border-2 p-1 rounded-full">
-                                <User />
+                                <UserAvatar useUserImage={true} />
                             </Link>
-                            <Link to="/logout" className="p-3 bg-white text-black h-full rounded-md">Logout</Link>
+                            <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Logout</Link>
 
                         </div>
                     ) : (

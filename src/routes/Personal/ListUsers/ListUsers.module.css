@@ -6,6 +6,7 @@
     font-weight: 600;
     font-size: 30px;
     color: #333;
+    margin-bottom: 24px;
 }
 
 .headerMobile {
@@ -15,11 +16,8 @@
 }
 
 .listUsersSearchBar {
-    padding: 1%;
-    width: 40%;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0px 1.5px 0px 0px rgba(0, 0, 0, 0.2);
+    width: 25%;
+    border-radius: 8px;
 }
 
 

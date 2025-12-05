@@ -33,14 +33,21 @@
     margin-bottom: 15px;
 }
 
-.inputContainer label {
+.inputContainer label,
+.selectType :global(label) {
+    font-size: 16px !important;
     margin-right: 10px;
     font-weight: 500;
     color: #333;
     flex: 1;
 }
 
-.inputContainer input {
+.selectType :global(label) {
+    max-width: 35.2%;
+}
+
+.inputContainer input,
+.selectType :global(select) {
     flex: 1;
     padding: 8px;
     border: 1px solid #ccc;
@@ -65,6 +72,27 @@
     height: 100%;
 }
 
+.buttonsAction {
+    width: 100%;
+}
+
+/* select */
+.selectType {
+    align-items: center;
+    flex-direction: row !important;
+    width: 100%;
+}
+
+.selectType :global(select) {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    padding-left: 8px !important;
+    
+}
+
 @media (max-width: 1024px) {
     .inputContainer {
         flex-wrap: wrap;
@@ -82,7 +110,7 @@
         width: 100%;
     }
 
-.inputContainer :global(.wrapper_solo_inp input) {
+    .inputContainer :global(.wrapper_solo_inp input) {
         width: 100%;
     }
 
@@ -95,5 +123,10 @@
     .modalButtons {
         flex-direction: column;
         gap: 10px;
+    }
+
+    .selectType {
+        flex-direction: column !important;
+        align-items: flex-start !important;
     }
 }

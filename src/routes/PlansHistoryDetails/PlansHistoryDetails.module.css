@@ -2,6 +2,10 @@
     background-color: #fff;
     position: relative;
     padding: 30px;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
 .container .title {
@@ -95,7 +99,14 @@
 
 
 .planDetailsDescription {
+    display: flex;
     width: 70%;
+    max-width: 600px;
+}
+
+.planDetailsDescriptionMobile {
+    width: 100%;
+    max-width: none;
 }
 
 .cardDetails .highlight {

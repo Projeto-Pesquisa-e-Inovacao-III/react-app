@@ -3,7 +3,7 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     flex-wrap: nowrap;
     justify-content: center;
-    gap: 20px;
+    gap: 60px;
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
@@ -54,6 +54,7 @@
     }
 
     .addButtonContainerMobile {
+        width: 100%;
         margin: 20px 0;
     }
 

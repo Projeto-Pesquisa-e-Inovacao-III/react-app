@@ -16,6 +16,7 @@ type RowWithHeaderTitleProps = {
 }
 
 export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
+    console.log("Rendering RowWithHeaderTitle with data:", props.data);
     return (
         <>
             {props.data.map((plan: any, index: number) => (
@@ -30,13 +31,19 @@ export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
                             <p>{plan.subtitle}</p>
                         </div>
                         {props.includeDetailsButton && props.handleDetailsClick && (
-                            <div className={classNames(styles.rowButton)} onClick={props.handleDetailsClick}>
+                            <div className={classNames(styles.rowButton)} onClick={() => props.handleDetailsClick(plan.id)}>
                                 <SmallerButton title={props.buttonLabel || "Detalhes"} />
                             </div>
                         )}
                     </div>
                 </div>
             ))}
+
+            {props.data.length === 0 && (
+                <div className={classNames(styles.noData)}>
+                    <p>Não há nada por aqui...</p>
+                </div>
+            )}
         </>
     )
 }
