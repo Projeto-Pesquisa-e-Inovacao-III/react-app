@@ -190,6 +190,14 @@
     margin: 20px 0;
 }
 
+.schedulePageUserActionsPersonal {
+    text-align: center;
+}
+
+.schedulePageUserActionsPersonal :global(h2) {
+    text-align: start;
+}
+
 @media (max-width: 1024px) {
     .containerContentMobile .schedulePageUserActionsMobile {
         flex-direction: row-reverse !important;

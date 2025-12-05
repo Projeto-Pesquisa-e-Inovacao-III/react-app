@@ -118,7 +118,7 @@ export default function SetAvailability() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Definir horário</h1>
-                <p className={styles.subtitle}>Disponibilidade de dias da semana</p>
+                {/* <p className={styles.subtitle}>Disponibilidade de dias da semana</p> */}
             </div>
 
             <div className={styles.defaultsSection}>
@@ -128,7 +128,7 @@ export default function SetAvailability() {
                 </div>
                 <div className={styles.defaultsControls}>
                     <div className={styles.controlGroup}>
-                        <label className={styles.controlLabel}>Intervalo entre alunos:</label>
+                        <label className={styles.controlLabel}>Intervalo entre agendamentos:</label>
                         <select
                             className={styles.select}
                             value={personalBuffer.data ?? "0"}

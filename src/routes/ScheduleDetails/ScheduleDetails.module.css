@@ -6,6 +6,10 @@
     flex-direction: column;
     justify-content: space-between;
     height: auto;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
 .containerMobile {
@@ -49,7 +53,8 @@
     border-radius: 8px;
 }
 
-.buttonGroup :global(.btnGeneric), .buttonGroupStudent :global(.btnGeneric) {
+.buttonGroup :global(.btnGeneric),
+.buttonGroupStudent :global(.btnGeneric) {
     width: auto !important;
 }
 

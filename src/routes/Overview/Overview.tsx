@@ -200,7 +200,7 @@ export function Overview() {
                     )}
 
                     {!isMobile && type?.type !== "aluno" && (
-                        <div className={styles.schedulePageUserActions}>
+                        <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
                             <OverviewCard
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? 0}

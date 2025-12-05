@@ -1,22 +1,18 @@
 .container {
   width: 100%;
   margin: 0 auto;
-  background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
 .header {
-  background: hsl(210, 100%, 25%);
-  color: #ffffff;
-  padding: 24px 32px;
+  margin-bottom: 24px;
 }
 
 .title {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
+  font-weight: 600;
+  font-size: 30px;
+  color: #333;
 }
 
 .subtitle {
@@ -30,7 +26,7 @@
   align-items: center;
   gap: 24px;
   padding: 20px 32px;
-  background: hsl(210, 15%, 97%);
+  background-color: var(--bg-blue);
   border-bottom: 1px solid hsl(220, 15%, 88%);
 }
 
@@ -41,6 +37,7 @@
   font-weight: 500;
   color: hsl(220, 15%, 20%);
   font-size: 14px;
+  color: #ffffff;
 }
 
 .clockIcon {
@@ -62,7 +59,7 @@
 
 .controlLabel {
   font-size: 14px;
-  color: hsl(220, 15%, 30%);
+  color: #ffffff;
   white-space: nowrap;
 }
 
@@ -138,6 +135,10 @@
 
 .actionsColumn {
   min-width: 100px;
+}
+
+.tableBody {
+  background: #ffffff;
 }
 
 .tableBody tr {

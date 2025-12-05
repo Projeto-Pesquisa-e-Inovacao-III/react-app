@@ -2,6 +2,10 @@
     background-color: #fff;
     position: relative;
     padding: 30px;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
 .container .title {

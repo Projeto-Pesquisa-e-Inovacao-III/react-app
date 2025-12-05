@@ -208,8 +208,8 @@ export default function ScheduleDetails() {
                         </>
                     }
 
-                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO") || (appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") &&
-                        <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" })}>
+                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO") || (appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
+                        <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
                             <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "accept");
                             }} />
@@ -220,7 +220,7 @@ export default function ScheduleDetails() {
                                 handleModal(appointment.data?.id, "reschedule");
                             }} />
                         </div>
-
+                    )
                     }
                 </div>
                 {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado", "Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
