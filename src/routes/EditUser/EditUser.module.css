@@ -99,8 +99,8 @@
   justify-content: flex-start;
 }
 
-.btnEditPassword{
-  width: unset!important;
+.btnEditPassword {
+  width: unset !important;
 }
 
 .personalInfoGrid {
@@ -116,7 +116,7 @@
 }
 
 .loginInfo :global(whiteContainer) {
-    align-items: start;
+  align-items: start;
 }
 
 .loginInfoContainer :global(#email) {
@@ -213,6 +213,13 @@
     max-height: none;
   }
 }
+
+.goBackContainer h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
 
 /* Grid Areas */
 .goBackContainer {

@@ -281,7 +281,7 @@ export default function EditUser() {
         <div className={styles.editUserGrid}>
           {!isMobile &&
               <div className={styles.goBackContainer}>
-                <h2>Editar Perfil</h2>
+                <h1>Editar Perfil</h1>
               </div>
           }
 
