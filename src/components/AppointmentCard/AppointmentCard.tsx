@@ -18,18 +18,20 @@ type Index = {
 
 export function AppointmentCard(props: Index) {
     const { isMobile = false } = props;
-    
+
     const nav = useNavigate();
 
     function handleNavigateToDetail() {
-        nav(`/schedule-details?id=${props.agendamentoId}`); 
+        nav(`/schedule-details?id=${props.agendamentoId}`);
     }
 
     console.log("AppointmentCard props:", props);
 
     return (
         <div className={classNames(styles.sessionCard, { [styles.sessionCardMobile]: isMobile })} onClick={handleNavigateToDetail}>
-            <StatusSchedule dotColor={props.status === 'APROVADO' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status === 'APROVADO' ? 'Pendente' : props.status} />
+            <div className={styles.sessionCardHeader}>
+                <StatusSchedule dotColor={props.status === 'APROVADO' ? '#D7AC00' : props.status === 'Confirmado' ? '#4CAF50' : '#F44336'} statusText={props.status === 'APROVADO' ? 'Pendente' : props.status} />
+            </div>
             <div className={styles.sessionCardInfo}>
                 <div className={classNames(styles.sessionCardLeft, { [styles.sessionCardLeftMobile]: isMobile })}>
                     <p className={styles.sessionCardStatus}>{props.type}</p>

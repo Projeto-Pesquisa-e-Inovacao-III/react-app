@@ -208,7 +208,7 @@ export default function ScheduleDetails() {
                         </>
                     }
 
-                    {type === "personal" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO") || (appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") &&
                         <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" })}>
                             <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "accept");

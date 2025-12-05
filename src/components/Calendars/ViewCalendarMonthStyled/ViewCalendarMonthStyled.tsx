@@ -55,10 +55,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO"
-                            ? "#D7AC00"
-                            : event.status === "CANCELADO"
-                              ? "red"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
+                            event.status === "APROVADO"
+                            ? "#F2B138"
+                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
+                              ? "#B3393A"
                               : event.status === "CONFIRMADO"
                                 ? "green"
                                 : "gray",
@@ -92,7 +93,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
               return
             }
 
-            if (type?.type === "aluno") {
+            if (type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
             return

@@ -154,7 +154,7 @@ export function Overview() {
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
                             <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
-                        <div>
+                        <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
                             <h1>Agendamentos</h1>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>
@@ -181,7 +181,7 @@ export function Overview() {
                     {!isMobile && type?.type === "aluno" && (
                         <div className={styles.schedulePageUserActions}>
                             <OverviewCard
-                                title={"Agendamentos Restantes"}
+                                title={"Saldo de aulas restantes"}
                                 subtitle={getBalance()}
                                 type={"usuario"}
                                 titletbn={"Agendamentos"}

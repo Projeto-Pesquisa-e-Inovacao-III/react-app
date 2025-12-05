@@ -1,7 +1,7 @@
-
 .viewSchedule {
     display: flex;
     gap: 60px;
+    margin-top: 30px;
 }
 
 .schedulePageCalendar {
@@ -9,6 +9,8 @@
     padding: 20px;
     flex: 2;
     height: fit-content;
+    border-radius: 8px;
+
 }
 
 .schedulePageUserActions {

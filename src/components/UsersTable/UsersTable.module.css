@@ -2,10 +2,6 @@
     width: 100%;
 }
 
-.usersTableHeader {
-    margin-bottom: 2%;
-}
-
 .h3 {
     width: 100%;
     padding-top: 1%;
@@ -22,7 +18,13 @@
     padding-inline: 2%;
     width: 100%;
     border: 1px solid #cecdcd;
-    margin-bottom: 1.5%;
+
+    border: 1px solid #eee;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 25px;
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
 .userDataFull {

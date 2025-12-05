@@ -22,9 +22,6 @@ export default function UsersTable(props) {
         <div className={classNames(styles.usersTableContainer, {
             [styles.usersTableContainerMobile]: isMobile
         })}>
-            <div className={styles.usersTableHeader}>
-                <h3 className={styles.h3}>Usuários</h3>
-            </div>
 
             {props.users.filter(user => user.nome.toLowerCase().includes(props.input.toLowerCase()))
                 .map((user, index) => (

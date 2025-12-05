@@ -74,7 +74,7 @@ export default function ScheduleHistory() {
                     )}
 
 
-                    {event.status === "PENDENTE_PERSONAL_APROVACAO" &&
+                    {(event.status === "PENDENTE_PERSONAL_APROVACAO") || (event.status === "PENDENTE_CLIENTE_APROVACAO") &&
                         <>
                             <Dot color="#D7AC00" size={"30px"} />
                             <span>Status: em análise</span>
@@ -88,7 +88,7 @@ export default function ScheduleHistory() {
                         </>
                     }
 
-                    {(event.status === "AUSENCIA_CLIENTE" || event.status === "AUSENCIA_PERSONAL") && (
+                    {(event.status === "AUSENCIA_CLIENTE") || (event.status === "AUSENCIA_PERSONAL") && (
                         <>
                             <Dot color="#c33" size={"30px"} />
                             <span>Status: Ausência registrada</span>

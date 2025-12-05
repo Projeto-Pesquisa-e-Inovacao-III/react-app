@@ -2,8 +2,9 @@
     border: 1px solid #eee;
     background-color: #fff;
     border-radius: 8px;
-    margin-top: 16px;
-
+    margin-top: 25px;
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0,0,0,0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0,0,0,0.77);
 }
 
 .rowHeader {

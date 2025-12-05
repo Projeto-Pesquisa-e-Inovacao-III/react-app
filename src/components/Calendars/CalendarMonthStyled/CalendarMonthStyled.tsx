@@ -4,9 +4,8 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./mobile.css";
 import "./desktop.css";
 import { use, useEffect, useRef, useState } from "react";
-import type { EventDTO } from "../../../models/calendar";
 import type { Schedule } from "../../../models/schedule";
-import { parseISO } from "date-fns";
+import { parseISO, startOfDay } from "date-fns";
 
 type Props = {
   className?: string;
@@ -22,7 +21,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
   const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
     return {
-      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data
+      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
+      status: event.status,
     };
   }) : [];
 
@@ -38,6 +38,9 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
     if (databaseEvents && databaseEvents.length > 0) {
       setEvents(databaseEvents);
     }
+
+    console.log("Events updated:", events);
+
   }, []);
 
   useEffect(() => {
@@ -71,7 +74,16 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           initialView="dayGridMonth"
           locale="pt-br"
           dayHeaderFormat={{ weekday: 'short' }}
-          dateClick={(info) => setNewEventDate(info.dateStr)}
+          dateClick={(info) => {
+            const today = startOfDay(new Date());
+            const clickedDate = parseISO(info.dateStr);
+
+            if (clickedDate <= today) return
+
+            setNewEventDate(info.dateStr)
+
+
+          }}
           datesSet={function (info) {
             const month = info.start.getMonth() + 1;
             setSelectedMonth(month);
@@ -97,26 +109,38 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const cellDate = arg.date.toISOString().split("T")[0];
 
             const eventDate = events?.map(event => parseISO(event.data).toISOString().split("T")[0]);
+            const eventsOfDay = events?.filter(event =>
+              event.data.split("T")[0] === cellDate
+            ) || [];
 
-            const hasEvent = events?.some((event, index) => eventDate?.[index] === cellDate);
             return (
-              <div style={{ textAlign: 'center' }}>
+
+              <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                {hasEvent && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    width: '8px',
-                    height: '8px',
-                    backgroundColor: '#1e40af',
-                    borderRadius: '50%',
-                    margin: '4px auto 0'
-                  }}></div>
-                )}
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", marginTop: "4px" }}>
+                  {eventsOfDay.map((event, index) => (
+                    <div
+                      key={event.agendamentoId}
+                      style={{
+                        width: "8px",
+                        height: "8px",
+                        borderRadius: "50%",
+                        backgroundColor:
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
+                            event.status === "APROVADO"
+                            ? "#F2B138"
+                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
+                              ? "#B3393A"
+                              : event.status === "CONFIRMADO"
+                                ? "green"
+                                : "gray",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             );
+
           }}
           headerToolbar={{
             start: "title",

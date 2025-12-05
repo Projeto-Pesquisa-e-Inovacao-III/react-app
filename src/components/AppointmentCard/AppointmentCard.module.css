@@ -18,6 +18,17 @@
     border: solid 1px #E0E0E0;
 }
 
+.sessionCardHeader {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  border: solid 1px #B4B4B4;;
+  padding: 8px;
+  width: 100%;
+  background-color: #fafafac2;
+  border-radius: 8px;
+}
+
 .sessionCardInfo {
     display: flex;
   width: 100%;
