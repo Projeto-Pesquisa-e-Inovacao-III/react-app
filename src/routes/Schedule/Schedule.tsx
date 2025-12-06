@@ -130,7 +130,7 @@ export default function Schedule() {
 
                     <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
                         <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} isUserAuthorizedToInteract={actualPlanQuery?.data?.data ? true : false} />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
                             <div className={styles.adjustButtonWSchedule}>
