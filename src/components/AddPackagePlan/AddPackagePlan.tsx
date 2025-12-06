@@ -2,7 +2,7 @@ import type React from "react";
 import Button from "../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
@@ -126,6 +126,13 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
         });
     }
 
+    function handleRemoveBenefit(index: number) {
+        setPackageInfo(prev => ({
+            ...prev,
+            benefits: prev.benefits.filter((_, i) => i !== index)
+        }));
+    }
+
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
@@ -156,7 +163,10 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                     {packageInfo.benefits.map((benefit, index) => (
                         <div className={styles.inputContainer}>
                             <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
-                            <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} />
+
+                            <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} icon={<Trash />} onClickIcon={() => {
+                                handleRemoveBenefit(index);
+                            }} />
                         </div>
                     ))}
 
