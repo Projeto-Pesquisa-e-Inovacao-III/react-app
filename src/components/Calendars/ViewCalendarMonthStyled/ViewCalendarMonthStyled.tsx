@@ -10,9 +10,10 @@ import { TypeContext } from "../../../App";
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
+  isUserAuthorizedToInteract?: boolean;
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract }: Props) {
   const actualMonth = new Date().getMonth() + 1;
 
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
@@ -93,7 +94,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile }: Props) {
               return
             }
 
-            if (type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if (isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
             return

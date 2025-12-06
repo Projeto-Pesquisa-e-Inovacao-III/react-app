@@ -19,6 +19,9 @@ import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+
+type ModalType = "success" | "error" | "newEvent";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -176,9 +179,9 @@ export function Overview() {
     const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
     function handleErrorModalInfo(title: string, description: string) {
         setModalText({ title, description });
+        openModal("error");
     }
 
-    type ModalType = "success" | "error" | "newEvent";
 
     const [modalType, setModalType] = useState<ModalType | null>(null);
     function openModal(type: ModalType) {
@@ -237,12 +240,12 @@ export function Overview() {
                         )}
 
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
+                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false} />
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
                             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                                 <h1>Agendamentos</h1>
-                                <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => openModal("newEvent")} />
+                                <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />
                             </div>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>
@@ -325,9 +328,17 @@ export function Overview() {
             )}
 
             {modalType === "success" && (
-// export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
+                // export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
                 <SuccessModal
                     isMobile={isMobile}
+                    closeThen={() => setModalType(null)}
+                    title={modalText.title}
+                    content={modalText.description}
+                />
+            )}
+
+            {modalType === "error" && (
+                <ErrorModal
                     closeThen={() => setModalType(null)}
                     title={modalText.title}
                     content={modalText.description}
