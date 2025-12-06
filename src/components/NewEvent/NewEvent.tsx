@@ -185,7 +185,8 @@ export default function NewEvent(
 
                 if (calculatedTitle && newEventDate) {
                     queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
-                    if(url.includes("/schedule")) {
+                    if (url.includes("/schedule")) {
+                        openModal();
                         navigation("/schedule");
                         return;
                     }
@@ -265,7 +266,7 @@ export default function NewEvent(
 
     const navigation = useNavigate();
     const [searchParams] = useSearchParams();
-    
+
     function handleClose() {
         document.body.style.overflow = 'auto';
         if (searchParams.has("date")) {
@@ -312,16 +313,18 @@ export default function NewEvent(
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, [step]);
 
+    const personal = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data[0].id,
+    });
 
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(1, newEventDate ? newEventDate : ""),
+        queryFn: () => getPersonalHours(personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
-
-    console.log("Availability Hours: ", availabilityHours.data);
-    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null
-    );
+    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
 
     useEffect(() => {
         if (!availabilityHours?.data?.length) return;
@@ -422,7 +425,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
@@ -447,7 +450,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "TARDE" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 12 && parseInt(hourBlock.inicio.split(":")[0]) < 18) {
@@ -472,7 +475,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "Noite" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 18 && parseInt(hourBlock.inicio.split(":")[0]) < 24) {

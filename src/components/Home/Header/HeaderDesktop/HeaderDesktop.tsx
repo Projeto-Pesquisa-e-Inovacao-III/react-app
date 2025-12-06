@@ -14,7 +14,7 @@ export default function HeaderDesktop() {
 
     return (
         <>
-            <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white">
+            <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white z-10">
                 <Link to="/">
                     <LogoHeaderDesktop />
                 </Link>

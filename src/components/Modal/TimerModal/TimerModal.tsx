@@ -7,7 +7,7 @@ import AcceptEvent from './AcceptEvent';
 
 type TimerModalProps = {
     isMobile: boolean;
-    closeThen: React.Dispatch<React.SetStateAction<boolean>>;
+    closeThen: React.Dispatch<React.SetStateAction<string | boolean | null>> | (() => void);
     title?: string;
     content?: string;
     id?: number | null;
@@ -58,6 +58,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                         id={id}
                         events={events}
                         setEvents={setEvents}
+                        handleCloseModal={closeThen}
                         callSuccessModal={callSuccessModal}
                         buttonTitle={buttonTitle}
                     />
@@ -68,6 +69,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                         id={id}
                         events={events}
                         setEvents={setEvents}
+                        handleCloseModal={closeThen}
                         callSuccessModal={callSuccessModal}
                         buttonTitle={buttonTitle}
                     />

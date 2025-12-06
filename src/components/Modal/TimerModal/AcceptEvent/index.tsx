@@ -4,7 +4,7 @@ import SmallerButton from "../../../SmallerButton";
 type DeleteEventProps = {
     isMobile: boolean;
     enableButton: boolean;
-    handleCloseModal?: () => void;
+    handleCloseModal?: React.Dispatch<React.SetStateAction<string | boolean | null>> | (() => void);
     id?: number | null;
     events?: EventDTO[];
     setEvents?: React.Dispatch<React.SetStateAction<EventDTO[]>>;

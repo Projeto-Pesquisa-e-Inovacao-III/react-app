@@ -131,7 +131,7 @@ export default function Register() {
 
             })
             .catch((err) => {
-                setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
+                setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || err.response?.data?.dataNascimento || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
                 setOpenModal("error");
             });
     }

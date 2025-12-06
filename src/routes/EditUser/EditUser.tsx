@@ -7,7 +7,7 @@ import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
-import {  BASE_URL } from "../../system";
+import { BASE_URL } from "../../system";
 import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword } from "../../constants/user";
 import type { UpdateUserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
@@ -18,7 +18,7 @@ import type { PersonalDTO } from "../../models/personal";
 import { editPersonalProfile } from "../../constants/personal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useNavigate } from "react-router-dom";
-import {validatePassword} from "../../utils/validacao.ts";
+import { validatePassword } from "../../utils/validacao.ts";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -32,15 +32,15 @@ type EditUserState = {
 };
 
 type EditUserAction =
-    | { type: "setFirstName"; payload: string }
-    | { type: "setLastName"; payload: string }
-    | { type: "setCPF"; payload: string }
-    | { type: "setCREF"; payload: string }
-    | { type: "setPhone"; payload: string }
-    | { type: "setGender"; payload: string }
-    | { type: "setEmail"; payload: string }
-    | { type: "setPassword"; payload: string }
-    | { type: "setBirthDate"; payload: string };
+  | { type: "setFirstName"; payload: string }
+  | { type: "setLastName"; payload: string }
+  | { type: "setCPF"; payload: string }
+  | { type: "setCREF"; payload: string }
+  | { type: "setPhone"; payload: string }
+  | { type: "setGender"; payload: string }
+  | { type: "setEmail"; payload: string }
+  | { type: "setPassword"; payload: string }
+  | { type: "setBirthDate"; payload: string };
 
 function reducer(state: EditUserState, action: EditUserAction): EditUserState {
   switch (action.type) {
@@ -121,12 +121,13 @@ export default function EditUser() {
     setUserImageFormData(formData);
     removerUserImage().then(() => {
       console.log("Imagem do usuário removida com sucesso!");
+      setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
+      setOpenModal("success");
     }).catch((error) => {
       console.error("Erro ao remover imagem do usuário:", error);
     });
 
-    setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
-    setOpenModal("success");
+
 
   }
 
@@ -153,57 +154,58 @@ export default function EditUser() {
   }
 
   function handleUpdateUserInfo() {
+    console.log(state.phone.substring(5).replace("-", ""))
     const options: UpdateUserDTO = {
       nome: state.firstName,
-      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      telefones: [{ numero: state.phone.substring(5).replace("-", ""), ddd: state.phone.substring(1, 3), id: 1 }],
       sexo: state.gender,
       email: state.email,
     };
 
     update(options)
-        .then(() => {
-          if (userImageFormData.has("imagem")) {
-            insertUserImage(userImageFormData)
-                .then(() => {
-                  console.log("Imagem do usuário atualizada com sucesso!");
-                  setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-                  setOpenModal("success");
-                })
-                .catch((error) => {
-                  console.error("Erro ao atualizar imagem do usuário:", error);
-                  setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
-                  setOpenModal("error");
-                });
-          } else {
-            setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-            setOpenModal("success");
-          }
-        })
-        .catch((error) => {
-          console.error("Erro ao atualizar dados do usuário:", error);
-          setTextModal({
-            title: "Houve um erro",
-            content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
-          });
-          setOpenModal("error");
+      .then(() => {
+        if (userImageFormData.has("imagem")) {
+          insertUserImage(userImageFormData)
+            .then(() => {
+              console.log("Imagem do usuário atualizada com sucesso!");
+              setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+              setOpenModal("success");
+            })
+            .catch((error) => {
+              console.error("Erro ao atualizar imagem do usuário:", error);
+              setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
+              setOpenModal("error");
+            });
+        } else {
+          setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+          setOpenModal("success");
+        }
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
+        setTextModal({
+          title: "Houve um erro",
+          content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
         });
+        setOpenModal("error");
+      });
   }
 
   function deleteUser() {
     softDelete()
-        .then(() => {
-          setTextModal({
-            title: "Perfil apagado",
-            content: "Seu perfil foi apagado com sucesso.",
-          });
-          setOpenModal("success");
-          navigator("/logout");
-        })
-        .catch((_error: unknown) => {
-          console.error("Erro ao apagar usuário:", _error);
-          setTextModal({ title: "Houve um erro", content: "Erro ao apagar usuário." });
-          setOpenModal("error");
-        });
+      .then(() => {
+        // setTextModal({
+        //   title: "Perfil apagado",
+        //   content: "Seu perfil foi apagado com sucesso.",
+        // });
+        // setOpenModal("success");
+        navigator("/logout");
+      })
+      .catch((_error: unknown) => {
+        console.error("Erro ao apagar usuário:", _error);
+        setTextModal({ title: "Houve um erro", content: "Erro ao apagar usuário." });
+        setOpenModal("error");
+      });
   }
 
   function updatePassword() {
@@ -224,22 +226,22 @@ export default function EditUser() {
 
     const validation = validatePassword(newP);
     if (validation !== "password válida!") {
-      setTextModal({ title: "Houve um erro", content: validation });
+      setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
       setOpenModal("error");
       return;
     }
     changePassword(current, newP)
-        .then(() => {
-          setCurrentPassword("");
-          setConfirmPassword("")
-          setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
-          setOpenModal("success");
-        })
-        .catch((error) => {
-          console.error("Erro ao atualizar senha:", error);
-          setTextModal({ title: "Houve um erro", content: "Não foi possível atualizar sua senha." });
-          setOpenModal("error");
-        });
+      .then(() => {
+        setCurrentPassword("");
+        setConfirmPassword("")
+        setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
+        setOpenModal("success");
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar senha:", error);
+        setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
+        setOpenModal("error");
+      });
   }
 
   function handleUpdatePersonalInfo() {
@@ -277,209 +279,209 @@ export default function EditUser() {
   }, []);
 
   return (
-      <>
-        <div className={styles.editUserGrid}>
-          {!isMobile &&
-              <div className={styles.goBackContainer}>
-                <h1>Editar Perfil</h1>
-              </div>
-          }
+    <>
+      <div className={styles.editUserGrid}>
+        {!isMobile &&
+          <div className={styles.goBackContainer}>
+            <h1>Editar Perfil</h1>
+          </div>
+        }
 
-          <div className={styles.profileSection}>
-            <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+        <div className={styles.profileSection}>
+          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+            {userImage ?
+              <UserImg
+                Source={userImage}
+                Height={216}
+                Width={216}
+                Alt="foto"
+              />
+              :
+              <User width={216} height={216} />
+            }
+            <div className={styles.atualizarFotoContainer}>
+              <div>
+                <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                <label htmlFor="upload-photo">
+                  <span>Atualizar Foto</span>
+                </label>
+              </div>
+
               {userImage ?
-                  <UserImg
-                      Source={userImage}
-                      Height={216}
-                      Width={216}
-                      Alt="foto"
+                <div >
+                  <Button
+                    typeButton="other"
+                    title="Remover Foto"
+                    type="button"
+                    classNameVariable="buttonRemoveImage"
+                    onClick={() => {
+                      setConfirmingDelete(false);
+                      setOpenModal("timer");
+                    }}
                   />
-                  :
-                  <User width={216} height={216} />
-              }
-              <div className={styles.atualizarFotoContainer}>
-                <div>
-                  <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-                  <label htmlFor="upload-photo">
-                    <span>Atualizar Foto</span>
-                  </label>
                 </div>
-
-                {userImage ?
-                    <div >
-                      <Button
-                          typeButton="other"
-                          title="Remover Foto"
-                          type="button"
-                          classNameVariable="buttonRemoveImage"
-                          onClick={() => {
-                            setConfirmingDelete(false);
-                            setOpenModal("timer");
-                          }}
-                      />
-                    </div>
-                    : null}
-              </div>
-            </WhiteContainer>
-          </div>
-
-          <div className={styles.personalInfo}>
-            <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
-              <InputWithIcon
-                  id="nome"
-                  type="text"
-                  placeholder="Digite seu nome"
-                  icon={<User />}
-                  label="Nome"
-                  value={state.firstName}
-                  onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
-              ></InputWithIcon>
-              {type?.type === "aluno" ? (
-                  <InputWithIcon
-                      id="cpf"
-                      type="text"
-                      placeholder="Digite seu CPF"
-                      icon={<IdCard />}
-                      label="CPF"
-                      value={state.cpf}
-                      onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
-                      mask={cpfMask}
-                      disabled={true}
-                  />
-              ) : (
-                  <InputWithIcon
-                      id="cpf"
-                      type="text"
-                      placeholder="Digite seu CREF"
-                      icon={<IdCard />}
-                      label="CREF"
-                      value={state.cref}
-                      onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
-                      disabled={true}
-                  />
-              )}
-
-              <InputWithIcon
-                  id="telefone"
-                  type="text"
-                  placeholder="Digite seu telefone"
-                  icon={<Phone />}
-                  label="Telefone"
-                  value={state.phone}
-                  onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
-                  mask={cellphoneMask}
-              ></InputWithIcon>
-              <Select
-                  id="genero"
-                  label="Gênero"
-                  options={[
-                    "Masculino",
-                    "Feminino",
-                    "Outro",
-                  ]}
-                  placeholder="Selecione seu gênero"
-                  value={state.gender}
-                  onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
-              />
-            </WhiteContainer>
-          </div>
-
-          <div className={styles.loginInfo}>
-            <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
-              <InputWithIcon
-                  id="email"
-                  type="email"
-                  placeholder="Digite seu email"
-                  icon={<Mail />}
-                  label="Email"
-                  value={state.email}
-                  onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
-              ></InputWithIcon>
-              <InputWithIcon
-                  id="senha"
-                  type="password"
-                  placeholder="*************"
-                  icon={<LockKeyhole />}
-                  label="Senha Atual"
-                  isPassword={currentPassword ? true : false}
-                  value={currentPassword}
-                  onInputChange={(value: string) => setCurrentPassword(value)}
-              ></InputWithIcon>
-              <InputWithIcon
-                  id="senha"
-                  type="password"
-                  placeholder="*************"
-                  icon={<LockKeyhole />}
-                  label="Nova Senha"
-                  isPassword={confirmPassword ? true : false}
-                  value={confirmPassword}
-                  onInputChange={(value: string) => setConfirmPassword(value)}
-              ></InputWithIcon>
-              <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
-                      title="Alterar Senha" type="button"   onClick={() => updatePassword()}
-              />
-            </WhiteContainer>
-          </div>
-
-          <div className={styles.footer}>
-            <div className={styles.dashLine}></div>
-            <div className={styles.divButtons}>
-              <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
-              <Button
-                  title="Apagar Perfil"
-                  type="button"
-                  classNameVariable="buttonDanger"
-                  onClick={() => {
-                    setConfirmingDelete(true);
-                    setOpenModal("timer");
-                  }}
-              />
+                : null}
             </div>
-          </div>
+          </WhiteContainer>
         </div>
 
-        {openModal === "success" && (
-            <SuccessModal
-                isMobile={isMobile}
-                closeThen={() => setOpenModal(null)}
-                title={textModal.title}
-                content={textModal.content}
-            />
-        )}
+        <div className={styles.personalInfo}>
+          <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
+            <InputWithIcon
+              id="nome"
+              type="text"
+              placeholder="Digite seu nome"
+              icon={<User />}
+              label="Nome"
+              value={state.firstName}
+              onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
+            ></InputWithIcon>
+            {type?.type === "aluno" ? (
+              <InputWithIcon
+                id="cpf"
+                type="text"
+                placeholder="Digite seu CPF"
+                icon={<IdCard />}
+                label="CPF"
+                value={state.cpf}
+                onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
+                mask={cpfMask}
+                disabled={true}
+              />
+            ) : (
+              <InputWithIcon
+                id="cpf"
+                type="text"
+                placeholder="Digite seu CREF"
+                icon={<IdCard />}
+                label="CREF"
+                value={state.cref}
+                onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
+                disabled={true}
+              />
+            )}
 
-        {openModal === "timer" && (
-            <TimerModal
-                isMobile={isMobile}
-                closeThen={() => {
-                  setOpenModal(null);
-                  setConfirmingDelete(false);
-                }}
-                callSuccessModal={() => {
-                  if (confirmingDelete) {
-                    deleteUser();
-                  } else {
-                    handleRemoveImage();
-                  }
-                  setConfirmingDelete(false);
-                  setOpenModal(null);
-                }}
-                title={confirmingDelete ? "Apagar perfil?" : "Remover imagem?"}
-                buttonTitle={confirmingDelete ? "Apagar" : "Remover"}
-                content={
-                  confirmingDelete
-                      ? "Tem certeza que deseja apagar seu perfil? Isso é irreversível."
-                      : "Tem certeza que deseja remover sua imagem de perfil?"
-                }
+            <InputWithIcon
+              id="telefone"
+              type="text"
+              placeholder="Digite seu telefone"
+              icon={<Phone />}
+              label="Telefone"
+              value={state.phone}
+              onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
+              mask={cellphoneMask}
+            ></InputWithIcon>
+            <Select
+              id="genero"
+              label="Gênero"
+              options={[
+                "Masculino",
+                "Feminino",
+                "Outro",
+              ]}
+              placeholder="Selecione seu gênero"
+              value={state.gender}
+              onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
             />
-        )}
+          </WhiteContainer>
+        </div>
 
-        {openModal === "error" && (
-            <ErrorModal
-                closeThen={() => setOpenModal(null)}
-                title={textModal.title}
-                content={textModal.content}
+        <div className={styles.loginInfo}>
+          <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
+            <InputWithIcon
+              id="email"
+              type="email"
+              placeholder="Digite seu email"
+              icon={<Mail />}
+              label="Email"
+              value={state.email}
+              onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
+            ></InputWithIcon>
+            <InputWithIcon
+              id="senha"
+              type="password"
+              placeholder="*************"
+              icon={<LockKeyhole />}
+              label="Senha Atual"
+              isPassword={currentPassword ? true : false}
+              value={currentPassword}
+              onInputChange={(value: string) => setCurrentPassword(value)}
+            ></InputWithIcon>
+            <InputWithIcon
+              id="senha"
+              type="password"
+              placeholder="*************"
+              icon={<LockKeyhole />}
+              label="Nova Senha"
+              isPassword={confirmPassword ? true : false}
+              value={confirmPassword}
+              onInputChange={(value: string) => setConfirmPassword(value)}
+            ></InputWithIcon>
+            <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
+              title="Alterar Senha" type="button" onClick={() => updatePassword()}
             />
-        )}
-      </>
+          </WhiteContainer>
+        </div>
+
+        <div className={styles.footer}>
+          <div className={styles.dashLine}></div>
+          <div className={styles.divButtons}>
+            <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+            <Button
+              title="Apagar Perfil"
+              type="button"
+              classNameVariable="buttonDanger"
+              onClick={() => {
+                setConfirmingDelete(true);
+                setOpenModal("timer");
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {openModal === "success" && (
+        <SuccessModal
+          isMobile={isMobile}
+          closeThen={() => setOpenModal(null)}
+          title={textModal.title}
+          content={textModal.content}
+        />
+      )}
+
+      {openModal === "timer" && (
+        <TimerModal
+          isMobile={isMobile}
+          closeThen={() => {
+            setOpenModal(null);
+            setConfirmingDelete(false);
+          }}
+          callSuccessModal={() => {
+            if (confirmingDelete) {
+              deleteUser();
+            } else {
+              handleRemoveImage();
+            }
+            setConfirmingDelete(false);
+            setOpenModal(null);
+          }}
+          title={confirmingDelete ? "Apagar perfil?" : "Remover imagem?"}
+          buttonTitle={confirmingDelete ? "Apagar" : "Remover"}
+          content={
+            confirmingDelete
+              ? "Tem certeza que deseja apagar seu perfil? Isso é irreversível."
+              : "Tem certeza que deseja remover sua imagem de perfil?"
+          }
+        />
+      )}
+
+      {openModal === "error" && (
+        <ErrorModal
+          closeThen={() => setOpenModal(null)}
+          title={textModal.title}
+          content={textModal.content}
+        />
+      )}
+    </>
   );
 }
