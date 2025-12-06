@@ -15,12 +15,12 @@ export default function Logout() {
 
         queryClient.removeQueries({ queryKey: ["isAuthenticated"] });
         queryClient.removeQueries({ queryKey: ["actualPlan"] });
-
+        queryClient.clear();
         nav("/", { replace: true });
       } catch (e) {
         queryClient.removeQueries({ queryKey: ["isAuthenticated"] });
         queryClient.removeQueries({ queryKey: ["actualPlan"] });
-
+        queryClient.clear();
         nav("/", { replace: true });
       }
     };
