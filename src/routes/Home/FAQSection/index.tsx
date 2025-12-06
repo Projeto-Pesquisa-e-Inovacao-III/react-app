@@ -16,7 +16,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>A consultoria é totalmente online?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 1.</Typography>
+                        <Typography>A consultoria é totalmente online, realizada via WhatsApp. Alguns pacotes incluem aulas presenciais com o personal, nas quais você recebe acompanhamento e orientações práticas durante o treino.</Typography>
                     </AccordionDetails>
                 </Accordion>
 
@@ -29,7 +29,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>Quais as formas de pagamento disponivéis?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 2.</Typography>
+                        <Typography>Atualmente, o pagamento é feito via PIX. Alguns bancos digitais oferecem a opção de parcelamento diretamente pelo aplicativo.</Typography>
                     </AccordionDetails>
                 </Accordion>
 
@@ -42,7 +42,8 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>A consultoria é para todos ou apenas para quem já treina?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 3.</Typography>
+                        <Typography>A consultoria é indicada para todos os perfis, inclusive para quem nunca treinou ou não tem experiência com atividades físicas.
+                        </Typography>
                     </AccordionDetails>
                 </Accordion>
 
@@ -55,7 +56,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>Quais as formas de contato com o personal?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 3.</Typography>
+                        <Typography>O contato é realizado principalmente pelo WhatsApp, além de telefone e Instagram.</Typography>
                     </AccordionDetails>
                 </Accordion>
 
@@ -68,7 +69,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>Como funciona a consultoria após a contratação do pacote?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 3.</Typography>
+                        <Typography>Após a contratação, o personal entrará em contato para entender seu perfil, seus objetivos e sua experiência com treinos. Dependendo do pacote contratado, você terá direito a aulas presenciais mensais para agendamento.</Typography>
                     </AccordionDetails>
                 </Accordion>
 
@@ -81,7 +82,8 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                         <h3>Tenho direito a reembolso?</h3>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <Typography>Resposta para a pergunta 3.</Typography>
+                        <Typography>Sim. Você pode solicitar o reembolso em até 7 (sete) dias corridos após a contratação. Esse prazo segue o Código de Defesa do Consumidor para compras realizadas online.
+                        </Typography>
                     </AccordionDetails>
                 </Accordion>
 

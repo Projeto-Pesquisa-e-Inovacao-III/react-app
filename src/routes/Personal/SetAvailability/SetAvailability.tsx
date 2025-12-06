@@ -222,90 +222,100 @@ export default function SetAvailability() {
             </div>
 
             <div className={styles.mobileView}>
-                {schedule.map((daySchedule, dayIndex) => (
-                    <div key={daySchedule.day} className={styles.dayCard}>
-                        <div className={styles.dayCardHeader}>
-                            <h3 className={styles.dayCardTitle}>{daySchedule.day}</h3>
-                        </div>
+                {schedule.map((daySchedule, dayIndex) => {
+                    const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
+                    const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
 
-                        {daySchedule.slots.map((slot, slotIndex) => (
-                            <div key={slotIndex} className={styles.slotCard}>
-                                <div className={styles.slotFields}>
-                                    <div className={styles.fieldGroup}>
-                                        <label className={styles.fieldLabel}>De</label>
-                                        <input
-                                            type="time"
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, slotIndex, "horaInicio", e.target.value)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </div>
+                    const workSlot = daySchedule.slots[workIndex] || {};
+                    const breakSlot = daySchedule.slots[breakIndex] || {};
 
-                                    <div className={styles.fieldGroup}>
-                                        <label className={styles.fieldLabel}>Até</label>
-                                        <input
-                                            type="time"
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, slotIndex, "horaFim", e.target.value)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </div>
+                    return (
+                        <div key={dayIndex} className={styles.dayCard}>
+                            <div className={styles.dayCardHeader}>
+                                <h3 className={styles.dayCardTitle}>
+                                    {DAYS_OF_WEEK_DISPLAY[dayIndex]}
+                                </h3>
+                            </div>
 
-                                    <div className={styles.fieldGroup}>
-                                        <label className={styles.fieldLabel}>Intervalo Entrada</label>
-                                        <input
-                                            type="time"
-                                            onChange={(e) =>
-                                                updateSlot(
-                                                    dayIndex,
-                                                    slotIndex,
-                                                    "horaInicio",
-                                                    e.target.value
-                                                )
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </div>
+                            <div className={styles.slotFields}>
+                                {/* Horário de trabalho */}
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>De</label>
+                                    <input
+                                        type="time"
+                                        value={workSlot.horaInicio || ""}
+                                        onChange={(e) =>
+                                            updateSlot(
+                                                dayIndex,
+                                                workIndex,
+                                                "horaInicio",
+                                                e.target.value,
+                                                workSlot.id!
+                                            )
+                                        }
+                                        className={styles.input}
+                                    />
+                                </div>
 
-                                    <div className={styles.fieldGroup}>
-                                        <label className={styles.fieldLabel}>Intervalo Saída</label>
-                                        <input
-                                            type="time"
-                                            onChange={(e) =>
-                                                updateSlot(
-                                                    dayIndex,
-                                                    slotIndex,
-                                                    "horaFim",
-                                                    e.target.value
-                                                )
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </div>
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Até</label>
+                                    <input
+                                        type="time"
+                                        value={workSlot.horaFim || ""}
+                                        onChange={(e) =>
+                                            updateSlot(
+                                                dayIndex,
+                                                workIndex,
+                                                "horaFim",
+                                                e.target.value,
+                                                workSlot.id!
+                                            )
+                                        }
+                                        className={styles.input}
+                                    />
+                                </div>
 
-                                    <div className={styles.fieldGroup}>
-                                        <label className={styles.fieldLabel}>Intervalo Sessões</label>
-                                        <input
-                                            type="time"
-                                            onChange={(e) =>
-                                                updateSlot(
-                                                    dayIndex,
-                                                    slotIndex,
-                                                    "horaFim",
-                                                    e.target.value
-                                                )
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </div>
+                                {/* Intervalo */}
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Intervalo Entrada</label>
+                                    <input
+                                        type="time"
+                                        value={breakSlot.horaInicio || ""}
+                                        onChange={(e) =>
+                                            updateSlot(
+                                                dayIndex,
+                                                breakIndex,
+                                                "horaInicio",
+                                                e.target.value,
+                                                breakSlot.id!
+                                            )
+                                        }
+                                        className={styles.input}
+                                    />
+                                </div>
+
+                                <div className={styles.fieldGroup}>
+                                    <label className={styles.fieldLabel}>Intervalo Saída</label>
+                                    <input
+                                        type="time"
+                                        value={breakSlot.horaFim || ""}
+                                        onChange={(e) =>
+                                            updateSlot(
+                                                dayIndex,
+                                                breakIndex,
+                                                "horaFim",
+                                                e.target.value,
+                                                breakSlot.id!
+                                            )
+                                        }
+                                        className={styles.input}
+                                    />
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                ))}
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
-};
+}

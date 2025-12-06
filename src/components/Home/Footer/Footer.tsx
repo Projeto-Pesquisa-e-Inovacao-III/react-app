@@ -1,13 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import LinksCol from "./LinksCol";
 
 export default function Footer({ isMobile }: { isMobile: boolean }) {
+    const nav = useNavigate();
+
+    function handleNavigate(url: string) {
+        window.open(url, "_blank");
+    }
+
     return (
         <footer
             className={`w-full bg-oxford-blue text-white p-5 pl-10 pr-10 text-center ${isMobile ? "flex flex-col gap-6" : "flex justify-between items-center"
                 }`}
         >
             {isMobile &&
-                <div className={`${isMobile ? "flex justify-center" : "flex flex-row justify-center mb-3"}`}>
+                <div onClick={() => handleNavigate("https://www.instagram.com/fabiobernardes.oficial")} className={`${isMobile ? "flex justify-center" : "flex flex-row justify-center mb-3 cursor-pointer"}`}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="30"
@@ -80,7 +87,7 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
             </div>
 
             {!isMobile &&
-                <div className={`${isMobile ? "flex justify-center" : "flex flex-row justify-center mb-3"}`}>
+                <div onClick={() => handleNavigate("https://www.instagram.com/fabiobernardes.oficial")} className={`${isMobile ? "flex justify-center" : "flex flex-row justify-center mb-3 cursor-pointer"}`}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="30"
