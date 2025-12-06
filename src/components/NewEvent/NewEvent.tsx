@@ -5,7 +5,7 @@ import SmallerButton from "../SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
 import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
@@ -121,6 +121,8 @@ export default function NewEvent(
         }
     }, [addressData.postalCode]);
 
+    const url = window.location.href;
+
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
 
@@ -183,8 +185,12 @@ export default function NewEvent(
 
                 if (calculatedTitle && newEventDate) {
                     queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+                    if (url.includes("/schedule")) {
+                        openModal();
+                        navigation("/schedule");
+                        return;
+                    }
                     openModal();
-                    navigation("/schedule");
                     return;
                 }
             }).catch(error => {
@@ -259,9 +265,15 @@ export default function NewEvent(
     }
 
     const navigation = useNavigate();
+    const [searchParams] = useSearchParams();
+
     function handleClose() {
         document.body.style.overflow = 'auto';
-        navigation("/schedule");
+        if (searchParams.has("date")) {
+            navigation("/schedule");
+            close(false);
+            return;
+        }
         close(false);
     }
 
@@ -301,15 +313,29 @@ export default function NewEvent(
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, [step]);
 
-    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
+    const personal = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data[0].id,
+    });
 
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(1, newEventDate ? newEventDate : ""),
+        queryFn: () => getPersonalHours(personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
+    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
 
-    console.log("Availability Hours: ", availabilityHours.data);
+    useEffect(() => {
+        if (!availabilityHours?.data?.length) return;
+
+        const hour = parseInt(availabilityHours.data[0].inicio.split(":")[0]);
+
+        if (hour < 12) setChooseTimeOfDay("MANHÃ");
+        else if (hour < 18) setChooseTimeOfDay("TARDE");
+        else setChooseTimeOfDay("NOITE");
+
+    }, [availabilityHours]);
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
@@ -399,7 +425,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
@@ -424,7 +450,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "TARDE" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 12 && parseInt(hourBlock.inicio.split(":")[0]) < 18) {
@@ -449,7 +475,7 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay !== null && chooseTimeOfDay === "Noite" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours?.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) >= 18 && parseInt(hourBlock.inicio.split(":")[0]) < 24) {
@@ -467,7 +493,7 @@ export default function NewEvent(
                                                                         <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
-                                                            } 
+                                                            }
                                                             return null;
                                                         })}
                                                     </div>

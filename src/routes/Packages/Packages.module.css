@@ -1,13 +1,16 @@
 .packagesListWrapperDesktop {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    flex-wrap: nowrap;
-    justify-content: center;
-    gap: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
+}
 
+@media (max-width: 1260px) {
+    .packagesListWrapperDesktop {
+        justify-content: center;
+    }
 }
 
 .packagesContainerBlock {

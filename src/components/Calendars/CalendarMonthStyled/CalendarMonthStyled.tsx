@@ -117,7 +117,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px", marginTop: "4px" }}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px"}}>
                   {eventsOfDay.map((event, index) => (
                     <div
                       key={event.agendamentoId}

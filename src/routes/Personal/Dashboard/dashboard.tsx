@@ -107,7 +107,7 @@ export default function Dashboard() {
                 <div className={classnames(styles.wrapperElementsDashboard, { [styles.dashMobile]: isMobile })}>
                     <div className={styles.textDashboardPersonal}>
                         <h1>Desempenho</h1>
-                        <h3>Acompanhe suas métricas e resultados</h3>
+                        {/* <h3>Acompanhe suas métricas e resultados</h3> */}
                     </div>
                     <div className={classnames(styles.kpisDashboardPersonal, { [styles.kpisDashboardPersonalMobile]: isMobile })}>
                         <KPICards isMobile={isMobile} isFull={!isMobile} title="Alunos com planos ativos" value={activeStudentsCount} description="Alunos ativos"

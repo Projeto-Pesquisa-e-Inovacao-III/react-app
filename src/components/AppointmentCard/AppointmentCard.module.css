@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: flex-start;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #7e7e7e;
   border-radius: 12px;
   padding: 16px;
   background-color: #fff;
@@ -11,6 +11,7 @@
   gap: 16px;
   width: 100%;
   cursor: pointer;
+  max-width: 600px;
 }
 
 .sessionCard :global(.studentPendingCheckSchedule) {
@@ -40,6 +41,13 @@
   flex-direction: column;
   gap: 4px;
   flex: 1;
+  max-width: 270px;
+}
+
+@media (max-width: 1280px) {
+  .sessionCardLeft {
+    max-width: unset !important;
+  }
 }
 
 .sessionCardStatus {
@@ -108,7 +116,7 @@
   padding: 16px;
   background-color: #fff;
   width: 100%;
-  max-width: 400px;
+  max-width: unset !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -118,6 +126,7 @@
   gap: 4px;
   flex: 1;
   align-items: flex-start;
+  max-width: unset !important;
 }
 
 .sessionCardDividerMobile {

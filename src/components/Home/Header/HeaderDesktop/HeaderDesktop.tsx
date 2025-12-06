@@ -1,12 +1,20 @@
 import { Link } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../../LogoHeaderDesktop/LogoHeaderDesktop";
 import UserAvatar from "../../../UserAvatar/UserAvatar";
+import { useQuery } from "@tanstack/react-query";
+import { isAuthenticated } from "../../../../constants/user";
 
-export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean }) {
+export default function HeaderDesktop() {
+    const userLoggedIn = useQuery({
+        queryKey: ["isAuthenticated"],
+        queryFn: isAuthenticated,
+    });
+
+    const verify = !!userLoggedIn.data?.data?.autentificado;
 
     return (
         <>
-            <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white">
+            <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white z-10">
                 <Link to="/">
                     <LogoHeaderDesktop />
                 </Link>
@@ -18,7 +26,7 @@ export default function HeaderDesktop({ userLoggedIn }: { userLoggedIn: boolean 
                 </nav>
 
                 <div className="text-lg flex gap-2">
-                    {userLoggedIn ? (
+                    {verify ? (
                         <div className="flex gap-3 items-center">
                             <Link to="/home" className="border-2 p-1 rounded-full">
                                 <UserAvatar useUserImage={true} />
