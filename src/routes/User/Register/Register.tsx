@@ -21,6 +21,7 @@ import classNames from "classnames";
 import InputRowDouble from "../../../components/Inputs/InputRowDouble/InputRowDouble";
 import useMobile from "../../../hooks/isMobile";
 import { cellphoneMask, cpfMask } from "../../../utils/mascara";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 
 const initialRegisterState = {
     name: "",
@@ -33,18 +34,22 @@ const initialRegisterState = {
     confirmPassword: ""
 };
 
+type modalTypes = "success" | "error" | null;
+
 export default function Register() {
     const isMobile = useMobile();
+
+    const [openModal, setOpenModal] = useState<modalTypes>(null);
+    const [modalInfo, setModalInfo] = useState<{ title: string; content: string }>({ title: "", content: "" });
 
     const [register, setRegister] = useState(initialRegisterState);
 
     const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
-    const [successRegister, setSuccessRegister] = useState<boolean>(false);
     const navigate = useNavigate();
     const errors = validation.validatePassword("");
 
     function navToLogin() {
-        setSuccessRegister(false);
+        setOpenModal(null);
         navigate("/login");
     }
 
@@ -84,35 +89,39 @@ export default function Register() {
             dataNascimento: register.birthDate
         };
 
-        console.log(userData.cpf);
+        if (register.password !== register.confirmPassword) {
+            setModalInfo({ title: "Erro de validação", content: "As senhas não coincidem." });
+            setOpenModal("error");
+            setShowPasswordValidation(true);
+            return;
+        }
 
         const nullOrBlank = validation.isNullOrBlank(userData);
 
         if (nullOrBlank) {
-            errors += nullOrBlank;
+            setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos"});
+            setOpenModal("error");
+            return;
         } else if (!validation.validateEmail(register.email).startsWith("Email válido")) {
-            errors += validation.validateEmail(register.email);
-        } else if (register.customerDocument && register.customerDocument.length !== 14) {
-            errors += "CPF inválido. Deve ter 14 caracteres.\n";
-        } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
-            errors += validation.validatePassword(register.password);
-        }
+            setModalInfo({ title: "Erro de validação", content: "Email inválido." });
+            setOpenModal("error");
+            return;
 
-        if (errors) {
-            Swal.fire({
-                icon: "error",
-                title: "Erro de validação",
-                text: errors,
-                html: `<pre style="text-align: left; font-size: .85rem;">${errors.replace(/\n/g, '<br>')}</pre>`,
-                confirmButtonColor: "#166ba3ff"
-            });
+        } else if (register.customerDocument && register.customerDocument.length !== 14) {
+            setModalInfo({ title: "Erro de validação", content: "CPF inválido." });
+            setOpenModal("error");
+            return;
+        } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
+            setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais."});
+            setOpenModal("error");
             return;
         }
+
 
         userService
             .register(userData)
             .then(async (res) => {
-                setSuccessRegister(true);
+                setOpenModal("success");
 
                 setTimeout(() => {
                     if (successRegister) {
@@ -122,23 +131,8 @@ export default function Register() {
 
             })
             .catch((err) => {
-                if (err.response && err.response.status !== 500) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Usuário já cadastrado",
-                        showConfirmButton: true,
-                        confirmButtonColor: "#166ba3ff",
-                        timer: 3000,
-                    });
-                }
-                Swal.fire({
-                    icon: "error",
-                    title: "Erro no servidor",
-                    showConfirmButton: true,
-                    confirmButtonColor: "#166ba3ff",
-                    timer: 3000,
-                });
-                console.log(err)
+                setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
+                setOpenModal("error");
             });
     }
 
@@ -268,15 +262,24 @@ export default function Register() {
                 }
             </div >
 
+            {openModal === "success" && (
+                <SuccessModal
+                    isMobile={isMobile}
+                    title="Cadastro realizado com sucesso!"
+                    content="Você já pode fazer login na sua conta."
+                    closeThen={navToLogin}
+                />
+            )}
+
             {
-                successRegister && (
-                    <SuccessModal
-                        isMobile={isMobile}
-                        title="Cadastro realizado com sucesso!"
-                        content="Você já pode fazer login na sua conta."
-                        closeThen={navToLogin}
+                openModal === "error" && (
+                    <ErrorModal
+                        title={modalInfo.title}
+                        content={modalInfo.content}
+                        closeThen={() => setOpenModal(null)}
                     />
-                )}
+                )
+            }
         </>
     );
 }

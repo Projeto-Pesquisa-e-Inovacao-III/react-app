@@ -3,20 +3,22 @@ import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
-import { appointmentCardsData } from "./mocks/appointmentCardMock";
 import { useNavigate } from "react-router-dom";
 import { TypeContext } from "../../App";
 import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Dumbbell, Home, Activity, Users, ActivityIcon, HomeIcon, HeartIcon, HeartPulseIcon } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
+import Button from "../../components/Button/Button";
+import NewEvent from "../../components/NewEvent/NewEvent";
+import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -24,8 +26,6 @@ export function Overview() {
     const nav = useNavigate();
 
     const type = useContext(TypeContext);
-
-    const [appointmentCards] = useState(appointmentCardsData);
 
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
@@ -60,11 +60,10 @@ export function Overview() {
             label: string;
             current: number;
             total: number;
-            colorClass?: string;
             icon?: React.ReactNode;
         };
 
-        const BalanceItem = ({ label, current, total, colorClass, icon }: BalanceItemProps) => {
+        const BalanceItem = ({ label, current, total, icon }: BalanceItemProps) => {
             const percentage = Math.min(100, Math.max(0, (current / total) * 100));
 
             const getColor = () => {
@@ -173,6 +172,24 @@ export function Overview() {
         fetchAppointmentsCountToday();
     }, [type]);
 
+    const [clickedDate, setClickedDate] = useState<string>("");
+    const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
+    function handleErrorModalInfo(title: string, description: string) {
+        setModalText({ title, description });
+    }
+
+    type ModalType = "success" | "error" | "newEvent";
+
+    const [modalType, setModalType] = useState<ModalType | null>(null);
+    function openModal(type: ModalType) {
+        setModalType(type);
+    }
+
+    function handleSuccessModalInfo(title: string, description: string) {
+        openModal("success");
+        setModalText({ title, description });
+    }
+
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -223,7 +240,10 @@ export function Overview() {
                             <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} />
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
-                            <h1>Agendamentos</h1>
+                            <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
+                                <h1>Agendamentos</h1>
+                                <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => openModal("newEvent")} />
+                            </div>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>
                             ) : (
@@ -288,6 +308,31 @@ export function Overview() {
 
                 </div>
             </div>
+
+            {modalType === "newEvent" && (
+                <>
+                    <NewEvent
+                        isMobile={isMobile}
+                        close={() => setModalType(null)}
+                        openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
+                        errorModal={(title, description) => handleErrorModalInfo(title, description)}
+                        insertedEvents={appointments.data?.data}
+                        title="Agendar horário"
+                        buttonTitle="Avançar"
+                        clickedDate={clickedDate}
+                    />
+                </>
+            )}
+
+            {modalType === "success" && (
+// export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
+                <SuccessModal
+                    isMobile={isMobile}
+                    closeThen={() => setModalType(null)}
+                    title={modalText.title}
+                    content={modalText.description}
+                />
+            )}
         </>
     );
 }

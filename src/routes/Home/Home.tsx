@@ -11,28 +11,17 @@ import useMobile from "../../hooks/isMobile";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAuthenticated } from "../../constants/user";
 import { useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 
 //todo: update images; 
 // remake header mobile; 
 export default function Home() {
     const isMobile = useMobile();
     const Header = isMobile ? HeaderMobile : HeaderDesktop;
-
-    const isLoggedIn = useQuery({
-        queryKey: ["isAuthenticated"],
-        queryFn: () => isAuthenticated(),
-        select: (res) => res.data?.autentificado
-    });
-
-    console.log("Home authentication check:", {
-        isLoading: isLoggedIn.isLoading,
-        data: isLoggedIn.data,
-        isError: isLoggedIn.isError
-    });
     
     return (
         <>
-            <Header userLoggedIn={isLoggedIn.data} />
+            <Header />
             <div id="main-section">
                 {/* main */}
                 <MainSection isMobile={isMobile} />

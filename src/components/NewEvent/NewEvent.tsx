@@ -5,7 +5,7 @@ import SmallerButton from "../SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
 import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
@@ -121,6 +121,8 @@ export default function NewEvent(
         }
     }, [addressData.postalCode]);
 
+    const url = window.location.href;
+
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
 
@@ -183,8 +185,11 @@ export default function NewEvent(
 
                 if (calculatedTitle && newEventDate) {
                     queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+                    if(url.includes("/schedule")) {
+                        navigation("/schedule");
+                        return;
+                    }
                     openModal();
-                    navigation("/schedule");
                     return;
                 }
             }).catch(error => {
@@ -259,9 +264,15 @@ export default function NewEvent(
     }
 
     const navigation = useNavigate();
+    const [searchParams] = useSearchParams();
+    
     function handleClose() {
         document.body.style.overflow = 'auto';
-        navigation("/schedule");
+        if (searchParams.has("date")) {
+            navigation("/schedule");
+            close(false);
+            return;
+        }
         close(false);
     }
 

@@ -19,22 +19,16 @@ type TimerModalProps = {
 }
 
 export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle, isDelete }: TimerModalProps) {
-    const [mounted, setMounted] = useState(false)
-
-    function unmount() {
-        document.body.style.overflow = 'auto';
-    }
 
     useEffect(() => {
-        setMounted(true);
         document.body.style.overflow = 'hidden';
+        
+        return () => {
+            document.body.style.overflow = '';
+        };
 
     }, [])
 
-    function handleCloseModal() {
-        unmount();
-        closeThen(false);
-    }
 
     const [enableButton, setEnableButton] = useState(false);
 
@@ -61,7 +55,6 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                     <DeleteEvent
                         isMobile={isMobile}
                         enableButton={enableButton}
-                        handleCloseModal={handleCloseModal}
                         id={id}
                         events={events}
                         setEvents={setEvents}
@@ -72,7 +65,6 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                     <AcceptEvent
                         isMobile={isMobile}
                         enableButton={enableButton}
-                        handleCloseModal={handleCloseModal}
                         id={id}
                         events={events}
                         setEvents={setEvents}

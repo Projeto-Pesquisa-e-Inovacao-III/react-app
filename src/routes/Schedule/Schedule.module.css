@@ -1,7 +1,7 @@
 .viewSchedule {
     display: flex;
-    gap: 60px;
-    margin-top: 30px;
+    gap: 40px;
+    margin-top: 10px;
 }
 
 .schedulePageCalendar {

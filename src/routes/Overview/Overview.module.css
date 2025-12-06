@@ -9,14 +9,13 @@
 .overviewLeftColumn h1 {
     font-size: 24px;
     font-weight: 600;
-    margin-bottom: 10px;
 }
 
 .containerContent {
     display: flex;
-    gap: 60px;
+    gap: 40px;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .containerContentMobile {
@@ -43,7 +42,7 @@
 .schedulePageUserActions {
     display: flex;
     flex-direction: column;
-    gap: 60px;
+    gap: 40px;
     align-items: flex-end;
 }
 
@@ -150,7 +149,17 @@
 }
 
 .appointmentsSection {
-    margin-top: 30px;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.appointmentsSection>p:nth-child(2) {
+    padding: 16px;
+    background-color: #e1e1e1;
+    border-radius: 8px;
+    border: solid 1px #a6a6a6;
 }
 
 .appointmentCardsRow {
@@ -159,7 +168,6 @@
     gap: 24px;
     justify-content: flex-start;
     width: 100%;
-    max-width: 450px;
 }
 
 .appointmentCardsRowMobile {
@@ -198,8 +206,7 @@
     text-align: start;
 }
 
-@media (max-width: 1024px) {
-}
+@media (max-width: 1024px) {}
 
 @media (max-width: 400px) {
     .containerContentMobile {

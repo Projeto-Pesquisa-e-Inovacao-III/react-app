@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { LogoHeaderMobile } from "../../../LogoHeaderMobile/LogoHeaderMobile";
 import { Link } from "react-router";
+import { isAuthenticated } from "../../../../constants/user";
+import { useQuery } from "@tanstack/react-query";
 
-export default function HeaderMobile({ userLoggedIn }: { userLoggedIn: boolean }) {
+export default function HeaderMobile() {
 
   const [burgerActive, setBurgerActive] = useState(false);
+  const userLoggedIn = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: isAuthenticated,
+  });
 
+  const verify = !!userLoggedIn.data?.data?.autentificado;
 
   return (
     <>
@@ -27,7 +34,7 @@ export default function HeaderMobile({ userLoggedIn }: { userLoggedIn: boolean }
             <a href="#services-section-mobile">Bora treinar!</a>
             <a href="#plans-section">Pacotes de Consultoria</a>
 
-            {userLoggedIn ? (
+            {verify ? (
               <>
                 <Link to="/home" className=" bg-white text-black h-full rounded-md">Perfil</Link>
                 <Link to="/logout" className=" bg-white text-black h-full rounded-md">Logout</Link>

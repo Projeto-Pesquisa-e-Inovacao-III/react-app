@@ -1,11 +1,12 @@
 .packagesListWrapperDesktop {
     display: flex;
     flex-wrap: wrap;
-    gap: 60px;
+    gap: 40px;
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
 }
+
 @media (max-width: 1260px) {
     .packagesListWrapperDesktop {
         justify-content: center;
@@ -20,7 +21,6 @@
     font-weight: 600;
     font-size: 30px;
     color: #333;
-    margin-bottom: 24px;
 }
 
 .addButtonContainer {
