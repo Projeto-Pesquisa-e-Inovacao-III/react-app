@@ -348,7 +348,7 @@ export default function EditUser() {
                   />
               ) : (
                   <InputWithIcon
-                      id="cref"
+                      id="cpf"
                       type="text"
                       placeholder="Digite seu CREF"
                       icon={<IdCard />}

@@ -28,6 +28,7 @@
   padding: 20px 32px;
   background-color: var(--bg-blue);
   border-bottom: 1px solid hsl(220, 15%, 88%);
+  border-radius: 8px 8px 0 0;
 }
 
 .defaultsLabel {
@@ -101,7 +102,7 @@
 }
 
 .tableHead {
-  background: hsl(210, 100%, 25%);
+  background: var(--indigo);
   color: #ffffff;
 }
 
@@ -266,7 +267,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: hsl(210, 100%, 25%);
+  background: var(--indigo);
   color: #ffffff;
   padding: 16px;
 }

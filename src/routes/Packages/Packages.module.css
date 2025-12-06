@@ -1,13 +1,15 @@
 .packagesListWrapperDesktop {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    flex-wrap: nowrap;
-    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
     gap: 60px;
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
-
+}
+@media (max-width: 1260px) {
+    .packagesListWrapperDesktop {
+        justify-content: center;
+    }
 }
 
 .packagesContainerBlock {
@@ -18,6 +20,7 @@
     font-weight: 600;
     font-size: 30px;
     color: #333;
+    margin-bottom: 24px;
 }
 
 .addButtonContainer {
