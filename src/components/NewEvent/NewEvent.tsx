@@ -301,7 +301,6 @@ export default function NewEvent(
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, [step]);
 
-    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
 
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
@@ -310,6 +309,19 @@ export default function NewEvent(
     });
 
     console.log("Availability Hours: ", availabilityHours.data);
+    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null
+    );
+
+    useEffect(() => {
+        if (!availabilityHours?.data?.length) return;
+
+        const hour = parseInt(availabilityHours.data[0].inicio.split(":")[0]);
+
+        if (hour < 12) setChooseTimeOfDay("MANHÃ");
+        else if (hour < 18) setChooseTimeOfDay("TARDE");
+        else setChooseTimeOfDay("NOITE");
+
+    }, [availabilityHours]);
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
@@ -467,7 +479,7 @@ export default function NewEvent(
                                                                         <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
-                                                            } 
+                                                            }
                                                             return null;
                                                         })}
                                                     </div>

@@ -15,6 +15,8 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Dumbbell, Home, Activity, Users, ActivityIcon, HomeIcon, HeartIcon, HeartPulseIcon } from 'lucide-react';
+import { LinearProgress } from "@mui/material";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -51,15 +53,81 @@ export function Overview() {
         ]
     });
 
+
     function getBalance() {
-        const balance = (
-            <div>
-                <p>{`Presencial: ${aulaPresencial?.data ?? 0}`}</p>
-                <p>{`Funcional: ${aulaFuncional?.data ?? 0}`}</p>
-                <p>{`Residencial: ${aulaResidencial?.data ?? 0}`}</p>
+
+        type BalanceItemProps = {
+            label: string;
+            current: number;
+            total: number;
+            colorClass?: string;
+            icon?: React.ReactNode;
+        };
+
+        const BalanceItem = ({ label, current, total, colorClass, icon }: BalanceItemProps) => {
+            const percentage = Math.min(100, Math.max(0, (current / total) * 100));
+
+            const getColor = () => {
+                if (percentage < 40) return "#ef4444"; // vermelho
+                if (percentage < 70) return "#f59e0b"; // amarelo
+                return "#093a5d"; // verde
+            };
+
+
+            return (
+                <div className="mb-4">
+                    <div className="flex justify-between mb-1.5 text-base">
+                        <span className="font-semibold text-slate-700 flex gap-2">
+                            {icon}{label}
+                        </span>
+                        <span className="font-bold text-slate-800">
+                            {current}
+                            <span className="ml-1 font-normal text-slate-400">/ {total}</span>
+                        </span>
+                    </div>
+
+
+                    <LinearProgress
+                        variant="determinate"
+                        value={percentage}
+                        sx={{
+                            height: 4,
+                            borderRadius: 8,
+                            "& .MuiLinearProgress-bar": {
+                                backgroundColor: getColor(),
+                            },
+                        }}
+                    />
+                </div>
+            );
+        };
+
+        const TOTAL_PADRAO = 20;
+
+        return (
+            <div className="py-2">
+                <BalanceItem
+                    label="Presencial"
+                    current={aulaPresencial?.data ?? 0}
+                    total={TOTAL_PADRAO}
+                    icon={<Users />}
+                />
+
+                <BalanceItem
+                    label="Funcional"
+                    current={aulaFuncional?.data ?? 0}
+                    total={TOTAL_PADRAO}
+                    icon={<HeartPulseIcon />}
+                />
+
+                <BalanceItem
+                    label="Residencial"
+                    current={aulaResidencial?.data ?? 0}
+                    total={TOTAL_PADRAO}
+                    icon={<HomeIcon />}
+                />
             </div>
         );
-        return balance;
     }
 
     const appointments = useQuery({

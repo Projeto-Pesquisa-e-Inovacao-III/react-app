@@ -59,7 +59,7 @@
     padding: 16px 12px;
     background: #fff;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .cardTitleMobile {
@@ -107,6 +107,7 @@
         min-width: 0;
         max-width: 100%;
         padding: 20px 6px;
+        width: 100%;
     }
 
     .cardTitleMobile {
