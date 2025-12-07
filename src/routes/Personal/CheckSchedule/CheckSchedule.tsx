@@ -104,7 +104,7 @@ export function CheckSchedule() {
         const payload = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description
+            descricaoCancelamento: data.description === "" ? null : data.description
         };
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(() => {
