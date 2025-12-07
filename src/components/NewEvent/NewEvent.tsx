@@ -1,4 +1,4 @@
-import { use, useEffect, useMemo, useState } from "react";
+import { use, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton";
@@ -10,15 +10,18 @@ import { cepMask } from "../../utils/mascara";
 import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
-import type { Schedule } from "../../models/schedule";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { Schedule, ScheduleAfterInserted } from "../../models/schedule";
+import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
-import { differenceInYears, format, parse, startOfDay } from "date-fns";
+import { differenceInYears, format, parse, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getPersonalHours } from "../../constants/personal";
+import { getTotalByClassType } from "../../constants/overview";
+import { TypeContext } from "../../App";
 
 type NewEventProps = {
     isMobile: boolean;
+    appoitmentData?: ScheduleAfterInserted | null;
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModal: (() => void);
     errorModal: ((title: string, description: string) => void);
@@ -28,6 +31,9 @@ type NewEventProps = {
     isReschedule?: boolean;
     rescheduleId?: number | null;
     clickedDate?: string;
+    newAppointmentCreated?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    goToNextStep?: boolean;
+    typeUser?: string;
 };
 
 type AddressState = {
@@ -42,17 +48,16 @@ type AddressState = {
 type modalTypes = "error" | null;
 
 export default function NewEvent(
-    { isMobile, close, openModal, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate }: NewEventProps
+    { isMobile, appoitmentData, close, openModal, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {
     const [modal, setModal] = useState<modalTypes>(null);
+
+    console.log("clickedDate prop:", clickedDate);
 
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
     const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
-
-    console.log("Inserted Events: ", insertedEvents);
-
 
     const personalList = useQuery({
         queryKey: ["personalList"],
@@ -77,9 +82,6 @@ export default function NewEvent(
     }>({ title: "Houve um erro", description: "Ocorreu um erro inesperado." });
 
     const queryClient = useQueryClient();
-
-
-    let eventToReschedule = rescheduleId ? insertedEvents?.find(event => event?.agendamentoId === rescheduleId) : undefined;
 
     const formattedDate = useMemo(() => {
         if (newEventDate && newEventStartHour) {
@@ -186,6 +188,7 @@ export default function NewEvent(
                 if (calculatedTitle && newEventDate) {
                     queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
                     if (url.includes("/schedule")) {
+                        newAppointmentCreated && newAppointmentCreated(true);
                         openModal();
                         navigation("/schedule");
                         return;
@@ -198,7 +201,7 @@ export default function NewEvent(
                 if (error.status === 400) {
                     setModalInfo({
                         title: "Erro ao agendar",
-                        description: "Horário indisponível para agendamento"
+                        description: error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento."
                     });
                     setModal("error");
                     return;
@@ -212,10 +215,15 @@ export default function NewEvent(
 
     }
 
+    useEffect(() => {
+        console.log("New Event Date:", appoitmentData);
+    }, []);
 
-    async function handleRescheduleEvent(e: React.FormEvent) {
+
+    async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
-        e.preventDefault();
+        e?.preventDefault();
+
 
         if (!newEventDate || !newEventStartHour) {
             alert("Por favor, selecione uma data e horário para o evento.");
@@ -224,27 +232,52 @@ export default function NewEvent(
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
+        const finalAddress = appoitmentData
+            ? {
+                number: appoitmentData.endereco.numero,
+                complement: appoitmentData.endereco.complemento,
+                postalCode: appoitmentData.endereco.cep.id,
+                address: appoitmentData.endereco.cep.logradouro,
+                city: appoitmentData.endereco.cep.localidade,
+                state: appoitmentData.endereco.cep.uf
+            }
+            : addressData;
+
+        if (appoitmentData) {
+            setAddressData({
+                number: appoitmentData.endereco.numero,
+                complement: appoitmentData.endereco.complemento,
+                postalCode: appoitmentData.endereco.cep.id,
+                address: appoitmentData.endereco.cep.logradouro,
+                city: appoitmentData.endereco.cep.localidade,
+                state: appoitmentData.endereco.cep.uf
+            });
+        }
+        console.log("appoitmentData antes do payload:", appoitmentData?.endereco);
+        console.log("addressData antes do payload:", addressData);
 
         const payload: Schedule = {
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: new Date(`${newEventDate}T${newEventStartHour}`),
             descricao: calculatedTitle,
             endereco: {
-                numero: addressData.number,
-                complemento: addressData.complement,
+                numero: finalAddress.number,
+                complemento: finalAddress.complement,
                 unidade: "",
                 tipo: selectedLocation,
                 cep: {
-                    id: addressData.postalCode,
-                    logradouro: addressData.address,
+                    id: finalAddress.postalCode,
+                    logradouro: finalAddress.address,
                     bairro: "",
-                    localidade: addressData.city,
-                    uf: addressData.state
+                    localidade: finalAddress.city,
+                    uf: finalAddress.state
                 }
             },
             personalId: personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
+
+        console.log("Payload de reagendamento:", payload);
 
 
         await rescheduleAppointment(payload).then(async response => {
@@ -255,6 +288,12 @@ export default function NewEvent(
             //errorModal();
         });
 
+        if (!goToNextStep) {
+            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+            openModal();
+            return;
+        }
+
 
         if (calculatedTitle && newEventDate) {
             queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
@@ -262,6 +301,9 @@ export default function NewEvent(
             navigation("/schedule");
             return;
         }
+
+
+
     }
 
     const navigation = useNavigate();
@@ -281,7 +323,68 @@ export default function NewEvent(
         setNewEventStartHour(hour);
     }
 
+    const type = useContext(TypeContext);
+
+    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
+        queries: [
+            {
+                queryKey: ["totalPRESENCIALNewEvent"],
+                queryFn: () => getTotalByClassType("PRESENCIAL"),
+                enabled: type?.type === "aluno"
+            },
+            {
+                queryKey: ["totalRESIDENCIALNewEvent"],
+                queryFn: () => getTotalByClassType("RESIDENCIAL"),
+                enabled: type?.type === "aluno"
+            },
+            {
+                queryKey: ["totalFUNCIONALNewEvent"],
+                queryFn: () => getTotalByClassType("FUNCIONAL"),
+                enabled: type?.type === "aluno"
+            }
+        ]
+    });
+
+    function verifyClassAvailability() {
+        console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
+        console.log("Aulas disponíveis - Presencial:", aulaPresencial.data, "Residencial:", aulaResidencial.data, "Funcional:", aulaFuncional.data);
+        if (selectedType === "PRESENCIAL" && (aulaPresencial.data === 0 && !aulaPresencial.isLoading)) {
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Você não possui aulas presenciais disponíveis para agendar."
+            });
+            setModal("error");
+            return false;
+        }
+
+        if (selectedType === "RESIDENCIAL" && (aulaResidencial.data === 0 || aulaResidencial.data === undefined)) {
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Você não possui aulas residenciais disponíveis para agendar."
+            });
+            setModal("error");
+            return false;
+        }
+
+        if (selectedType === "FUNCIONAL" && (aulaFuncional.data === 0 || aulaFuncional.data === undefined)) {
+            setModalInfo({
+                title: "Erro ao agendar",
+                description: "Você não possui aulas funcionais disponíveis para agendar."
+            });
+            setModal("error");
+            return false;
+        }
+        return true;
+    }
+
+
     function handleStepChange(stepNumber: number) {
+        if (!goToNextStep) {
+            handleRescheduleEvent();
+            console.log("setAddressData", addressData);
+            console.log("newEventDate", insertedEvents);
+            return;
+        }
         // choose date and hour validation
         if (!newEventDate || !newEventStartHour) {
             setModalInfo({
@@ -292,19 +395,12 @@ export default function NewEvent(
             return;
         }
 
+        if (!verifyClassAvailability()) return;
+
         //24hrs
         const selectedDateTime = new Date(`${newEventDate}T${newEventStartHour}`);
         const now = new Date();
         now.setDate(now.getDate() + 1);
-
-        // if (selectedDateTime <= now) {
-        //     setModalInfo({
-        //         title: "Erro ao agendar",
-        //         description: "O agendamento deve ser feito com pelo menos 24 horas de antecedência."
-        //     });
-        //     setModal("error");
-        //     return;
-        // }
 
         setStep(stepNumber);
     }
@@ -312,6 +408,10 @@ export default function NewEvent(
     useEffect(() => {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }, [step]);
+
+    useEffect(() => {
+        if (step === 1) verifyClassAvailability()
+    }, [selectedType]);
 
     const personal = useQuery({
         queryKey: ["personalList"],
@@ -324,8 +424,6 @@ export default function NewEvent(
         queryFn: () => getPersonalHours(personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
-
-    console.log("Availability Hours: ", availabilityHours.data);
 
     const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null);
 
@@ -342,12 +440,12 @@ export default function NewEvent(
         else if (hour < 18) setChooseTimeOfDay("TARDE");
         else setChooseTimeOfDay("NOITE");
 
-    }, []);
+    }, [availabilityHours.data]);
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
-        console.log("Selected Type changed:", chooseTimeOfDay);
     }, [chooseTimeOfDay, newEventDate, selectedType]);
+
 
     return (
         <>
@@ -394,8 +492,12 @@ export default function NewEvent(
                     {step === 1 && (
                         <>
                             <div className={styles.containerForm}>
-                                <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
 
+                                {typeUser === "personal" ? (
+                                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                ) : (
+                                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                )}
                                 {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
                                 <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
                                     <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
@@ -415,15 +517,20 @@ export default function NewEvent(
                                         <div className="border-2 border-gray-200 rounded-md p-5">
                                             <CalendarMonthStyled
                                                 clickedDate={setNewEventDate}
-                                                clickedDateStr={newEventDate ? newEventDate : clickedDate}
+                                                clickedDateStr={newEventDate ? newEventDate.split("T")[0] : clickedDate?.split("T")[0]}
                                                 createdEvents={insertedEvents}
-                                                eventToReschedule={eventToReschedule?.data}
+                                                eventToReschedule={clickedDate ? `${clickedDate.split("T")[0]}` : undefined}
                                                 isMobile={isMobile}
                                             />
                                         </div>
                                         {newEventDate && (
                                             <>
-                                                <span className="flex gap-1 mt-5 text-sm items-center"><Clock />Horários disponíveis para {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "d", { locale: ptBR })} de {format(parse(newEventDate, "yyyy-MM-dd", new Date()), "MMMM", { locale: ptBR })}</span>
+
+                                                <span className="flex gap-1 mt-5 text-sm items-center">
+                                                    <Clock />
+                                                    Horários disponíveis para{" "}
+                                                    {format(parseISO(newEventDate), "d 'de' MMMM", { locale: ptBR })}
+                                                </span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
                                                     {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
@@ -448,7 +555,7 @@ export default function NewEvent(
 
                                                                 return (
                                                                     <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
-                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={clickedDate?.split("T")[1] === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
                                                             }
@@ -473,7 +580,7 @@ export default function NewEvent(
 
                                                                 return (
                                                                     <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
-                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={clickedDate?.split("T")[1] === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
                                                             }
@@ -498,7 +605,7 @@ export default function NewEvent(
 
                                                                 return (
                                                                     <div key={index} className={classnames(styles.buttonHourNewEvent, { [styles.buttonHourNewEventSelected]: newEventStartHour === hourBlock.inicio })}>
-                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={eventToReschedule?.hour === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
+                                                                        <SmallerButton type="button" title={`${hourBlock.inicio} - ${finalHour}`} value={hourBlock.inicio} selected={clickedDate?.split("T")[1] === hourBlock.inicio ? true : newEventStartHour === hourBlock.inicio} handleButtonClick={handleButtonClick} />
                                                                     </div>
                                                                 );
                                                             }

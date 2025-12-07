@@ -10,3 +10,7 @@ export function getTotalByClassType(classType: string) {
         return 0;
     });
 }
+
+export function getTotalByClassTypeComplete(classType: string) {
+    return api.get(`produtos-contratados/total-tipo/${classType}`)
+}

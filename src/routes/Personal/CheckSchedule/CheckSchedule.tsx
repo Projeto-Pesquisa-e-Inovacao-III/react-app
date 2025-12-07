@@ -2,22 +2,39 @@ import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardChe
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
-import { acceptUserAppointment, concludeAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
+import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import NewEvent from "../../../components/NewEvent/NewEvent";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
+import { TypeContext } from "../../../App";
 
-type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
+type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
 export function CheckSchedule() {
     const isMobile = useMobile();
     const queryClient = useQueryClient();
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
+    const [clickedDate, setClickedDate] = useState<string>("");
+    const [appointmentData, setAppointmentData] = useState<any>(null);
+
+    const type = useContext(TypeContext)?.type;
+
+    const appointment = useQuery({
+        queryKey: ['appointmentDetails'],
+        queryFn: () => findAppointmentById(appointmentId || 0),
+        select: (res) => res.data,
+    });
+
+    useEffect(() => {
+        console.log("Appointment Data:", appointmentData);
+    }, [appointmentData]);
 
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
@@ -27,6 +44,11 @@ export function CheckSchedule() {
     function handleSuccessModal(title: string, content: string) {
         setSuccessModalInfo({ title, content });
         setOpenModal("success");
+    }
+
+    function handleErrorModalInfo(title: string, content: string) {
+        setSuccessModalInfo({ title, content });
+        setOpenModal("error");
     }
 
     const personalRequests = useQuery({
@@ -107,6 +129,14 @@ export function CheckSchedule() {
         setAppointmentId(id);
         setOpenModal(type);
     }
+
+
+    const appointments = useQuery({
+        queryKey: ["appointmentsAtCalendar"],
+        queryFn: () => appointmentAtCalendar(),
+    })
+
+
     return (
         <>
             <div className={styles.containerCheckSchedule} >
@@ -130,6 +160,8 @@ export function CheckSchedule() {
                             id={card.agendamentoId}
                             key={card.agendamentoId}
                             RescheduleClick={() => {
+                                setAppointmentData(card);
+                                setClickedDate(card.dataInicio?.split("T")[0] || "");
                                 handleModal(card.agendamentoId, "reschedule");
                             }}
                             AcceptScheduleClick={() => {
@@ -149,7 +181,26 @@ export function CheckSchedule() {
                     )) : <p>Nenhum agendamento encontrado.</p>}
                 </div>
             </div>
-            {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado", "Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
+            {openModal === "reschedule" && (
+                <>
+                    <NewEvent
+                        isMobile={isMobile}
+                        close={() => setOpenModal(null)}
+                        openModal={() => handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                        errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
+                        insertedEvents={appointments.data?.data}
+                        title="Reagendar horário"
+                        buttonTitle="Reagendar"
+                        isReschedule={true}
+                        rescheduleId={appointmentId}
+                        clickedDate={clickedDate}
+                        goToNextStep={false}
+                        appoitmentData={appointment.data}
+                        typeUser={type}
+
+                    />
+                </>
+            )}
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 
@@ -158,6 +209,8 @@ export function CheckSchedule() {
             {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
 
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
+
+            {openModal === "error" && <ErrorModal closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
             {openModal === "registerAbsence" &&
                 <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />

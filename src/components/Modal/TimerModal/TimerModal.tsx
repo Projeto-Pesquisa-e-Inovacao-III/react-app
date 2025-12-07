@@ -16,9 +16,11 @@ type TimerModalProps = {
     callSuccessModal?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     buttonTitle?: string;
     isDelete?: boolean;
+    classNameDiv?: string;
+    classNameText?: string;
 }
 
-export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle, isDelete }: TimerModalProps) {
+export default function TimerModal({ isMobile, closeThen, title, content, id, events, setEvents, callSuccessModal, buttonTitle, isDelete, classNameDiv, classNameText }: TimerModalProps) {
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -35,9 +37,9 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
     return (
         <>
             <div className="overlay"></div>
-            <div className={`modal-event-created${isMobile ? "-mobile" : ""}`}>
+            <div className={`modal-event-created${isMobile ? "-mobile" : ""} ${classNameDiv ? classNameDiv : ""}`}>
                 <h2>{title || "Cancelar!"}</h2>
-                <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
+                <p className={`content-modal ${classNameText ? classNameText : ""}`}>{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer
                     isPlaying
                     duration={1}

@@ -19,6 +19,9 @@ type Props = {
 
 export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile }: Props) {
 
+  console.log("CalendarMonthStyled - createdEvents", clickedDateStr);
+
+
   const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
     return {
       data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
@@ -50,6 +53,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi();
     calendarApi?.select(eventToReschedule || "");
+    console.log("eventToReschedule changed:", eventToReschedule);
+    console.log("Setting new event date to:", calendarApi);
     setNewEventDate(eventToReschedule || "");
   }, []);
 
@@ -117,7 +122,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px"}}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
+
                   {eventsOfDay.map((event, index) => (
                     <div
                       key={event.agendamentoId}

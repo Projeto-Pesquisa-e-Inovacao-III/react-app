@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
@@ -35,6 +35,8 @@ export default function Schedule() {
 
     const [modalInfo, setModalInfo] = useState({ title: "", description: "" });
 
+    const [newAppointmentCreated, setNewAppointmentCreated] = useState<boolean>(false);
+
     const queryClient = useQueryClient();
 
     function handleSuccessModalInfo(title: string, description: string) {
@@ -67,7 +69,7 @@ export default function Schedule() {
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(() => {
             handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
 
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
@@ -94,7 +96,12 @@ export default function Schedule() {
         queryFn: () => appointmentAtCalendar(),
     })
 
-    console.log("appointments.data?.data", appointments.data?.data);
+
+    useEffect(() => {
+        console.log("appointments.data?.data", appointments.data?.data);
+
+    }, [newAppointmentCreated]);
+
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
@@ -120,6 +127,16 @@ export default function Schedule() {
     //     retry: false,
     //     enabled: type?.type === "aluno"
     // })
+
+    function handleOpenRescheduleRequestModal(id: number) {
+        let eventToReschedule = userAppointments.data?.find((event) => event.agendamentoId === id);
+
+        setClickedDate(eventToReschedule.data);
+
+        setOpenModal("reschedule");
+        return
+
+    }
 
     return (
         <>
@@ -161,9 +178,9 @@ export default function Schedule() {
                                         data={event}
                                         date={`${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event.data), "MMMM", { locale: ptBR })}`}
                                         initialHour={`${event.data.replace(":", "h").split("T")[1].slice(0, 5)}`}
-                                        finalHour={`${(parseInt(event.data.replace(":", "h").split("T")[1].slice(0, 2)) + 1)}h00`}
+                                        finalHour={`${event.datafim.replace(":", "h").split("T")[1].slice(0, 5)}`}
                                         handleCancel={() => setOpenModal("cancel")}
-                                        handleReschedule={() => setOpenModal("reschedule")}
+                                        handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId)}
                                         isMobile={isMobile}
                                     />
                                 </div>
@@ -181,6 +198,7 @@ export default function Schedule() {
                         openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
                         errorModal={(title, description) => handleErrorModalInfo(title, description)}
                         insertedEvents={appointments.data?.data}
+                        newAppointmentCreated={setNewAppointmentCreated}
                         title="Agendar horário"
                         buttonTitle="Avançar"
                         clickedDate={clickedDate}
@@ -195,11 +213,12 @@ export default function Schedule() {
                         close={() => setOpenModal(null)}
                         openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
                         errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
-                        insertedEvents={userAppointments.data}
+                        insertedEvents={appointments.data?.data}
                         title="Reagendar horário"
                         buttonTitle="Reagendar"
                         isReschedule={true}
                         rescheduleId={selectedEventId}
+                        clickedDate={clickedDate}
                     />
                 </>
             )}
@@ -237,11 +256,11 @@ export default function Schedule() {
                         Endereço: Rua Alberto Almeida n° 23
                     `}
                     id={selectedEventId}
-                    events={events}
-                    setEvents={setEvents}
                     buttonTitle="Cancelar agendamento"
                     callSuccessModal={() => declineAppointment(selectedEventId!)}
                     isDelete={true}
+
+                    classNameText="!text-left"
                 />
             )}
         </>
