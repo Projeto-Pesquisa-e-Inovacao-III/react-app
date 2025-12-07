@@ -109,7 +109,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                             <span>Tipo: <span className={styles.textInRowCheckSchedule}>{cardData.tipoAula}</span></span>
                         </div>
                         <span>Celular: {cardData.telefone?.ddd} {cardData.telefone?.numero}</span>
-                        <span>Local: {cardData.local}</span>
+
                         <span>Endereço: {cardData.endereco.cep.logradouro}, {cardData.endereco.numero} - {cardData.endereco.cep.uf}</span>
 
                     </div>

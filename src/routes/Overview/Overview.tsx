@@ -245,7 +245,7 @@ export function Overview() {
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
                             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                                 <h1>Agendamentos</h1>
-                                <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />
+                                {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />}
                             </div>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>

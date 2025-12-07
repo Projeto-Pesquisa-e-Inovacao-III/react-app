@@ -330,7 +330,10 @@ export default function NewEvent(
     const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!availabilityHours?.data?.length) return;
+        if (!availabilityHours?.data?.length) {
+            setChooseTimeOfDay("MANHÃ");
+            return;
+        };
 
         const hour = parseInt(availabilityHours.data[0].inicio.split(":")[0]);
         console.log(hour)

@@ -207,7 +207,7 @@ export default function ScheduleDetails() {
                     {type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" />
+                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")}/>
                             </div>
 
                             <div className={styles.buttonAbsence}>
