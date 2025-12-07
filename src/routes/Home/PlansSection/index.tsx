@@ -22,30 +22,25 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>
-                <div className={`${isMobile ? "grid grid-cols-1" : "grid grid-cols-[repeat(auto-fit,minmax(0,1fr))] "} gap-8 h-full`}>
-                    {isPackagesSelected ? (
-                        packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE").map((pkg: any) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {(isPackagesSelected
+                        ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE")
+                        : packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL")
+                    )?.map((pkg: any, i: number) => (
+                        <div
+                            key={pkg.id}
+                            className={i === 4 ? "lg:col-start-2 lg:col-end-4" : ""}
+                        >
                             <PlansCard
-                                key={pkg.id}
                                 description={pkg.periodo}
                                 content={pkg.titulo}
                                 price={`R$ ${pkg.preco}`}
                                 benefits={JSON.parse(pkg.descricao)}
                             />
-                        ))
-
-                    ) : (
-                        packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL").map((pkg: any) => (
-                            <PlansCard
-                                key={pkg.id}
-                                description={pkg.periodo}
-                                content={pkg.titulo}
-                                price={`R$ ${pkg.preco}`}
-                                benefits={JSON.parse(pkg.descricao)}
-                            />
-                        ))
-                    )}
+                        </div>
+                    ))}
                 </div>
+
             </div>
         </section >
     );
