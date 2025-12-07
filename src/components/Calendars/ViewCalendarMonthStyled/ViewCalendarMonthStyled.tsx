@@ -47,7 +47,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
 
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px"}}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px" }}>
                   {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}
@@ -56,12 +56,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
-                            event.status === "APROVADO"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" || event.status === "APROVADO"
                             ? "#F2B138"
-                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
+                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONFIRMADO"
+                              : event.status === "CONCLUIDO"
                                 ? "green"
                                 : "gray",
                       }}
