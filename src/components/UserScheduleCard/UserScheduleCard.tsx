@@ -10,8 +10,8 @@ type UserScheduleCardProps = {
     date: string;
     initialHour: string;
     finalHour: string;
-    handleCancel: React.Dispatch<React.SetStateAction<boolean>>;
-    handleReschedule: React.Dispatch<React.SetStateAction<boolean>>;
+    handleCancel: (() => void);
+    handleReschedule: (() => void);
     isMobile: boolean;
 }
 
@@ -26,8 +26,12 @@ export default function UserScheduleCard({ data, date, initialHour, finalHour, h
                     <span>{data.personalNome}</span>
                 </div>
                 <div className="btn-actions">
-                    <SmallerButton type="button" title="Reagendar" handleButtonClick={() => handleReschedule(true)} />
-                    <SmallerButton type="button" title="Cancelar" handleButtonClick={() => handleCancel(true)} />
+                    {data.agendamentoStatus === "APROVADO" && (
+                        <>
+                            <SmallerButton type="button" title="Reagendar" handleButtonClick={handleReschedule} />
+                            <SmallerButton type="button" title="Cancelar" handleButtonClick={handleCancel} />
+                        </>
+                    )}
                 </div>
             </div>
             {isMobile && (

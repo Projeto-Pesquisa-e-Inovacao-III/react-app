@@ -69,11 +69,11 @@ export function Overview() {
         const BalanceItem = ({ label, current, total, icon }: BalanceItemProps) => {
             const percentage = Math.min(100, Math.max(0, (current / total) * 100));
 
-            const getColor = () => {
-                if (percentage < 40) return "#ef4444"; // vermelho
-                if (percentage < 70) return "#f59e0b"; // amarelo
-                return "#093a5d"; // verde
-            };
+            // const getColor = () => {
+            //     if (percentage < 40) return "#ef4444"; // vermelho
+            //     if (percentage < 70) return "#f59e0b"; // amarelo
+            //     return "#093a5d"; // verde
+            // };
 
 
             return (
@@ -84,7 +84,6 @@ export function Overview() {
                         </span>
                         <span className="font-bold text-slate-800">
                             {current}
-                            <span className="ml-1 font-normal text-slate-400">/ {total}</span>
                         </span>
                     </div>
 
@@ -96,7 +95,7 @@ export function Overview() {
                             height: 4,
                             borderRadius: 8,
                             "& .MuiLinearProgress-bar": {
-                                backgroundColor: getColor(),
+                                backgroundColor: "#093a5d",
                             },
                         }}
                     />
@@ -245,7 +244,7 @@ export function Overview() {
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
                             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                                 <h1>Agendamentos</h1>
-                                <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />
+                                {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />}
                             </div>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>

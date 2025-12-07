@@ -12,7 +12,7 @@ import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
 import ListUsers from "./routes/Personal/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
-import { useState, createContext } from "react";
+import { useState, createContext, useContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
@@ -21,6 +21,7 @@ import MoreOptions from "./routes/MoreOptions/MoreOptions";
 import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
 import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
+import { PrivateRoute } from "./components/Layout/PrivateRoute";
 
 // todo: 
 // safari support // deixa baixo
@@ -44,30 +45,44 @@ function App() {
       <TypeContext.Provider value={{ type, setType }}>
         <BrowserRouter>
           <Routes>
+
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/logout" element={<Logout />} />
-
-              {/* header / logo at mobile*/}
-              <Route path="/plans-history" element={<PlansHistory />} />
-              <Route path="/schedule-history" element={<ScheduleHistory />} />
-              <Route path="/schedule-details" element={<ScheduleDetails />} />
-              <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
-              <Route path="/schedule" element={<ViewSchedule />} />
-              <Route path="/packages" element={<Packages />} />
-              <Route path="/home" element={<Overview />} />
-
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/users" element={<ListUsers />} />
-              <Route path="/set-availability" element={<SetAvailability />} />
-              <Route path="/users/view-user-data" element={<ViewUserData />} />
-              <Route path="/edit-user" element={<EditUser />} />
-              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-              <Route path="/more-options" element={<MoreOptions />} />
             </Route>
+
+            <Route element={<PrivateRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/home" element={<Overview />} />
+                <Route path="/packages" element={<Packages />} />
+                <Route path="/schedule-details" element={<ScheduleDetails />} />
+                <Route path="/more-options" element={<MoreOptions />} />
+                <Route path="/schedule" element={<ViewSchedule />} />
+                <Route path="/edit-user" element={<EditUser />} />
+              </Route>
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["aluno"]} />}>
+              <Route element={<Layout />}>
+                <Route path="/plans-history" element={<PlansHistory />} />
+                <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
+                <Route path="/schedule-history" element={<ScheduleHistory />} />
+              </Route>
+            </Route>
+
+            <Route element={<PrivateRoute allowedRoles={["personal"]} />}>
+              <Route element={<Layout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/users/view-user-data" element={<ViewUserData />} />
+                <Route path="/set-availability" element={<SetAvailability />} />
+                <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              </Route>
+            </Route>
+
           </Routes>
         </BrowserRouter>
       </TypeContext.Provider>

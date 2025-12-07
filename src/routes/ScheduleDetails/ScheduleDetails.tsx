@@ -8,20 +8,24 @@ import Button from '../../components/Button/Button';
 import { useEffect, useState } from 'react';
 import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
-import { acceptUserAppointment, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
+import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CheckScheduleModal from '../../components/Modal/CheckScheduleModal/CheckScheduleModal';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
+import NewEvent from '../../components/NewEvent/NewEvent';
+import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
 
-type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | null;
+type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
     const queryClient = useQueryClient();
 
     const type: string = useOutletContext();
+
+    console.log("User type in ScheduleDetails:", type);
 
     const [searchParams] = useSearchParams();
 
@@ -61,8 +65,13 @@ export default function ScheduleDetails() {
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
     function handleSuccessModal(title: string, content: string) {
-        setSuccessModalInfo({ title, content });
         setOpenModal("success");
+        setSuccessModalInfo({ title, content });
+    }
+
+    function handleErrorModal(title: string, content: string) {
+        setSuccessModalInfo({ title, content });
+        setOpenModal("error");
     }
 
 
@@ -82,6 +91,15 @@ export default function ScheduleDetails() {
             queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
+        });
+    }
+
+    async function cancelAppointment(id: number) {
+        await refuseAppointment(id).then(() => {
+            handleSuccessModal("Agendamento Cancelado", "O agendamento foi cancelado.");
+            queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+        }).catch((error) => {
+            console.error("Erro ao cancelar o agendamento:", error);
         });
     }
 
@@ -117,6 +135,11 @@ export default function ScheduleDetails() {
 
 
     console.log("Appointment details:", appointment.data);
+    const appointments = useQuery({
+        queryKey: ["appointmentsAtCalendar"],
+        queryFn: () => appointmentAtCalendar(),
+    })
+
 
     return (
         <>
@@ -131,11 +154,18 @@ export default function ScheduleDetails() {
                             </div>
                         }
 
-                        {(appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" || appointment.data?.status === "APROVADO") &&
+                        {appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                             (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                                 <span className={styles.statusPending}>Pendente</span>
                             </div>)
                         }
+
+                        {appointment.data?.status === "APROVADO" &&
+                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                                <span className={styles.statusPending}>Marcado</span>
+                            </div>)
+                        }
+
 
                         {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
                             <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
@@ -173,11 +203,11 @@ export default function ScheduleDetails() {
                     </div>
 
                     {type === "aluno" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal.nome} subtitle={`Idade: ${appointment.data?.personal.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal.avatarUrl ? appointment.data?.personal.avatarUrl : undefined} />
+                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal?.nome} subtitle={`Idade: ${appointment.data?.personal?.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} />
                     }
 
                     {type === "personal" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno.nome} subtitle={`Idade: ${appointment.data?.aluno.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno.avatarUrl ? appointment.data?.aluno.avatarUrl : undefined} />
+                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno?.nome} subtitle={`Idade: ${appointment.data?.aluno?.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno?.avatarUrl ? appointment.data?.aluno?.avatarUrl : undefined} />
                     }
 
                     <div className={styles.contentDetails}>
@@ -207,7 +237,7 @@ export default function ScheduleDetails() {
                     {type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" />
+                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")} />
                             </div>
 
                             <div className={styles.buttonAbsence}>
@@ -218,7 +248,7 @@ export default function ScheduleDetails() {
                         </>
                     }
 
-                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
+                    {type === "personal" && (appointment.data?.status === "APROVADO" || appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
                         <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
                             <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "accept");
@@ -232,8 +262,18 @@ export default function ScheduleDetails() {
                         </div>
                     )
                     }
+
+                    {type === "aluno" && appointment.data?.status === "APROVADO" && (
+                        <div className={classNames(styles.buttonGroup)}>
+                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "reschedule");
+                            }} />
+                            <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "cancel");
+                            }} />
+                        </div>
+                    )}
                 </div>
-                {openModal === "reschedule" && <CheckScheduleModal closeThen={() => setOpenModal(null)} isMobile={isMobile} openSuccess={() => handleSuccessModal("Agendamento reagendado", "Agendamento reagendado com sucesso!")} appointmentId={appointmentId} />}
 
                 {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 
@@ -241,11 +281,34 @@ export default function ScheduleDetails() {
 
                 {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
 
+                {openModal === "cancel" && <TimerModal callSuccessModal={() => cancelAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Cancelar agendamento" content="Tem certeza que deseja Cancelar o agendamento?" buttonTitle="Cancelar agendamento" isDelete={true} />}
+
                 {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
+
+                {openModal === "error" && <ErrorModal closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
                 {openModal === "registerAbsence" &&
                     <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
                 }
+
+                {openModal === "reschedule" && (
+                    <>
+                        <NewEvent
+                            isMobile={isMobile}
+                            close={() => setOpenModal(null)}
+                            openModal={() => handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                            errorModal={() => handleErrorModal("Erro ao reagendar", "Não foi possível reagendar o horário")}
+                            insertedEvents={appointments.data?.data}
+                            title="Reagendar horário"
+                            buttonTitle="Reagendar"
+                            isReschedule={true}
+                            rescheduleId={appointmentId}
+                            clickedDate={appointment.data?.dataInicio.split("T")[0] || ""}
+                            typeUser={type}
+                            appoitmentData={appointment.data}
+                        />
+                    </>
+                )}
             </div>
         </>
     );

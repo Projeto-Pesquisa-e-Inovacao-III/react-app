@@ -33,7 +33,7 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
                 <h2 className={styles.title}>Registrar ausência</h2>
 
                 <Select
-                    label="Motivo da ausência"
+                    label="Tipo de ausência:"
                     options={["Aluno", "Personal"]}
                     placeholder="Selecione o motivo da ausência"
                     onInputChange={(value: string) => { setChangeSelectType(value) }}

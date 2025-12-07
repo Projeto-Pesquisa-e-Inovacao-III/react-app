@@ -72,7 +72,10 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
         ConcludeScheduleClick?.(true)
     }
     
+    // type classTypes = "PENDENTE_PERSONAL_APROVACAO" | "APROVADO" | "PENDENTE_PERSONAL_CONCLUIR" | "CONCLUIDO" | "CANCELADO_PERSONAL" | "CANCELADO_CLIENTE" | "AUSENCIA_CLIENTE" | "AUSENCIA_PERSONAL";
     
+    // type ok = "PENDENTE_PERSONAL_APROVACAO (aluno) (reagendar, cancelar)" | "PENDENTE_CLIENTE_APROVACAO (aluno) (reagendar, cancelar, aceitar)"
+
     return (
         <>
             <div className={styles.personalCheckScheduleCard}>
@@ -109,7 +112,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                             <span>Tipo: <span className={styles.textInRowCheckSchedule}>{cardData.tipoAula}</span></span>
                         </div>
                         <span>Celular: {cardData.telefone?.ddd} {cardData.telefone?.numero}</span>
-                        <span>Local: {cardData.local}</span>
+
                         <span>Endereço: {cardData.endereco.cep.logradouro}, {cardData.endereco.numero} - {cardData.endereco.cep.uf}</span>
 
                     </div>

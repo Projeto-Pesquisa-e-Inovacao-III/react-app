@@ -21,7 +21,9 @@
     width: 100%;
 }
 
-
+:global(.modalCancelAppointment p) {
+    text-align: left;
+}
 
 .scheduleView {
     display: flex;
