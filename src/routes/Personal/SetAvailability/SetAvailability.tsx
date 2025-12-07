@@ -3,6 +3,7 @@ import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock } from "lucide-react";
+import { getPersonalList } from "../../../constants/schedule";
 
 export interface TimeSlot {
     id?: string;
@@ -51,6 +52,7 @@ export default function SetAvailability() {
         queryFn: getPersonalBuffer,
         select: (res) => res.data.bufferMinutos,
     });
+
 
     console.log("Personal Buffer: ", personalBuffer.data);
 
@@ -104,7 +106,7 @@ export default function SetAvailability() {
     function handleUpdateBuffer(value: string) {
         updateBuffer(value)
             .then(() => {
-                queryClient.invalidateQueries(['personalBuffer']);
+                queryClient.invalidateQueries({ queryKey: ['personalBuffer'] });
                 console.log("Buffer atualizado com sucesso");
             })
             .catch((error) => {

@@ -31,14 +31,14 @@ import { PrivateRoute } from "./components/Layout/PrivateRoute";
 type UserType = "aluno" | "personal";
 
 type TypeContextType = {
-  type: UserType;
-  setType: React.Dispatch<React.SetStateAction<UserType>>;
+  type: UserType | null;
+  setType: React.Dispatch<React.SetStateAction<UserType | null>>;
 };
 
 export const TypeContext = createContext<TypeContextType | null>(null);
 
 function App() {
-  const [type, setType] = useState<UserType>("aluno");
+const [type, setType] = useState<UserType | null>(null);
 
   return (
     <>
