@@ -161,7 +161,7 @@ export default function EditUser() {
       sexo: state.gender,
       email: state.email,
     };
-console.log("options", userImageFormData);
+    console.log("options", userImageFormData);
     update(options)
       .then(() => {
         if (userImageFormData.has("imagem") && userImageFormData.get("imagem") !== "") {
@@ -183,7 +183,7 @@ console.log("options", userImageFormData);
       })
       .catch((error) => {
         console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
-      console.log("userImageFormData", userImageFormData);
+        console.log("userImageFormData", userImageFormData);
         setTextModal({
           title: "Houve um erro",
           content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
@@ -255,6 +255,7 @@ console.log("options", userImageFormData);
 
     editPersonalProfile(options).then(() => {
       setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+      setOpenModal("success");
     }).catch((error) => {
       console.log("userImageFormData", userImageFormData);
       console.error("Erro ao atualizar dados do usuário:", error);
@@ -266,7 +267,7 @@ console.log("options", userImageFormData);
       insertUserImage(userImageFormData).then(() => {
         console.log("Imagem do usuário atualizada com sucesso!");
       }).catch((error) => {
-      console.log("userImageFormData", userImageFormData);
+        console.log("userImageFormData", userImageFormData);
         console.error("Erro ao atualizar imagem do usuário:", error);
         setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
         setOpenModal("error");
