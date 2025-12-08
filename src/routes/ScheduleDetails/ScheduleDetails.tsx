@@ -81,31 +81,31 @@ export default function ScheduleDetails() {
 
 
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then((res) => {
+        await acceptUserAppointment(id).then(async (res) => {
             console.log("Agendamento aceito:", res);
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(() => {
+        await refuseAppointment(id).then(async (res) => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
-            queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
         });
     }
 
     async function cancelAppointment(id: number) {
-        await refuseAppointment(id).then(() => {
+        await refuseAppointment(id).then(async () => {
             handleSuccessModal("Agendamento Cancelado", "O agendamento foi cancelado.");
-            queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao cancelar o agendamento:", error);
         });
@@ -118,10 +118,10 @@ export default function ScheduleDetails() {
             descricaoCancelamento: data.description === "" ? null : data.description
         };
         console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal(payload).then(() => {
+        await reportAbsencePersonal(payload).then(async () => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
 
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
@@ -129,14 +129,21 @@ export default function ScheduleDetails() {
     }
 
     function handleConcludeAppointment(id: number) {
-        concludeAppointment(id).then(() => {
+        concludeAppointment(id).then(async () => {
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
 
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
+    }
+
+    async function handleSuccessReschedule() {
+        await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+        await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+
+        handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso");
     }
 
     function handleModal(id: number, type: modalTypes) {
@@ -310,7 +317,7 @@ export default function ScheduleDetails() {
                         <NewEvent
                             isMobile={isMobile}
                             close={() => setOpenModal(null)}
-                            openModal={() => handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                            openModal={handleSuccessReschedule}
                             errorModal={() => handleErrorModal("Erro ao reagendar", "Não foi possível reagendar o horário")}
                             insertedEvents={appointments.data?.data}
                             title="Reagendar horário"

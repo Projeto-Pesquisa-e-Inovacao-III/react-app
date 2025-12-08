@@ -203,9 +203,16 @@ export default function NewEvent(
                 console.log("Evento salvo com sucesso:", response.data);
 
                 if (calculatedTitle && newEventDate) {
-                    queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+                    await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+                    await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+
                     if (url.includes("/schedule")) {
                         newAppointmentCreated && newAppointmentCreated(true);
+                        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+                        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+
                         openModal();
                         navigation("/schedule");
                         return;
@@ -291,14 +298,22 @@ export default function NewEvent(
         });
 
         if (!goToNextStep) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
             return;
         }
