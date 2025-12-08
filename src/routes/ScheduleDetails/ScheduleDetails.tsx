@@ -248,19 +248,27 @@ export default function ScheduleDetails() {
                         </>
                     }
 
-                    {type === "personal" && (appointment.data?.status === "APROVADO" || appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
-                        <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
-                            <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.id, "accept");
-                            }} />
-                            <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.id, "decline");
-                            }} />
-                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
-                                handleModal(appointment.data?.id, "reschedule");
-                            }} />
-                        </div>
-                    )
+                    {
+                        (
+                            (type === "personal" && (
+                                appointment.data?.status === "APROVADO" ||
+                                appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
+                            ))
+                            ||
+                            (type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
+                        ) && (
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
+                                <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                    handleModal(appointment.data?.id, "accept");
+                                }} />
+                                <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                    handleModal(appointment.data?.id, "decline");
+                                }} />
+                                <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                    handleModal(appointment.data?.id, "reschedule");
+                                }} />
+                            </div>
+                        )
                     }
 
                     {type === "aluno" && appointment.data?.status === "APROVADO" && (
@@ -306,6 +314,7 @@ export default function ScheduleDetails() {
                             clickedDate={appointment.data?.dataInicio.split("T")[0] || ""}
                             typeUser={type}
                             appoitmentData={appointment.data}
+                            goToNextStep={type === "personal" ? false : true}
                         />
                     </>
                 )}
