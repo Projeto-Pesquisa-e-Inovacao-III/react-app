@@ -88,12 +88,13 @@ export default function ScheduleHistory() {
                         </>
                     }
 
-                    {(event.status === "AUSENCIA_CLIENTE") || (event.status === "AUSENCIA_PERSONAL") && (
+                    {(event.status === "AUSENCIA_CLIENTE" || event.status === "AUSENCIA_PERSONAL") && (
                         <>
                             <Dot color="#c33" size={"30px"} />
                             <span>Status: Ausência registrada</span>
                         </>
                     )}
+
                 </div>
                 <span>Endereço: {event.endereco.cep.logradouro}, {event.endereco.numero} - {event.endereco.cep.bairro}</span>
             </div>

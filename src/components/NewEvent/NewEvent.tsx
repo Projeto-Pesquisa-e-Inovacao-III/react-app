@@ -18,6 +18,7 @@ import { ptBR } from "date-fns/locale";
 import { getPersonalHours } from "../../constants/personal";
 import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
+import { findUserData } from "../../constants/user";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -65,6 +66,18 @@ export default function NewEvent(
         select: (res) => res.data,
     });
 
+
+
+    const myId = useQuery({
+        queryKey: ["myId"],
+        queryFn: findUserData,
+        select: (res) => res.data?.id,
+        enabled: typeUser === "personal"
+    });
+
+
+    console.log("personalList data:", personalList.data);
+
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
         address: "",
@@ -82,6 +95,10 @@ export default function NewEvent(
     }>({ title: "Houve um erro", description: "Ocorreu um erro inesperado." });
 
     const queryClient = useQueryClient();
+
+    useEffect(() => {
+        console.log("newEventStartHour atualizado:", newEventStartHour);
+    }, [newEventStartHour]);
 
     const formattedDate = useMemo(() => {
         if (newEventDate && newEventStartHour) {
@@ -215,10 +232,6 @@ export default function NewEvent(
 
     }
 
-    useEffect(() => {
-        console.log("New Event Date:", appoitmentData);
-    }, []);
-
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
@@ -253,12 +266,16 @@ export default function NewEvent(
                 state: appoitmentData.endereco.cep.uf
             });
         }
+
+
         console.log("appoitmentData antes do payload:", appoitmentData?.endereco);
         console.log("addressData antes do payload:", addressData);
 
+
+        console.log(`finalAddress usado no payload: ${newEventDate}T${newEventStartHour}`);
         const payload: Schedule = {
             idAgendamento: rescheduleId ? rescheduleId : undefined,
-            data: new Date(`${newEventDate}T${newEventStartHour}`),
+            data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             endereco: {
                 numero: finalAddress.number,
@@ -273,7 +290,7 @@ export default function NewEvent(
                     uf: finalAddress.state
                 }
             },
-            personalId: personalList.data[0]?.id,
+            personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -289,16 +306,15 @@ export default function NewEvent(
         });
 
         if (!goToNextStep) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
             openModal();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
             openModal();
-            navigation("/schedule");
             return;
         }
 
@@ -421,7 +437,7 @@ export default function NewEvent(
 
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(personal.data, newEventDate ? newEventDate : ""),
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
 

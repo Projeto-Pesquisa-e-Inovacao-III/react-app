@@ -32,6 +32,7 @@ export default function UserScheduleCard({ data, date, initialHour, finalHour, h
                             <SmallerButton type="button" title="Cancelar" handleButtonClick={handleCancel} />
                         </>
                     )}
+                    
                 </div>
             </div>
             {isMobile && (
