@@ -1,8 +1,7 @@
 import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
-import CheckScheduleModal from "../../../components/Modal/CheckScheduleModal/CheckScheduleModal";
 import styles from "./CheckSchedule.module.css"
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
@@ -22,19 +21,17 @@ export function CheckSchedule() {
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
     const [clickedDate, setClickedDate] = useState<string>("");
-    const [appointmentData, setAppointmentData] = useState<any>(null);
+
+    const [appointmentId, setAppointmentId] = useState<number>(0);
 
     const type = useContext(TypeContext)?.type;
 
     const appointment = useQuery({
-        queryKey: ['appointmentDetails'],
-        queryFn: () => findAppointmentById(appointmentId || 0),
-        select: (res) => res.data,
+        queryKey: ['appointmentDetails', appointmentId],
+        queryFn: () => findAppointmentById(appointmentId),
+        enabled: appointmentId > 0,
+        select: res => res.data,
     });
-
-    useEffect(() => {
-        console.log("Appointment Data:", appointmentData);
-    }, [appointmentData]);
 
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
@@ -79,22 +76,25 @@ export function CheckSchedule() {
         searchName: (item) => [item.nome, item.dataInicio],
     });
 
-    const [appointmentId, setAppointmentId] = useState<number>(0);
 
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then((res) => {
+        await acceptUserAppointment(id).then(async (res) => {
             console.log("Agendamento aceito:", res);
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(() => {
+        await refuseAppointment(id).then(async () => {
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
         });
@@ -107,19 +107,22 @@ export function CheckSchedule() {
             descricaoCancelamento: data.description === "" ? null : data.description
         };
         console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal(payload).then(() => {
+        await reportAbsencePersonal(payload).then(async () => {
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
         });
     }
 
     function handleConcludeAppointment(id: number) {
-        concludeAppointment(id).then(() => {
+        concludeAppointment(id).then(async () => {
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
-            queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
         });
@@ -160,7 +163,6 @@ export function CheckSchedule() {
                             id={card.agendamentoId}
                             key={card.agendamentoId}
                             RescheduleClick={() => {
-                                setAppointmentData(card);
                                 setClickedDate(card.dataInicio?.split("T")[0] || "");
                                 handleModal(card.agendamentoId, "reschedule");
                             }}
