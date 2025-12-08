@@ -203,9 +203,16 @@ export default function NewEvent(
                 console.log("Evento salvo com sucesso:", response.data);
 
                 if (calculatedTitle && newEventDate) {
-                    queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours"] });
+                    await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+                    await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+
                     if (url.includes("/schedule")) {
                         newAppointmentCreated && newAppointmentCreated(true);
+                        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+                        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+
                         openModal();
                         navigation("/schedule");
                         return;
@@ -232,6 +239,19 @@ export default function NewEvent(
 
     }
 
+    useEffect(() => {
+        if (appoitmentData && isReschedule) {
+            console.log("Populando dados de endereço para reagendamento:", appoitmentData);
+            setAddressData({
+                number: appoitmentData?.endereco.numero,
+                complement: appoitmentData?.endereco.complemento,
+                postalCode: appoitmentData?.endereco.cep.id,
+                address: appoitmentData?.endereco.cep.logradouro,
+                city: appoitmentData?.endereco.cep.localidade,
+                state: appoitmentData?.endereco.cep.uf
+            });
+        }
+    }, [appoitmentData, isReschedule]);
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
@@ -245,49 +265,21 @@ export default function NewEvent(
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
-        const finalAddress = appoitmentData
-            ? {
-                number: appoitmentData.endereco.numero,
-                complement: appoitmentData.endereco.complemento,
-                postalCode: appoitmentData.endereco.cep.id,
-                address: appoitmentData.endereco.cep.logradouro,
-                city: appoitmentData.endereco.cep.localidade,
-                state: appoitmentData.endereco.cep.uf
-            }
-            : addressData;
-
-        if (appoitmentData) {
-            setAddressData({
-                number: appoitmentData.endereco.numero,
-                complement: appoitmentData.endereco.complemento,
-                postalCode: appoitmentData.endereco.cep.id,
-                address: appoitmentData.endereco.cep.logradouro,
-                city: appoitmentData.endereco.cep.localidade,
-                state: appoitmentData.endereco.cep.uf
-            });
-        }
-
-
-        console.log("appoitmentData antes do payload:", appoitmentData?.endereco);
-        console.log("addressData antes do payload:", addressData);
-
-
-        console.log(`finalAddress usado no payload: ${newEventDate}T${newEventStartHour}`);
         const payload: Schedule = {
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             endereco: {
-                numero: finalAddress.number,
-                complemento: finalAddress.complement,
+                numero: addressData.number,
+                complemento: addressData.complement,
                 unidade: "",
                 tipo: selectedLocation,
                 cep: {
-                    id: finalAddress.postalCode,
-                    logradouro: finalAddress.address,
+                    id: addressData.postalCode,
+                    logradouro: addressData.address,
                     bairro: "",
-                    localidade: finalAddress.city,
-                    uf: finalAddress.state
+                    localidade: addressData.city,
+                    uf: addressData.state
                 }
             },
             personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
@@ -306,14 +298,22 @@ export default function NewEvent(
         });
 
         if (!goToNextStep) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar", "userAppointments", "availabilityHours", "personalRequests", "appointmentDetails"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
             return;
         }
