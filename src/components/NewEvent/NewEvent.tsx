@@ -341,6 +341,7 @@ export default function NewEvent(
 
     const type = useContext(TypeContext);
 
+
     const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
         queries: [
             {
@@ -441,6 +442,7 @@ export default function NewEvent(
         select: (res) => res.data,
     });
 
+
     const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null);
 
     useEffect(() => {
@@ -462,6 +464,14 @@ export default function NewEvent(
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
+    const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", {locale: ptBR});
+    console.log("tomorrow", tomorrow);
+
+    const availabilityHoursTomorrow = useQuery({
+        queryKey: ["availabilityHours"],
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, tomorrow ? tomorrow : ""),
+        select: (res) => res.data,
+    });
 
     return (
         <>
@@ -537,6 +547,8 @@ export default function NewEvent(
                                                 createdEvents={insertedEvents}
                                                 eventToReschedule={clickedDate ? `${clickedDate.split("T")[0]}` : undefined}
                                                 isMobile={isMobile}
+                                                hasClassTomorrow={availabilityHoursTomorrow?.data?.length > 0}
+                                                tomorrowDate={tomorrow}
                                             />
                                         </div>
                                         {newEventDate && (

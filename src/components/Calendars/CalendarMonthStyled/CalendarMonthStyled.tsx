@@ -3,9 +3,12 @@ import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "./mobile.css";
 import "./desktop.css";
-import { use, useEffect, useRef, useState } from "react";
+import { use, useContext, useEffect, useRef, useState } from "react";
 import type { Schedule } from "../../../models/schedule";
 import { parseISO, startOfDay } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { getPersonalHours } from "../../../constants/personal";
+import { TypeContext } from "../../../App";
 
 type Props = {
   className?: string;
@@ -14,11 +17,12 @@ type Props = {
   createdEvents?: Schedule[];
   eventToReschedule?: string;
   isMobile: boolean;
+  hasClassTomorrow?: boolean;
+  tomorrowDate?: string;
 };
 
 
-export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile }: Props) {
-
+export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate }: Props) {
   console.log("CalendarMonthStyled - createdEvents", clickedDateStr);
 
 
@@ -83,7 +87,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const today = startOfDay(new Date());
             const clickedDate = parseISO(info.dateStr);
 
-            if (clickedDate <= today) return
+            if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
 
             setNewEventDate(info.dateStr)
 
@@ -101,7 +105,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             //   return ["disabled-day"];
 
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
-            if (dateStr < now || dateStr === now)
+            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate))
               return ["disabled-day"];
             // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
             //   return ["disabled-day"];

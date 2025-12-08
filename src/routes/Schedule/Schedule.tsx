@@ -17,6 +17,7 @@ import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
+import { getPersonalHours } from "../../constants/personal";
 
 type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
@@ -147,7 +148,11 @@ export default function Schedule() {
 
                     <div className={classnames(styles.viewSchedule, { [styles.mobile]: isMobile })}>
                         <div className={classnames(styles.schedulePageCalendar, { [styles.mobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} isUserAuthorizedToInteract={actualPlanQuery?.data?.data ? true : false} />
+                            <ViewCalendarMonthStyled
+                                isMobile={isMobile}
+                                events={appointments.data?.data}
+                                isUserAuthorizedToInteract={actualPlanQuery?.data?.data ? true : false}
+                            />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
                             <div className={styles.adjustButtonWSchedule}>
