@@ -4,13 +4,18 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import "./style.css";
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { parseISO, startOfDay } from "date-fns";
+import { format, parseISO, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
+import { useQuery } from "@tanstack/react-query";
+import { getPersonalHours } from "../../../constants/personal";
+import { ptBR } from "date-fns/locale";
+import { getPersonalList } from "../../../constants/schedule";
 
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
   isUserAuthorizedToInteract?: boolean;
+
 }
 
 export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract }: Props) {
@@ -20,8 +25,23 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
 
   const type = useContext(TypeContext);
 
-
   const nav = useNavigate();
+
+  const personal = useQuery({
+    queryKey: ["personalList"],
+    queryFn: getPersonalList,
+    select: (res) => res.data[0].id,
+  });
+
+
+  const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+  console.log("tomorrow", tomorrow);
+
+  const availabilityHoursTomorrow = useQuery({
+    queryKey: ["availabilityHours"],
+    queryFn: () => getPersonalHours(personal.data, tomorrow ? tomorrow : ""),
+    select: (res) => res.data,
+  });
 
   return (
     <div className="container-calendar">
@@ -46,7 +66,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px",  position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
+                <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
                   {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}
@@ -92,7 +112,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if (isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if ((availabilityHoursTomorrow?.data?.length > 0 && clickedDate === tomorrow) && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
             return
