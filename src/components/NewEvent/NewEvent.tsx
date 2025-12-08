@@ -233,18 +233,18 @@ export default function NewEvent(
     }
 
     useEffect(() => {
-        if (appoitmentData) {
+        if (appoitmentData && isReschedule) {
             console.log("Populando dados de endereço para reagendamento:", appoitmentData);
             setAddressData({
-                number: appoitmentData.endereco.numero,
-                complement: appoitmentData.endereco.complemento,
-                postalCode: appoitmentData.endereco.cep.id,
-                address: appoitmentData.endereco.cep.logradouro,
-                city: appoitmentData.endereco.cep.localidade,
-                state: appoitmentData.endereco.cep.uf
+                number: appoitmentData?.endereco.numero,
+                complement: appoitmentData?.endereco.complemento,
+                postalCode: appoitmentData?.endereco.cep.id,
+                address: appoitmentData?.endereco.cep.logradouro,
+                city: appoitmentData?.endereco.cep.localidade,
+                state: appoitmentData?.endereco.cep.uf
             });
         }
-    }, []);
+    }, [appoitmentData, isReschedule]);
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");

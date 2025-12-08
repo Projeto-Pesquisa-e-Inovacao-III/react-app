@@ -77,6 +77,13 @@ export function CheckSchedule() {
     });
 
 
+    async function handleSuccessReschedule() {
+        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+        await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        handleSuccessModal("Reagendamento Concluído", "O agendamento foi reagendado com sucesso.");
+    } 
+
     async function acceptAppointment(id: number) {
         await acceptUserAppointment(id).then(async (res) => {
             console.log("Agendamento aceito:", res);
@@ -188,7 +195,7 @@ export function CheckSchedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
-                        openModal={() => handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                        openModal={handleSuccessReschedule}
                         errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                         insertedEvents={appointments.data?.data}
                         title="Reagendar horário"
