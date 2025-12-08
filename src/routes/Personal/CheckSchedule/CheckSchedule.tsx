@@ -1,14 +1,14 @@
 import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import styles from "./CheckSchedule.module.css"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
@@ -48,19 +48,51 @@ export function CheckSchedule() {
         setOpenModal("error");
     }
 
-    const personalRequests = useQuery({
+    const personalRequests = useInfiniteQuery({
         queryKey: ["personalRequests"],
-        queryFn: () => findPersonalRequests(),
-        retry: false,
+        queryFn: ({ pageParam }: { pageParam: number }) =>
+            findPersonalRequests(pageParam, 8).then(res => res.data),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const current = lastPage.page.number;
+            const total = lastPage.page.totalPages;
+            return current + 1 < total ? current + 1 : undefined;
+        },
     });
 
-    // function handlePageChange(e: any) {
-    //     const bottom = e.target.scrollingElement.scrollHeight;
-    //     if(bottom) {
-    //         console.log("bottom reached");
-    //         setPage((prevPage) => prevPage + 1);
-    //     }
-    // }
+    const requests =
+        personalRequests.data?.pages.flatMap(page => page.content) ?? [];
+
+    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (
+            !personalRequests.hasNextPage ||
+            personalRequests.isFetchingNextPage
+        ) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    personalRequests.fetchNextPage();
+                }
+            },
+            {
+                root: containerRef.current,
+                rootMargin: "100px",
+                threshold: 0.1,
+            }
+        );
+
+        if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+        return () => observer.disconnect();
+    }, [
+        personalRequests.hasNextPage,
+        personalRequests.isFetchingNextPage,
+        personalRequests.fetchNextPage,
+    ]);
 
     //filter
     const {
@@ -71,9 +103,9 @@ export function CheckSchedule() {
         filterStatus,
         setFilterStatus,
         clearFilters
-    } = useSearchFilter(personalRequests.data?.data.content, {
-        searchStatus: (item) => item.status,
-        searchName: (item) => [item.nome, item.dataInicio],
+    } = useSearchFilter(requests, {
+        searchStatus: item => item.status,
+        searchName: item => [item.nome, item.dataInicio],
     });
 
 
@@ -82,7 +114,7 @@ export function CheckSchedule() {
         await queryClient.resetQueries({ queryKey: ["personalRequests"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         handleSuccessModal("Reagendamento Concluído", "O agendamento foi reagendado com sucesso.");
-    } 
+    }
 
     async function acceptAppointment(id: number) {
         await acceptUserAppointment(id).then(async (res) => {
@@ -149,7 +181,9 @@ export function CheckSchedule() {
 
     return (
         <>
-            <div className={styles.containerCheckSchedule} >
+            <div className={styles.containerCheckSchedule}
+                ref={containerRef}
+            >
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
                     <div className={styles.cardFilter}>
@@ -165,29 +199,27 @@ export function CheckSchedule() {
                 </div>
 
                 <div className={styles.cardsCheckSchedule}>
-                    {filteredData.length > 0 ? filteredData.map((card) => (
+                    {filteredData.map(card => (
                         <CardCheckSchedule
-                            id={card.agendamentoId}
                             key={card.agendamentoId}
+                            id={card.agendamentoId}
+                            cardData={card}
                             RescheduleClick={() => {
                                 setClickedDate(card.dataInicio?.split("T")[0] || "");
                                 handleModal(card.agendamentoId, "reschedule");
                             }}
-                            AcceptScheduleClick={() => {
-                                handleModal(card.agendamentoId, "accept");
-                            }}
-                            DeclineScheculeClick={() => {
-                                handleModal(card.agendamentoId, "decline");
-                            }}
-                            ConcludeScheduleClick={() => {
-                                handleModal(card.agendamentoId, "conclude");
-                            }}
-                            RegisterAbsenceClick={() => {
-                                handleModal(card.agendamentoId, "registerAbsence");
-                            }}
-                            cardData={card}
+                            AcceptScheduleClick={() => handleModal(card.agendamentoId, "accept")}
+                            DeclineScheculeClick={() => handleModal(card.agendamentoId, "decline")}
+                            ConcludeScheduleClick={() => handleModal(card.agendamentoId, "conclude")}
+                            RegisterAbsenceClick={() => handleModal(card.agendamentoId, "registerAbsence")}
                         />
-                    )) : <p>Nenhum agendamento encontrado.</p>}
+                    ))}
+
+                    {personalRequests?.hasNextPage && (
+                        <div ref={loadMoreRef} style={{ height: 1 }} />
+                    )}
+
+                    {personalRequests?.isFetchingNextPage && <p>Carregando mais…</p>}
                 </div>
             </div>
             {openModal === "reschedule" && (
