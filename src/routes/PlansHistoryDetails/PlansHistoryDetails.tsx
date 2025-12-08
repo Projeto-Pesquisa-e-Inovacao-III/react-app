@@ -58,7 +58,6 @@ export default function PlansHistoryDetails() {
             <div className={styles.contentRow}>
                 <div className={styles.planDetails}>
                     <h2 className={styles.subtitle}>{productDetails.data?.produtoComprado}</h2>
-                    <span className={classNames(styles.planDetailsDescription, { [styles.planDetailsDescriptionMobile]: isMobile })}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. At, id nesciunt pariatur similique neque nihil.</span>
                 </div>
                 <div className={classNames(styles.cardDetails, { [styles.cardDetailsMobile]: isMobile })}>
                     <span className={styles.highlight}>Subtotal: <span>R$ {productDetails.data?.valorCompra}</span></span>

@@ -22,9 +22,7 @@ type Props = {
 };
 
 
-export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate }: Props) {
-  console.log("CalendarMonthStyled - createdEvents", clickedDateStr);
-
+export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow = true, tomorrowDate }: Props) {
 
   const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
     return {
@@ -33,9 +31,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
     };
   }) : [];
 
-  useEffect(() => {
-    console.log("databaseEvents", databaseEvents);
-  }, []);
 
   const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
   const [newEventDate, setNewEventDate] = useState<string>("");
@@ -46,8 +41,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
       setEvents(databaseEvents);
     }
 
-    console.log("Events updated:", events);
-
   }, []);
 
   useEffect(() => {
@@ -57,17 +50,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi();
     calendarApi?.select(eventToReschedule || "");
-    console.log("eventToReschedule changed:", eventToReschedule);
-    console.log("Setting new event date to:", calendarApi);
     setNewEventDate(eventToReschedule || "");
   }, []);
-
-  useEffect(() => {
-    if (newEventDate) {
-      console.log("New event date selected:", newEventDate);
-    }
-  }, [newEventDate]);
-
 
   const actualMonth = new Date().getMonth();
 

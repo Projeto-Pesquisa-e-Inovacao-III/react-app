@@ -464,12 +464,12 @@ export default function NewEvent(
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
-    const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", {locale: ptBR});
+    const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", {locale: ptBR});
     console.log("tomorrow", tomorrow);
 
     const availabilityHoursTomorrow = useQuery({
-        queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, tomorrow ? tomorrow : ""),
+        queryKey: ["availabilityHoursTomorrow"],
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, tomorrow),
         select: (res) => res.data,
     });
 
