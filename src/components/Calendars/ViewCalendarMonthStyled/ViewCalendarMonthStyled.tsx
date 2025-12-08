@@ -112,7 +112,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if ((availabilityHoursTomorrow?.data?.length > 0 && clickedDate === tomorrow) && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if(clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
+
+            if (isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
             return
