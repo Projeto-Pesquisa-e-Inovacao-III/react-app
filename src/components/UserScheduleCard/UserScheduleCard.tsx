@@ -19,10 +19,11 @@ type UserScheduleCardProps = {
     finalHour: string;
     handleCancel: (() => void);
     handleReschedule: (() => void);
+    handleAcceptReschedule?: (() => void);
     isMobile: boolean;
 }
 
-export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, isMobile }: UserScheduleCardProps) {
+export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, handleAcceptReschedule, isMobile }: UserScheduleCardProps) {
     console.log("dataCardProps", data);
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
@@ -41,9 +42,9 @@ export default function UserScheduleCard({ additionalInfo, isReschedule, data, d
                 {isReschedule &&
                     (
                         <div className="btn-actions">
-                            <Button type="button" typeButton="accept" title="Aceitar" handleButtonClick={handleReschedule} />
-                            <Button type="button" typeButton="decline" title="Cancelar" handleButtonClick={handleCancel} />
-                            <Button type="button" typeButton="other" title="Reagendar" handleButtonClick={handleReschedule} />
+                            <SmallerButton type="button" classname="accept" title="Aceitar" handleButtonClick={handleAcceptReschedule} />
+                            <SmallerButton type="button" classname="decline" title="Cancelar" handleButtonClick={handleCancel} />
+                            <SmallerButton type="button" classname="other" title="Reagendar" handleButtonClick={handleReschedule} />
                         </div>
                     )
                 }

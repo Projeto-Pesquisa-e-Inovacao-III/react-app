@@ -51,11 +51,11 @@ export function logout() {
 }
 
 export function sendResetCode(number: string) {
-   return api.post(`/api/password-reset/send-code`, { pais: `55`, ddd: number.slice(0, 2), telefone: number.slice(2), code: "123" })
+   return api.post(`/api/password-reset/send-code`, { pais: `55`, ddd: number.slice(0, 2), numero: number.slice(2) })
 }
 
 export function verifyCode(number: string, code: string) {
-   return api.post(`/api/password-reset/verify-code`, { userIdentifier: `+55${number}`, verificationCode: code })
+   return api.post(`/api/password-reset/verify-code`, { pais: `55`, ddd: number.slice(0, 2), numero: number.slice(2), verificationCode: code })
 }
 
 export function changePassword(oldPassword: string, newPassword: string) {
@@ -65,6 +65,11 @@ export function changePassword(oldPassword: string, newPassword: string) {
    });
 }
 
+export function forgotPassword(number: string, newPassword: string, token: string) {
+   return api.post(`/api/password-reset/reset-password`, { pais: `55`, ddd: number.slice(0, 2), numero: number.slice(2), newPassword: newPassword, token: token });
+}
+
+
 export async function isAuthenticated() {
-   return await api.get (`/usuarios/auth`)
+   return await api.get(`/usuarios/auth`)
 }
