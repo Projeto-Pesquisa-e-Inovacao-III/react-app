@@ -11,6 +11,7 @@ import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" |null;
 
@@ -210,6 +211,10 @@ export function Packages() {
 
             {openModal === "addAdditional" && (
                 <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
+            )}
+
+            {openModal === "error" && (
+                <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
             )}
 
 
