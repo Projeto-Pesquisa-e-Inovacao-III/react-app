@@ -64,7 +64,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: Ca
                     headerToolbar={{
                         start: "",
                         center: "title",
-                        end: `${isMobile ? '' : 'today '}prev,next`,
+                        end: `prev,next`,
                     }}
                     customButtons={{
                         newEvent: {
