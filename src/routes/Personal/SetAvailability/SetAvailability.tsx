@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Clock } from "lucide-react";
+import { Check, CircleCheck, Clock, Loader } from "lucide-react";
 import { getPersonalList } from "../../../constants/schedule";
 
 export interface TimeSlot {
@@ -71,6 +71,8 @@ export default function SetAvailability() {
         setSchedule(formatted);
     }, [getInitialCronogram.data]);
 
+
+    const [isLoading, setIsLoading] = useState(false);
     function updateSlot(
         dayIndex: number,
         slotIndex: number,
@@ -78,8 +80,8 @@ export default function SetAvailability() {
         value: string,
         id: string
     ) {
+        setIsLoading(true);
         console.log("Updating slot:", { dayIndex, slotIndex, field, value });
-
         const newSchedule = [...schedule];
         newSchedule[dayIndex].slots[slotIndex] = {
             ...newSchedule[dayIndex].slots[slotIndex],
@@ -93,6 +95,7 @@ export default function SetAvailability() {
         const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
         updatePersonalCronogram({ diaSemana: updatedSlot.diaSemana, horaInicio: updatedSlot.horaInicio, horaFim: updatedSlot.horaFim, tipo: updatedSlot.tipo }, id)
             .then(() => {
+                setIsLoading(false);
                 console.log("Cronograma atualizado com sucesso");
             })
             .catch((error) => {
@@ -130,7 +133,7 @@ export default function SetAvailability() {
                 </div>
                 <div className={styles.defaultsControls}>
                     <div className={styles.controlGroup}>
-                        <label className={styles.controlLabel}>Intervalo entre agendamentos:</label>
+                        <label className={styles.controlLabel} >Intervalo pós agendamentos:</label>
                         <select
                             className={styles.select}
                             value={personalBuffer.data ?? "0"}
@@ -142,8 +145,13 @@ export default function SetAvailability() {
                             <option value="45">45 min</option>
                             <option value="60">1 hora</option>
                         </select>
+
+                        <p className="text-gray-300 text-sm">Será reservado 15 minutos antes do intervalo de entrada.</p>
+
                     </div>
                 </div>
+                {isLoading ? <p className="text-white flex gap-2 items-center"><Loader /> Atualizando dados...</p> : <p className="text-white flex gap-2 items-center"> <CircleCheck color="#088F8F" /> Dados atualizados</p>}
+
             </div>
 
             <div className={styles.tableWrapper}>
