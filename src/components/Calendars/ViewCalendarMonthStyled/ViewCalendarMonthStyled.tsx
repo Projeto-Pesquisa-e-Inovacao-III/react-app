@@ -100,6 +100,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             console.log(today)
 
 
+            if (type?.type === "personal" && appointment && appointment.length > 1) {
+              nav(`/personal/check-schedule/?date=${clickedDate}`);
+              return
+            }
+
             if (appointment && appointment.length > 1) {
               nav(`/schedule-history/?date=${clickedDate}`);
               return
@@ -112,7 +117,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if(clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
+            if (clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
 
             if (isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
