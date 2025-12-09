@@ -12,7 +12,7 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" |null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -47,6 +47,7 @@ export function Packages() {
             // setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
+            handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
         });
     };
 
@@ -74,6 +75,11 @@ export function Packages() {
         );
     }
 
+    function handleErrorModalInfos(title: string, content: string) {
+        setSuccessModalInfos({ title, content });
+        setOpenModal("error");
+    }
+    
     function handleSuccessModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
         setOpenModal("success");
