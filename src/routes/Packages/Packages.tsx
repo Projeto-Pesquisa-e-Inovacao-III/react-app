@@ -44,7 +44,7 @@ export function Packages() {
             //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
             // });
             // TODO: return with data?
-            setOpenModal("success");
+            // setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
         });
