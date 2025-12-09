@@ -9,8 +9,8 @@ interface PlansCardProps {
 
 export default function PlansCard({ description, content, price, benefits }: PlansCardProps) {
   return (
-    <div className="">
-      <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-full flex flex-col justify-between">
+    <div className="h-full">
+      <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-full flex flex-col justify-between min-h-4/5">
         <div >
           <div className="bg-indigo p-5 rounded-md text-white text-xl">
             {content}
