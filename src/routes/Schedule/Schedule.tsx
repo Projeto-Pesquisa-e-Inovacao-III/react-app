@@ -54,6 +54,7 @@ export default function Schedule() {
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
+        refetchOnWindowFocus: false,
         enabled: type?.type === "aluno"
     });
 
@@ -97,11 +98,13 @@ export default function Schedule() {
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
+        refetchOnWindowFocus: false,
     })
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
+        refetchOnWindowFocus: false,
         select: (res) => {
             return [...res.data].sort((a, b) => new Date(b.dataInicio) - new Date(a.dataInicio))
         }
@@ -112,6 +115,8 @@ export default function Schedule() {
         queryFn: () => findPersonalRequests(),
         select: (res) => res.data.content,
         retry: false,
+        refetchOnWindowFocus: false,
+
         enabled: type?.type === "personal"
     })
 
@@ -143,6 +148,7 @@ export default function Schedule() {
 
             return data
         },
+        refetchOnWindowFocus: false,
         retry: false,
     });
 

@@ -33,6 +33,7 @@ export function Overview() {
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
+        refetchOnWindowFocus: false,
         enabled: type?.type === "aluno"
     });
 
@@ -41,16 +42,19 @@ export function Overview() {
             {
                 queryKey: ["totalPRESENCIAL"],
                 queryFn: () => getTotalByClassType("PRESENCIAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
             },
             {
                 queryKey: ["totalRESIDENCIAL"],
                 queryFn: () => getTotalByClassType("RESIDENCIAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
             },
             {
                 queryKey: ["totalFUNCIONAL"],
                 queryFn: () => getTotalByClassType("FUNCIONAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
             }
         ]
@@ -135,6 +139,8 @@ export function Overview() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
         retry: false,
+        refetchOnWindowFocus: false,
+
     })
 
     const appointmentsCards = useQuery({
@@ -142,6 +148,7 @@ export function Overview() {
         queryFn: () => findUserAppointments(),
         retry: false,
         select: (res) => res.data,
+        refetchOnWindowFocus: false,
     })
 
     useEffect(() => {

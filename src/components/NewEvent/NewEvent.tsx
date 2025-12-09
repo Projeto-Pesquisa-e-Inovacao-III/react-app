@@ -64,6 +64,7 @@ export default function NewEvent(
         queryKey: ["personalList"],
         queryFn: getPersonalList,
         select: (res) => res.data,
+        refetchOnWindowFocus: false,
     });
 
 
@@ -72,7 +73,8 @@ export default function NewEvent(
         queryKey: ["myId"],
         queryFn: findUserData,
         select: (res) => res.data?.id,
-        enabled: typeUser === "personal"
+        enabled: typeUser === "personal",
+        refetchOnWindowFocus: false,
     });
 
 
@@ -211,7 +213,7 @@ export default function NewEvent(
                     if (url.includes("/schedule")) {
                         newAppointmentCreated && newAppointmentCreated(true);
                         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+                        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
 
@@ -303,7 +305,7 @@ export default function NewEvent(
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
@@ -313,7 +315,7 @@ export default function NewEvent(
 
         if (calculatedTitle && newEventDate) {
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
@@ -351,16 +353,20 @@ export default function NewEvent(
             {
                 queryKey: ["totalPRESENCIALNewEvent"],
                 queryFn: () => getTotalByClassType("PRESENCIAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
+
             },
             {
                 queryKey: ["totalRESIDENCIALNewEvent"],
                 queryFn: () => getTotalByClassType("RESIDENCIAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
             },
             {
                 queryKey: ["totalFUNCIONALNewEvent"],
                 queryFn: () => getTotalByClassType("FUNCIONAL"),
+                refetchOnWindowFocus: false,
                 enabled: type?.type === "aluno"
             }
         ]
@@ -438,12 +444,14 @@ export default function NewEvent(
         queryKey: ["personalList"],
         queryFn: getPersonalList,
         select: (res) => res.data[0].id,
+        refetchOnWindowFocus: false,
     });
 
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
+        refetchOnWindowFocus: false,
     });
 
 
@@ -468,13 +476,14 @@ export default function NewEvent(
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
-    const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", {locale: ptBR});
+    const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", { locale: ptBR });
     console.log("tomorrow", tomorrow);
 
     const availabilityHoursTomorrow = useQuery({
         queryKey: ["availabilityHoursTomorrow"],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, tomorrow),
         select: (res) => res.data,
+        refetchOnWindowFocus: false,
     });
 
     return (
