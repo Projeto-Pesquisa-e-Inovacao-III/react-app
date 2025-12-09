@@ -51,7 +51,7 @@ export function logout() {
 }
 
 export function sendResetCode(number: string) {
-   return api.post(`/api/password-reset/send-code`, { to: `+55${number}`, code: "123" })
+   return api.post(`/api/password-reset/send-code`, { pais: `55`, ddd: number.slice(0, 2), telefone: number.slice(2), code: "123" })
 }
 
 export function verifyCode(number: string, code: string) {

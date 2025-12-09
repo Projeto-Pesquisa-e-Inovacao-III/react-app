@@ -11,7 +11,7 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -97,13 +97,6 @@ export default function Schedule() {
         queryFn: () => appointmentAtCalendar(),
     })
 
-
-    useEffect(() => {
-        console.log("appointments.data?.data", appointments.data?.data);
-
-    }, [newAppointmentCreated]);
-
-
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
@@ -119,6 +112,36 @@ export default function Schedule() {
         retry: false,
         enabled: type?.type === "personal"
     })
+
+    const userRescheduleAppointments = useQuery({
+        queryKey: ["userRescheduleAppointments"],
+        queryFn: async () => {
+            let allContent = [];
+            let page = 0;
+            let totalPages = 1; // Inicializa com 1 para entrar no loop
+
+            while (page < totalPages) {
+                const response = await findPersonalRequests(page);
+                const content = response.data?.content || [];
+                allContent = [...allContent, ...content];
+
+                // Atualiza o total de páginas na primeira iteração
+                totalPages = response.data?.page?.totalPages || 1;
+                page++;
+            }
+
+            return allContent;
+        },
+        select: (data) => {
+            return data.filter(
+                appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
+            );
+        },
+        retry: false,
+    });
+
+    const appointmentsUser = userRescheduleAppointments.data;
+    console.log("appointmentsUser", appointmentsUser);
 
     //todo:
     // const rescheduleRequests = useQuery({
@@ -142,7 +165,7 @@ export default function Schedule() {
     return (
         <>
             {type?.type === "personal" ? (
-                <CalendarWeek insertedEvents={personalAppointments?.data || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
+                <CalendarWeek insertedEvents={appointmentsUser || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 
@@ -177,6 +200,22 @@ export default function Schedule() {
                                     handleButtonClick={() => handleOpenNewEventModal()} />
                             </div>
 
+                            {appointmentsUser?.map(event => (
+                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={event.agendamentoId}>
+                                    <UserScheduleCard
+                                        data={event}
+                                        isReschedule={true}
+                                        additionalInfo={{ foto: event?.foto, nome: event?.nome }}
+                                        date={format(parseISO(event.dataInicio), "d 'de' MMMM", { locale: ptBR })}
+                                        initialHour={format(parseISO(event.dataInicio), "HH'h'mm")}
+                                        finalHour={format(parseISO(event.dataFim), "HH'h'mm")}
+                                        handleCancel={() => setOpenModal("cancel")}
+                                        handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId)}
+                                        isMobile={isMobile}
+                                    />
+                                </div>
+                            ))}
+
                             {userAppointments.data?.map((event, index) => (
                                 <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
@@ -190,6 +229,9 @@ export default function Schedule() {
                                     />
                                 </div>
                             ))}
+
+
+
                         </div>
                     </div>
                 </div>

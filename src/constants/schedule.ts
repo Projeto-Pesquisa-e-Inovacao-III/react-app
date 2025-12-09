@@ -41,6 +41,10 @@ export function findPersonalRequests(page = 0, size = 10) {
     return api.get(`/agendamentos/solicitacoes?page=${page}&size=${size}`);
 }
 
+export function findUserRescheduleRequests() {
+    return api.get(`/agendamentos/solicitacoes`);
+}
+
 export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
 }
