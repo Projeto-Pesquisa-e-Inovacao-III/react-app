@@ -50,7 +50,11 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: Ca
                     plugins={[dayGridPlugin, timeGridPlugin]}
                     initialView="timeGridWeek"
                     locale={"pt-br"}
+                    height="auto" // Remove o scroll
+                    expandRows={true} // Expande as linhas para preencher o espaço
                     allDaySlot={false}
+                    slotMinTime="08:00:00" // Defina o horário inicial
+                    slotMaxTime="20:00:00" // Defina o horário final
                     eventTimeFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                     slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
                     timeZone="local"

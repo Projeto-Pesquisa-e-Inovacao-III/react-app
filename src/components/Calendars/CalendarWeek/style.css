@@ -1,5 +1,3 @@
-
-
 .new-event-opened-wrapper-callendar {
     filter: opacity(0.4);
 }
@@ -9,6 +7,19 @@
     background-color: #ddd !important;
     pointer-events: none;
     opacity: 0.5;
+}
+
+.wrapper-callendar {
+    max-height: 600px;
+    /* Altura máxima desejada */
+}
+
+.wrapper-callendar .fc-timegrid-body {
+    overflow-y: hidden !important;
+}
+
+.wrapper-callendar .fc-scroller {
+    overflow-y: hidden !important;
 }
 
 .fc .fc-timegrid-col.fc-day-today {
