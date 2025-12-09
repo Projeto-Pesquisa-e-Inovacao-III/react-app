@@ -98,6 +98,7 @@ export default function ScheduleDetails() {
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
+            handleErrorModal("Erro ao recusar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao recusar o agendamento.");
         });
     }
 
@@ -108,6 +109,7 @@ export default function ScheduleDetails() {
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao cancelar o agendamento:", error);
+            handleErrorModal("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
         });
     }
 

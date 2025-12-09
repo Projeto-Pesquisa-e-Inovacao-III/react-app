@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import Button from "../../Button/Button";
 
 interface PlansCardProps {
@@ -5,9 +6,13 @@ interface PlansCardProps {
   content: string;
   price: string;
   benefits?: string[];
+  isLoggedIn: boolean;
 }
 
-export default function PlansCard({ description, content, price, benefits }: PlansCardProps) {
+export default function PlansCard({ description, content, price, benefits, isLoggedIn }: PlansCardProps) {
+
+  const navigate = useNavigate();
+
   return (
     <div className="h-full">
       <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-full flex flex-col justify-between min-h-4/5">
@@ -29,7 +34,7 @@ export default function PlansCard({ description, content, price, benefits }: Pla
         </div>
 
         <div className="font-bold w-3/4 flex justify-center mx-auto mt-5">
-          <Button type="button" title="Ver detalhes" onClick={() => window.location.href = "/login"} />
+          <Button type="button" title="Ver detalhes" onClick={() => isLoggedIn ? navigate("/packages") : navigate("/login")} />
         </div>
       </div>
 

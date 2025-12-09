@@ -79,7 +79,6 @@ export default function SetAvailability() {
     const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     function showSuccessFeedback() {
-        // cancela o timeout anterior
         if (feedbackTimeoutRef.current) {
             clearTimeout(feedbackTimeoutRef.current);
         }

@@ -125,8 +125,8 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONFIRMADO"
-                                ? "green"
+                              : event.status === "CONCLUIDO"
+                                ? "#4CAF50"
                                 : "gray",
                       }}
                     />
