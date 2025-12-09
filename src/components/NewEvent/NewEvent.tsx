@@ -205,11 +205,13 @@ export default function NewEvent(
                 if (calculatedTitle && newEventDate) {
                     await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
                     await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
                     await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
 
                     if (url.includes("/schedule")) {
                         newAppointmentCreated && newAppointmentCreated(true);
                         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
 
@@ -301,6 +303,7 @@ export default function NewEvent(
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
             openModal();
@@ -310,6 +313,7 @@ export default function NewEvent(
 
         if (calculatedTitle && newEventDate) {
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });

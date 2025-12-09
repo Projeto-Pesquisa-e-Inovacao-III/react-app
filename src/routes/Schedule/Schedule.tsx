@@ -68,9 +68,11 @@ export default function Schedule() {
 
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(() => {
+        await refuseAppointment(id).then(async () => {
             handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
             queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+            await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
+
 
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
@@ -156,8 +158,12 @@ export default function Schedule() {
     //     enabled: type?.type === "aluno"
     // })
 
-    function handleOpenRescheduleRequestModal(id: number) {
+    function handleOpenRescheduleRequestModal(id: number, isRescheduleFromPersonal?: boolean) {
         let eventToReschedule = userAppointments.data?.find((event) => event.agendamentoId === id);
+
+        if (isRescheduleFromPersonal) {
+            eventToReschedule = appointmentsUser?.find((event) => event.agendamentoId === id);
+        }
 
         setClickedDate(eventToReschedule.data);
 
@@ -171,6 +177,7 @@ export default function Schedule() {
             console.log("Agendamento aceito:", res);
             handleSuccessModalInfo("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
@@ -225,8 +232,8 @@ export default function Schedule() {
                                         initialHour={format(parseISO(event.dataInicio), "HH'h'mm")}
                                         finalHour={format(parseISO(event.dataFim), "HH'h'mm")}
                                         handleCancel={() => setOpenModal("cancel")}
-                                        handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId)}
                                         handleAcceptReschedule={() => setOpenModal("accept")}
+                                        handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId, true)}
                                         isMobile={isMobile}
                                     />
                                 </div>
