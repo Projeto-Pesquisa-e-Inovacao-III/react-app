@@ -49,29 +49,37 @@ export default function ForgotPassword() {
 
   const [timer, setTimer] = useState<number>(20);
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   async function handleSendCode(): Promise<boolean> {
+    setIsLoading(true);
     try {
       // const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
       const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
+
       console.log("Código enviado com sucesso:", response.data);
       setTimer(20);
+      setIsLoading(false);
       return true;
     } catch (error) {
       console.error("Erro ao enviar o código:", error);
+      setIsLoading(false);
       return false;
     }
   }
 
   async function handleVerifyCode(inputedCode: string): Promise<boolean> {
+    setIsLoading(true);
     try {
       const response = await verifyCode(phoneNumber.trim().replace(/[\s()-]/g, ''), inputedCode)
       console.log("Código verificado com sucesso:", response.data);
 
+      setIsLoading(false);
       return true;
     } catch (error) {
       console.error("Erro ao verificar o código:", error);
+      setIsLoading(false);
       return false;
     }
   }
@@ -142,7 +150,11 @@ export default function ForgotPassword() {
             }
 
             <div className={styles.continueButton} onClick={(e) => handleStep(e, true)}>
-              <Button type="submit" title="Continuar" />
+              {isLoading ? (
+                <div className={styles.loader}></div>
+              ) : (
+                <Button type="submit" title="Continuar" />
+              )}
             </div>
 
           </div>

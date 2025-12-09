@@ -264,7 +264,7 @@ export default function ScheduleDetails() {
                     {
                         (
                             (type === "personal" && (
-                                appointment.data?.status === "APROVADO" ||
+                                
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
@@ -284,7 +284,7 @@ export default function ScheduleDetails() {
                         )
                     }
 
-                    {type === "aluno" && appointment.data?.status === "APROVADO" && (
+                    {appointment.data?.status === "APROVADO" && (
                         <div className={classNames(styles.buttonGroup)}>
                             <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");

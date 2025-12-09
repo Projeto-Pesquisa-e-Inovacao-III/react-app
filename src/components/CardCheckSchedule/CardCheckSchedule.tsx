@@ -51,7 +51,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
     const today = new Date();
     const [year, month, day] = cardData.dataInicio?.split("T")[0].split("-").map(Number) || [0, 0, 0];
     const scheduleDate = new Date(year, month - 1, day);
-    
+
     function handleRescheduleClick() {
         RescheduleClick?.(true);
     }
@@ -71,9 +71,9 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
     function handleConcludeClick() {
         ConcludeScheduleClick?.(true)
     }
-    
+
     // type classTypes = "PENDENTE_PERSONAL_APROVACAO" | "APROVADO" | "PENDENTE_PERSONAL_CONCLUIR" | "CONCLUIDO" | "CANCELADO_PERSONAL" | "CANCELADO_CLIENTE" | "AUSENCIA_CLIENTE" | "AUSENCIA_PERSONAL";
-    
+
     // type ok = "PENDENTE_PERSONAL_APROVACAO (aluno) (reagendar, cancelar)" | "PENDENTE_CLIENTE_APROVACAO (aluno) (reagendar, cancelar, aceitar)"
 
     return (
@@ -121,6 +121,14 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                     <div className={styles.buttons}>
                         <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleAcceptClick} />
                         <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleDeclineClick} />
+                        <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRescheduleClick} />
+                    </div>
+                )}
+
+                {cardData.status && (cardData.status === "APROVADO") && (
+                    <div className={styles.buttons}>
+                        <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleDeclineClick} />
+
                         <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={`${styles.btnCheckSchedule}`} onClick={handleRescheduleClick} />
                     </div>
                 )}

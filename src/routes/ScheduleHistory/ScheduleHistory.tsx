@@ -66,10 +66,17 @@ export default function ScheduleHistory() {
                         </>
                     }
 
-                    {(event.status === "APROVADO" || event.status === "PENDENTE_PERSONAL_CONCLUIR") && (
+                    {(event.status === "PENDENTE_PERSONAL_CONCLUIR") && (
                         <>
                             <Dot color="#D7AC00" size={"30px"} />
                             <span>Status: pendente</span>
+                        </>
+                    )}
+
+                    {(event.status === "APROVADO") && (
+                        <>
+                            <Dot color="#D7AC00" size={"30px"} />
+                            <span>Status: marcado</span>
                         </>
                     )}
 

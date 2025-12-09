@@ -22,7 +22,7 @@ type Props = {
 };
 
 
-export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow = true, tomorrowDate }: Props) {
+export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate }: Props) {
 
   const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
     return {

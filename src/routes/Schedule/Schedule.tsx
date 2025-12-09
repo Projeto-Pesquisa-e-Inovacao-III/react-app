@@ -133,9 +133,13 @@ export default function Schedule() {
             return allContent;
         },
         select: (data) => {
-            return data.filter(
-                appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
-            );
+            if (type?.type === "aluno") {
+                return data.filter(
+                    appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
+                );
+            }
+
+            return data
         },
         retry: false,
     });
