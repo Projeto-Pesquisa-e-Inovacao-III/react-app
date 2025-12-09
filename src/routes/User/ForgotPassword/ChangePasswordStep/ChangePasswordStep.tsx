@@ -2,10 +2,16 @@ import { use, useEffect, useState } from "react";
 import styles from "../ForgotPassword.module.css";
 import { Lock, Mail, Phone } from "lucide-react";
 import InputWithIcon from "../../../../components/Inputs/InputWithIcon/InputWithIcon";
+import { validatePassword } from "../../../../utils/validacao";
+import { changePassword, forgotPassword } from "../../../../constants/user";
 
-export default function ChangePasswordStep() {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+type ChangePasswordStepProps = {
+    setNewPassword: React.Dispatch<React.SetStateAction<string>>;
+    setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function ChangePasswordStep({ setNewPassword, setConfirmPassword }: ChangePasswordStepProps) {
+
 
   return (
     <>

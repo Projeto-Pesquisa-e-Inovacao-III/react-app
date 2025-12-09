@@ -9,8 +9,12 @@ import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
-import { sendResetCode, verifyCode } from "../../../constants/user";
+import { forgotPassword, sendResetCode, verifyCode } from "../../../constants/user";
 import { cellphoneMask } from "../../../utils/mascara";
+import { validatePassword } from "../../../utils/validacao";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import { useNavigate } from "react-router-dom";
 
 // todo: fix font family  
 export default function ForgotPassword() {
@@ -27,7 +31,6 @@ export default function ForgotPassword() {
       const isCodeSent: boolean = await handleSendCode();
       if (!isCodeSent) return;
       setStep(2);
-
       return;
     }
 
@@ -35,16 +38,23 @@ export default function ForgotPassword() {
       const isCodeCorrect: boolean = await handleVerifyCode(inputCode);
       if (!isCodeCorrect) return;
       setStep(3);
+      return;
     }
 
-    if (step != 3) {
-      setStep((prevStep) => (isIncrease ? prevStep + 1 : prevStep - 1));
+    if (step === 3 && isIncrease) {
+      updatePassword();
+      return;
     }
 
     if (step === 3 && !isIncrease) {
       setStep(2);
+      return;
     }
 
+    if (step === 2 && !isIncrease) {
+      setStep(1);
+      return;
+    }
   }
 
   const [timer, setTimer] = useState<number>(20);
@@ -52,6 +62,9 @@ export default function ForgotPassword() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+
+  const [tokenSent, setTokenSent] = useState<string>("");
+
   async function handleSendCode(): Promise<boolean> {
     setIsLoading(true);
     try {
@@ -59,6 +72,7 @@ export default function ForgotPassword() {
       const response = await sendResetCode(phoneNumber.trim().replace(/[\s()-]/g, ''));
 
       console.log("Código enviado com sucesso:", response.data);
+
       setTimer(20);
       setIsLoading(false);
       return true;
@@ -74,6 +88,7 @@ export default function ForgotPassword() {
     try {
       const response = await verifyCode(phoneNumber.trim().replace(/[\s()-]/g, ''), inputedCode)
       console.log("Código verificado com sucesso:", response.data);
+      setTokenSent(response.data.token);
 
       setIsLoading(false);
       return true;
@@ -93,6 +108,55 @@ export default function ForgotPassword() {
       return () => clearInterval(countdown);
     }
   }, [timer]);
+
+
+  const [openModal, setOpenModal] = useState<"success" | "error" | null>(null);
+  const [textModal, setTextModal] = useState<{ title: string; content: string }>({ title: "", content: "" });
+
+  const [newPassword, setNewPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+
+  function validatePasswordMatch() {
+    return newPassword === confirmPassword;
+  }
+
+  function updatePassword() {
+    const newP = confirmPassword ?? "";
+
+    if (!validatePasswordMatch()) {
+      setTextModal({ title: "Houve um erro", content: "As senhas não coincidem." });
+      setOpenModal("error");
+      return;
+    }
+
+    if (!newP) {
+      setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
+      setOpenModal("error");
+      return;
+    }
+
+    const validation = validatePassword(newP);
+    if (validation !== "password válida!") {
+      setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
+      setOpenModal("error");
+      return;
+    }
+    forgotPassword(phoneNumber.trim().replace(/[\s()-]/g, ''), newP, tokenSent)
+      .then(() => {
+        setNewPassword("");
+        setConfirmPassword("")
+        console.log("Senha atualizada com sucesso");
+        setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
+        setOpenModal("success");
+      })
+      .catch((error) => {
+        console.error("Erro ao atualizar senha:", error);
+        setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
+        setOpenModal("error");
+      });
+  }
+
+  const navigate = useNavigate();
 
   return (
     <>
@@ -144,7 +208,7 @@ export default function ForgotPassword() {
             {
               step >= 3 && (
                 <>
-                  <ChangePasswordStep />
+                  <ChangePasswordStep setNewPassword={setNewPassword} setConfirmPassword={setConfirmPassword} />
                 </>
               )
             }
@@ -160,6 +224,10 @@ export default function ForgotPassword() {
           </div>
         </div>
       </div>
+
+      {openModal === "error" && <ErrorModal title={textModal.title} content={textModal.content} closeThen={() => setOpenModal(null)} />}
+      {openModal === "success" && <SuccessModal isMobile={isMobile} title={textModal.title} content={textModal.content} closeThen={() => navigate("/login")} />}
+
     </>
   );
 }

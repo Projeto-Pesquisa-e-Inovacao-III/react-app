@@ -12,14 +12,14 @@ import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
-import { appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
+import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, getAppointmentByStatus, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
 import { getPersonalHours } from "../../constants/personal";
 
-type ModalType = "cancel" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
+type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
 export default function Schedule() {
     const isMobile = useMobile();
@@ -166,6 +166,17 @@ export default function Schedule() {
 
     }
 
+    async function acceptAppointment(id: number) {
+        await acceptUserAppointment(id).then(async (res) => {
+            console.log("Agendamento aceito:", res);
+            handleSuccessModalInfo("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
+            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+        }).catch((error) => {
+            console.error("Erro ao concluir o agendamento:", error);
+        });
+    }
+
     return (
         <>
             {type?.type === "personal" ? (
@@ -215,6 +226,7 @@ export default function Schedule() {
                                         finalHour={format(parseISO(event.dataFim), "HH'h'mm")}
                                         handleCancel={() => setOpenModal("cancel")}
                                         handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId)}
+                                        handleAcceptReschedule={() => setOpenModal("accept")}
                                         isMobile={isMobile}
                                     />
                                 </div>
@@ -240,6 +252,9 @@ export default function Schedule() {
                     </div>
                 </div>
             )}
+
+            {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(selectedEventId!)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
+
 
             {openModal === "newEvent" && (
                 <>

@@ -76,3 +76,15 @@
         flex-wrap: wrap;
     }
 }
+
+
+.accept {
+    background-color: #28a745;
+    color: white;
+}
+
+.decline {
+    background-color: #e8590c;
+    color: white;
+}
+
