@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -39,6 +39,8 @@ const DAYS_OF_WEEK_DISPLAY = [
 ];
 
 
+type Status = "idle" | "loading" | "success";
+
 export default function SetAvailability() {
 
     const getInitialCronogram = useQuery({
@@ -73,6 +75,21 @@ export default function SetAvailability() {
 
 
     const [isLoading, setIsLoading] = useState(false);
+    const [status, setStatus] = useState<Status>("idle");
+    const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    function showSuccessFeedback() {
+        if (feedbackTimeoutRef.current) {
+            clearTimeout(feedbackTimeoutRef.current);
+        }
+
+        setStatus("success");
+
+        feedbackTimeoutRef.current = setTimeout(() => {
+            setStatus("idle");
+        }, 3000);
+    }
+
     function updateSlot(
         dayIndex: number,
         slotIndex: number,
@@ -80,43 +97,59 @@ export default function SetAvailability() {
         value: string,
         id: string
     ) {
-        setIsLoading(true);
-        console.log("Updating slot:", { dayIndex, slotIndex, field, value });
+        setStatus("loading");
+
         const newSchedule = [...schedule];
         newSchedule[dayIndex].slots[slotIndex] = {
             ...newSchedule[dayIndex].slots[slotIndex],
             [field]: value,
         };
 
-        console.log("newSchedule[dayIndex].slots", schedule);
-
         setSchedule(newSchedule);
-        console.log("Updating slot with API call:", newSchedule[dayIndex].slots[slotIndex]);
-        const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
-        updatePersonalCronogram({ diaSemana: updatedSlot.diaSemana, horaInicio: updatedSlot.horaInicio, horaFim: updatedSlot.horaFim, tipo: updatedSlot.tipo }, id)
-            .then(() => {
-                setIsLoading(false);
-                console.log("Cronograma atualizado com sucesso");
-            })
-            .catch((error) => {
-                console.error("Erro ao atualizar cronograma:", error);
-            });
 
-    };
+        const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
+
+        updatePersonalCronogram(
+            {
+                diaSemana: updatedSlot.diaSemana,
+                horaInicio: updatedSlot.horaInicio,
+                horaFim: updatedSlot.horaFim,
+                tipo: updatedSlot.tipo,
+            },
+            id
+        )
+            .then(() => {
+                showSuccessFeedback();
+            })
+            .catch(() => {
+                setStatus("idle");
+            });
+    }
+
+
 
     const queryClient = useQueryClient();
 
     function handleUpdateBuffer(value: string) {
+        setStatus("loading");
+
         updateBuffer(value)
             .then(() => {
-                queryClient.invalidateQueries({ queryKey: ['personalBuffer'] });
-                console.log("Buffer atualizado com sucesso");
+                queryClient.invalidateQueries({ queryKey: ["personalBuffer"] });
+                showSuccessFeedback();
             })
-            .catch((error) => {
-                console.error("Erro ao atualizar buffer:", error);
+            .catch(() => {
+                setStatus("idle");
             });
-
     }
+
+    useEffect(() => {
+        return () => {
+            if (feedbackTimeoutRef.current) {
+                clearTimeout(feedbackTimeoutRef.current);
+            }
+        };
+    }, []);
 
 
     return (
@@ -150,7 +183,17 @@ export default function SetAvailability() {
 
                     </div>
                 </div>
-                {isLoading ? <p className="text-white flex gap-2 items-center"><Loader /> Atualizando dados...</p> : <p className="text-white flex gap-2 items-center"> <CircleCheck color="#088F8F" /> Dados atualizados</p>}
+                {status === "loading" && (
+                    <p className="text-white flex gap-2 items-center">
+                        <Loader /> Atualizando dados...
+                    </p>
+                )}
+
+                {status === "success" && (
+                    <p className="text-white flex gap-2 items-center">
+                        <CircleCheck color="#088F8F" /> Dados atualizados
+                    </p>
+                )}
 
             </div>
 

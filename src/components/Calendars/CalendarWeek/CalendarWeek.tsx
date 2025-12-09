@@ -64,7 +64,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: Ca
                     headerToolbar={{
                         start: "",
                         center: "title",
-                        end: `${isMobile ? '' : 'today '}prev,next`,
+                        end: `prev,next`,
                     }}
                     customButtons={{
                         newEvent: {
@@ -83,7 +83,23 @@ export default function CalendarWeek({ insertedEvents, isMobile, openModal }: Ca
                             navigate(`/schedule-details?id=${events.find(event => event.start === dataISO)?.id}`);
                         }
                     }}
-                    eventClassNames={() => {
+                    eventClassNames={(arg) => {
+                        const eventData = insertedEvents.find(event => event.agendamentoId.toString() === arg.event.id);
+                        console.log("Event Data:", eventData);
+
+                        if (eventData) {
+                            if (eventData.status === "PENDENTE_PERSONAL_APROVACAO" || eventData.status === "PENDENTE_CLIENTE_APROVACAO" || eventData.status === "APROVADO") {
+                                return ["event-custom-calendar-week-approved"];
+                            }
+                            if (eventData.status === "CANCELADO_PERSONAL" || eventData.status === "CANCELADO_CLIENTE") {
+                                return ["event-custom-calendar-week-canceled"];
+                            }
+                            if(eventData.status === "CONCLUIDO") {
+                                return ["event-custom-calendar-week-completed"];
+                            }
+
+                        }
+
                         return ["event-custom-calendar-week"];
                     }}
                 />

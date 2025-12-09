@@ -51,3 +51,22 @@
     }
 
 }
+
+
+.event-custom-calendar-week-approved {
+    background-color: #F2B138 !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.event-custom-calendar-week-canceled {
+    background-color: #B3393A !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.event-custom-calendar-week-completed {
+    background-color: #4CAF50 !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}

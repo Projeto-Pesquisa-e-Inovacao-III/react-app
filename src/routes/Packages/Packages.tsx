@@ -11,8 +11,9 @@ import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
+import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" |null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -44,9 +45,10 @@ export function Packages() {
             //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
             // });
             // TODO: return with data?
-            setOpenModal("success");
+            // setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
+            handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
         });
     };
 
@@ -74,6 +76,11 @@ export function Packages() {
         );
     }
 
+    function handleErrorModalInfos(title: string, content: string) {
+        setSuccessModalInfos({ title, content });
+        setOpenModal("error");
+    }
+    
     function handleSuccessModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
         setOpenModal("success");
@@ -204,6 +211,10 @@ export function Packages() {
 
             {openModal === "addAdditional" && (
                 <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
+            )}
+
+            {openModal === "error" && (
+                <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
             )}
 
 

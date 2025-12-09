@@ -12,6 +12,10 @@ import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-quer
 import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
+import { useSearchParams } from "react-router-dom";
+import { format, parseISO } from "date-fns";
+import { locale } from "dayjs";
+import { ptBR } from "date-fns/locale";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -25,6 +29,7 @@ export function CheckSchedule() {
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
     const type = useContext(TypeContext)?.type;
+
 
     const appointment = useQuery({
         queryKey: ['appointmentDetails', appointmentId],
@@ -105,8 +110,19 @@ export function CheckSchedule() {
         clearFilters
     } = useSearchFilter(requests, {
         searchStatus: item => item.status,
-        searchName: item => [item.nome, item.dataInicio],
+        searchName: item => [item.nome, format(item.dataInicio, "dd/MM/yyyy")],
     });
+
+
+    const [searchParams] = useSearchParams();
+
+    useEffect(() => {
+        if (searchParams.get("date")) {
+            console.log("Appointments data:", searchParams.get("date"));
+            const date = parseISO(searchParams.get("date") || "");
+            setFilterSearch(format(date, "dd/MM/yyyy", { locale: ptBR }));
+        }
+    }, []);
 
 
     async function handleSuccessReschedule() {
@@ -177,6 +193,7 @@ export function CheckSchedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
     })
+
 
 
     return (

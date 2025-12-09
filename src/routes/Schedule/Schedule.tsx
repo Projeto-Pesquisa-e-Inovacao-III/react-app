@@ -54,6 +54,7 @@ export default function Schedule() {
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
+        refetchOnWindowFocus: false,
         enabled: type?.type === "aluno"
     });
 
@@ -75,7 +76,8 @@ export default function Schedule() {
 
 
         }).catch((error) => {
-            console.error("Erro ao recusar o agendamento:", error);
+            console.error("Erro ao cancelar o agendamento:", error);
+            handleErrorModalInfo("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
         });
     }
 
@@ -97,11 +99,13 @@ export default function Schedule() {
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
+        refetchOnWindowFocus: false,
     })
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
+        refetchOnWindowFocus: false,
         select: (res) => {
             return [...res.data].sort((a, b) => new Date(b.dataInicio) - new Date(a.dataInicio))
         }
@@ -112,6 +116,8 @@ export default function Schedule() {
         queryFn: () => findPersonalRequests(),
         select: (res) => res.data.content,
         retry: false,
+        refetchOnWindowFocus: false,
+
         enabled: type?.type === "personal"
     })
 
@@ -143,6 +149,7 @@ export default function Schedule() {
 
             return data
         },
+        refetchOnWindowFocus: false,
         retry: false,
     });
 
@@ -181,6 +188,7 @@ export default function Schedule() {
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
+            handleErrorModalInfo("Erro ao recusar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao recusar o agendamento.");
         });
     }
 

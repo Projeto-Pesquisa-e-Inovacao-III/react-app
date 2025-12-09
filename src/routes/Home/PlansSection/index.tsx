@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PlansCard from "../../../components/Home/PlansCard";
 import { useQuery } from "@tanstack/react-query";
 import { getPackages } from "../../../constants/home";
+import { isAuthenticated } from "../../../constants/user";
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
@@ -13,6 +14,16 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     });
 
     console.log(packages.data);
+
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+    useEffect(() => {
+        const checkAuth = async () => {
+            const auth = await isAuthenticated();
+            console.log("User authenticated:", auth.data.autentificado);
+            setIsUserAuthenticated(auth.data.autentificado);
+        };
+        checkAuth();
+    }, []);
 
     return (
         <section id="plans-section" className={`bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
@@ -36,6 +47,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                 content={pkg.titulo}
                                 price={`R$ ${pkg.preco}`}
                                 benefits={JSON.parse(pkg.descricao)}
+                                isLoggedIn={isUserAuthenticated}
                             />
                         </div>
                     ))}
