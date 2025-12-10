@@ -34,30 +34,6 @@ const titles = {
     "/set-availability": "Definir Horário | CSF Treinamentos",
 };
 
-const routesPersonal = [
-    "/dashboard",
-    "/users",
-    "/users/view-user-data",
-    "/edit-user",
-    "/personal/check-schedule",
-    "/more-options",
-    "/set-availability",
-
-    "/schedule-details",
-    "/packages",
-];
-
-const routesAluno = [
-    "/home",
-    "/plans-history",
-    "/schedule",
-    "/schedule-history",
-    "/schedule-details",
-    
-    "/plans-history-details",
-    "/packages",
-];
-
 export default function Layout() {
     const isMobile = useMobile();
     const Header = isMobile ? UserHeaderMobile : UserHeaderDesktop;

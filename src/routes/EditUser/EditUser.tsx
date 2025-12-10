@@ -19,6 +19,7 @@ import { editPersonalProfile } from "../../constants/personal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../utils/validacao.ts";
+import useModal from "../../hooks/useModal.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -95,11 +96,18 @@ export default function EditUser() {
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
-  const [openModal, setOpenModal] = useState<modalTypes>(null);
-  const [textModal, setTextModal] = useState({ title: "", content: "" });
+  const {
+    openModal,
+    setOpenModal,
+    textModal,
+    setTextModal
+  } = useModal(null, {title:"", content:""})
 
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
+    currentPassword: "",
+    confirmPassword: "",
+  }
+  )
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -210,8 +218,8 @@ export default function EditUser() {
   }
 
   function updatePassword() {
-    const current = currentPassword ?? "";
-    const newP = confirmPassword ?? "";
+    const current = password.currentPassword ?? "";
+    const newP = password.confirmPassword ?? "";
 
     if (!current) {
       setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
@@ -233,8 +241,10 @@ export default function EditUser() {
     }
     changePassword(current, newP)
       .then(() => {
-        setCurrentPassword("");
-        setConfirmPassword("")
+        setPassword({
+          currentPassword: "",
+          confirmPassword: ""
+        })
         setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
         setOpenModal("success");
       })
@@ -406,9 +416,12 @@ export default function EditUser() {
               placeholder="*************"
               icon={<LockKeyhole />}
               label="Senha Atual"
-              isPassword={currentPassword ? true : false}
-              value={currentPassword}
-              onInputChange={(value: string) => setCurrentPassword(value)}
+              isPassword={password.currentPassword ? true : false}
+              value={password.currentPassword}
+              onInputChange={(value: string) => setPassword({
+                ...password,
+                currentPassword: value
+              })}
             ></InputWithIcon>
             <InputWithIcon
               id="senha"
@@ -416,9 +429,12 @@ export default function EditUser() {
               placeholder="*************"
               icon={<LockKeyhole />}
               label="Nova Senha"
-              isPassword={confirmPassword ? true : false}
-              value={confirmPassword}
-              onInputChange={(value: string) => setConfirmPassword(value)}
+              isPassword={password.confirmPassword ? true : false}
+              value={password.confirmPassword}
+              onInputChange={(value: string) => setPassword({
+                ...password,
+                confirmPassword: value
+              })}
             ></InputWithIcon>
             <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
               title="Alterar Senha" type="button" onClick={() => updatePassword()}

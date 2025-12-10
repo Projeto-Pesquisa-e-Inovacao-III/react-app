@@ -424,8 +424,6 @@ export default function NewEvent(
 
         if (!verifyClassAvailability()) return;
 
-        //24hrs
-        const selectedDateTime = new Date(`${newEventDate}T${newEventStartHour}`);
         const now = new Date();
         now.setDate(now.getDate() + 1);
 
@@ -440,16 +438,9 @@ export default function NewEvent(
         if (step === 1) verifyClassAvailability()
     }, [selectedType]);
 
-    const personal = useQuery({
-        queryKey: ["personalList"],
-        queryFn: getPersonalList,
-        select: (res) => res.data[0].id,
-        refetchOnWindowFocus: false,
-    });
-
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, newEventDate ? newEventDate : ""),
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });
@@ -481,7 +472,7 @@ export default function NewEvent(
 
     const availabilityHoursTomorrow = useQuery({
         queryKey: ["availabilityHoursTomorrow"],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personal.data, tomorrow),
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });

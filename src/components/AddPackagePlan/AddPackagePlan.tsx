@@ -37,10 +37,6 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
         benefits: values?.descricao ? JSON.parse(values?.descricao) : [""],
         quantity: values?.quantidadeAula || 0
     });
-    console.log("packageInfo", packageInfo);
-    console.log("values", values);
-
-    const navigate = useNavigate();
 
     function handleAutoFill() {
         setPackageInfo({
@@ -77,8 +73,6 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             quantidadeAula: packageInfo.quantity,
             duracaoMes: parseInt(packageInfo.deadline || "12")
         }
-
-        console.log("data to be sent:", data);
 
         if (packageInfo.benefits.includes("")) {
             alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
