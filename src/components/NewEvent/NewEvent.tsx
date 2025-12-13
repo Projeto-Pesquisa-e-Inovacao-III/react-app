@@ -324,21 +324,26 @@ export default function NewEvent(
         queryFn: () => getPersonalHours(personal.data, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
     });
-    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>("MANHÃ");
+
+    console.log("Availability Hours: ", availabilityHours.data);
+
+    const [chooseTimeOfDay, setChooseTimeOfDay] = useState<string | null>(null);
 
     useEffect(() => {
         if (!availabilityHours?.data?.length) return;
 
         const hour = parseInt(availabilityHours.data[0].inicio.split(":")[0]);
+        console.log(hour)
 
         if (hour < 12) setChooseTimeOfDay("MANHÃ");
         else if (hour < 18) setChooseTimeOfDay("TARDE");
         else setChooseTimeOfDay("NOITE");
 
-    }, [availabilityHours]);
+    }, []);
 
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
+        console.log("Selected Type changed:", chooseTimeOfDay);
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
     return (
@@ -423,7 +428,7 @@ export default function NewEvent(
                                                     {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
-                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "MANHÃ" && (
+                                                {chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
@@ -448,7 +453,7 @@ export default function NewEvent(
                                                     </div>
                                                 )}
 
-                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "TARDE" && (
+                                                {chooseTimeOfDay === "TARDE" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
@@ -473,7 +478,7 @@ export default function NewEvent(
                                                     </div>
                                                 )}
 
-                                                {chooseTimeOfDay !== null && chooseTimeOfDay === "Noite" && (
+                                                {chooseTimeOfDay === "Noite" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 

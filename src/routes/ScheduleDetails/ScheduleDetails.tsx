@@ -114,6 +114,10 @@ export default function ScheduleDetails() {
         setAppointmentId(id);
         setOpenModal(type);
     }
+
+
+    console.log("Appointment details:", appointment.data);
+
     return (
         <>
             <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
@@ -128,9 +132,9 @@ export default function ScheduleDetails() {
                         }
 
                         {(appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" || appointment.data?.status === "APROVADO") &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                                 <span className={styles.statusPending}>Pendente</span>
-                            </div>
+                            </div>)
                         }
 
                         {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
@@ -193,8 +197,8 @@ export default function ScheduleDetails() {
                     </div>
                 </div>
 
-                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "APROVADO" && buttonsActionsCondition })}>
-                    {type === "personal" && buttonsActionsCondition && appointment.data?.status === "APROVADO" &&
+                <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
+                    {type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
                             <div className={styles.buttonAbsence}>
                                 <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" />
@@ -208,7 +212,7 @@ export default function ScheduleDetails() {
                         </>
                     }
 
-                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO") || (appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
+                    {type === "personal" && (appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" || appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO") && (
                         <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
                             <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "accept");
