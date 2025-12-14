@@ -58,7 +58,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
                         backgroundColor:
                           event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" || event.status === "APROVADO"
                             ? "#F2B138"
-                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_ALUNO"
+                            : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_CLIENTE"
                               ? "#B3393A"
                               : event.status === "CONCLUIDO"
                                 ? "green"

@@ -89,7 +89,7 @@ export default function ScheduleDetails() {
         const payload = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description
+            descricaoCancelamento: data.description === "" ? null : data.description
         };
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(() => {
@@ -152,6 +152,12 @@ export default function ScheduleDetails() {
                         {(appointment.data?.status === "CANCELADO_PERSONAL" || appointment.data?.status === "CANCELADO_CLIENTE") &&
                             <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
                                 <span className={styles.statusCancelled}>Cancelado</span>
+                            </div>
+                        }
+
+                        {(appointment.data?.status === "AUSENCIA_PERSONAL" || appointment.data?.status === "AUSENCIA_CLIENTE") &&
+                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                                <span className={styles.statusCancelled}>Ausência</span>
                             </div>
                         }
                     </div>
