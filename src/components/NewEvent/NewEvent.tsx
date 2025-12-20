@@ -7,10 +7,10 @@ import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { Clock, MapPin, Sun, SunMoon, Sunrise, Sunset } from "lucide-react";
+import { Clock, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
-import type { Schedule, ScheduleAfterInserted } from "../../models/schedule";
+import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
 import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { differenceInYears, format, parse, parseISO, startOfDay } from "date-fns";
@@ -19,12 +19,13 @@ import { getPersonalHours } from "../../constants/personal";
 import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
+import useModal from "../../hooks/useModal";
 
 type NewEventProps = {
     isMobile: boolean;
     appoitmentData?: ScheduleAfterInserted | null;
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
-    openModal: (() => void);
+    openModalExtern: (() => void);
     errorModal: ((title: string, description: string) => void);
     insertedEvents: any[];
     title?: string;
@@ -49,9 +50,15 @@ type AddressState = {
 type modalTypes = "error" | null;
 
 export default function NewEvent(
-    { isMobile, appoitmentData, close, openModal, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
+    { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {
-    const [modal, setModal] = useState<modalTypes>(null);
+      const {
+        openModal,
+        setOpenModal,
+        textModal,
+        setTextModal
+      } = useModal(null, {title:"", content:""})
+
 
     console.log("clickedDate prop:", clickedDate);
 
@@ -90,11 +97,6 @@ export default function NewEvent(
     });
 
     const [step, setStep] = useState<number>(1);
-
-    const [modalInfo, setModalInfo] = useState<{
-        title: string,
-        description: string
-    }>({ title: "Houve um erro", description: "Ocorreu um erro inesperado." });
 
     const queryClient = useQueryClient();
 
@@ -148,28 +150,28 @@ export default function NewEvent(
         e.preventDefault();
 
         if (addressData.address.includes("undefined")) {
-            setModal("error");
-            setModalInfo({
+            setOpenModal("error");
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "CEP inválido. Por favor, verifique o CEP informado."
+                content: "CEP inválido. Por favor, verifique o CEP informado."
             });
             return;
         }
 
         if (!addressData.postalCode || addressData.address === null) {
-            setModal("error");
-            setModalInfo({
+            setOpenModal("error");
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Por favor, preencha um CEP válido."
+                content: "Por favor, preencha um CEP válido."
             });
             return;
         }
 
         if (!addressData.number) {
-            setModal("error");
-            setModalInfo({
+            setOpenModal("error");
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Por favor, preencha o número do endereço."
+                content: "Por favor, preencha o número do endereço."
             });
             return;
         }
@@ -217,21 +219,21 @@ export default function NewEvent(
                         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
 
-                        openModal();
+                        openModalExtern();
                         navigation("/schedule");
                         return;
                     }
-                    openModal();
+                    openModalExtern();
                     return;
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
                 if (error.status === 400) {
-                    setModalInfo({
+                    setTextModal({
                         title: "Erro ao agendar",
-                        description: error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento."
+                        content: error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento."
                     });
-                    setModal("error");
+                    setOpenModal("error");
                     return;
                 }
 
@@ -269,7 +271,7 @@ export default function NewEvent(
 
         const calculatedTitle = `${newEventDate} - ${newEventStartHour}`;
 
-        const payload: Schedule = {
+        const payload: ScheduleReschedule = {
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
@@ -308,7 +310,7 @@ export default function NewEvent(
             await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            openModal();
+            openModalExtern();
             return;
         }
 
@@ -320,7 +322,7 @@ export default function NewEvent(
             await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
             await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            openModal();
+            openModalExtern();
             return;
         }
 
@@ -376,29 +378,29 @@ export default function NewEvent(
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
         console.log("Aulas disponíveis - Presencial:", aulaPresencial.data, "Residencial:", aulaResidencial.data, "Funcional:", aulaFuncional.data);
         if (selectedType === "PRESENCIAL" && (aulaPresencial.data === 0 && !aulaPresencial.isLoading)) {
-            setModalInfo({
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Você não possui aulas presenciais disponíveis para agendar."
+                content: "Você não possui aulas presenciais disponíveis para agendar."
             });
-            setModal("error");
+            setOpenModal("error");
             return false;
         }
 
         if (selectedType === "RESIDENCIAL" && (aulaResidencial.data === 0 || aulaResidencial.data === undefined)) {
-            setModalInfo({
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Você não possui aulas residenciais disponíveis para agendar."
+                content: "Você não possui aulas residenciais disponíveis para agendar."
             });
-            setModal("error");
+            setOpenModal("error");
             return false;
         }
 
         if (selectedType === "FUNCIONAL" && (aulaFuncional.data === 0 || aulaFuncional.data === undefined)) {
-            setModalInfo({
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Você não possui aulas funcionais disponíveis para agendar."
+                content: "Você não possui aulas funcionais disponíveis para agendar."
             });
-            setModal("error");
+            setOpenModal("error");
             return false;
         }
         return true;
@@ -414,11 +416,11 @@ export default function NewEvent(
         }
         // choose date and hour validation
         if (!newEventDate || !newEventStartHour) {
-            setModalInfo({
+            setTextModal({
                 title: "Erro ao agendar",
-                description: "Selecione uma data e horário para o evento."
+                content: "Selecione uma data e horário para o evento."
             });
-            setModal("error");
+            setOpenModal("error");
             return;
         }
 
@@ -762,11 +764,11 @@ export default function NewEvent(
                 </div>
             </div>
 
-            {modal === "error" && (
+            {openModal === "error" && (
                 <ErrorModal
-                    closeThen={() => setModal(null)}
-                    title={modalInfo.title}
-                    content={modalInfo.description}
+                    closeThen={() => setOpenModal(null)}
+                    title={textModal.title}
+                    content={textModal.content}
                 />
             )}
         </>

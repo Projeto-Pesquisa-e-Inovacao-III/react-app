@@ -244,7 +244,7 @@ export function CheckSchedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
-                        openModal={handleSuccessReschedule}
+                        openModalExtern={handleSuccessReschedule}
                         errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                         insertedEvents={appointments.data?.data}
                         title="Reagendar horário"

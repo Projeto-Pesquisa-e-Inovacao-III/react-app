@@ -276,7 +276,7 @@ export default function Schedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
-                        openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
+                        openModalExtern={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
                         errorModal={(title, description) => handleErrorModalInfo(title, description)}
                         insertedEvents={appointments.data?.data}
                         newAppointmentCreated={setNewAppointmentCreated}
@@ -292,7 +292,7 @@ export default function Schedule() {
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
-                        openModal={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
+                        openModalExtern={() => handleSuccessModalInfo("Reagendado com sucesso", "Horário reagendado com sucesso")}
                         errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                         insertedEvents={appointments.data?.data}
                         title="Reagendar horário"

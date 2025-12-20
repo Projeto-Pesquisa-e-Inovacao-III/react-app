@@ -47,7 +47,7 @@ export default function Layout() {
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 
-    const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout"];
+    const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
     const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
 
     const isLoggedIn = useQuery({

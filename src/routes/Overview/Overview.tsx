@@ -316,14 +316,14 @@ export function Overview() {
                     )}
 
                 </div>
-            </div>
+            </div> 
 
             {modalType === "newEvent" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setModalType(null)}
-                        openModal={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
+                        openModalExtern={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
                         errorModal={(title, description) => handleErrorModalInfo(title, description)}
                         insertedEvents={appointments.data?.data}
                         title="Agendar horário"

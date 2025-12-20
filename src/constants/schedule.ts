@@ -1,11 +1,11 @@
-import type { Schedule } from "../models/schedule";
+import type { Schedule, ScheduleReschedule } from "../models/schedule";
 import { api } from "../system";
 
 export function insertAppointment(data: Schedule) {
     return api.post("/agendamentos", data);
 }
 
-export function rescheduleAppointment(data: Schedule) {
+export function rescheduleAppointment(data: ScheduleReschedule) {
     return api.put("/agendamentos/reagendar", data);
 }
 
