@@ -49,8 +49,7 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        setSuccessLogin(true);
+        navToHome();
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -123,15 +122,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-
-      {successLogin && (
-        <SuccessModal
-          isMobile={isMobile}
-          title="Login bem-sucedido"
-          content="Você foi logado com sucesso!"
-          closeThen={navToHome}
-        />
-      )}
     </>
   );
 }

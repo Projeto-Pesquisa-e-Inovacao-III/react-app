@@ -80,8 +80,6 @@ const initialEditUserState: EditUserState = {
   birthDate: "",
 };
 
-type modalTypes = "timer" | "success" | "error" | null;
-
 export default function EditUser() {
   const isMobile = useMobile();
   const navigator = useNavigate();
@@ -93,6 +91,8 @@ export default function EditUser() {
 
   const [userImage, setUserImage] = useState<string>("");
   const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
+  const [previewImage, setPreviewImage] = useState<string>("");
+  const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
@@ -101,7 +101,7 @@ export default function EditUser() {
     setOpenModal,
     textModal,
     setTextModal
-  } = useModal(null, {title:"", content:""})
+  } = useModal(null, { title: "", content: "" })
 
   const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
     currentPassword: "",
@@ -111,14 +111,17 @@ export default function EditUser() {
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
+      setOpenModal("adjustAvatar");
+
       const file = event.target.files[0];
 
       const formData = new FormData();
       formData.append("imagem", file);
 
       const imageUrl = URL.createObjectURL(file);
-      setUserImage(imageUrl);
-      setUserImageFormData(formData);
+
+      setPreviewImage(imageUrl);
+      setPreviewImageFormData(formData);
     }
   }
 
@@ -172,9 +175,13 @@ export default function EditUser() {
     console.log("options", userImageFormData);
     update(options)
       .then(() => {
-        if (userImageFormData.has("imagem") && userImageFormData.get("imagem") !== "") {
-          insertUserImage(userImageFormData)
+        if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+          insertUserImage(previewImageFormData)
             .then(() => {
+              if (previewImage) {
+                setUserImage(previewImage);
+                setUserImageFormData(previewImageFormData);
+              }
               console.log("Imagem do usuário atualizada com sucesso!");
               setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
               setOpenModal("success");
@@ -203,11 +210,6 @@ export default function EditUser() {
   function deleteUser() {
     softDelete()
       .then(() => {
-        // setTextModal({
-        //   title: "Perfil apagado",
-        //   content: "Seu perfil foi apagado com sucesso.",
-        // });
-        // setOpenModal("success");
         navigator("/logout");
       })
       .catch((_error: unknown) => {
@@ -315,6 +317,7 @@ export default function EditUser() {
             <div className={styles.atualizarFotoContainer}>
               <div>
                 <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
                 <label htmlFor="upload-photo">
                   <span>Atualizar Foto</span>
                 </label>
@@ -500,6 +503,56 @@ export default function EditUser() {
           title={textModal.title}
           content={textModal.content}
         />
+      )}
+
+      {openModal === "adjustAvatar" && (
+        <>
+          <div className={`overlay z-auto!`}></div>
+          <div className="   fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50">
+            <div className={styles.profileSection + "max-w-full! max-h-full!"}>
+              <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+                {previewImage &&
+                  <UserImg
+                    Source={previewImage}
+                    classname="border-2 border-gray-300"
+                    Height={500}
+                    Width={500}
+                    Alt="foto"
+                  />
+                }
+                <div className={styles.atualizarFotoContainer}>
+                  <div>
+                    {/* <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} /> */}
+                    <Button
+                      typeButton="other"
+                      title="Confirmar"
+                      type="button"
+                      classNameVariable="buttonRemoveImage"
+                      onClick={() => {
+                        handleUpdateUserInfo()
+                      }}
+                    />
+                  </div>
+
+                  {previewImage ?
+                    <div >
+                      <Button
+                        typeButton="other"
+                        title="Remover Foto"
+                        type="button"
+                        classNameVariable="buttonRemoveImage"
+                        onClick={() => {
+                          setConfirmingDelete(false);
+                          setOpenModal("timer");
+                        }}
+                      />
+                    </div>
+                    : null}
+                </div>
+              </WhiteContainer>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
