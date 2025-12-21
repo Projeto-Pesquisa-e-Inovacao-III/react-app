@@ -8,37 +8,23 @@ type Props = {
 }
 
 export default function Text(props: Props) {
-const {
-    connectors: { connect },
-    actions: { setProp },
-    selected
-  } = useNode((node) => ({
-    selected: node.events.selected
-  }));
+    const {
+        connectors: { connect }
+    } = useNode();
 
-  const Tag = props.type;
+    const Tag = props.type;
 
     return (
-        <Tag ref={connect}
-            contentEditable={selected}
-            suppressContentEditableWarning
-            onBlur={(e) =>
-                setProp((props: any) => {
-                    props.text = e.currentTarget.innerText;
-                })
-            }
-            className={props.classname ? props.classname : "text-5xl font-bold"}>
+        <Tag ref={connect} className={props.classname}>
             {props.text}
         </Tag>
-
-    )
+    );
 }
 
 Text.craft = {
     displayName: "Text",
     props: {
-        text: "Texto padrão",
-        type: "h1",
-        classname: "text-5xl font-bold"
+        text: "Texto editável",
+        type: "h1"
     }
 };
