@@ -534,20 +534,27 @@ export default function EditUser() {
                     />
                   </div>
 
-                  {previewImage ?
-                    <div >
-                      <Button
-                        typeButton="other"
-                        title="Remover Foto"
-                        type="button"
-                        classNameVariable="buttonRemoveImage"
-                        onClick={() => {
-                          setConfirmingDelete(false);
-                          setOpenModal("timer");
-                        }}
-                      />
+                  <div >
+                    <div>
+                      <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                      {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
+                      <label htmlFor="upload-photo">
+                        <span>Atualizar Foto</span>
+                      </label>
                     </div>
-                    : null}
+                  </div>
+
+                  <div >
+                    <Button
+                      typeButton="other"
+                      title="Cancelar"
+                      type="button"
+                      classNameVariable="buttonRemoveImage"
+                      onClick={() => {
+                        setOpenModal(null);
+                      }}
+                    />
+                  </div>
                 </div>
               </WhiteContainer>
             </div>
