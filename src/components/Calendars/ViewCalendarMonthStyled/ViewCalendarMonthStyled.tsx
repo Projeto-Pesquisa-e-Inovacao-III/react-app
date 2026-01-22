@@ -62,7 +62,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const eventsOfDay = events?.filter(event =>
               event.data.split("T")[0] === cellDate
             ) || [];
-
+            
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
@@ -124,11 +124,25 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             }
             return
           }}
+          dayCellClassNames={(arg) => {
+            const cellDate = arg.date.toISOString().split("T")[0];
+            const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
+
+            if (cellDate < todayDate) {
+              return ["fc-today-custom"];
+            }
+            return [];
+          }}
           headerToolbar={{
 
             start: "title",
-            end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`, // gambiarra? engenharia! // ficaria "today prev,next" no caminho feliz
+            // end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`,
+            end: `prev,next,today`,
           }}
+          buttonText={{
+            today: 'Hoje',
+          }}
+
           height={"auto"}
 
         />

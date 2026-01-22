@@ -37,8 +37,16 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export function findPersonalRequests(page = 0, size = 10) {
-    return api.get(`/agendamentos/solicitacoes?page=${page}&size=${size}`);
+export async function findPersonalRequests(pageParam = 1) {
+    const size = 10;
+    const response = await api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
+    console.log(response.data);
+    return {
+        data: response.data.content,
+        nextPage: pageParam + 1,
+        totalPages: response.data.page.totalPages,
+        page: pageParam,
+    };
 }
 
 export function findUserRescheduleRequests() {

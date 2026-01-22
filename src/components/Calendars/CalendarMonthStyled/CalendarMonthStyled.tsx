@@ -6,9 +6,6 @@ import "./desktop.css";
 import { use, useContext, useEffect, useRef, useState } from "react";
 import type { Schedule } from "../../../models/schedule";
 import { parseISO, startOfDay } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
-import { getPersonalHours } from "../../../constants/personal";
-import { TypeContext } from "../../../App";
 
 type Props = {
   className?: string;

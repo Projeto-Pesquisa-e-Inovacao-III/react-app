@@ -104,6 +104,16 @@
   margin: 0;
 }
 
+.fc-today-custom {
+  background: #e6e6e6 !important;
+  color: rgb(151, 151, 151) !important;
+  padding: 5px 8px;
+}
+
+.fc-today-custom:hover {
+  border-radius: 0 !important;
+}
+
 @media (max-width: 1024px) {
   #wrapper-styled-callendar .fc-day-today .fc-daygrid-day-number {
     background: black;
