@@ -100,8 +100,8 @@ export default function Login() {
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
                 <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />
               </div>
-              {/* temp */}
-              <input type="text" onKeyDown={(e) => {
+              {/*todo: temp!!!! */}
+              <input hidden type="text" onKeyDown={(e) => {
                 if (e.key === "[") {
                   handleAutoFill("EdsonArantes@email.com", "fmc123456");
                 }

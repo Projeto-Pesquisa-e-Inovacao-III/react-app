@@ -341,6 +341,7 @@ export default function NewEvent(
             return;
         }
         close(false);
+        handleCloseModalOnClickOverlay();
     }
 
     function handleButtonClick(hour: string) {
@@ -349,6 +350,10 @@ export default function NewEvent(
 
     const type = useContext(TypeContext);
 
+
+    function handleCloseModalOnClickOverlay() {
+        setOpenModal(null);
+    }
 
     const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
         queries: [
@@ -470,7 +475,6 @@ export default function NewEvent(
     }, [chooseTimeOfDay, newEventDate, selectedType]);
 
     const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", { locale: ptBR });
-    console.log("tomorrow", tomorrow);
 
     const availabilityHoursTomorrow = useQuery({
         queryKey: ["availabilityHoursTomorrow"],

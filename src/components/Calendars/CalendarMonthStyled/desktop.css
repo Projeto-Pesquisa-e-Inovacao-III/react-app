@@ -44,7 +44,6 @@
 }
 
 #wrapper-styled-callendar .fc-daygrid-day {
-  border: none !important;
   text-align: center;
   padding: 8px 0;
   cursor: pointer;

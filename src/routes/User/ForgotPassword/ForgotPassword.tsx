@@ -16,7 +16,6 @@ import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import { useNavigate } from "react-router-dom";
 
-// todo: fix font family  
 export default function ForgotPassword() {
   const isMobile = useMobile();
 

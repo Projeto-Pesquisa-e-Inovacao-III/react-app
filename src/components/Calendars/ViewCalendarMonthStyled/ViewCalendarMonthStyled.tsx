@@ -1,10 +1,10 @@
 import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "./style.css";
-import { useContext, useState } from "react";
+import styles from "./ViewCalendarMonthStyled.module.css"
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { format, parseISO, startOfDay } from "date-fns";
+import { format, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
 import { useQuery } from "@tanstack/react-query";
 import { getPersonalHours } from "../../../constants/personal";
@@ -15,15 +15,16 @@ type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
   isUserAuthorizedToInteract?: boolean;
+  canMakeAppointment?: boolean;
+  modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
+  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
 
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract }: Props) {
-  const actualMonth = new Date().getMonth() + 1;
-
-  const [selectedMonth, setSelectedMonth] = useState<number>(0);
-
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType }: Props) {
   const type = useContext(TypeContext);
+
+
 
   const nav = useNavigate();
 
@@ -43,18 +44,16 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
     select: (res) => res.data,
   });
 
+
+
   return (
-    <div className="container-calendar">
-      <div className="wrapper-callendar" id="wrapper-styled-callendar">
+    <div className={styles.containerCalendar}>
+      <div className={styles.wrapperCalendar} id="wrapper-styled-callendar">
         <FullCalendar
           plugins={[dayGridPlugin, InteractionPlugin]}
           initialView="dayGridMonth"
           locale={"pt-br"}
           dayHeaderFormat={{ weekday: `${isMobile ? 'short' : 'long'}` }}
-          datesSet={function (info) {
-            const month = info.start.getMonth() + 2;
-            setSelectedMonth(month);
-          }}
 
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
@@ -62,7 +61,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const eventsOfDay = events?.filter(event =>
               event.data.split("T")[0] === cellDate
             ) || [];
-            
+
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
@@ -117,20 +116,30 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
+            if (!canMakeAppointment) {
+              modalInfo?.({ title: "Aulas indisponíveis", description: "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal." });
+              modalType?.("error");
+              return;
+            }
+
             if (clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
 
-            if (isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if (canMakeAppointment && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
+
+
             return
           }}
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
 
-            if (cellDate < todayDate) {
-              return ["fc-today-custom"];
+            if (cellDate <= todayDate) {
+              return [styles.fcTodayCustom];
             }
+
+
             return [];
           }}
           headerToolbar={{

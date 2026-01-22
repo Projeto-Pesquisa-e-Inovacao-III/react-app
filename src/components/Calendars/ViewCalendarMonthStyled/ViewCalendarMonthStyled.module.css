@@ -1,15 +1,15 @@
-.new-event-opened-wrapper-callendar {
+.newEventOpenedWrapperCalendar {
   filter: opacity(0.4);
 }
 
-.disabled-day {
+.disabledDay {
   cursor: none;
   background-color: #ddd !important;
   pointer-events: none;
   opacity: 0.5;
 }
 
-.selected-day {
+.selectedDay {
   background-color: #2e2e2e !important;
   color: white !important;
   border-radius: 5px;
@@ -17,19 +17,20 @@
   transition: all 0.3s, color 0.3s;
 }
 
-#wrapper-styled-callendar .fc {
+.wrapperCalendar :global(.fc) {
   height: auto;
   font-family: "Inter", sans-serif;
 }
 
-#wrapper-styled-callendar .fc-toolbar-title {
+.wrapperCalendar :global(.fc-toolbar-title) {
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 10px;
+  margin-left: 15px;
 }
 
-#wrapper-styled-callendar .fc-prev-button,
-#wrapper-styled-callendar .fc-next-button {
+.wrapperCalendar :global(.fc-prev-button),
+.wrapperCalendar :global(.fc-next-button) {
   background: none !important;
   border: none !important;
   font-size: 1.2rem !important;
@@ -37,85 +38,80 @@
   cursor: pointer;
 }
 
-#wrapper-styled-callendar .fc-col-header-cell {
+.wrapperCalendar :global(.fc-col-header-cell) {
   font-weight: 500;
   color: #555;
   padding: 8px 0;
   border: none !important;
 }
 
-#wrapper-styled-callendar .fc-daygrid-day {
-  border: none !important;
+.wrapperCalendar :global(.fc-daygrid-day) {
   text-align: center;
   padding: 8px 0;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-#wrapper-styled-callendar .fc-daygrid-day-top {
+.wrapperCalendar :global(.fc-daygrid-day-top) {
   margin: 0 auto;
   width: fit-content;
 }
 
-#wrapper-styled-callendar .fc-daygrid-day-number {
+.wrapperCalendar :global(.fc-daygrid-day-number) {
   font-size: 0.95rem;
 }
 
-#wrapper-styled-callendar .fc-day-today {
+.wrapperCalendar :global(.fc-day-today) {
   background: none;
 }
 
-#wrapper-styled-callendar .fc-day-today .fc-daygrid-day-number {
+.wrapperCalendar :global(.fc-day-today .fc-daygrid-day-number) {
   background: black;
   color: white !important;
   border-radius: 50%;
   padding: 5px 8px;
 }
 
-#wrapper-styled-callendar .fc-daygrid-day:hover {
+.wrapperCalendar :global(.fc-daygrid-day:hover) {
   background: #f5f5f5;
   border-radius: 5px;
 }
 
-#wrapper-styled-callendar .fc-col-header-cell-cushion::first-letter,
-.fc-toolbar-title::first-letter {
+.wrapperCalendar :global(.fc-col-header-cell-cushion::first-letter),
+.wrapperCalendar :global(.fc-toolbar-title::first-letter) {
   text-transform: capitalize;
 }
 
-#wrapper-styled-callendar .fc .fc-scrollgrid-section-sticky>* {
+.wrapperCalendar :global(.fc .fc-scrollgrid-section-sticky>*) {
   background: transparent;
   position: sticky;
   z-index: 3;
 }
 
-#wrapper-styled-callendar .fc .fc-scrollgrid-section table {
+.wrapperCalendar :global(.fc .fc-scrollgrid-section table) {
   height: 50px;
 }
 
-#wrapper-styled-callendar .fc-theme-standard td,
-.fc-theme-standard .fc-scrollgrid {
+.wrapperCalendar :global(.fc-theme-standard td),
+.wrapperCalendar :global(.fc-theme-standard .fc-scrollgrid) {
   border: none;
 }
 
-#wrapper-styled-callendar .fc .fc-toolbar-title {
-  margin-left: 15px;
-}
-
-.fc .fc-daygrid-body-natural .fc-daygrid-day-events {
+.wrapperCalendar :global(.fc .fc-daygrid-body-natural .fc-daygrid-day-events) {
   margin: 0;
 }
 
-.fc-today-custom {
-  background: #e6e6e6 !important;
+.fcTodayCustom {
+  background: #ececec91 !important;
   color: rgb(151, 151, 151) !important;
   padding: 5px 8px;
 }
 
-.fc-today-custom:hover {
+.fcTodayCustom:hover {
   border-radius: 0 !important;
 }
-
 @media (max-width: 1024px) {
-  #wrapper-styled-callendar .fc-day-today .fc-daygrid-day-number {
+  .wrapperCalendar :global(.fc-day-today .fc-daygrid-day-number) {
     background: black;
     color: white !important;
     border-radius: 50%;

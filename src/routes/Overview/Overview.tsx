@@ -246,12 +246,37 @@ export function Overview() {
                         )}
 
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
-                            <ViewCalendarMonthStyled isMobile={isMobile} events={appointments.data?.data} isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false} />
+                            <ViewCalendarMonthStyled
+                             isMobile={isMobile} 
+                             events={appointments.data?.data} 
+                             isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false} 
+                             canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                             modalInfo={setModalText}
+                             modalType={setModalType}
+                             />
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
                             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                                 <h1>Agendamentos</h1>
-                                {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 " onClick={() => actualPlanQuery.data ? setModalType("newEvent") : handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")} />}
+                                {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
+                                    onClick={() => {
+                                        if (!actualPlanQuery.data) {
+                                            handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")
+                                            return
+                                        }
+
+                                        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
+                                            handleErrorModalInfo("Erro", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.")
+                                            return
+                                        }
+
+
+                                        setModalType("newEvent")
+
+                                    }
+                                    }
+
+                                />}
                             </div>
                             {appointmentsCards.data?.length === 0 ? (
                                 <p>Você não possui agendamentos.</p>
@@ -316,7 +341,7 @@ export function Overview() {
                     )}
 
                 </div>
-            </div> 
+            </div>
 
             {modalType === "newEvent" && (
                 <>
