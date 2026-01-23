@@ -49,8 +49,7 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        setSuccessLogin(true);
+        navToHome();
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -101,8 +100,8 @@ export default function Login() {
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
                 <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />
               </div>
-              {/* temp */}
-              <input type="text" onKeyDown={(e) => {
+              {/*todo: temp!!!! */}
+              <input hidden type="text" onKeyDown={(e) => {
                 if (e.key === "[") {
                   handleAutoFill("EdsonArantes@email.com", "fmc123456");
                 }
@@ -123,15 +122,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-
-      {successLogin && (
-        <SuccessModal
-          isMobile={isMobile}
-          title="Login bem-sucedido"
-          content="Você foi logado com sucesso!"
-          closeThen={navToHome}
-        />
-      )}
     </>
   );
 }

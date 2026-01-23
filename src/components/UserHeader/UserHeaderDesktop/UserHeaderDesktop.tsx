@@ -19,6 +19,10 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
   queryClient.invalidateQueries({ queryKey: ['userImage'] });
 
+  useEffect(() => {
+    
+  }, [])
+
   return (
     <>
       <header className="user-header-desktop">

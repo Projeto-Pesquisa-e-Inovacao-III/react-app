@@ -14,7 +14,6 @@ import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
-import { locale } from "dayjs";
 import { ptBR } from "date-fns/locale";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
@@ -53,51 +52,53 @@ export function CheckSchedule() {
         setOpenModal("error");
     }
 
-    const personalRequests = useInfiniteQuery({
-        queryKey: ["personalRequests"],
-        queryFn: ({ pageParam }: { pageParam: number }) =>
-            findPersonalRequests(pageParam, 8).then(res => res.data),
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
-            const current = lastPage.page.number;
-            const total = lastPage.page.totalPages;
-            return current + 1 < total ? current + 1 : undefined;
+    //infinite scroll
+    //https://medium.com/@antstack/implementing-infinite-scroll-pagination-with-react-query-v3-b935a76aa25e
+    const {
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteQuery({
+        queryKey: ['personal-requests'],
+        queryFn: ({ pageParam = 0 }) => findPersonalRequests(pageParam),
+        getNextPageParam: (lastPage) => {
+            console.log(lastPage);
+            return lastPage.nextPage < lastPage.totalPages
+                ? lastPage.nextPage
+                : undefined;
         },
+        initialPageParam: 0,
     });
 
-    const requests =
-        personalRequests.data?.pages.flatMap(page => page.content) ?? [];
+    const requests = data?.pages.flatMap(item => item.data) ?? [];
 
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
-    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        if (
-            !personalRequests.hasNextPage ||
-            personalRequests.isFetchingNextPage
-        ) return;
+        if (!loadMoreRef.current || !hasNextPage || isFetchingNextPage) return;
 
         const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    personalRequests.fetchNextPage();
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    fetchNextPage();
                 }
-            },
-            {
-                root: containerRef.current,
-                rootMargin: "100px",
-                threshold: 0.1,
-            }
-        );
+            }, {
+            rootMargin: '100px',
+        });
 
-        if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+        observer.observe(loadMoreRef.current);
 
         return () => observer.disconnect();
-    }, [
-        personalRequests.hasNextPage,
-        personalRequests.isFetchingNextPage,
-        personalRequests.fetchNextPage,
-    ]);
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+    useEffect(() => {
+        console.log({
+            hasNextPage,
+            isFetchingNextPage,
+            pages: data?.pages.length,
+        });
+    }, [data, hasNextPage, isFetchingNextPage]);
 
     //filter
     const {
@@ -199,7 +200,6 @@ export function CheckSchedule() {
     return (
         <>
             <div className={styles.containerCheckSchedule}
-                ref={containerRef}
             >
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
@@ -216,7 +216,7 @@ export function CheckSchedule() {
                 </div>
 
                 <div className={styles.cardsCheckSchedule}>
-                    {filteredData.map(card => (
+                    {requests.map(card => (
                         <CardCheckSchedule
                             key={card.agendamentoId}
                             id={card.agendamentoId}
@@ -231,20 +231,18 @@ export function CheckSchedule() {
                             RegisterAbsenceClick={() => handleModal(card.agendamentoId, "registerAbsence")}
                         />
                     ))}
-
-                    {personalRequests?.hasNextPage && (
-                        <div ref={loadMoreRef} style={{ height: 1 }} />
-                    )}
-
-                    {personalRequests?.isFetchingNextPage && <p>Carregando mais…</p>}
+                    <div ref={loadMoreRef} style={{ height: "1px" }} />
                 </div>
             </div>
+
+
+            {isFetchingNextPage && <p>Carregando mais...</p>}
             {openModal === "reschedule" && (
                 <>
                     <NewEvent
                         isMobile={isMobile}
                         close={() => setOpenModal(null)}
-                        openModal={handleSuccessReschedule}
+                        openModalExtern={handleSuccessReschedule}
                         errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                         insertedEvents={appointments.data?.data}
                         title="Reagendar horário"

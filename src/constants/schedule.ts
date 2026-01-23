@@ -1,11 +1,11 @@
-import type { Schedule } from "../models/schedule";
+import type { Schedule, ScheduleReschedule } from "../models/schedule";
 import { api } from "../system";
 
 export function insertAppointment(data: Schedule) {
     return api.post("/agendamentos", data);
 }
 
-export function rescheduleAppointment(data: Schedule) {
+export function rescheduleAppointment(data: ScheduleReschedule) {
     return api.put("/agendamentos/reagendar", data);
 }
 
@@ -37,8 +37,16 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export function findPersonalRequests(page = 0, size = 10) {
-    return api.get(`/agendamentos/solicitacoes?page=${page}&size=${size}`);
+export async function findPersonalRequests(pageParam = 1) {
+    const size = 10;
+    const response = await api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
+    console.log(response.data);
+    return {
+        data: response.data.content,
+        nextPage: pageParam + 1,
+        totalPages: response.data.page.totalPages,
+        page: pageParam,
+    };
 }
 
 export function findUserRescheduleRequests() {

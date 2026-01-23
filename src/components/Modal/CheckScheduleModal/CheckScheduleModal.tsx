@@ -7,7 +7,7 @@ import SmallerButton from "../../SmallerButton";
 import classNames from "classnames";
 import { findAppointmentById, rescheduleAppointment } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
-import type { Schedule } from "../../../models/schedule";
+import type { Schedule, ScheduleReschedule } from "../../../models/schedule";
 import useMobile from "../../../hooks/isMobile";
 
 type CheckScheduleModalProps = {
@@ -62,13 +62,14 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
     function handleReschedule() {
         if (selectedDate && newEventStartHour) {
 
-            const payload: Schedule = {
+            const payload: ScheduleReschedule = {
                 idAgendamento: appointmentId,
                 data: selectedDate && newEventStartHour && `${selectedDate}T${newEventStartHour}`,
                 descricao: rescheduleReason,
                 endereco: {
                     numero: eventToReschedule?.data.endereco.numero || "",
                     tipo: eventToReschedule?.data.endereco.tipo || "",
+                    unidade: eventToReschedule?.data.endereco.unidade || "",
                     complemento: eventToReschedule?.data.endereco.complemento || "",
                     cep: {
                         id: eventToReschedule?.data.endereco.cep.id || "",
@@ -77,7 +78,7 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
                         localidade: eventToReschedule?.data.endereco.cep.localidade || "",
                         uf: eventToReschedule?.data.endereco.cep.uf || ""
                     }
-                }
+                },
             };
 
             rescheduleAppointment(payload).then(() => {

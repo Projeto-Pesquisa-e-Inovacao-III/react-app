@@ -16,7 +16,6 @@ import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import { useNavigate } from "react-router-dom";
 
-// todo: fix font family  
 export default function ForgotPassword() {
   const isMobile = useMobile();
 
@@ -122,14 +121,17 @@ export default function ForgotPassword() {
 
   function updatePassword() {
     const newP = confirmPassword ?? "";
+    setIsLoading(true);
 
     if (!validatePasswordMatch()) {
+      setIsLoading(false);
       setTextModal({ title: "Houve um erro", content: "As senhas não coincidem." });
       setOpenModal("error");
       return;
     }
 
     if (!newP) {
+      setIsLoading(false);
       setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
       setOpenModal("error");
       return;
@@ -137,6 +139,7 @@ export default function ForgotPassword() {
 
     const validation = validatePassword(newP);
     if (validation !== "password válida!") {
+      setIsLoading(false);
       setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
       setOpenModal("error");
       return;
@@ -146,10 +149,12 @@ export default function ForgotPassword() {
         setNewPassword("");
         setConfirmPassword("")
         console.log("Senha atualizada com sucesso");
+        setIsLoading(false);
         setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
         setOpenModal("success");
       })
       .catch((error) => {
+        setIsLoading(false);
         console.error("Erro ao atualizar senha:", error);
         setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
         setOpenModal("error");

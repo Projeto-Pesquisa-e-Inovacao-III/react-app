@@ -19,6 +19,7 @@ import { editPersonalProfile } from "../../constants/personal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../utils/validacao.ts";
+import useModal from "../../hooks/useModal.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -79,8 +80,6 @@ const initialEditUserState: EditUserState = {
   birthDate: "",
 };
 
-type modalTypes = "timer" | "success" | "error" | null;
-
 export default function EditUser() {
   const isMobile = useMobile();
   const navigator = useNavigate();
@@ -92,25 +91,37 @@ export default function EditUser() {
 
   const [userImage, setUserImage] = useState<string>("");
   const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
+  const [previewImage, setPreviewImage] = useState<string>("");
+  const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
-  const [openModal, setOpenModal] = useState<modalTypes>(null);
-  const [textModal, setTextModal] = useState({ title: "", content: "" });
+  const {
+    openModal,
+    setOpenModal,
+    textModal,
+    setTextModal
+  } = useModal(null, { title: "", content: "" })
 
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
+    currentPassword: "",
+    confirmPassword: "",
+  }
+  )
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
+      setOpenModal("adjustAvatar");
+
       const file = event.target.files[0];
 
       const formData = new FormData();
       formData.append("imagem", file);
 
       const imageUrl = URL.createObjectURL(file);
-      setUserImage(imageUrl);
-      setUserImageFormData(formData);
+
+      setPreviewImage(imageUrl);
+      setPreviewImageFormData(formData);
     }
   }
 
@@ -164,9 +175,13 @@ export default function EditUser() {
     console.log("options", userImageFormData);
     update(options)
       .then(() => {
-        if (userImageFormData.has("imagem") && userImageFormData.get("imagem") !== "") {
-          insertUserImage(userImageFormData)
+        if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+          insertUserImage(previewImageFormData)
             .then(() => {
+              if (previewImage) {
+                setUserImage(previewImage);
+                setUserImageFormData(previewImageFormData);
+              }
               console.log("Imagem do usuário atualizada com sucesso!");
               setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
               setOpenModal("success");
@@ -195,11 +210,6 @@ export default function EditUser() {
   function deleteUser() {
     softDelete()
       .then(() => {
-        // setTextModal({
-        //   title: "Perfil apagado",
-        //   content: "Seu perfil foi apagado com sucesso.",
-        // });
-        // setOpenModal("success");
         navigator("/logout");
       })
       .catch((_error: unknown) => {
@@ -210,8 +220,8 @@ export default function EditUser() {
   }
 
   function updatePassword() {
-    const current = currentPassword ?? "";
-    const newP = confirmPassword ?? "";
+    const current = password.currentPassword ?? "";
+    const newP = password.confirmPassword ?? "";
 
     if (!current) {
       setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
@@ -233,8 +243,10 @@ export default function EditUser() {
     }
     changePassword(current, newP)
       .then(() => {
-        setCurrentPassword("");
-        setConfirmPassword("")
+        setPassword({
+          currentPassword: "",
+          confirmPassword: ""
+        })
         setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
         setOpenModal("success");
       })
@@ -305,6 +317,7 @@ export default function EditUser() {
             <div className={styles.atualizarFotoContainer}>
               <div>
                 <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
                 <label htmlFor="upload-photo">
                   <span>Atualizar Foto</span>
                 </label>
@@ -406,9 +419,12 @@ export default function EditUser() {
               placeholder="*************"
               icon={<LockKeyhole />}
               label="Senha Atual"
-              isPassword={currentPassword ? true : false}
-              value={currentPassword}
-              onInputChange={(value: string) => setCurrentPassword(value)}
+              isPassword={password.currentPassword ? true : false}
+              value={password.currentPassword}
+              onInputChange={(value: string) => setPassword({
+                ...password,
+                currentPassword: value
+              })}
             ></InputWithIcon>
             <InputWithIcon
               id="senha"
@@ -416,9 +432,12 @@ export default function EditUser() {
               placeholder="*************"
               icon={<LockKeyhole />}
               label="Nova Senha"
-              isPassword={confirmPassword ? true : false}
-              value={confirmPassword}
-              onInputChange={(value: string) => setConfirmPassword(value)}
+              isPassword={password.confirmPassword ? true : false}
+              value={password.confirmPassword}
+              onInputChange={(value: string) => setPassword({
+                ...password,
+                confirmPassword: value
+              })}
             ></InputWithIcon>
             <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
               title="Alterar Senha" type="button" onClick={() => updatePassword()}
@@ -484,6 +503,63 @@ export default function EditUser() {
           title={textModal.title}
           content={textModal.content}
         />
+      )}
+
+      {openModal === "adjustAvatar" && (
+        <>
+          <div className={`overlay z-auto!`}></div>
+          <div className="   fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50">
+            <div className={styles.profileSection + "max-w-full! max-h-full!"}>
+              <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
+                {previewImage &&
+                  <UserImg
+                    Source={previewImage}
+                    classname="border-2 border-gray-300"
+                    Height={500}
+                    Width={500}
+                    Alt="foto"
+                  />
+                }
+                <div className={styles.atualizarFotoContainer}>
+                  <div>
+                    {/* <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} /> */}
+                    <Button
+                      typeButton="other"
+                      title="Confirmar"
+                      type="button"
+                      classNameVariable="buttonRemoveImage"
+                      onClick={() => {
+                        handleUpdateUserInfo()
+                      }}
+                    />
+                  </div>
+
+                  <div >
+                    <div>
+                      <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                      {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
+                      <label htmlFor="upload-photo">
+                        <span>Atualizar Foto</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div >
+                    <Button
+                      typeButton="other"
+                      title="Cancelar"
+                      type="button"
+                      classNameVariable="buttonRemoveImage"
+                      onClick={() => {
+                        setOpenModal(null);
+                      }}
+                    />
+                  </div>
+                </div>
+              </WhiteContainer>
+            </div>
+          </div>
+        </>
       )}
     </>
   );
