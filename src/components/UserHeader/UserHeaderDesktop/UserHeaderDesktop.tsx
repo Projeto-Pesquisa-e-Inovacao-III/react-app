@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
-import "./style.css"
-import { Bell } from "lucide-react";
+import styles from "./UserHeaderDesktop.module.css"
 import { useEffect, useState } from "react";
-import Notification from "../Notification/Notification";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -19,56 +17,46 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
   queryClient.invalidateQueries({ queryKey: ['userImage'] });
 
-  useEffect(() => {
-    
-  }, [])
+  //verificar se o link está ativo para adicionar a classe active
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink;
 
   return (
     <>
-      <header className="user-header-desktop">
+      <header className={styles.userHeaderDesktop}>
+        <nav className={styles.nav}>
         <Link to="/"><LogoHeaderDesktop /></Link>
-        <nav>
           {type === 'personal' ? (
             <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/personal/check-schedule">Solicitações</Link>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/users">Usuários</Link>
+              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+              <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
+              <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Planos</NavLink>
+              <NavLink to="/users" className={navLinkClass}>Usuários</NavLink>
             </>
           ) : (
             <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/plans-history">Histórico de planos</Link>
-              <Link to="/schedule-history">Histórico de agendamentos</Link>
+              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Planos</NavLink>
+              <NavLink to="/plans-history" className={navLinkClass}>Histórico de planos</NavLink>
+              <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
             </>
           )
           }
         </nav>
 
-        <div className="auth-links">
-          {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
-          {/* <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
-            <Bell />
-          </div> */}
-          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
-            <UserAvatar useUserImage={true} />
+        <div className={styles.authLinks}>
+          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className={styles.userAvatarHeaderDesktop}>
+            <UserAvatar useUsername={true} useUserImage={true} />
           </div>
         </div>
 
       </header >
-      {/* 
-      {openNotification && (
-        <Notification notifications={notifications} />
-      )
-      } */}
 
       {openHeaderModal && (
-        <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
-          <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
+        <div className={styles.headerModalDesktop} onClick={() => setOpenHeaderModal(false)}>
+          <div className={styles.headerModalContentDesktop} onClick={(e) => e.stopPropagation()}>
             <Link to="/edit-user">Editar perfil</Link>
             {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
             <Link to="/logout">Sair</Link>
@@ -79,5 +67,3 @@ export default function UserHeaderDesktop({ type }: UserType) {
     </>
   );
 }
-
-

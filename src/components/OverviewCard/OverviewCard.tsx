@@ -14,8 +14,6 @@ type OverviewCardProps = {
 export function OverviewCard(props: OverviewCardProps) {
     const { isMobile = false } = props;
 
-    // ... rest of imports and types ...
-
     return (
         <div className={classNames(styles.cardContainer, { [styles.cardContainerMobile]: isMobile })}>
             <h2 className={classNames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>{props.title}</h2>

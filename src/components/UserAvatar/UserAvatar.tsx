@@ -8,9 +8,10 @@ import styles from "./UserAvatar.module.css"
 interface UserAvatarProps {
   foto?: string;
   useUserImage?: boolean;
+  useUsername?: boolean;
 }
 
-export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
+export default function UserAvatar({ foto, useUserImage, useUsername = false }: UserAvatarProps) {
 
   const userImage = useQuery({
     queryKey: ['userImage'],
@@ -27,7 +28,9 @@ export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
     retry: false,
   })
   return (
-    <div className={styles.userAvatar}>
+    <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
+      {useUsername && <p>nome</p>}
+
       {userImage.data || foto ?
         <UserImg
           Source={`${foto ? `${BASE_URL}/usuarios/foto/${foto}` : userImage.data || ""}`}

@@ -87,7 +87,7 @@ export function Overview() {
                             {icon}{label}
                         </span>
                         <span className="font-bold text-slate-800">
-                            {current}
+                            <span className="text-xl">{current}</span> / <span className="text-sm text-slate-500 font-medium">{total}</span>
                         </span>
                     </div>
 
@@ -96,7 +96,7 @@ export function Overview() {
                         variant="determinate"
                         value={percentage}
                         sx={{
-                            height: 4,
+                            height: 8,
                             borderRadius: 8,
                             "& .MuiLinearProgress-bar": {
                                 backgroundColor: "#093a5d",
@@ -303,10 +303,10 @@ export function Overview() {
                     {!isMobile && type?.type === "aluno" && (
                         <div className={styles.schedulePageUserActions}>
                             <OverviewCard
-                                title={"Saldo de aulas restantes"}
+                                title={"Saldo de aulas"}
                                 subtitle={getBalance()}
                                 type={"usuario"}
-                                titletbn={"Agendamentos"}
+                                titletbn={"Ver Meus Agendamentos"}
                                 onClick={() => nav("/schedule")}
                                 isMobile={isMobile}
                             />

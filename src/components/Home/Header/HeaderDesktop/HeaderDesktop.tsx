@@ -28,7 +28,7 @@ export default function HeaderDesktop() {
                 <div className="text-lg flex gap-2">
                     {verify ? (
                         <div className="flex gap-3 items-center">
-                            <Link to="/home" className="border-2 p-1 rounded-full">
+                            <Link to="/home" className="border-1 border-[#ffffff50] rounded-full">
                                 <UserAvatar useUserImage={true} />
                             </Link>
                             <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Logout</Link>

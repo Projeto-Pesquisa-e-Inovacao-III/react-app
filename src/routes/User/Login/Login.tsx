@@ -25,7 +25,6 @@ export default function Login() {
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
   const [successLogin, setSuccessLogin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
   const nav = useNavigate();
 
   function handleAutoFill(email?: string, password?: string) {
@@ -34,7 +33,7 @@ export default function Login() {
 
   const queryClient = useQueryClient();
   function navToHome() {
-    queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
+    // queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
 
     nav("/home");
     setSuccessLogin(false);
@@ -43,7 +42,6 @@ export default function Login() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsLoading(true);
 
     try {
       const res = await userService.login(loginInfo.email, loginInfo.password);
@@ -60,9 +58,7 @@ export default function Login() {
         confirmButtonColor: "#166ba3ff",
         timer: 3000,
       });
-    } finally {
-      setIsLoading(false);
-    }
+    } 
   }
 
   useEffect(() => {

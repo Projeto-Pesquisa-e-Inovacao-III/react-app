@@ -19,7 +19,7 @@
 
 .wrapperCalendar :global(.fc) {
   height: auto;
-  font-family: "Inter", sans-serif;
+  font-family: "Poppins", sans-serif !important;
 }
 
 .wrapperCalendar :global(.fc-toolbar-title) {
@@ -50,7 +50,17 @@
   padding: 8px 0;
   cursor: pointer;
   transition: background 0.3s;
+  padding: 6px !important;
 }
+
+.wrapperCalendar :global(.fc .fc-daygrid-day-frame) {
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
+  border-radius: 10px;
+  height: 100%;
+  transition: background 0.3s;
+}
+
 
 .wrapperCalendar :global(.fc-daygrid-day-top) {
   margin: 0 auto;
@@ -73,6 +83,11 @@
 }
 
 .wrapperCalendar :global(.fc-daygrid-day:hover) {
+  background: transparent !important;
+  border-radius: 5px;
+}
+
+.wrapperCalendar :global(.fc .fc-daygrid-day-frame:hover) {
   background: #f5f5f5;
   border-radius: 5px;
 }
@@ -102,14 +117,20 @@
 }
 
 .fcTodayCustom {
-  background: #ececec91 !important;
-  color: rgb(151, 151, 151) !important;
   padding: 5px 8px;
+}
+
+.fcTodayCustom :global(.fc-daygrid-day-frame) {
+  color: #1e293b !important;
+  background: #dadada !important;
+
 }
 
 .fcTodayCustom:hover {
   border-radius: 0 !important;
 }
+
+
 @media (max-width: 1024px) {
   .wrapperCalendar :global(.fc-day-today .fc-daygrid-day-number) {
     background: black;
