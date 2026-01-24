@@ -1,9 +1,8 @@
 import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "./mobile.css";
-import "./desktop.css";
-import { use, useContext, useEffect, useRef, useState } from "react";
+import styles from "./CalendarMonthStyled.module.css";
+import { useEffect, useRef, useState, useMemo } from "react";
 import type { Schedule } from "../../../models/schedule";
 import { parseISO, startOfDay } from "date-fns";
 
@@ -18,46 +17,45 @@ type Props = {
   tomorrowDate?: string;
 };
 
-
 export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate }: Props) {
 
-  const databaseEvents = Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
-    return {
-      data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
-      status: event.status,
-    };
-  }) : [];
-
-
-  const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
   const [newEventDate, setNewEventDate] = useState<string>("");
   const calendarRef = useRef<FullCalendar>(null);
 
+  const databaseEvents = useMemo(() => {
+    return Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
+      return {
+        data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
+        agendamentoId: event.agendamentoId,
+        status: (event as any).status,
+      };
+    }) : [];
+  }, [createdEvents]);
+
+  const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
+  
   useEffect(() => {
     if (databaseEvents && databaseEvents.length > 0) {
       setEvents(databaseEvents);
     }
-
-  }, []);
+  }, [databaseEvents]);
 
   useEffect(() => {
     clickedDate(newEventDate || clickedDateStr || "");
-  }, [newEventDate]);
+  }, [newEventDate, clickedDate, clickedDateStr]);
 
   useEffect(() => {
     const calendarApi = calendarRef.current?.getApi();
     calendarApi?.select(eventToReschedule || "");
     setNewEventDate(eventToReschedule || "");
-  }, []);
+  }, [eventToReschedule]);
 
   const actualMonth = new Date().getMonth();
-
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-
   return (
-    <div className={`container-calendar${isMobile ? "-mobile" : ""}`}>
-      <div className="wrapper-callendar" id="wrapper-styled-callendar">
+    <div className={isMobile ? styles.containerCalendarMobile : styles.containerCalendar}>
+      <div className={styles.wrapperStyledCallendar} id="wrapper-styled-callendar">
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, InteractionPlugin]}
@@ -71,45 +69,35 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
 
             setNewEventDate(info.dateStr)
-
-
           }}
           datesSet={function (info) {
             const month = info.start.getMonth() + 1;
             setSelectedMonth(month);
           }}
           dayCellClassNames={(arg) => {
-            // const disabledDays = events.map((e) => e.data.split("T")[0]);
             const dateStr = arg.date.toISOString().split("T")[0];
 
-            // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
-            //   return ["disabled-day"];
-
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
-            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate))
-              return ["disabled-day"];
-            // if (dateStr === eventToReschedule || disabledDays.includes(dateStr))
-            //   return ["disabled-day"];
+            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate)) return [styles.disabledDay];
 
-            if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return ["selected-day"];
+            if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return [styles.selectedDay];
+
+  
 
             return [];
           }}
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
 
-            const eventDate = events?.map(event => parseISO(event.data).toISOString().split("T")[0]);
             const eventsOfDay = events?.filter(event =>
               event.data.split("T")[0] === cellDate
             ) || [];
 
             return (
-
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
                 <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
-
-                  {eventsOfDay.map((event, index) => (
+                  {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}
                       style={{
@@ -131,7 +119,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
                 </div>
               </div>
             );
-
           }}
           headerToolbar={{
             start: "title",

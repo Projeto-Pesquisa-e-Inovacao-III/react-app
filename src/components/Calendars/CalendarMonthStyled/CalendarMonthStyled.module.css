@@ -1,0 +1,96 @@
+.newEventOpenedWrapperCallendar {
+  filter: opacity(0.4);
+}
+
+.disabledDay {
+  cursor: none;
+  background-color: #ddd !important;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.selectedDay, :global(.fc-highlight) {
+  background-color: var(--bg-blue) !important;
+  color: white !important;
+  border-radius: 5px;
+  padding: 6px 10px;
+  transition: all 0.3s, color 0.3s;
+}
+
+.wrapperStyledCallendar :global(.fc) {
+  font-family: "Inter", sans-serif;
+}
+
+.wrapperStyledCallendar :global(.fc-toolbar-title) {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-left: 15px;
+}
+
+.wrapperStyledCallendar :global(.fc-prev-button),
+.wrapperStyledCallendar :global(.fc-next-button) {
+  background: none !important;
+  border: none !important;
+  font-size: 1.2rem !important;
+  color: #333 !important;
+  cursor: pointer;
+}
+
+.wrapperStyledCallendar :global(.fc-col-header-cell) {
+  font-weight: 500;
+  color: #555;
+  padding: 8px 0;
+  border: none !important;
+}
+
+.wrapperStyledCallendar :global(.fc-daygrid-day) {
+  text-align: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.wrapperStyledCallendar :global(.fc-daygrid-day-top) {
+  margin-top: 5px !important; 
+  margin-left: 15px !important;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.wrapperStyledCallendar :global(.fc-daygrid-day-number) {
+  font-size: 0.95rem;
+}
+
+.wrapperStyledCallendar :global(.fc-day-today) {
+  background: none;
+}
+
+.wrapperStyledCallendar :global(.fc-day-today) :global(.fc-daygrid-day-number) {
+  background: #0a3a5c;
+  color: white !important;
+  border-radius: 50%;
+  padding: 4px 6px;
+}
+
+.wrapperStyledCallendar :global(.fc-daygrid-day:hover) {
+  background: #f5f5f5;
+  border-radius: 5px;
+}
+
+.wrapperStyledCallendar :global(.fc-col-header-cell-cushion::first-letter),
+:global(.fc-toolbar-title::first-letter) {
+  text-transform: capitalize;
+}
+
+.wrapperStyledCallendar :global(.fc) :global(.fc-scrollgrid-section) table {
+  height: 50px;
+}
+
+.wrapperStyledCallendar :global(.fc-theme-standard) td,
+:global(.fc-theme-standard) :global(.fc-scrollgrid) {
+  border: none;
+}
+
+.wrapperStyledCallendar :global(.fc) :global(.fc-scrollgrid-section-sticky>*) {
+  position: relative !important;
+}
