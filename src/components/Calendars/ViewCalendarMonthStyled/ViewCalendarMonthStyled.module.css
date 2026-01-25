@@ -22,6 +22,14 @@
   font-family: "Poppins", sans-serif !important;
 }
 
+.wrapperCalendar :global(.fc-header-toolbar) {
+  margin-bottom: 0 !important;
+}
+
+:global(.fc-theme-standard th) {
+  border: none !important;
+}
+
 .wrapperCalendar :global(.fc-toolbar-title) {
   font-size: 1.8rem;
   font-weight: 600;
@@ -79,7 +87,7 @@
 }
 
 .wrapperCalendar :global(.fc-day-today .fc-daygrid-day-number) {
-  background: black;
+  background: #0a3a5c;
   color: white !important;
   border-radius: 50%;
   padding: 5px 8px;

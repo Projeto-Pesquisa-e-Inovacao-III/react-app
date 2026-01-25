@@ -88,6 +88,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
+            console.log("Rendering cell for date:", arg.dayNumberText, "with events:", events);
 
             const eventsOfDay = events?.filter(event =>
               event.data.split("T")[0] === cellDate
@@ -95,7 +96,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
-                <div>{arg.dayNumberText}</div>
+                <div><p>{arg.dayNumberText}</p></div>
                 <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
                   {eventsOfDay.map((event) => (
                     <div

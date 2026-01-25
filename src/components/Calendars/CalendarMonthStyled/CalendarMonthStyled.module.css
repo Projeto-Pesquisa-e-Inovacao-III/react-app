@@ -44,17 +44,32 @@
   border: none !important;
 }
 
-.wrapperStyledCallendar :global(.fc-daygrid-day) {
+.wrapperCalendar :global(.fc-daygrid-day) {
   text-align: center;
   padding: 8px 0;
   cursor: pointer;
+  transition: background 0.3s;
+  padding: 6px !important;
+  background-color: transparent !important;
 }
 
+.wrapperCalendar :global(.fc .fc-daygrid-day-frame) {
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  border-radius: 10px;
+  height: 100%;
+  transition: background 0.3s;
+}
+
+
 .wrapperStyledCallendar :global(.fc-daygrid-day-top) {
-  margin-top: 5px !important; 
   margin-left: 15px !important;
   margin: 0 auto;
   width: fit-content;
+  z-index: 1000;
+  position: relative;
+  padding: 20px 6px;
+  padding-top: 0 !important;
 }
 
 .wrapperStyledCallendar :global(.fc-daygrid-day-number) {

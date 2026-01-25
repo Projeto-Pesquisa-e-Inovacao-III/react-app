@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, Calendar, CalendarCheck, PlusIcon } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -199,6 +199,20 @@ export function Overview() {
         setModalText({ title, description });
     }
 
+    function handleClickNewEvent() {
+        if (!actualPlanQuery.data) {
+            handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")
+            return
+        }
+
+        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
+            handleErrorModalInfo("Erro", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.")
+            return
+        }
+
+
+        setModalType("newEvent")
+    }
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -247,41 +261,37 @@ export function Overview() {
 
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
                             <ViewCalendarMonthStyled
-                             isMobile={isMobile} 
-                             events={appointments.data?.data} 
-                             isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false} 
-                             canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
-                             modalInfo={setModalText}
-                             modalType={setModalType}
-                             />
+                                isMobile={isMobile}
+                                events={appointments.data?.data}
+                                isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false}
+                                canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                                modalInfo={setModalText}
+                                modalType={setModalType}
+                            />
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
-                            <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
-                                <h1>Agendamentos</h1>
-                                {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
-                                    onClick={() => {
-                                        if (!actualPlanQuery.data) {
-                                            handleErrorModalInfo("Erro", "Você precisa ter um plano ativo para agendar uma aula.")
-                                            return
-                                        }
-
-                                        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
-                                            handleErrorModalInfo("Erro", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.")
-                                            return
-                                        }
-
-
-                                        setModalType("newEvent")
-
-                                    }
-                                    }
-
-                                />}
-                            </div>
                             {appointmentsCards.data?.length === 0 ? (
-                                <p>Você não possui agendamentos.</p>
+                                <div className="flex flex-col items-center justify-center gap-4">
+                                    <div className="rounded-full bg-gray-200 p-5 w-fit">
+                                        <CalendarCheck className="" color="#0a3a5c" size={40} />
+                                    </div>
+                                    <h1>Sem agendamentos para hoje</h1>
+                                    <div>
+                                        <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
+                                        <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
+                                    </div>
+                                    {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                        onClick={handleClickNewEvent}
+                                    />}
+                                </div>
                             ) : (
                                 <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
+                                    <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
+                                        <h1>Agendamentos</h1>
+                                        {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
+                                            onClick={handleClickNewEvent}
+                                        />}
+                                    </div>
                                     {appointmentsCards.data?.map((card, index) => (
                                         <AppointmentCard
                                             key={index}
