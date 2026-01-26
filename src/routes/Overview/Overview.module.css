@@ -44,6 +44,7 @@
     flex-direction: column;
     gap: 40px;
     align-items: flex-end;
+    max-width: 500px !important;
 }
 
 .schedulePageUserActionsMobile {

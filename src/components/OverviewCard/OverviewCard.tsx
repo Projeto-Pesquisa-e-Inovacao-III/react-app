@@ -16,14 +16,18 @@ export function OverviewCard(props: OverviewCardProps) {
 
     return (
         <div className={classNames(styles.cardContainer, { [styles.cardContainerMobile]: isMobile })}>
-            <h2 className={classNames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>{props.title}</h2>
+            <div className={classNames(styles.cardTitleContainer, { [styles.cardTitleContainerMobile]: isMobile })}>
+                <h3 className={classNames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>{props.title}</h3>
+            </div>
             <div className={classNames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>{props.subtitle}</div>
-            {
-                props.titletbn === "" ? null :
-                    <button className={classNames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })} onClick={props.onClick}>
-                        {props.titletbn}
-                    </button>
-            }
+            <div className={classNames(styles.cardButtonContainer, { [styles.cardButtonContainerMobile]: isMobile })}>
+                {
+                    props.titletbn === "" ? null :
+                        <button className={classNames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })} onClick={props.onClick}>
+                            {props.titletbn}
+                        </button>
+                }
+            </div>
         </div>
     );
 }

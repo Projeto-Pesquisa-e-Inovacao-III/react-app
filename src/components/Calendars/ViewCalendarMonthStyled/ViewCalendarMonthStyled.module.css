@@ -123,6 +123,10 @@
   border: none;
 }
 
+:global(.fc .fc-scrollgrid-section-sticky > *) {
+  position: relative;
+}
+
 .wrapperCalendar :global(.fc .fc-daygrid-body-natural .fc-daygrid-day-events) {
   margin: 0;
 }

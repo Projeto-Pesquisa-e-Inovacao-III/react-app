@@ -5,17 +5,21 @@
     background-color: #fff;
     border-radius: 6px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 40px;
     width: 25vw;
     min-width: 300px;
     max-width: 100%;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.cardTitleContainer {
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+
 .cardTitle {
-    font-size: 1.5rem;
+    padding: 20px 24px;
+    font-size: 1.125rem;
     color: #333;
-    margin-bottom: 10px;
     font-weight: 700;
     width: 100%;
 }
@@ -23,8 +27,8 @@
 .cardSubtitle {
     font-size: 1.5rem;
     color: #666;
-    margin-bottom: 15px;
     width: 100%;
+    padding: 24px;
 }
 
 .cardParagraph {
@@ -32,6 +36,12 @@
     color: #555;
     margin-bottom: 20px;
     line-height: 1.4;
+}
+
+.cardButtonContainer {
+    width: 100%;
+    padding: 0 24px 24px 24px;
+    box-sizing: border-box;
 }
 
 .cardBtn {

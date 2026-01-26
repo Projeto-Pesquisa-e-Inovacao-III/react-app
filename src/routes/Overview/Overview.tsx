@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, Calendar, CalendarCheck, PlusIcon, ForwardIcon, ArrowRight } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, Calendar, CalendarCheck, PlusIcon, ForwardIcon, ArrowRight, Info, ShoppingBag, Check } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -110,7 +110,7 @@ export function Overview() {
         const TOTAL_PADRAO = 20;
 
         return (
-            <div className="py-2">
+            <div>
                 <BalanceItem
                     label="Presencial"
                     current={aulaPresencial?.data ?? 0}
@@ -276,13 +276,28 @@ export function Overview() {
                                         <CalendarCheck className="" color="#0a3a5c" size={40} />
                                     </div>
                                     <h1>Sem agendamentos para hoje</h1>
-                                    <div>
-                                        <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
-                                        <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
-                                    </div>
-                                    {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                        onClick={handleClickNewEvent}
-                                    />}
+
+                                    {actualPlanQuery?.data?.data ? (
+                                        <>
+                                            <div>
+                                                <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
+                                                <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
+                                            </div>
+                                            {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                                onClick={handleClickNewEvent}
+                                            />}
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div>
+                                                <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
+                                                <h2 className="text-center text-gray-500">Confira nossos planos e escolha o melhor para você!</h2>
+                                            </div>
+                                            {type?.type === "aluno" && <Button type="button" title="Comprar Plano Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                                onClick={() => nav("/packages")}
+                                            />}
+                                        </>
+                                    )}
                                 </div>
                             ) : (
                                 <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
@@ -310,7 +325,7 @@ export function Overview() {
                             )}
                         </div>
                     </div>
-                    {!isMobile && type?.type === "aluno" && (
+                    {!isMobile && type?.type === "aluno" && actualPlanQuery?.data?.data ? (
                         <div className={styles.schedulePageUserActions}>
                             <OverviewCard
                                 title={"Saldo de aulas"}
@@ -329,8 +344,8 @@ export function Overview() {
                                 isMobile={isMobile}
                             /> */}
 
-{/* todo: card if user dont have an active plan. */}
-{/* question: should i put this into a component? */}
+                            {/* todo: card if user dont have an active plan. */}
+                            {/* question: should i put this into a component? */}
                             <section className="bg-indigo rounded-xl shadow-lg p-6 text-white relative overflow-hidden group w-full">
                                 <div className="absolute right-0 top-0 text-white/10 group-hover:scale-110 transition-transform duration-500">
                                     <span className="material-icons-outlined text-9xl">
@@ -342,9 +357,9 @@ export function Overview() {
                                 </div>
                                 <div className="relative z-10">
                                     <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">Plano Ativo</span>
-                                    <h3 className="text-2xl font-black mb-1">Pacote Anual</h3>
+                                    <h3 className="text-2xl font-black mb-1">{actualPlanQuery?.data?.data.nome}</h3>
                                     <p className="text-white/70 text-sm mb-6 flex items-center gap-2">
-                                        <span className="material-icons-outlined text-sm"><CalendarIcon size={17}/></span>
+                                        <span className="material-icons-outlined text-sm"><CalendarIcon size={17} /></span>
                                         Expira em 24/11/2026
                                     </p>
                                     <div className="bg-white/10 backdrop-blur-md rounded-lg p-3 mb-6 border border-white/10">
@@ -358,7 +373,77 @@ export function Overview() {
                                     </div>
                                     <button className="text-indigo cursor-pointer w-full py-3 bg-white text-primary font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
                                         Histórico de Planos
-                                        <span className="material-icons-outlined text-sm"><ArrowRight size={17}/></span>
+                                        <span className="material-icons-outlined text-sm"><ArrowRight size={17} /></span>
+                                    </button>
+                                </div>
+                            </section>
+                        </div>
+                    ) : (
+                        <div className={styles.schedulePageUserActions}>
+                            <section className="bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+                                <div className="p-5 border-b border-slate-100 dark:border-slate-800">
+                                    <h3 className="font-bold text-lg">Saldo de aulas</h3>
+                                </div>
+                                <div className="p-10 flex flex-col items-center text-center space-y-4">
+                                    <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center text-orange-600">
+                                        <span className="material-symbols-outlined text-3xl"><Info /></span>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="font-bold text-slate-800 dark:text-slate-200">Nenhum saldo disponível</p>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                            Você precisa de um plano ativo para visualizar seu saldo de aulas e realizar agendamentos.
+                                        </p>
+                                    </div>
+                                    <button onClick={() => nav("/packages")} className="cursor-pointer text-indigo text-sm font-bold hover:underline flex items-center gap-1">
+                                        Como funciona?
+                                        <span className="material-symbols-outlined text-xs"><ArrowRight /></span>
+                                    </button>
+                                </div>
+                            </section>
+
+                            <section className="bg-indigo rounded-xl shadow-xl p-8 text-white relative overflow-hidden group border border-white/10">
+                                <div className="absolute right-0 bottom-0 text-white/10 group-hover:scale-110 transition-transform duration-700">
+                                    <span className="material-symbols-outlined text-[12rem]">
+                                        <svg width="129" height="135" viewBox="0 0 129 135" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M90.2383 158.117L79.0584 146.937L107.408 118.588L39.5292 50.7096L11.18 79.0588L0 67.8788L11.18 56.2996L0 45.1196L16.77 28.3496L5.58999 16.7704L16.77 5.59041L28.3492 16.7704L45.1192 0.000427246L56.2991 11.1804L67.8784 0.000427246L79.0584 11.1804L50.7092 39.5296L118.588 107.408L146.937 79.0588L158.117 90.2388L146.937 101.818L158.117 112.998L141.347 129.768L152.527 141.347L141.347 152.527L129.768 141.347L112.998 158.117L101.818 146.937L90.2383 158.117Z" fill="white" fill-opacity="0.1" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="mb-6">
+                                        <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Vantagens Exclusivas</span>
+                                        <h3 className="text-3xl font-black leading-tight mb-3">Comece sua jornada hoje!</h3>
+                                        <p className="text-white/80 text-sm font-medium mb-6">Assine agora e tenha acesso imediato a uma estrutura completa para o seu treino.</p>
+                                    </div>
+                                    <ul className="space-y-3 mb-8">
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-white/20 p-1 rounded-full">
+                                                <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
+                                            </div>
+                                            <span className="text-sm font-medium">Treino funcional personalizado</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-white/20 p-1 rounded-full">
+                                                <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
+                                            </div>
+                                            <span className="text-sm font-medium">Acompanhamento presencial</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-white/20 p-1 rounded-full">
+                                                <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
+                                            </div>
+                                            <span className="text-sm font-medium">Suporte via App exclusivo</span>
+                                        </li>
+                                        <li className="flex items-center gap-3">
+                                            <div className="bg-white/20 p-1 rounded-full">
+                                                <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
+                                            </div>
+                                            <span className="text-sm font-medium">Horários flexíveis</span>
+                                        </li>
+                                    </ul>
+                                    <button className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                                        Ver Opções de Planos
+                                        <span className="material-symbols-outlined"><ShoppingBag /></span>
                                     </button>
                                 </div>
                             </section>
