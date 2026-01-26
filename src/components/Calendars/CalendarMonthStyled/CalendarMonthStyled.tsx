@@ -55,7 +55,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
   return (
     <div className={isMobile ? styles.containerCalendarMobile : styles.containerCalendar}>
-      <div className={styles.wrapperStyledCallendar} id="wrapper-styled-callendar">
+      <div className={styles.wrapperStyledCallendar} id="wrapper-styled-callendar-event">
         <FullCalendar
           ref={calendarRef}
           plugins={[dayGridPlugin, InteractionPlugin]}
@@ -123,7 +123,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           headerToolbar={{
             start: "title",
-            end: `${selectedMonth - 1 >= actualMonth ? "prev" : ""}${selectedMonth != actualMonth && selectedMonth != 12 ? "," : ""}${selectedMonth == 12 ? "" : "next"}`,
+            end: `prev,next,today`,
+          }}
+          buttonText={{
+            today: 'Hoje',
           }}
           height="auto"
         />

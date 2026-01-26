@@ -55,11 +55,10 @@
 
 .wrapperCalendar :global(.fc-daygrid-day) {
   text-align: center;
-  padding: 8px 0;
-  cursor: pointer;
   transition: background 0.3s;
-  padding: 6px !important;
+  padding: 4px !important;
   background-color: transparent !important;
+  height: 90px;
 }
 
 .wrapperCalendar :global(.fc .fc-daygrid-day-frame) {
@@ -68,6 +67,8 @@
   border-radius: 10px;
   height: 100%;
   transition: background 0.3s;
+  cursor: pointer;
+
 }
 
 
@@ -110,7 +111,6 @@
 
 .wrapperCalendar :global(.fc .fc-scrollgrid-section-sticky>*) {
   background: transparent;
-  position: sticky;
   z-index: 3;
 }
 
