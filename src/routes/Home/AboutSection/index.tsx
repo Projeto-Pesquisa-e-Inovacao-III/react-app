@@ -28,7 +28,7 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                         Quem sou?
                     </h1>
                     <p className={`${isMobile ? 'text-lg' : 'text-2xl w-fit whitespace-pre-line'}`}>
-                        Sou <span className="text-gigant-orange font-semibold">Fabio Bernardes</span>, professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento.
+                        Sou <span className="text-gigant-orange font-semibold">Fábio Bernardes</span>, professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento.
                     </p>
                     <p className={`${isMobile ? 'text-lg mt-5' : 'text-2xl w-fit'}`}>
                         Além de <span className="text-gigant-orange font-semibold">profissional</span>, sou marido e pai, e entendo na prática os desafios de conciliar uma rotina agitada com o <span className="text-gigant-orange font-semibold">cuidado da saúde</span>. É por isso que minha consultoria foi desenvolvida para se adaptar aos seus objetivos.

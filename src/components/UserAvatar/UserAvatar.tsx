@@ -7,11 +7,12 @@ import styles from "./UserAvatar.module.css"
 
 interface UserAvatarProps {
   foto?: string;
+  userName?: string;
   useUserImage?: boolean;
   useUsername?: boolean;
 }
 
-export default function UserAvatar({ foto, useUserImage, useUsername = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false }: UserAvatarProps) {
 
   const userImage = useQuery({
     queryKey: ['userImage'],
@@ -29,7 +30,7 @@ export default function UserAvatar({ foto, useUserImage, useUsername = false }: 
   })
   return (
     <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
-      {useUsername && <p>nome</p>}
+      {useUsername && <p>{userName}</p>}
 
       {userImage.data || foto ?
         <UserImg

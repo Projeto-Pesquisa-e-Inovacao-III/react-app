@@ -6,10 +6,11 @@ import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
 
 type UserType = {
+  userName: string;
   type: "personal" | "student"
 }
 
-export default function UserHeaderDesktop({ type }: UserType) {
+export default function UserHeaderDesktop({userName, type }: UserType) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
@@ -48,7 +49,7 @@ export default function UserHeaderDesktop({ type }: UserType) {
 
         <div className={styles.authLinks}>
           <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className={styles.userAvatarHeaderDesktop}>
-            <UserAvatar useUsername={true} useUserImage={true} />
+            <UserAvatar userName={userName} useUsername={true} useUserImage={true} />
           </div>
         </div>
 

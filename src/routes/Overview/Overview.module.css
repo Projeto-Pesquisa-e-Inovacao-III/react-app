@@ -203,7 +203,7 @@
     text-align: center;
 }
 
-.schedulePageUserActionsPersonal :global(h2) {
+.schedulePageUserActionsPersonal :global(h3) {
     text-align: start;
 }
 

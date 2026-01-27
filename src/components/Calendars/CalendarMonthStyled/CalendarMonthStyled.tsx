@@ -50,9 +50,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
     setNewEventDate(eventToReschedule || "");
   }, [eventToReschedule]);
 
-  const actualMonth = new Date().getMonth();
-  const [selectedMonth, setSelectedMonth] = useState<number>(0);
-
   return (
     <div className={isMobile ? styles.containerCalendarMobile : styles.containerCalendar}>
       <div className={styles.wrapperStyledCallendar} id="wrapper-styled-callendar-event">
@@ -70,10 +67,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
             setNewEventDate(info.dateStr)
           }}
-          datesSet={function (info) {
-            const month = info.start.getMonth() + 1;
-            setSelectedMonth(month);
-          }}
           dayCellClassNames={(arg) => {
             const dateStr = arg.date.toISOString().split("T")[0];
 
@@ -88,7 +81,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           dayCellContent={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
-            console.log("Rendering cell for date:", arg.dayNumberText, "with events:", events);
 
             const eventsOfDay = events?.filter(event =>
               event.data.split("T")[0] === cellDate

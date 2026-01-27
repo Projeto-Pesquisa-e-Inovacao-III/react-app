@@ -325,8 +325,9 @@ export function Overview() {
                             )}
                         </div>
                     </div>
-                    {!isMobile && type?.type === "aluno" && actualPlanQuery?.data?.data ? (
-                        <div className={styles.schedulePageUserActions}>
+                    {!isMobile && type?.type === "aluno" && (
+                        actualPlanQuery?.data?.data ? (
+                            <div className={styles.schedulePageUserActions}>
                             <OverviewCard
                                 title={"Saldo de aulas"}
                                 subtitle={getBalance()}
@@ -446,9 +447,10 @@ export function Overview() {
                                         <span className="material-symbols-outlined"><ShoppingBag /></span>
                                     </button>
                                 </div>
-                            </section>
-                        </div>
-                    )}
+                        </section>
+                    </div>
+                    )
+                )}
 
                     {!isMobile && type?.type !== "aluno" && (
                         <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
@@ -460,7 +462,7 @@ export function Overview() {
                                 isMobile={isMobile}
                             />
                             <OverviewCard
-                                title={"Aulas pendentes de aprovação"}
+                                title={"Aulas pendentes para aprovação"}
                                 subtitle={countAppointmentsPending ?? 0}
                                 titletbn={"Solicitações"}
                                 onClick={() => nav("/personal/check-schedule")}

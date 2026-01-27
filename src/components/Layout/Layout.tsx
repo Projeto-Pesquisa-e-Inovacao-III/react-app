@@ -82,7 +82,7 @@ export default function Layout() {
     return (
         <div>
             <>
-                {!isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} />}
                 {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                     <LogoHeaderMobile />
                 </div>}
