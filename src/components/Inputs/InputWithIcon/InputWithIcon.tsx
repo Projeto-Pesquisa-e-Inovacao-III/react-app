@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./style.css"
+import styles from "./InputWithIcon.module.css"
 import { Eye, EyeOff } from "lucide-react";
 
 type Props = {
@@ -20,16 +20,16 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
-        <div className="wrapper_inp" id={id}>
+        <div className={styles.wrapperInp} id={id}>
             {label &&
                 <label htmlFor={`${id}-input`}>{label}</label>
             }
             <div className="relative">
-                <div className="input-icon">{icon}</div>
+                <div className={styles.inputIcon}>{icon}</div>
                 <input
                     id={`${id}-input`}
                     type={isPassword && showPassword ? "text" : type}
-                    className={`${isPassword ? `password-input` : ``}`}
+                    className={isPassword ? styles.passwordInput : undefined}
                     placeholder={placeholder}
                     onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                     onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
@@ -41,7 +41,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="password-toggle"
+                        className={styles.passwordToggle}
                     >
                         {showPassword ? <EyeOff /> : <Eye />}
                     </button>

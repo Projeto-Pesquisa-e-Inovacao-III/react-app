@@ -15,6 +15,7 @@ import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import CheckScheduleKpis from "../../../components/CheckScheduleKpis/CheckScheduleKpis";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -203,6 +204,31 @@ export function CheckSchedule() {
             >
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
+
+                    <div className="grid grid-cols-4 w-full gap-5">
+
+                        <CheckScheduleKpis
+                            title="Total pendente"
+                            value={requests.length}
+                        />
+                        <CheckScheduleKpis
+                            title="Vence hoje"
+                            value={requests.length}
+                            color="#F59E0B"
+                        />
+                        <CheckScheduleKpis
+                            title="Reagendados hoje"
+                            value={requests.length}
+                            color="#006faf"
+                        />
+                        <CheckScheduleKpis
+                            title="Taxa de completude"
+                            value="85%"
+                        />
+
+                    </div>
+
+
                     <div className={styles.cardFilter}>
                         <CardFilterCheckSchedule
                             searchValue={filterSearch}

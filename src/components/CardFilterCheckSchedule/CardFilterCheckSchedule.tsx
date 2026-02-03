@@ -3,6 +3,7 @@ import Button from "../Button/Button";
 import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
 import { SearchBar } from "../SearchBar/SearchBar";
 import styles from "./CardFilterCheckSchedule.module.css"
+import Select from "../Select/Select";
 
 type FilterProps = {
     onSearchChange?: (filter: string) => void;
@@ -20,17 +21,26 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
             <div className={styles.cardFilter}>
                 <InputWithIcon
                     type="text"
-                    placeholder="Buscar..."
+                    placeholder="Buscar aluno..."
                     icon={<SearchIcon />}
                     value={searchValue}
                     onInputChange={onSearchChange}
                 />
-                <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
-                    <option value="" disabled>Selecione um status</option>
-                    <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
-                    <option value="APROVADO">Aprovado</option>
-                    <option value="CANCELADO_PERSONAL">Rejeitado</option>
-                </select>
+                <Select
+                    onSelectStatusChange={onSelectStatusChange}
+                    values={[
+                        { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
+                        { label: "Aprovado", value: "APROVADO" },
+                        { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
+                    ]}
+                />  
+
+                {/* // <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
+                //     <option value="" disabled>Todas as Solicitações</option>
+                //     <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
+                //     <option value="APROVADO">Aprovado</option>
+                //     <option value="CANCELADO_PERSONAL">Rejeitado</option>
+                // </select> */}
 
             </div>
             {hasFilters &&

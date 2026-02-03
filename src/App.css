@@ -50,6 +50,10 @@
     font-family: var(--font-bebas);
   }
 
+  .border-indigo {
+    border-color: var(--indigo);
+  }
+
   .gradient-white-with-blue-bar {
     background: #ffffff;
     background: -webkit-linear-gradient(90deg, rgba(255, 255, 255, 1) 97%, rgba(9, 58, 93, 1) 96%);

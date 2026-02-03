@@ -20,6 +20,7 @@ import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import TextWithoutPlan from "../../components/Overview/TextWithoutPlan";
 
 type ModalType = "success" | "error" | "newEvent";
 
@@ -350,7 +351,7 @@ export function Overview() {
                                 {/* todo: card if user dont have an active plan. */}
                                 {/* question: should i put this into a component? */}
                                 <section className="bg-indigo rounded-xl shadow-lg p-6 text-white relative overflow-hidden group w-full">
-                                    <div className="absolute right-0 top-0 text-white/10 group-hover:scale-110 transition-transform duration-500">
+                                    <div className="absolute right-0 top-0 text-white/10 transition-transform duration-500">
                                         <span className="material-icons-outlined text-9xl">
                                             <svg width="83" height="99" viewBox="0 0 83 99" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M30.5 49L42.75 39.75L55 49L50.5 33.75L62.75 24H47.5L42.75 9L38 24H22.75L35 33.75L30.5 49ZM85.5 29.25C85.5 5.75 66.25 -13.25 42.75 -13.25C19.25 -13.25 0 5.75 0 29.25C0 40.25 4.25 50 10.75 57.5V98.75L42.75 88L74.75 98.75V57.5C81.25 50 85.5 40.25 85.5 29.25ZM42.75 -2.75C60.5 -2.75 74.75 11.75 74.75 29.25C74.75 47 60.5 61.25 42.75 61.25C25 61.25 10.75 47 10.75 29.25C10.75 11.75 25 -2.75 42.75 -2.75ZM42.75 77.25L21.5 82.75V66.25C27.75 69.75 35 72 42.75 72C50.5 72 57.75 69.75 64 66.25V82.75L42.75 77.25Z" fill="white" fill-opacity="0.1" />
@@ -383,67 +384,28 @@ export function Overview() {
                             </div>
                         ) : (
                             <div className={styles.schedulePageUserActions}>
-                                <section className="bg-white dark:bg-card-dark rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                                    <div className="p-5 border-b border-slate-100 dark:border-slate-800">
-                                        <h3 className="font-bold text-lg">Saldo de aulas</h3>
-                                    </div>
-                                    <div className="p-10 flex flex-col items-center text-center space-y-4">
-                                        <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/20 rounded-full flex items-center justify-center text-orange-600">
-                                            <span className="material-symbols-outlined text-3xl"><Info /></span>
-                                        </div>
-                                        <div className="space-y-1">
-                                            <p className="font-bold text-slate-800 dark:text-slate-200">Nenhum saldo disponível</p>
-                                            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                                                Você precisa de um plano ativo para visualizar seu saldo de aulas e realizar agendamentos.
-                                            </p>
-                                        </div>
-                                        <button onClick={() => nav("/packages")} className="cursor-pointer text-indigo text-sm font-bold hover:underline flex items-center gap-1">
-                                            Como funciona?
-                                            <span className="material-symbols-outlined text-xs"><ArrowRight /></span>
-                                        </button>
-                                    </div>
-                                </section>
-
-                                <section className="bg-indigo rounded-xl shadow-xl p-8 text-white relative overflow-hidden group border border-white/10">
-                                    <div className="absolute right-0 bottom-0 text-white/10 group-hover:scale-110 transition-transform duration-700">
+                                <section className="bg-indigo rounded-xl shadow-xl p-8 h-3/4 text-white relative overflow-hidden group border border-white/10">
+                                    <div className="absolute right-0 bottom-0 text-white/10 transition-transform duration-700">
                                         <span className="material-symbols-outlined text-[12rem]">
                                             <svg width="129" height="135" viewBox="0 0 129 135" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M90.2383 158.117L79.0584 146.937L107.408 118.588L39.5292 50.7096L11.18 79.0588L0 67.8788L11.18 56.2996L0 45.1196L16.77 28.3496L5.58999 16.7704L16.77 5.59041L28.3492 16.7704L45.1192 0.000427246L56.2991 11.1804L67.8784 0.000427246L79.0584 11.1804L50.7092 39.5296L118.588 107.408L146.937 79.0588L158.117 90.2388L146.937 101.818L158.117 112.998L141.347 129.768L152.527 141.347L141.347 152.527L129.768 141.347L112.998 158.117L101.818 146.937L90.2383 158.117Z" fill="white" fill-opacity="0.1" />
                                             </svg>
                                         </span>
                                     </div>
-                                    <div className="relative z-10">
-                                        <div className="mb-6">
-                                            <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Vantagens Exclusivas</span>
-                                            <h3 className="text-3xl font-black leading-tight mb-3">Comece sua jornada hoje!</h3>
-                                            <p className="text-white/80 text-sm font-medium mb-6">Assine agora e tenha acesso imediato a uma estrutura completa para o seu treino.</p>
+                                    <div className="relative z-10 flex flex-col h-full justify-between">
+                                        <div>
+                                            <div className="mb-6">
+                                                <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Nenhum plano ativo</span>
+                                                <h3 className="text-4xl font-black leading-tight mb-3">Comece sua jornada hoje!</h3>
+                                                <p className="text-white/80 text-base font-medium mb-6">Assine agora e tenha acesso imediato a uma estrutura completa para o seu treino.</p>
+                                            </div>
+                                            <ul className="space-y-3 mb-8">
+                                                <TextWithoutPlan text="Plano de treino personalizado" />
+                                                <TextWithoutPlan text="Agendamentos de consultoria presencial" />
+                                                <TextWithoutPlan text="Consultoria online via Whatsapp" /> 
+                                                <TextWithoutPlan text="Contato direto com o personal" />
+                                            </ul>
                                         </div>
-                                        <ul className="space-y-3 mb-8">
-                                            <li className="flex items-center gap-3">
-                                                <div className="bg-white/20 p-1 rounded-full">
-                                                    <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
-                                                </div>
-                                                <span className="text-sm font-medium">Treino funcional personalizado</span>
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <div className="bg-white/20 p-1 rounded-full">
-                                                    <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
-                                                </div>
-                                                <span className="text-sm font-medium">Acompanhamento presencial</span>
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <div className="bg-white/20 p-1 rounded-full">
-                                                    <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
-                                                </div>
-                                                <span className="text-sm font-medium">Suporte via App exclusivo</span>
-                                            </li>
-                                            <li className="flex items-center gap-3">
-                                                <div className="bg-white/20 p-1 rounded-full">
-                                                    <span className="material-symbols-outlined text-sm leading-none"><Check /></span>
-                                                </div>
-                                                <span className="text-sm font-medium">Horários flexíveis</span>
-                                            </li>
-                                        </ul>
                                         <button className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform active:scale-95">
                                             Ver Opções de Planos
                                             <span className="material-symbols-outlined"><ShoppingBag /></span>

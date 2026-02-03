@@ -91,7 +91,7 @@
   background: #0a3a5c;
   color: white !important;
   border-radius: 50%;
-  padding: 5px 8px;
+  padding: 1px 8px;
 }
 
 .wrapperCalendar :global(.fc-daygrid-day:hover) {
@@ -138,7 +138,7 @@
 .fcTodayCustom :global(.fc-daygrid-day-frame) {
   color: #1e293b !important;
   background: #dadada !important;
-
+  cursor: default !important;
 }
 
 .fcTodayCustom:hover {

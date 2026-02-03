@@ -1,7 +1,10 @@
 .containerCardFilterCheckSchedule {
     display: flex;
     gap: 20px;
-
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    width: 100%;
 }
 
 .cardFilter {
@@ -9,8 +12,7 @@
     border-radius: 12px;
     gap: 15px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+
     min-width: 750px;
 }
 
