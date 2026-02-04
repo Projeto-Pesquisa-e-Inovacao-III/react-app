@@ -13,6 +13,16 @@ import { getUserPlansHistory } from "../../constants/products";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+type UserPlan = {
+  id: number;
+  dataCompra: string;
+  produtoExibicao: {
+    titulo: string;
+    subtitulo: string;
+  };
+};
+
+
 export default function PlansHistory() {
     const nav = useNavigate();
 
@@ -21,10 +31,12 @@ export default function PlansHistory() {
     }
 
 
-    const userPlans = useQuery({
+    const userPlans = useQuery<UserPlan[]>({
         queryKey: ['user-plans'],
-        queryFn: getUserPlansHistory,
-        select: (res) => res.data,
+        queryFn: async () => {
+            const response = await getUserPlansHistory();
+            return response.data;
+        },
     });
 
     const {
@@ -37,7 +49,7 @@ export default function PlansHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(userPlans.data, {
+    } = useSearchFilter(userPlans.data ?? [], {
         searchName: (item) => [item.produtoExibicao.titulo],
         dateFilter: (item) => item.dataCompra,
     });
@@ -72,13 +84,16 @@ export default function PlansHistory() {
             </div>
 
             {filteredData && filteredData.length > 0 ? (
-                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item, index) => (
+                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item) => (
                     <RowWithHeaderTitle 
-                        key={index}
+                        key={item.id}
                         data={[
-                            {headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
-                            title: item.produtoExibicao.titulo, 
-                            subtitle: item.produtoExibicao.subtitulo }
+                            {
+                                headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
+                                title: item.produtoExibicao.titulo, 
+                                subtitle: item.produtoExibicao.subtitulo,
+                                id: item.id
+                            }
                         ]} 
                         includeDetailsButton={true} 
                         buttonLabel="Ver Detalhes" 

@@ -24,7 +24,7 @@ type UserScheduleCardProps = {
 }
 
 export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, handleAcceptReschedule, isMobile }: UserScheduleCardProps) {
-    console.log("dataCardProps", data);
+    console.log("dataCardProps", finalHour);
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">

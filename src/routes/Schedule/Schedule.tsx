@@ -133,7 +133,8 @@ export default function Schedule() {
         queryFn: () => findUserAppointments(),
         refetchOnWindowFocus: false,
         select: (res) => {
-            return [...res.data].sort((a, b) => new Date(b.dataInicio) - new Date(a.dataInicio))
+            console.log("Fetched user appointments:", res.data);
+            return [...res.data].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
         }
     })
 
@@ -255,9 +256,9 @@ export default function Schedule() {
                                         data={event}
                                         isReschedule={true}
                                         additionalInfo={{ foto: event?.foto, nome: event?.nome }}
-                                        date={format(parseISO(event?.dataInicio), "d 'de' MMMM", { locale: ptBR })}
-                                        initialHour={format(parseISO(event?.dataInicio), "HH'h'mm")}
-                                        finalHour={format(parseISO(event?.dataFim), "HH'h'mm")}
+                                        date={format(parseISO(event?.data), "d 'de' MMMM", { locale: ptBR })}
+                                        initialHour={format(parseISO(event?.data), "HH'h'mm")}
+                                        finalHour={format(parseISO(event?.datafim), "HH'h'mm")}
                                         handleCancel={() => setOpenModal("cancel")}
                                         handleAcceptReschedule={() => setOpenModal("accept")}
                                         handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId, true)}
@@ -267,21 +268,18 @@ export default function Schedule() {
                             ))}
 
                             {userAppointments.data?.map((event, index) => (
-                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
-                                    <UserScheduleCard
-                                        data={event}
-                                        date={`${parse(event?.dataInicio, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event?.dataInicio), "MMMM", { locale: ptBR })}`}
-                                        initialHour={`${event?.dataInicio.replace(":", "h").split("T")[1].slice(0, 5)}`}
-                                        finalHour={`${event?.dataFim.replace(":", "h").split("T")[1].slice(0, 5)}`}
-                                        handleCancel={() => setOpenModal("cancel")}
-                                        handleReschedule={() => handleOpenRescheduleRequestModal(event?.agendamentoId)}
-                                        isMobile={isMobile}
-                                    />
-                                </div>
+                                    <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
+                                        <UserScheduleCard
+                                            data={event}
+                                            date={event?.data ? `${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event?.data), "MMMM", { locale: ptBR })}` : ""}
+                                            initialHour={event?.data ? event?.data.replace(":", "h").split("T")[1].slice(0, 5) : ""}
+                                            finalHour={event?.datafim ? event?.datafim.replace(":", "h").split("T")[1].slice(0, 5) : ""}
+                                            handleCancel={() => setOpenModal("cancel")}
+                                            handleReschedule={() => handleOpenRescheduleRequestModal(event?.agendamentoId)}
+                                            isMobile={isMobile}
+                                        />
+                                    </div>
                             ))}
-
-
-
                         </div>
                     </div>
                 </div>

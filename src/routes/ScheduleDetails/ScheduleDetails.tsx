@@ -10,7 +10,6 @@ import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import CheckScheduleModal from '../../components/Modal/CheckScheduleModal/CheckScheduleModal';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
@@ -92,7 +91,7 @@ export default function ScheduleDetails() {
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(async (res) => {
+        await refuseAppointment(id).then(async () => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });

@@ -171,8 +171,8 @@ export default function ForgotPassword() {
           </div>
         )}
         <div className={styles.forgotPassword}>
-          <div onClick={step != 1 ? (e) => handleStep(e, false) : undefined}>
-            <GoBackButton to={step == 1 ? '/login' : (e) => handleStep(e, true)} />
+          <div onClick={step != 1 ? (e: React.MouseEvent<HTMLElement>) => handleStep(e, false) : undefined}>
+            <GoBackButton to={step == 1 ? '/login' : undefined} />
           </div>
           <div className={classNames(styles.wrapperForgotPasswordElements, { [styles.wrapperForgotPasswordElementsMobile]: isMobile })}>
             {
