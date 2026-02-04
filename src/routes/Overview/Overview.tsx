@@ -371,7 +371,7 @@ export function Overview() {
                                                 <span className="font-bold">80%</span>
                                             </div>
                                             <div className="w-full bg-white/20 rounded-full h-1.5 overflow-hidden">
-                                                <div className="bg-white h-full w-[14%]"></div>
+                                                <div className="bg-white h-full w-[80%]"></div>
                                             </div>
                                         </div>
                                         <button className="text-indigo cursor-pointer w-full py-3 bg-white text-primary font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
