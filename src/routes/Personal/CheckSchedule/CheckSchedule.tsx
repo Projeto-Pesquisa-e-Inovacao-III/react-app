@@ -129,7 +129,7 @@ export function CheckSchedule() {
 
     async function handleSuccessReschedule() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-        await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         handleSuccessModal("Reagendamento Concluído", "O agendamento foi reagendado com sucesso.");
     }
@@ -138,7 +138,7 @@ export function CheckSchedule() {
         await acceptUserAppointment(id).then(async (res) => {
             console.log("Agendamento aceito:", res);
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
         }).catch((error) => {
@@ -149,7 +149,7 @@ export function CheckSchedule() {
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(async () => {
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
         }).catch((error) => {
@@ -166,7 +166,7 @@ export function CheckSchedule() {
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(async () => {
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
+            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
         }).catch((error) => {
@@ -176,8 +176,8 @@ export function CheckSchedule() {
 
     function handleConcludeAppointment(id: number) {
         concludeAppointment(id).then(async () => {
+            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.resetQueries({ queryKey: ["personalRequests"] });
             await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
         }).catch((error) => {

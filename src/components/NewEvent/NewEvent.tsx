@@ -211,7 +211,9 @@ export default function NewEvent(
                     await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
 
                     if (url.includes("/schedule")) {
-                        newAppointmentCreated && newAppointmentCreated(true);
+                        if (newAppointmentCreated) {
+                            newAppointmentCreated(true);
+                        }
                         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
                         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
                         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
@@ -323,8 +325,6 @@ export default function NewEvent(
             openModalExtern();
             return;
         }
-
-
 
     }
 

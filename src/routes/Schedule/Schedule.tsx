@@ -108,9 +108,7 @@ export default function Schedule() {
         await refuseAppointment(id).then(async () => {
             handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
             queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
-
-
+            queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
         }).catch((error) => {
             console.error("Erro ao cancelar o agendamento:", error);
             handleErrorModalInfo("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
@@ -195,6 +193,7 @@ export default function Schedule() {
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
             await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+            await queryClient.invalidateQueries({ queryKey: ['userAppointments'] });
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
             handleErrorModalInfo("Erro ao recusar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao recusar o agendamento.");
