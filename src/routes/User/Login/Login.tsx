@@ -1,17 +1,14 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
 import Swal from "sweetalert2";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
-import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
-import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
-import { useQueryClient } from "@tanstack/react-query";
 
 const initialLoginState = {
   email: "",
@@ -24,19 +21,14 @@ export default function Login() {
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const [successLogin, setSuccessLogin] = useState<boolean>(false);
   const nav = useNavigate();
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
 
-  const queryClient = useQueryClient();
   function navToHome() {
-    // queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-
     nav("/home");
-    setSuccessLogin(false);
     return;
   }
 

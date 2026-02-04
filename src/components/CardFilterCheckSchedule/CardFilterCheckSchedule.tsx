@@ -1,7 +1,6 @@
 import { SearchIcon } from "lucide-react";
 import Button from "../Button/Button";
 import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
-import { SearchBar } from "../SearchBar/SearchBar";
 import styles from "./CardFilterCheckSchedule.module.css"
 import Select from "../Select/Select";
 
@@ -15,25 +14,26 @@ type FilterProps = {
 }
 
 export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, searchValue, selectStatusValue, onClear, hasFilters }: FilterProps) {
-
+    console.log(selectStatusValue);
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
             <div className={styles.cardFilter}>
                 <InputWithIcon
                     type="text"
-                    placeholder="Buscar aluno..."
+                    placeholder="Buscar aluno"
                     icon={<SearchIcon />}
                     value={searchValue}
                     onInputChange={onSearchChange}
                 />
                 <Select
                     onSelectStatusChange={onSelectStatusChange}
+                    selectStatusValue={selectStatusValue}
                     values={[
                         { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
                         { label: "Aprovado", value: "APROVADO" },
                         { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
                     ]}
-                />  
+                />
 
                 {/* // <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
                 //     <option value="" disabled>Todas as Solicitações</option>
@@ -45,7 +45,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
             </div>
             {hasFilters &&
                 <div className={styles.divButtonFilter}>
-                    <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => { onClear && onClear() }} />
+                    <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => { onClear?.() }} />
                 </div>
             }
         </div>

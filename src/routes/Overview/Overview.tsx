@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, Calendar, CalendarCheck, PlusIcon, ForwardIcon, ArrowRight, Info, ShoppingBag, Check } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -182,7 +182,6 @@ export function Overview() {
         fetchAppointmentsCountToday();
     }, [type]);
 
-    const [clickedDate, setClickedDate] = useState<string>("");
     const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
     function handleErrorModalInfo(title: string, description: string) {
         setModalText({ title, description });
@@ -368,8 +367,8 @@ export function Overview() {
                                         </p>
                                         <div className="bg-white/10 backdrop-blur-md rounded-lg p-3 mb-6 border border-white/10">
                                             <div className="flex justify-between items-center text-sm mb-1">
-                                                <span>Progresso do período</span>
-                                                <span className="font-bold">14%</span>
+                                                <span>Progresso restante</span>
+                                                <span className="font-bold">80%</span>
                                             </div>
                                             <div className="w-full bg-white/20 rounded-full h-1.5 overflow-hidden">
                                                 <div className="bg-white h-full w-[14%]"></div>
@@ -448,7 +447,6 @@ export function Overview() {
                         insertedEvents={appointments.data?.data}
                         title="Agendar horário"
                         buttonTitle="Avançar"
-                        clickedDate={clickedDate}
                     />
                 </>
             )}

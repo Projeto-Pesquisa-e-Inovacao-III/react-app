@@ -1,5 +1,4 @@
 import { PackageCard } from "../../components/PackageCard/PackageCard";
-import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton";
 import classnames from "classnames";
@@ -36,7 +35,7 @@ export function Packages() {
 
     const isPersonal = type?.type === "personal";
 
-    function handleBuyClick(id: number, packageTitle: string) {
+    function handleBuyClick(id: number) {
         buyProductExhibition(id).then((response) => {
             const href: string = response.data.href
             window.location.href = href;
@@ -161,7 +160,7 @@ export function Packages() {
                             key={pacote.id! + pacote.titulo + index}
                             {...pacote}
                             descricao={safeParseDescricao(pacote.descricao)}
-                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
+                            onClick={() => handleBuyClick(pacote.id!)}
                             isMobile={isMobile}
                             isPersonal={isPersonal}
                             setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
@@ -193,7 +192,7 @@ export function Packages() {
                                 key={`adicional-${index}-` + pacote.id! + pacote.titulo}
                                 {...pacote}
                                 descricao={safeParseDescricao(pacote.descricao)}
-                                onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
+                                onClick={() => handleBuyClick(pacote.id!)}
                                 isMobile={isMobile}
                                 setHandleEdit={(e) => { handleUpdatePackage(pacote.id!, true) }}
                                 setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}

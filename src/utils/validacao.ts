@@ -10,7 +10,7 @@ export function isNullOrBlank(user: UserDTO): string{
     let response: string = ""
 
     Object.entries(user).slice(0).forEach(([field, value]) => {
-        if(value == null || isBlank(value))
+        if(value == null || (typeof value === 'string' && isBlank(value)))
             response += `${field} está vazio\n`
         }
     )

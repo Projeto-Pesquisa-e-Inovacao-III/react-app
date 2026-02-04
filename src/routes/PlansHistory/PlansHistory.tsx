@@ -4,14 +4,13 @@ import classNames from "classnames";
 
 import styles from "./PlansHistory.module.css";
 import SmallerButton from "../../components/SmallerButton";
-import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
 import { getUserPlansHistory } from "../../constants/products";
-import { format, parse, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 export default function PlansHistory() {

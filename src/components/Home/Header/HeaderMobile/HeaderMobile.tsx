@@ -37,11 +37,11 @@ export default function HeaderMobile() {
             {verify ? (
               <>
                 <Link to="/home" className=" bg-white text-black h-full rounded-md">Perfil</Link>
-                <Link to="/logout" className=" bg-white text-black h-full rounded-md">Logout</Link>
+                <Link to="/logout" className=" bg-white text-black h-full rounded-md">Sair</Link>
               </>
             ) : (
               <>
-                <Link to="/login" className="mt-5 h-full rounded-md">Login</Link>
+                <Link to="/login" className="mt-5 h-full rounded-md">Entrar</Link>
                 <Link to="/register" className=" bg-white text-black h-full rounded-md">Cadastro</Link>
               </>
             )}

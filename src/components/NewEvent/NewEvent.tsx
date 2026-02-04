@@ -47,8 +47,6 @@ type AddressState = {
     complement: string;
 };
 
-type modalTypes = "error" | null;
-
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {

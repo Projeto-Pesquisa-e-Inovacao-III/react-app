@@ -124,7 +124,7 @@ export function CheckSchedule() {
             const date = parseISO(searchParams.get("date") || "");
             setFilterSearch(format(date, "dd/MM/yyyy", { locale: ptBR }));
         }
-    }, []);
+    }, [searchParams, setFilterSearch]);
 
 
     async function handleSuccessReschedule() {
@@ -242,10 +242,9 @@ export function CheckSchedule() {
                 </div>
 
                 <div className={styles.cardsCheckSchedule}>
-                    {requests.map(card => (
+                    {filteredData.map(card => (
                         <CardCheckSchedule
                             key={card.agendamentoId}
-                            id={card.agendamentoId}
                             cardData={card}
                             RescheduleClick={() => {
                                 setClickedDate(card.dataInicio?.split("T")[0] || "");
@@ -278,7 +277,7 @@ export function CheckSchedule() {
                         clickedDate={clickedDate}
                         goToNextStep={false}
                         appoitmentData={appointment.data}
-                        typeUser={type}
+                        typeUser={type ?? undefined}
 
                     />
                 </>

@@ -3,7 +3,6 @@ import { Lock, Mail, Phone, User, IdCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import styles from "./Register.module.css";
-import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
@@ -62,18 +61,16 @@ export default function Register() {
             phone: "(11) 91234-5678",
             gender: "Masculino",
             confirmPassword: "123456789aA!",
-            birthDate: dayjs("01-01-2000") as any
+            birthDate: dayjs("01-01-2000").format("DD-MM-YYYY").toString()
         });
     }
 
-    const handleChange = (field: string, value: any) => {
+    const handleChange = (field: string, value: string) => {
         setRegister(prev => ({ ...prev, [field]: value }));
     };
 
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
-        let errors = "";
 
         const userData: UserDTO = {
             nome: register.name,
@@ -99,7 +96,7 @@ export default function Register() {
         const nullOrBlank = validation.isNullOrBlank(userData);
 
         if (nullOrBlank) {
-            setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos"});
+            setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos" });
             setOpenModal("error");
             return;
         } else if (!validation.validateEmail(register.email).startsWith("Email válido")) {
@@ -112,7 +109,7 @@ export default function Register() {
             setOpenModal("error");
             return;
         } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
-            setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais."});
+            setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
             setOpenModal("error");
             return;
         }
@@ -120,13 +117,11 @@ export default function Register() {
 
         userService
             .register(userData)
-            .then(async (res) => {
+            .then(async () => {
                 setOpenModal("success");
 
                 setTimeout(() => {
-                    if (successRegister) {
-                        navigate("/login");
-                    }
+                    navigate("/login");
                 }, 4000);
 
             })
@@ -183,7 +178,7 @@ export default function Register() {
                                                         field: { openPickerButtonPosition: 'start' },
                                                     }}
                                                     value={dayjs(register.birthDate)}
-                                                    onChange={(date) => handleChange('birthDate', date)}
+                                                    onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("DD-MM-YYYY").toString() : "")}
                                                 />
                                             </DemoContainer>
                                         </LocalizationProvider>

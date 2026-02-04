@@ -4,7 +4,6 @@ import { Lock, Phone } from "lucide-react";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
-import CodeStep from "./CodeStep/CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import classNames from "classnames";

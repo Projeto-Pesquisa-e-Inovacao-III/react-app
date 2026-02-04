@@ -1,5 +1,5 @@
 import { ChevronDown, Search, Square, SquareCheck } from 'lucide-react';
-import {useState } from 'react'
+import { useState } from 'react'
 import InputWithIcon from '../Inputs/InputWithIcon/InputWithIcon';
 
 type Props = {
@@ -16,51 +16,64 @@ export default function Select({ onSelectStatusChange, selectStatusValue, values
 
     const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
+    const [selectValue, setSelectValue] = useState<string>("");
     return (
         <div className='h-full'>
             <div className='h-full'>
                 <span className='border border-[#ccc] cursor-pointer rounded-sm h-full flex items-center px-4' onClick={() => setIsOpen(!isOpen)} >
-                    {selectPlaceholder || selectStatusValue}
+                    {selectPlaceholder || (selectStatusValue === "" ? "Selecionar todos" : selectValue) || "Selecionar status"}
                     <ChevronDown className={`inline-block ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} size={16} />
                 </span>
             </div>
             {isOpen && (
                 <>
-                    <div className='absolute mt-3 bg-white rounded-lg' >
+                    <div className='absolute mt-1 bg-white rounded-lg' >
                         <InputWithIcon
                             icon={<Search size={16} />}
                             placeholder='O que você procura?'
                             value={textSearch}
-                            onInputChange={(e) => setTextSearch(e.target.value)}
+                            onInputChange={setTextSearch}
                             type='text'
                         />
                         <div className='bg-white border-[#ccc] border p-2 flex flex-col gap-2 max-h-60 overflow-y-auto'>
-                            <span className='px-1 gap-2 flex items-center'
+                            <span className='px-1 gap-2 flex items-center cursor-pointer'
                                 onMouseEnter={() => setHoveredOption("")}
                                 onMouseLeave={() => setHoveredOption(null)}
                                 onClick={() => onSelectStatusChange && onSelectStatusChange("")}>
-                                {hoveredOption ?
-                                    <SquareCheck color='#093A5D' />
-                                    :
-                                    <Square className='border-indigo' color='#093A5D' />
+                                {selectStatusValue !== "" &&
+                                    (hoveredOption === "" ?
+                                        <SquareCheck color='#093A5D' />
+                                        :
+                                        <Square className='border-indigo' color='#093A5D' />
+                                    )
                                 }
+                                {selectStatusValue === "" && <SquareCheck color='#093A5D' />}
+     
                                 {selectPlaceholder || "Selecionar todos"}
                             </span>
                             {values && values.map((option) => (
-                                <span className='px-1 gap-2 flex items-center'
+                                (textSearch === "" || option.label.toLowerCase().includes(textSearch.toLowerCase())) && (
+                                <span className='px-1 gap-2 flex items-center cursor-pointer'
                                     key={option.value}
                                     onMouseEnter={() => setHoveredOption(option.value)}
                                     onMouseLeave={() => setHoveredOption(null)}
-                                    onClick={() => onSelectStatusChange && onSelectStatusChange(option.value)}>
-                                    {hoveredOption === option.value ?
-                                        <SquareCheck color='#093A5D' />
-
-                                        :
-                                        <Square className='border-indigo' color='#093A5D' />
-
+                                    onClick={() => {
+                                        setSelectValue(option.label);
+                                        if (onSelectStatusChange) {
+                                            onSelectStatusChange(option.value);
+                                        }
+                                    }}>
+                                    {selectStatusValue !== option.value &&
+                                        (hoveredOption === option.value ?
+                                            <SquareCheck color='#093A5D' />
+                                            :
+                                            <Square className='border-indigo' color='#093A5D' />
+                                        )
                                     }
+                                    {selectStatusValue === option.value && <SquareCheck color='#093A5D' />}
                                     {option.label}
                                 </span>
+                                )
                             ))}
                         </div>
                     </div>

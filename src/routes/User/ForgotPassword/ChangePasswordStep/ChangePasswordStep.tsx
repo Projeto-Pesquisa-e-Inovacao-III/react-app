@@ -1,9 +1,7 @@
-import { use, useEffect, useState } from "react";
 import styles from "../ForgotPassword.module.css";
-import { Lock, Mail, Phone } from "lucide-react";
+import { Lock } from "lucide-react";
 import InputWithIcon from "../../../../components/Inputs/InputWithIcon/InputWithIcon";
-import { validatePassword } from "../../../../utils/validacao";
-import { changePassword, forgotPassword } from "../../../../constants/user";
+
 
 type ChangePasswordStepProps = {
     setNewPassword: React.Dispatch<React.SetStateAction<string>>;
@@ -21,8 +19,8 @@ export default function ChangePasswordStep({ setNewPassword, setConfirmPassword 
       </div>
       <div className={styles.wrapperInputsForgotPasswordPage}>
         <form action="">
-          <InputWithIcon type={"password"} placeholder={"Nova senha"} icon={<Lock />} isPassword={true} onInputChange={(value) => setNewPassword(value)} />
-          <InputWithIcon type={"password"} placeholder={"Confirme a senha nova"} icon={<Lock />} isPassword={true} onInputChange={(value) => setConfirmPassword(value)} />
+          <InputWithIcon type={"password"} placeholder={"Nova senha"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setNewPassword(value)} />
+          <InputWithIcon type={"password"} placeholder={"Confirme a senha nova"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setConfirmPassword(value)} />
         </form>
       </div>
     </>
