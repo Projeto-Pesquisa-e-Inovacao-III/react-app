@@ -11,15 +11,25 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
+import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
+
+type RescheduleAppointment = {
+    agendamentoId: number;
+    status: string;
+    dataInicio: string;
+    dataFim: string;
+    nome?: string;
+    foto?: string;
+};
 
 export default function Schedule() {
     const isMobile = useMobile();
@@ -138,39 +148,21 @@ export default function Schedule() {
         }
     })
 
-    // jesus
-    const userRescheduleAppointments = useQuery({
+    const {
+        data: userRescheduleAppointments,
+        loadMoreRef,
+    } = useInfinitePagination<RescheduleAppointment>({
         queryKey: ["userRescheduleAppointments"],
-        queryFn: async () => {
-            let allContent = [];
-            let page = 0;
-            let totalPages = 1;
-
-            while (page < totalPages) {
-                const response = await findPersonalRequests(page);
-                const content = response.data?.content || [];
-                allContent = [...allContent, ...content];
-
-                totalPages = response.data?.page?.totalPages || 1;
-                page++;
-            }
-
-            return allContent;
-        },
-        select: (data) => {
-            if (type?.type === "aluno") {
-                return data.filter(
-                    appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
-                );
-            }
-
-            return data
-        },
-        refetchOnWindowFocus: false,
-        retry: false,
+        queryFn: (page) => findPersonalRequests(page),
     });
 
-    const appointmentsUser = userRescheduleAppointments.data;
+    const appointmentsUser: RescheduleAppointment[] =
+        type?.type === "aluno"
+            ? userRescheduleAppointments.filter(
+                appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
+            )
+            : userRescheduleAppointments;
+
     console.log("appointmentsUser", appointmentsUser);
 
     //todo:
@@ -250,35 +242,40 @@ export default function Schedule() {
                                     handleButtonClick={() => handleOpenNewEventModal()} />
                             </div>
 
-                            {appointmentsUser?.map(event => (
-                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={event.agendamentoId}>
+                            {appointmentsUser.map(event => {
+                                return (
+                                    <>
+                                        <div onClick={() => setSelectedEventId(event.agendamentoId)} key={event.agendamentoId}>
+                                            <UserScheduleCard
+                                                data={event}
+                                                isReschedule={true}
+                                                additionalInfo={{ foto: event?.foto, nome: event?.nome }}
+                                                date={format(parseISO(event.dataInicio), "d 'de' MMMM", { locale: ptBR })}
+                                                initialHour={format(parseISO(event.dataInicio), "HH'h'mm")}
+                                                finalHour={format(parseISO(event.dataFim), "HH'h'mm")}
+                                                handleCancel={() => setOpenModal("cancel")}
+                                                handleAcceptReschedule={() => setOpenModal("accept")}
+                                                handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId, true)}
+                                                isMobile={isMobile}
+                                            />
+                                        </div>
+                                        <div ref={loadMoreRef} />
+                                    </>
+                                );
+                            })}
+
+                            {userAppointments.data?.map((event, index) => (
+                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
                                     <UserScheduleCard
                                         data={event}
-                                        isReschedule={true}
-                                        additionalInfo={{ foto: event?.foto, nome: event?.nome }}
-                                        date={format(parseISO(event?.data), "d 'de' MMMM", { locale: ptBR })}
-                                        initialHour={format(parseISO(event?.data), "HH'h'mm")}
-                                        finalHour={format(parseISO(event?.datafim), "HH'h'mm")}
+                                        date={event?.data ? `${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event?.data), "MMMM", { locale: ptBR })}` : ""}
+                                        initialHour={event?.data ? event?.data.replace(":", "h").split("T")[1].slice(0, 5) : ""}
+                                        finalHour={event?.datafim ? event?.datafim.replace(":", "h").split("T")[1].slice(0, 5) : ""}
                                         handleCancel={() => setOpenModal("cancel")}
-                                        handleAcceptReschedule={() => setOpenModal("accept")}
-                                        handleReschedule={() => handleOpenRescheduleRequestModal(event.agendamentoId, true)}
+                                        handleReschedule={() => handleOpenRescheduleRequestModal(event?.agendamentoId)}
                                         isMobile={isMobile}
                                     />
                                 </div>
-                            ))}
-
-                            {userAppointments.data?.map((event, index) => (
-                                    <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
-                                        <UserScheduleCard
-                                            data={event}
-                                            date={event?.data ? `${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event?.data), "MMMM", { locale: ptBR })}` : ""}
-                                            initialHour={event?.data ? event?.data.replace(":", "h").split("T")[1].slice(0, 5) : ""}
-                                            finalHour={event?.datafim ? event?.datafim.replace(":", "h").split("T")[1].slice(0, 5) : ""}
-                                            handleCancel={() => setOpenModal("cancel")}
-                                            handleReschedule={() => handleOpenRescheduleRequestModal(event?.agendamentoId)}
-                                            isMobile={isMobile}
-                                        />
-                                    </div>
                             ))}
                         </div>
                     </div>
