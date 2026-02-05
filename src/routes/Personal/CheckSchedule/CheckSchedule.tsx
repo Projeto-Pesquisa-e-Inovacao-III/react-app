@@ -1,5 +1,5 @@
-import { CardCheckSchedule } from "../../../components/CardCheckSchedule/CardCheckSchedule";
-import { CardFilterCheckSchedule } from "../../../components/CardFilterCheckSchedule/CardFilterCheckSchedule";
+import { CardCheckSchedule } from "../../../components/CheckSchedule/CardCheckSchedule/CardCheckSchedule";
+import { CardFilterCheckSchedule } from "../../../components/CheckSchedule/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import styles from "./CheckSchedule.module.css"
 import { useContext, useEffect, useRef, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
@@ -15,7 +15,11 @@ import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import CheckScheduleKpis from "../../../components/CheckScheduleKpis/CheckScheduleKpis";
+import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
+import { Calendar, CalendarCheck, CalendarClock, CircleCheck, CircleX } from "lucide-react";
+import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
+import TableRow from "../../../components/CheckSchedule/Table/TableRow";
+import StatusSchedule from "../../../components/StatusSchedule/StatusSchedule";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -112,7 +116,7 @@ export function CheckSchedule() {
         clearFilters
     } = useSearchFilter(requests, {
         searchStatus: item => item.status,
-        searchName: item => [item.nome, format(item.dataInicio, "dd/MM/yyyy")],
+        searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
     });
 
 
@@ -235,13 +239,15 @@ export function CheckSchedule() {
                             onSearchChange={setFilterSearch}
                             selectStatusValue={filterStatus}
                             onSelectStatusChange={setFilterStatus}
+                            selectTypeAulaValue={filterSearch}
+                            onSelectTypeAulaChange={setFilterSearch}
                             onClear={clearFilters}
                             hasFilters={hasFilters}
                         />
                     </div>
                 </div>
 
-                <div className={styles.cardsCheckSchedule}>
+                {/* <div className={styles.cardsCheckSchedule}>
                     {filteredData.map(card => (
                         <CardCheckSchedule
                             key={card.agendamentoId}
@@ -257,9 +263,59 @@ export function CheckSchedule() {
                         />
                     ))}
                     <div ref={loadMoreRef} style={{ height: "1px" }} />
+                </div>*/}
+
+                <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm w-full">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-slate-50 dark:bg-[#192633] border-b border-slate-200 dark:border-[#324d67]">
+                                    <TableHeader title="Status" />
+                                    <TableHeader title="Aluno" />
+                                    <TableHeader title="Data" />
+                                    <TableHeader title="Tipo de agendamento" />
+                                    <TableHeader title="Ações" />
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 dark:divide-[#324d67]">
+                                {filteredData.map(card => (
+                                    <tr className="transition-colors group">
+                                        <td className="px-6 py-4">
+                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                                                {card.status === "CONCLUIDO" && "Agendamento concluído"}
+                                                {card.status === "student_pending" && "Pendente resposta do aluno"}
+                                                {card.status === "PENDENTE_PERSONAL_APROVACAO" && "Pendente resposta do personal"}
+                                                {card.status === "PENDENTE_CLIENTE_APROVACAO" && "Pendente resposta do aluno"}
+                                                {card.status === "APROVADO" && "Pendente (aula)"}
+                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && "Pendente (conclusão)"}
+                                                {card.status === "CANCELADO_PERSONAL" && "Cancelado pelo personal"}
+                                                {card.status === "CANCELADO_CLIENTE" && "Cancelado pelo cliente"}
+                                                {card.status === "AUSENCIA_CLIENTE" && "Ausência (cliente)"}
+                                                {card.status === "AUSENCIA_PERSONAL" && "Ausência (personal)"}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                {/* <div className="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Client John Doe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAfHv68KBe-qLlaeFS2kPIeLtswk1es_nWFt6M85nfrkmDptfdp4wWAID1-reBpAFDEAXnBkAZG25gffeTvpC83zXyhLacPDwd-DBXb7d2xU2_4qweEGFoQlW2NS6_sqOdM6xFvSEm0d1kU8zcXD85krZI92f2jI1h4nFW8MLyMMvbYgsPQlgF_d-oploV7G1CboVNZunG_Q27KzcBNhBDI-mYn23iLFJRStSeEv5SxJjIN7tg3cRu_2hzlHjvF10gSb1gDENT5JIU");'></div> */}
+                                                <span className="text-sm font-semibold text-slate-900">{card.nome}</span>
+                                            </div>
+                                        </td>
+                                        <TableRow text={format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} />
+                                        <TableRow text={card.tipoAula} />
+                                        <td className="px-6 py-4 text-right">
+                                            <div className="flex justify-between gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                <CircleCheck className="text-green-500" />
+                                                <CircleX className="text-red-500" />
+                                                <CalendarClock className="text-blue-500" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
 
             {isFetchingNextPage && <p>Carregando mais...</p>}
             {openModal === "reschedule" && (
