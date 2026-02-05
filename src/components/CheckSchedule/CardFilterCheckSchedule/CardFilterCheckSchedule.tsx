@@ -27,7 +27,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     type="text"
                     placeholder="Buscar aluno"
                     icon={<SearchIcon />}
-                    value={searchValue}
+                    value={"" || searchValue}
                     onInputChange={onSearchChange}
                 />
                 <Select

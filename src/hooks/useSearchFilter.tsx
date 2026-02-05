@@ -6,13 +6,16 @@ export default function useSearchFilter<T>(
     filterConfig?: {
         searchStatus?: (item: T) => string;
         searchName?: (item: T) => string[];
+        searchType?: (item: T) => string;
         dateFilter?: (item: T) => string;
     }) {
 
     const [filterStatus, setFilterStatus] = useState<string>("");
     const [filterSearch, setFilterSearch] = useState<string>("");
+
     const [filterInitialDate, setFilterInitialDate] = useState<string>("");
     const [filterFinalDate, setFilterFinalDate] = useState<string>("");
+
 
     const filteredData = useMemo(() => {
         if (!data) return [];

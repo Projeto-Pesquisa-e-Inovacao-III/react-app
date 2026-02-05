@@ -117,6 +117,7 @@ export function CheckSchedule() {
     } = useSearchFilter(requests, {
         searchStatus: item => item.status,
         searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
+        searchType: item => item.tipoAula,
     });
 
 
@@ -235,7 +236,6 @@ export function CheckSchedule() {
 
                     <div className={styles.cardFilter}>
                         <CardFilterCheckSchedule
-                            searchValue={filterSearch}
                             onSearchChange={setFilterSearch}
                             selectStatusValue={filterStatus}
                             onSelectStatusChange={setFilterStatus}
@@ -265,7 +265,7 @@ export function CheckSchedule() {
                     <div ref={loadMoreRef} style={{ height: "1px" }} />
                 </div>*/}
 
-                <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm w-full">
+                <div className="rounded-lg border border-slate-200 bg-white shadow-sm w-full z-10">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>

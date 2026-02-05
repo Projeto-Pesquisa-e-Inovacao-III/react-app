@@ -34,12 +34,17 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
             }
         }
 
-        document.addEventListener("mousedown", handleClickOutside);
+        if (isOpen) {
+            // Pequeno delay para evitar que o clique que abriu o select feche ele
+            setTimeout(() => {
+                document.addEventListener("mousedown", handleClickOutside);
+            }, 0);
+        }
 
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []);
+    }, [isOpen, setOpenSelectId]);
 
     return (
         <div ref={selectRef} className='relative h-full'>
@@ -50,7 +55,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
                 </span>
             </div>
             {isOpen && (
-                <div className='absolute mt-1 bg-white rounded-lg z-10' >
+                <div className='absolute mt-1 bg-white rounded-lg z-50' >
                     <InputWithIcon
                         icon={<Search size={16} />}
                         placeholder='O que você procura?'
