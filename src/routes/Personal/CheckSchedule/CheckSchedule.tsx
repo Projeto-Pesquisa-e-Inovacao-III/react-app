@@ -1,4 +1,3 @@
-import { CardCheckSchedule } from "../../../components/CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CheckSchedule/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import styles from "./CheckSchedule.module.css"
 import { useContext, useEffect, useRef, useState } from "react";
@@ -16,10 +15,9 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { Calendar, CalendarCheck, CalendarClock, CircleCheck, CircleX } from "lucide-react";
+import { CalendarClock, CircleCheck, CircleX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import TableRow from "../../../components/CheckSchedule/Table/TableRow";
-import StatusSchedule from "../../../components/StatusSchedule/StatusSchedule";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -210,7 +208,7 @@ export function CheckSchedule() {
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
 
-                    <div className="grid grid-cols-4 w-full gap-5">
+                    <div className="grid grid-cols-4 w-full gap-5 flex-wrap">
 
                         <CheckScheduleKpis
                             title="Total pendente"
@@ -274,6 +272,7 @@ export function CheckSchedule() {
                                     <TableHeader title="Aluno" />
                                     <TableHeader title="Data" />
                                     <TableHeader title="Tipo de agendamento" />
+                                    <TableHeader title="Endereço" />
                                     <TableHeader title="Ações" />
                                 </tr>
                             </thead>
@@ -281,12 +280,12 @@ export function CheckSchedule() {
                                 {filteredData.map(card => (
                                     <tr className="transition-colors group">
                                         <td className="px-6 py-4">
-                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-300/30 text-amber-700 dark:text-amber-700 border border-amber-200 dark:border-amber-800/50">
                                                 {card.status === "CONCLUIDO" && "Agendamento concluído"}
                                                 {card.status === "student_pending" && "Pendente resposta do aluno"}
                                                 {card.status === "PENDENTE_PERSONAL_APROVACAO" && "Pendente resposta do personal"}
                                                 {card.status === "PENDENTE_CLIENTE_APROVACAO" && "Pendente resposta do aluno"}
-                                                {card.status === "APROVADO" && "Pendente (aula)"}
+                                                {card.status === "APROVADO" && "Aprovado"}
                                                 {card.status === "PENDENTE_PERSONAL_CONCLUIR" && "Pendente (conclusão)"}
                                                 {card.status === "CANCELADO_PERSONAL" && "Cancelado pelo personal"}
                                                 {card.status === "CANCELADO_CLIENTE" && "Cancelado pelo cliente"}
@@ -302,11 +301,25 @@ export function CheckSchedule() {
                                         </td>
                                         <TableRow text={format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} />
                                         <TableRow text={card.tipoAula} />
+                                        <TableRow text={card.endereco.cep.logradouro + ", " + card.endereco.numero + " - " + card.endereco.cep.bairro} />
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-between gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                                                <CircleCheck className="text-green-500" />
-                                                <CircleX className="text-red-500" />
-                                                <CalendarClock className="text-blue-500" />
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    handleModal(card.agendamentoId, "accept")
+                                                }}>
+                                                    <CircleCheck className="text-green-500" />
+                                                </button>
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    handleModal(card.agendamentoId, "decline")
+                                                }}>
+                                                    <CircleX className="text-red-500" />
+                                                </button>
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                    handleModal(card.agendamentoId, "reschedule");
+                                                }}>
+                                                    <CalendarClock className="text-blue-500" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
