@@ -15,11 +15,12 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CircleCheck, CircleX, PersonStanding, UserRound } from "lucide-react";
+import { CalendarClock, CircleCheck, CircleX, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import TableRow from "../../../components/CheckSchedule/Table/TableRow";
 import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
+import { statusProperties } from "./CardStatus/cardStatus";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -265,19 +266,10 @@ export function CheckSchedule() {
                             </thead>
                             <tbody className="divide-y divide-[#324d67]">
                                 {filteredData.length !== 0 && filteredData.map(card => (
-                                    <tr className="transition-colors group">
+                                    <tr className="border border-gray-300">
                                         <td className="px-6 py-4">
-                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-300/30 text-amber-700 700 border border-amber-500">
-                                                {card.status === "CONCLUIDO" && "Agendamento concluído"}
-                                                {card.status === "student_pending" && "Pendente resposta do aluno"}
-                                                {card.status === "PENDENTE_PERSONAL_APROVACAO" && "Pendente resposta do personal"}
-                                                {card.status === "PENDENTE_CLIENTE_APROVACAO" && "Pendente resposta do aluno"}
-                                                {card.status === "APROVADO" && "Aprovado"}
-                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && "Pendente (conclusão)"}
-                                                {card.status === "CANCELADO_PERSONAL" && "Cancelado pelo personal"}
-                                                {card.status === "CANCELADO_CLIENTE" && "Cancelado pelo cliente"}
-                                                {card.status === "AUSENCIA_CLIENTE" && "Ausência (cliente)"}
-                                                {card.status === "AUSENCIA_PERSONAL" && "Ausência (personal)"}
+                                            <span className={`flex w-full h-12 justify-center text-center items-center px-2.5 py-0.5 rounded-full text-sm font-semibold ${statusProperties.find(status => status.cardStatus === card.status)?.cardColor}`}>
+                                                {statusProperties.find(status => status.cardStatus === card.status)?.cardDescription}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">

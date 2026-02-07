@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
-import { OverviewCard } from "../../components/OverviewCard/OverviewCard";
+import { OverviewCard } from "../../components/Overview/OverviewCard/OverviewCard";
 import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
 import { useNavigate } from "react-router-dom";
 import { TypeContext } from "../../App";
@@ -14,13 +14,14 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import TextWithoutPlan from "../../components/Overview/TextWithoutPlan";
+import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPersonal/OverviewCardPersonal";
 
 type ModalType = "success" | "error" | "newEvent";
 
@@ -417,17 +418,20 @@ export function Overview() {
 
                     {!isMobile && type?.type !== "aluno" && (
                         <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
-                            <OverviewCard
+                            <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? 0}
+                                icon={<CalendarCheck color="#0a3557"/>}
+                                iconColor=""
                                 titletbn={"Agendamentos"}
                                 onClick={() => nav("/schedule")}
                                 isMobile={isMobile}
                             />
-                            <OverviewCard
+                            <OverviewCardPersonal
                                 title={"Aulas pendentes para aprovação"}
                                 subtitle={countAppointmentsPending ?? 0}
                                 titletbn={"Solicitações"}
+                                icon={<ClipboardClock color="#0a3557"/>}
                                 onClick={() => nav("/personal/check-schedule")}
                                 isMobile={isMobile}
                             />
