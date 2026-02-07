@@ -1,18 +1,22 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
 type PaginatedResponse<T> = {
-    data: T[];
-    page: number;
-    nextPage?: number;
-    totalPages: number;
+    content: T[];
+    page: {
+        size: number;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+    };
 };
 
 
 type UseInfinitePaginationProps<T> = {
     queryKey: unknown[];
-    queryFn: (page: number) => Promise<{ data: PaginatedResponse<T> }>;
-    getNextPageParam?: (lastPage: { data: PaginatedResponse<T> },
-        allPages: { data: PaginatedResponse<T> }[]
+    queryFn: (page: number) => Promise<PaginatedResponse<T>>;
+    getNextPageParam?: (
+        lastPage: PaginatedResponse<T>,
+        allPages: PaginatedResponse<T>[]
     ) => number | undefined;
 };
 
@@ -28,7 +32,11 @@ export function useInfinitePagination<T>(
         initialPageParam: 0,
         getNextPageParam:
             getNextPageParam ??
-            ((lastPage) => lastPage.nextPage ?? undefined),
+            ((lastPage) => {
+                const currentPage = lastPage.page.number;
+                const totalPages = lastPage.page.totalPages;
+                return currentPage + 1 < totalPages ? currentPage + 1 : undefined;
+            }),
     });
 
     useEffect(() => {
@@ -50,6 +58,6 @@ export function useInfinitePagination<T>(
     return {
         ...query,
         loadMoreRef,
-        data: query.data?.pages.flatMap(page => page.data) ?? [],
+        data: query.data?.pages.flatMap(page => page.content) ?? [],
     }
 }

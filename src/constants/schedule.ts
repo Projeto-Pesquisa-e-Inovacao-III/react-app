@@ -1,4 +1,4 @@
-import type { Schedule, ScheduleReschedule } from "../models/schedule";
+import type { AbsenceAppointment, Schedule, ScheduleReschedule } from "../models/schedule";
 import { api } from "../system";
 
 export function insertAppointment(data: Schedule) {
@@ -21,11 +21,7 @@ export async function acceptUserAppointment(id: number) {
     return await api.put(`/agendamentos/${id}/aprovar`);
 }
 
-export async function reportAbsenceStudent(data: any) {
-    return await api.put("/agendamentos/relatar-ausencia/aluno", data);
-}
-
-export function reportAbsencePersonal(data: any) {
+export function reportAbsencePersonal(data: AbsenceAppointment) {
     return api.put("/agendamentos/ausencia", data);
 }
 
@@ -39,14 +35,7 @@ export function findUserAppointments() {
 
 export async function findPersonalRequests(pageParam = 1) {
     const size = 10;
-    const response = await api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
-    console.log(response.data);
-    return {
-        data: response.data.content,
-        nextPage: pageParam + 1,
-        totalPages: response.data.page.totalPages,
-        page: pageParam,
-    };
+    return api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
 }
 
 export function findUserRescheduleRequests() {

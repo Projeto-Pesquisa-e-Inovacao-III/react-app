@@ -22,13 +22,23 @@ import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
-type RescheduleAppointment = {
+export type RescheduleAppointment = {
     agendamentoId: number;
     status: string;
     dataInicio: string;
     dataFim: string;
-    nome?: string;
-    foto?: string;
+    nome: string;
+    foto: string;
+    endereco: {
+        cep: {
+            bairro: string
+            id: string
+            localidade: string
+            logradouro: string
+            uf: string
+        };
+        numero: string
+    }
 };
 
 export default function Schedule() {
@@ -151,8 +161,10 @@ export default function Schedule() {
         loadMoreRef,
     } = useInfinitePagination<RescheduleAppointment>({
         queryKey: ["userRescheduleAppointments"],
-        queryFn: (page) => findPersonalRequests(page),
+        queryFn: (page) => findPersonalRequests(page).then(res => res.data)
     });
+
+    console.log("userRescheduleAppointments", userRescheduleAppointments);
 
     const appointmentsUser: RescheduleAppointment[] =
         type?.type === "aluno"

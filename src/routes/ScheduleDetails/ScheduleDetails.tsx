@@ -15,6 +15,7 @@ import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
 import NewEvent from '../../components/NewEvent/NewEvent';
 import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
+import type { AbsenceAppointment } from '../../models/schedule';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
@@ -113,11 +114,12 @@ export default function ScheduleDetails() {
     }
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
-        const payload = {
+        const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? null : data.description
+            descricaoCancelamento: data.description === "" ? "" : data.description
         };
+        
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(async () => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");

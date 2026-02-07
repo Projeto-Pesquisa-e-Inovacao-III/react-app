@@ -2,7 +2,7 @@ import classNames from "classnames";
 import Button from "../../Button/Button";
 import StatusSchedule from "../../StatusSchedule/StatusSchedule";
 import styles from "./CardCheckSchedule.module.css";
-import { format, parse, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 
 export type dataCardProps = {
@@ -12,6 +12,7 @@ export type dataCardProps = {
     idade?: number;
     tipo?: string;
     local?: string;
+    agendamentoStatus?: string;
     telefone?: {
         ddd: string;
         numero: string;

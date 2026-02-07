@@ -19,7 +19,6 @@ type FilterProps = {
 export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeAulaChange, searchValue, selectStatusValue, selectTypeAulaValue, onClear, hasFilters }: FilterProps) {
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
-
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
             <div className={styles.cardFilter}>
@@ -27,7 +26,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     type="text"
                     placeholder="Buscar aluno"
                     icon={<SearchIcon />}
-                    value={"" || searchValue}
+                    value={searchValue}
                     onInputChange={onSearchChange}
                 />
                 <Select
@@ -67,7 +66,14 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
             </div>
             {hasFilters &&
                 <div className={styles.divButtonFilter}>
-                    <Button type="button" typeButton="other" title="Limpar filtro" classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule} onClick={() => { onClear?.() }} />
+                    <Button
+                        type="button"
+                        typeButton="other"
+                        title="Limpar filtro"
+                        classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule}
+                        onClick={() => {
+                            onClear?.();
+                        }} />
                 </div>
             }
         </div>

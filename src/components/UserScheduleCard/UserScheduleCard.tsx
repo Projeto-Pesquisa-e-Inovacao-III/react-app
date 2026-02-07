@@ -3,8 +3,6 @@ import SmallerButton from "../SmallerButton";
 import "./style.css"
 import type { dataCardProps } from "../CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import UserAvatar from "../UserAvatar/UserAvatar";
-import { BASE_URL } from "../../system";
-import Button from "../Button/Button";
 
 type UserScheduleCardProps = {
     data: dataCardProps;

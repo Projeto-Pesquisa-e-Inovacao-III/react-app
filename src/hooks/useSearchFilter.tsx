@@ -1,5 +1,5 @@
 import { isAfter, isBefore, isValid, parse, parseISO, startOfDay } from 'date-fns';
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export default function useSearchFilter<T>(
     data: T[],
@@ -24,9 +24,9 @@ export default function useSearchFilter<T>(
         const normalizedStatus = filterStatus.toLowerCase();
 
         return data.filter(item => {
-            const matchesStatus = filterConfig?.searchStatus ? filterConfig.searchStatus(item).toLowerCase().includes(normalizedStatus) : true;
+            const matchesStatus = filterConfig?.searchStatus ? filterConfig?.searchStatus(item)?.toLowerCase().includes(normalizedStatus) : true;
             console.log("Item being checked:", item);
-            const matchesSearch = filterConfig?.searchName ? filterConfig.searchName(item).some(field => field.toLowerCase().includes(normalizedSearch)) : true;
+            const matchesSearch = filterConfig?.searchName ? filterConfig?.searchName(item)?.some(field => field.toLowerCase().includes(normalizedSearch)) : true;
 
             if(!matchesStatus || !matchesSearch) {
                 return false;

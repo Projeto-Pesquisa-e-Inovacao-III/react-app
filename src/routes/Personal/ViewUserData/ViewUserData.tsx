@@ -1,10 +1,6 @@
 import classNames from "classnames";
-import SmallerButton from "../../../components/SmallerButton";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useState } from "react";
-import Input from "../../../components/Inputs/Input/Input";
-import Select from "../../../components/Inputs/Select/Select";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
@@ -13,9 +9,6 @@ import { differenceInYears, parse } from "date-fns";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
-
-    const [openModalCreateTraining, setOpenModalCreateTraining] = useState(false);
-    const [trainingDay, setTrainingDay] = useState("");
 
     const [params] = useSearchParams();
 

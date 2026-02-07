@@ -1,14 +1,13 @@
-import { CardCheckSchedule } from "../../../components/CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import { CardFilterCheckSchedule } from "../../../components/CheckSchedule/CardFilterCheckSchedule/CardFilterCheckSchedule";
 import styles from "./CheckSchedule.module.css"
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
-import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
@@ -16,10 +15,11 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { Calendar, CalendarCheck, CalendarClock, CircleCheck, CircleX } from "lucide-react";
+import { CalendarClock, CircleCheck, CircleX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import TableRow from "../../../components/CheckSchedule/Table/TableRow";
-import StatusSchedule from "../../../components/StatusSchedule/StatusSchedule";
+import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
+import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -28,9 +28,8 @@ export function CheckSchedule() {
     const queryClient = useQueryClient();
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
-    const [clickedDate, setClickedDate] = useState<string>("");
 
-    const [appointmentId, setAppointmentId] = useState<number>(0);
+    const [appointmentId] = useState<number>(0);
 
     const type = useContext(TypeContext)?.type;
 
@@ -59,51 +58,30 @@ export function CheckSchedule() {
 
     //infinite scroll
     //https://medium.com/@antstack/implementing-infinite-scroll-pagination-with-react-query-v3-b935a76aa25e
+    // const {
+    //     data,
+    //     fetchNextPage,
+    //     hasNextPage,
+    //     isFetchingNextPage,
+    // } = useInfiniteQuery({
+    //     queryKey: ['personal-requests'],
+    //     queryFn: ({ pageParam = 0 }) => findPersonalRequests(pageParam),
+    //     getNextPageParam: (lastPage) => {
+    //         console.log(lastPage);
+    //         return lastPage.nextPage < lastPage.totalPages
+    //             ? lastPage.nextPage
+    //             : undefined;
+    //     },
+    //     initialPageParam: 0,
+    // });
+
     const {
-        data,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useInfiniteQuery({
-        queryKey: ['personal-requests'],
-        queryFn: ({ pageParam = 0 }) => findPersonalRequests(pageParam),
-        getNextPageParam: (lastPage) => {
-            console.log(lastPage);
-            return lastPage.nextPage < lastPage.totalPages
-                ? lastPage.nextPage
-                : undefined;
-        },
-        initialPageParam: 0,
+        data: userRescheduleAppointments,
+        // loadMoreRef,
+    } = useInfinitePagination<CheckSchedule>({
+        queryKey: ["userRescheduleAppointments"],
+        queryFn: (page) => findPersonalRequests(page).then(res => res.data)
     });
-
-    const requests = data?.pages.flatMap(item => item.data) ?? [];
-
-    const loadMoreRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (!loadMoreRef.current || !hasNextPage || isFetchingNextPage) return;
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    fetchNextPage();
-                }
-            }, {
-            rootMargin: '100px',
-        });
-
-        observer.observe(loadMoreRef.current);
-
-        return () => observer.disconnect();
-    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
-
-    useEffect(() => {
-        console.log({
-            hasNextPage,
-            isFetchingNextPage,
-            pages: data?.pages.length,
-        });
-    }, [data, hasNextPage, isFetchingNextPage]);
 
     //filter
     const {
@@ -114,12 +92,11 @@ export function CheckSchedule() {
         filterStatus,
         setFilterStatus,
         clearFilters
-    } = useSearchFilter(requests, {
+    } = useSearchFilter(userRescheduleAppointments, {
         searchStatus: item => item.status,
         searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
         searchType: item => item.tipoAula,
     });
-
 
     const [searchParams] = useSearchParams();
 
@@ -163,10 +140,10 @@ export function CheckSchedule() {
     }
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
-        const payload = {
+        const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? null : data.description
+            descricaoCancelamento: data.description === "" ? "" : data.description
         };
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(async () => {
@@ -190,11 +167,6 @@ export function CheckSchedule() {
         });
     }
 
-    function handleModal(id: number, type: modalTypes) {
-        setAppointmentId(id);
-        setOpenModal(type);
-    }
-
 
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
@@ -214,16 +186,16 @@ export function CheckSchedule() {
 
                         <CheckScheduleKpis
                             title="Total pendente"
-                            value={requests.length}
+                            value={userRescheduleAppointments.length}
                         />
                         <CheckScheduleKpis
                             title="Vence hoje"
-                            value={requests.length}
+                            value={userRescheduleAppointments.length}
                             color="#F59E0B"
                         />
                         <CheckScheduleKpis
                             title="Reagendados hoje"
-                            value={requests.length}
+                            value={userRescheduleAppointments.length}
                             color="#006faf"
                         />
                         <CheckScheduleKpis
@@ -239,8 +211,7 @@ export function CheckSchedule() {
                             onSearchChange={setFilterSearch}
                             selectStatusValue={filterStatus}
                             onSelectStatusChange={setFilterStatus}
-                            selectTypeAulaValue={filterSearch}
-                            onSelectTypeAulaChange={setFilterSearch}
+                            searchValue={filterSearch}
                             onClear={clearFilters}
                             hasFilters={hasFilters}
                         />
@@ -317,7 +288,7 @@ export function CheckSchedule() {
                 </div>
             </div>
 
-            {isFetchingNextPage && <p>Carregando mais...</p>}
+            {/* {isFetchingNextPage && <p>Carregando mais...</p>} */}
             {openModal === "reschedule" && (
                 <>
                     <NewEvent
@@ -330,7 +301,6 @@ export function CheckSchedule() {
                         buttonTitle="Reagendar"
                         isReschedule={true}
                         rescheduleId={appointmentId}
-                        clickedDate={clickedDate}
                         goToNextStep={false}
                         appoitmentData={appointment.data}
                         typeUser={type ?? undefined}

@@ -2,8 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, CircleCheck, Clock, Loader } from "lucide-react";
-import { getPersonalList } from "../../../constants/schedule";
+import { CircleCheck, Clock, Loader } from "lucide-react";
 
 export interface TimeSlot {
     id?: string;
@@ -73,10 +72,8 @@ export default function SetAvailability() {
         setSchedule(formatted);
     }, [getInitialCronogram.data]);
 
-
-    const [isLoading, setIsLoading] = useState(false);
     const [status, setStatus] = useState<Status>("idle");
-    const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     function showSuccessFeedback() {
         if (feedbackTimeoutRef.current) {

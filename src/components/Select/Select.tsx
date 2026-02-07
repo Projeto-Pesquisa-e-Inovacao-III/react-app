@@ -50,7 +50,8 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
         <div ref={selectRef} className='relative h-full'>
             <div className='h-full'>
                 <span className='border border-[#ccc] cursor-pointer rounded-sm h-full flex items-center px-4' onClick={() => setOpenSelectId(isOpen ? null : id)} >
-                    {selectPlaceholder || (selectStatusValue === "" ? "Selecionar todos" : selectValue) || "Selecionar status"}
+                    {selectStatusValue === "" ? "Selecionar todos" : selectValue}
+
                     <ChevronDown className={`inline-block ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} size={16} />
                 </span>
             </div>
