@@ -35,7 +35,6 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
         }
 
         if (isOpen) {
-            // Pequeno delay para evitar que o clique que abriu o select feche ele
             setTimeout(() => {
                 document.addEventListener("mousedown", handleClickOutside);
             }, 0);
@@ -46,12 +45,13 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
         };
     }, [isOpen, setOpenSelectId]);
 
+    console.log(selectStatusValue)
+
     return (
         <div ref={selectRef} className='relative h-full'>
-            <div className='h-full'>
-                <span className='border border-[#ccc] cursor-pointer rounded-sm h-full flex items-center px-4' onClick={() => setOpenSelectId(isOpen ? null : id)} >
-                    {selectStatusValue === "" ? "Selecionar todos" : selectValue}
-
+            <div className='h-full '>
+                <span className='border border-[#ccc] cursor-pointer rounded-sm h-full flex items-center justify-between px-4 w-64 ' onClick={() => setOpenSelectId(isOpen ? null : id)} >
+                    {(selectStatusValue === "" ? selectPlaceholder : selectValue)}
                     <ChevronDown className={`inline-block ml-2 transition-transform ${isOpen ? "rotate-180" : ""}`} size={16} />
                 </span>
             </div>
@@ -64,7 +64,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
                         onInputChange={setTextSearch}
                         type='text'
                     />
-                    <div className='bg-white border-[#ccc] border p-2 flex flex-col gap-2 max-h-60 overflow-y-auto'>
+                    <div className='bg-white border-[#ccc] border p-2 flex flex-col gap-2 max-h-60 overflow-y-auto w-72'>
                         <span className='px-1 gap-2 flex items-center cursor-pointer'
                             onMouseEnter={() => setHoveredOption("")}
                             onMouseLeave={() => setHoveredOption(null)}

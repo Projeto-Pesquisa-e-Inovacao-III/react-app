@@ -9,14 +9,14 @@ type FilterProps = {
     onSearchChange?: (filter: string) => void;
     onSelectStatusChange?: (status: string) => void;
     selectStatusValue?: string;
-    onSelectTypeAulaChange?: (tipoAula: string) => void;
-    selectTypeAulaValue?: string;
+    onSelectTypeClassChange?: (tipoAula: string) => void;
+    selectTypeClassValue?: string;
     searchValue?: string;
     onClear?: () => void;
     hasFilters?: boolean;
 }
 
-export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeAulaChange, searchValue, selectStatusValue, selectTypeAulaValue, onClear, hasFilters }: FilterProps) {
+export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters }: FilterProps) {
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
     return (
@@ -43,8 +43,8 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     id="status"
                 />
                 <Select
-                    onSelectStatusChange={onSelectTypeAulaChange}
-                    selectStatusValue={selectTypeAulaValue}
+                    onSelectStatusChange={onSelectTypeClassChange}
+                    selectStatusValue={selectTypeClassValue}
                     selectPlaceholder="Tipo de agendamento"
                     values={[
                         { label: "Presencial", value: "PRESENCIAL" },

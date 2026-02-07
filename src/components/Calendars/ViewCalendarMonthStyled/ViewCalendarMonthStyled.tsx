@@ -115,7 +115,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if (!canMakeAppointment) {
+            if (!canMakeAppointment && type?.type === "aluno") {
               modalInfo?.({ title: "Aulas indisponíveis", description: "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal." });
               modalType?.("error");
               return;

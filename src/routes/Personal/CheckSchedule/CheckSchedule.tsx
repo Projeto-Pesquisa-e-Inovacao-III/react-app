@@ -91,6 +91,8 @@ export function CheckSchedule() {
         queryFn: (page) => findPersonalRequests(page).then(res => res.data)
     });
 
+
+
     //filter
     const {
         filteredData,
@@ -99,11 +101,13 @@ export function CheckSchedule() {
         setFilterSearch,
         filterStatus,
         setFilterStatus,
+        filterTypeClass,
+        setFilterTypeClass,
         clearFilters
     } = useSearchFilter(userRescheduleAppointments, {
         searchStatus: item => item.status,
         searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
-        searchType: item => item.tipoAula,
+        searchTypeClass: item => item.tipoAula,
     });
 
     const [searchParams] = useSearchParams();
@@ -219,6 +223,8 @@ export function CheckSchedule() {
                             onSearchChange={setFilterSearch}
                             selectStatusValue={filterStatus}
                             onSelectStatusChange={setFilterStatus}
+                            onSelectTypeClassChange={setFilterTypeClass}
+                            selectTypeClassValue={filterTypeClass}
                             searchValue={filterSearch}
                             onClear={clearFilters}
                             hasFilters={hasFilters}
@@ -258,7 +264,7 @@ export function CheckSchedule() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-[#324d67]">
-                                {filteredData.map(card => (
+                                {filteredData.length !== 0 && filteredData.map(card => (
                                     <tr className="transition-colors group">
                                         <td className="px-6 py-4">
                                             <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-300/30 text-amber-700 dark:text-amber-700 border border-amber-200 dark:border-amber-800/50">
@@ -305,6 +311,15 @@ export function CheckSchedule() {
                                         </td>
                                     </tr>
                                 ))}
+                                {filteredData.length === 0 && (
+                                    <tr className="h-96">
+                                        <td colSpan={6} className="text-center py-4 h-2/4">
+                                            <span className="text-gray-500">
+                                                Nenhum agendamento encontrado.
+                                            </span>
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
