@@ -29,8 +29,16 @@ export function CheckSchedule() {
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
 
-    const [appointmentId] = useState<number>(0);
+    const [appointmentId, setAppointmentId] = useState<number>(0);
 
+
+    const [clickedDate, setClickedDate] = useState<string>("");
+
+
+    function handleModal(id: number, type: modalTypes) {
+        setAppointmentId(id);
+        setOpenModal(type);
+    }
     const type = useContext(TypeContext)?.type;
 
 
@@ -182,7 +190,7 @@ export function CheckSchedule() {
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
 
-                    <div className="grid grid-cols-4 w-full gap-5">
+                    <div className="grid grid-cols-4 w-full gap-5 flex-wrap">
 
                         <CheckScheduleKpis
                             title="Total pendente"
@@ -245,6 +253,7 @@ export function CheckSchedule() {
                                     <TableHeader title="Aluno" />
                                     <TableHeader title="Data" />
                                     <TableHeader title="Tipo de agendamento" />
+                                    <TableHeader title="Endereço" />
                                     <TableHeader title="Ações" />
                                 </tr>
                             </thead>
@@ -252,12 +261,12 @@ export function CheckSchedule() {
                                 {filteredData.map(card => (
                                     <tr className="transition-colors group">
                                         <td className="px-6 py-4">
-                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-300/30 text-amber-700 dark:text-amber-700 border border-amber-200 dark:border-amber-800/50">
                                                 {card.status === "CONCLUIDO" && "Agendamento concluído"}
                                                 {card.status === "student_pending" && "Pendente resposta do aluno"}
                                                 {card.status === "PENDENTE_PERSONAL_APROVACAO" && "Pendente resposta do personal"}
                                                 {card.status === "PENDENTE_CLIENTE_APROVACAO" && "Pendente resposta do aluno"}
-                                                {card.status === "APROVADO" && "Pendente (aula)"}
+                                                {card.status === "APROVADO" && "Aprovado"}
                                                 {card.status === "PENDENTE_PERSONAL_CONCLUIR" && "Pendente (conclusão)"}
                                                 {card.status === "CANCELADO_PERSONAL" && "Cancelado pelo personal"}
                                                 {card.status === "CANCELADO_CLIENTE" && "Cancelado pelo cliente"}
@@ -273,11 +282,25 @@ export function CheckSchedule() {
                                         </td>
                                         <TableRow text={format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} />
                                         <TableRow text={card.tipoAula} />
+                                        <TableRow text={card.endereco.cep.logradouro + ", " + card.endereco.numero + " - " + card.endereco.cep.bairro} />
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-between gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                                                <CircleCheck className="text-green-500" />
-                                                <CircleX className="text-red-500" />
-                                                <CalendarClock className="text-blue-500" />
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    handleModal(card.agendamentoId, "accept")
+                                                }}>
+                                                    <CircleCheck className="text-green-500" />
+                                                </button>
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    handleModal(card.agendamentoId, "decline")
+                                                }}>
+                                                    <CircleX className="text-red-500" />
+                                                </button>
+                                                <button className="cursor-pointer" onClick={() => {
+                                                    setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                    handleModal(card.agendamentoId, "reschedule");
+                                                }}>
+                                                    <CalendarClock className="text-blue-500" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -300,6 +323,7 @@ export function CheckSchedule() {
                         title="Reagendar horário"
                         buttonTitle="Reagendar"
                         isReschedule={true}
+                        clickedDate={clickedDate}
                         rescheduleId={appointmentId}
                         goToNextStep={false}
                         appoitmentData={appointment.data}
