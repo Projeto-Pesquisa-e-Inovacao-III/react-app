@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CircleCheck, CircleX } from "lucide-react";
+import { CalendarClock, CircleCheck, CircleX, PersonStanding, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import TableRow from "../../../components/CheckSchedule/Table/TableRow";
 import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
@@ -251,10 +251,10 @@ export function CheckSchedule() {
                 </div>*/}
 
                 <div className="rounded-lg border border-slate-200 bg-white shadow-sm w-full z-10">
-                    <div className="overflow-x-auto">
+                    <div className="overflow-x-auto rounded-t-lg">
                         <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-slate-50 dark:bg-[#192633] border-b border-slate-200 dark:border-[#324d67]">
+                            <thead className="">
+                                <tr className="bg-[#192633] border-b border-[#324d67]">
                                     <TableHeader title="Status" />
                                     <TableHeader title="Aluno" />
                                     <TableHeader title="Data" />
@@ -263,11 +263,11 @@ export function CheckSchedule() {
                                     <TableHeader title="Ações" />
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-[#324d67]">
+                            <tbody className="divide-y divide-[#324d67]">
                                 {filteredData.length !== 0 && filteredData.map(card => (
                                     <tr className="transition-colors group">
                                         <td className="px-6 py-4">
-                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-300/30 text-amber-700 dark:text-amber-700 border border-amber-200 dark:border-amber-800/50">
+                                            <span className="flex w-fit items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-300/30 text-amber-700 700 border border-amber-500">
                                                 {card.status === "CONCLUIDO" && "Agendamento concluído"}
                                                 {card.status === "student_pending" && "Pendente resposta do aluno"}
                                                 {card.status === "PENDENTE_PERSONAL_APROVACAO" && "Pendente resposta do personal"}
@@ -282,13 +282,13 @@ export function CheckSchedule() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                {/* <div className="size-9 rounded-full bg-cover bg-center border border-slate-200 dark:border-slate-700" data-alt="Client John Doe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAfHv68KBe-qLlaeFS2kPIeLtswk1es_nWFt6M85nfrkmDptfdp4wWAID1-reBpAFDEAXnBkAZG25gffeTvpC83zXyhLacPDwd-DBXb7d2xU2_4qweEGFoQlW2NS6_sqOdM6xFvSEm0d1kU8zcXD85krZI92f2jI1h4nFW8MLyMMvbYgsPQlgF_d-oploV7G1CboVNZunG_Q27KzcBNhBDI-mYn23iLFJRStSeEv5SxJjIN7tg3cRu_2hzlHjvF10gSb1gDENT5JIU");'></div> */}
+                                                <div className="size-9 rounded-full bg-cover bg-center border border-slate-300 flex items-center justify-center" data-alt={`Client ${card.nome}`}>{card.foto ? <img src={card.foto} alt={`Client ${card.nome}`} className="rounded-full w-9 h-9 object-cover" /> : <UserRound />}</div>
                                                 <span className="text-sm font-semibold text-slate-900">{card.nome}</span>
                                             </div>
                                         </td>
                                         <TableRow text={format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} />
                                         <TableRow text={card.tipoAula} />
-                                        <TableRow text={card.endereco.cep.logradouro + ", " + card.endereco.numero + " - " + card.endereco.cep.bairro} />
+                                        <TableRow text={card.endereco.cep.logradouro + ", " + card.endereco.numero + " - " + card.endereco.cep.bairro + " - " + card.endereco.cep.uf} />
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-between gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                                                 <button className="cursor-pointer" onClick={() => {
