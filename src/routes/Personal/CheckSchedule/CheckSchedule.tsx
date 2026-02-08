@@ -32,7 +32,6 @@ export function CheckSchedule() {
 
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
-
     const [clickedDate, setClickedDate] = useState<string>("");
 
 
@@ -65,31 +64,13 @@ export function CheckSchedule() {
         setOpenModal("error");
     }
 
-    //infinite scroll
-    //https://medium.com/@antstack/implementing-infinite-scroll-pagination-with-react-query-v3-b935a76aa25e
-    // const {
-    //     data,
-    //     fetchNextPage,
-    //     hasNextPage,
-    //     isFetchingNextPage,
-    // } = useInfiniteQuery({
-    //     queryKey: ['personal-requests'],
-    //     queryFn: ({ pageParam = 0 }) => findPersonalRequests(pageParam),
-    //     getNextPageParam: (lastPage) => {
-    //         console.log(lastPage);
-    //         return lastPage.nextPage < lastPage.totalPages
-    //             ? lastPage.nextPage
-    //             : undefined;
-    //     },
-    //     initialPageParam: 0,
-    // });
-
+    const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
     const {
         data: userRescheduleAppointments,
         // loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointments"],
-        queryFn: (page) => findPersonalRequests(page).then(res => res.data)
+        queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data)
     });
 
 
@@ -226,6 +207,8 @@ export function CheckSchedule() {
                             onSelectStatusChange={setFilterStatus}
                             onSelectTypeClassChange={setFilterTypeClass}
                             selectTypeClassValue={filterTypeClass}
+                            selectLinesPerPageValue={linesPerPageValue}
+                            onSelectLinesPerPageChange={setLinesPerPageValue}
                             searchValue={filterSearch}
                             onClear={clearFilters}
                             hasFilters={hasFilters}

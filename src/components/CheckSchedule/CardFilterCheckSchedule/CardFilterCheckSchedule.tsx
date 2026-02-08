@@ -6,17 +6,19 @@ import Select from "../../Select/Select";
 import { useState } from "react";
 
 type FilterProps = {
-    onSearchChange?: (filter: string) => void;
-    onSelectStatusChange?: (status: string) => void;
+    onSearchChange: (filter: string) => void;
+    onSelectStatusChange: React.Dispatch<React.SetStateAction<string>>;
     selectStatusValue?: string;
-    onSelectTypeClassChange?: (tipoAula: string) => void;
+    onSelectTypeClassChange: React.Dispatch<React.SetStateAction<string>>;
     selectTypeClassValue?: string;
+    onSelectLinesPerPageChange: React.Dispatch<React.SetStateAction<string>>;
+    selectLinesPerPageValue?: string;
     searchValue?: string;
     onClear?: () => void;
     hasFilters?: boolean;
 }
 
-export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters }: FilterProps) {
+export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters, onSelectLinesPerPageChange, selectLinesPerPageValue }: FilterProps) {
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
     return (
@@ -63,6 +65,30 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                 //     <option value="CANCELADO_PERSONAL">Rejeitado</option>
                 // </select> */}
 
+            </div>
+            <div>
+                <Select
+                    onSelectStatusChange={onSelectLinesPerPageChange}
+                    selectStatusValue={selectLinesPerPageValue}
+                    fixedText="Linhas por página:"
+                    showSelectAll={false}
+                    showSearchInput={false}
+                    values={[
+                        { label: "5", value: "5" },
+                        { label: "6", value: "6" },
+                        { label: "7", value: "7" },
+                        { label: "8", value: "8" },
+                        { label: "9", value: "9" },
+                        { label: "10", value: "10" },
+                        { label: "11", value: "11" },
+                        { label: "12", value: "12" },
+                        
+                    ]}
+                    setOpenSelectId={setOpenSelectId}
+                    openSelectId={openSelectId}
+                    defaultValue={selectLinesPerPageValue}
+                    id="linhasPorPagina"
+                />
             </div>
             {hasFilters &&
                 <div className={styles.divButtonFilter}>

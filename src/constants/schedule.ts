@@ -33,8 +33,7 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export async function findPersonalRequests(pageParam = 1) {
-    const size = 10;
+export async function findPersonalRequests(pageParam = 1, size = "10") {
     return api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
 }
 
