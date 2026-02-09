@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -274,30 +274,40 @@ export function Overview() {
                             {appointmentsCards.data?.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center gap-4">
                                     <div className="rounded-full bg-gray-200 p-5 w-fit">
-                                        <CalendarCheck className="" color="#0a3a5c" size={40} />
+                                        <CalendarX className="" color="#0a3a5c" size={40} />
                                     </div>
                                     <h1>Sem agendamentos para hoje</h1>
 
-                                    {actualPlanQuery?.data?.data ? (
-                                        <>
-                                            <div>
-                                                <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
-                                                <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
-                                            </div>
-                                            {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                                onClick={handleClickNewEvent}
-                                            />}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <div>
-                                                <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
-                                                <h2 className="text-center text-gray-500">Confira nossos planos e escolha o melhor para você!</h2>
-                                            </div>
-                                            {type?.type === "aluno" && <Button type="button" title="Comprar Plano Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                                onClick={() => nav("/packages")}
-                                            />}
-                                        </>
+                                    {type?.type === "aluno" && (
+                                        actualPlanQuery?.data?.data ? (
+                                            <>
+                                                <div>
+                                                    <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
+                                                    <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
+                                                </div>
+                                                {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                                    onClick={handleClickNewEvent}
+                                                />}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div>
+                                                    <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
+                                                    <h2 className="text-center text-gray-500">Confira nossos planos e escolha o melhor para você!</h2>
+                                                </div>
+                                                {type?.type === "aluno" && <Button type="button" title="Comprar Plano Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                                    onClick={() => nav("/packages")}
+                                                />}
+                                            </>
+                                        )
+                                    )}
+
+                                    {type?.type === "personal" && (
+                                            <>
+                                                <div>
+                                                    <h2 className="text-center text-gray-500">Você ainda não possui agendamentos pendentes.</h2>
+                                                </div>
+                                            </>
                                     )}
                                 </div>
                             ) : (
@@ -402,7 +412,7 @@ export function Overview() {
                                             <ul className="space-y-3 mb-8">
                                                 <TextWithoutPlan text="Plano de treino personalizado" />
                                                 <TextWithoutPlan text="Agendamentos de consultoria presencial" />
-                                                <TextWithoutPlan text="Consultoria online via Whatsapp" /> 
+                                                <TextWithoutPlan text="Consultoria online via Whatsapp" />
                                                 <TextWithoutPlan text="Contato direto com o personal" />
                                             </ul>
                                         </div>
@@ -421,7 +431,7 @@ export function Overview() {
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? 0}
-                                icon={<CalendarCheck color="#0a3557"/>}
+                                icon={<CalendarCheck color="#0a3557" />}
                                 iconColor=""
                                 titletbn={"Agendamentos"}
                                 onClick={() => nav("/schedule")}
@@ -431,7 +441,7 @@ export function Overview() {
                                 title={"Aulas pendentes para aprovação"}
                                 subtitle={countAppointmentsPending ?? 0}
                                 titletbn={"Solicitações"}
-                                icon={<ClipboardClock color="#0a3557"/>}
+                                icon={<ClipboardClock color="#0a3557" />}
                                 onClick={() => nav("/personal/check-schedule")}
                                 isMobile={isMobile}
                             />
