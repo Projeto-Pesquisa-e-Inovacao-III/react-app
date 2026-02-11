@@ -1,48 +1,37 @@
 import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import "./style.css";
+import styles from "./CalendarMini.module.css";
 import { useEffect, useState } from "react";
+
+export type DateRange = {
+    start: string;
+    end: string;
+};
 
 type Props = {
     clickedDate?: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
     createdEvents?: { title: string; start: string; end: string }[];
     canGoPrev?: boolean;
+
+    dateRange?: boolean;
+    selectedDateRange?: DateRange;
+    setSelectedDateRange?: React.Dispatch<React.SetStateAction<DateRange>>;
 };
 
-
-export default function CalendarMini({ clickedDate, createdEvents, canGoPrev }: Props) {
-    const databaseEvents = createdEvents?.map((event: { title: string; start: string; end: string }) => {
-        const dateStr = event.start.split("T")[0];
-        return { title: event.title, date: dateStr };   
-    });
-
-    const eventsMock = [
-        { title: "Reunião", date: "2025-10-15" },
-        { title: "Aniversário", date: "2025-10-22" },
-    ];
-
+export default function CalendarMini({ clickedDate, canGoPrev, dateRange, selectedDateRange, setSelectedDateRange }: Props) {
     const actualMonth = new Date().getMonth() + 1;
 
-    const [events, setEvents] = useState<typeof eventsMock>(eventsMock);
     const [newEventDate, setNewEventDate] = useState<string>("");
     const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
     useEffect(() => {
-        if (databaseEvents && databaseEvents.length > 0) {
-            setEvents(databaseEvents);
-        }
-    }, []);
-
-    useEffect(() => {
         clickedDate?.(newEventDate);
-    }, [newEventDate]);
-
-    const month = new Date().getMonth() + 1;
+    }, [newEventDate, clickedDate]);
 
     return (
-        <div className="mini-container-calendar">
-            <div className="mini-wrapper-calendar" id="mini-wrapper-styled-calendar">
+        <div className={styles.miniContainerCalendar}>
+            <div className={styles.miniWrapperStyledCalendar}>
                 <FullCalendar
                     plugins={[dayGridPlugin, InteractionPlugin]}
                     initialView="dayGridMonth"
@@ -51,17 +40,56 @@ export default function CalendarMini({ clickedDate, createdEvents, canGoPrev }: 
                     datesSet={(info) => {
                         const month = info.start.getMonth() + 2;
                         setSelectedMonth(month);
-                        console.log("Mês atual do calendário:", month);
                     }}
                     dateClick={(info) => {
-                        setNewEventDate(info.dateStr);
+                        if (!dateRange || !setSelectedDateRange) {
+                            setNewEventDate(info.dateStr);
+                            return;
+                        }
+
+                        const start = selectedDateRange?.start;
+                        const end = selectedDateRange?.end;
+
+                        if (start && end) {
+                            setSelectedDateRange({
+                                start: info.dateStr,
+                                end: ""
+                            });
+                            return;
+                        }
+
+                        if (!start) {
+                            setSelectedDateRange(prev => ({
+                                ...prev,
+                                start: info.dateStr
+                            }));
+                            return;
+                        }
+
+                        setSelectedDateRange(prev => ({
+                            ...prev,
+                            end: info.dateStr
+                        }));
+
                     }}
                     dayCellClassNames={(arg) => {
                         const dateStr = arg.date.toISOString().split("T")[0];
 
-                        if (dateStr === newEventDate) {
-                            return ["mini-selected-day"];
+                        if (!dateRange && dateStr === newEventDate) {
+                            return [styles.miniSelectedDay];
                         }
+
+
+                        if (dateRange && selectedDateRange?.start && selectedDateRange?.end) {
+                            const startDate = new Date(selectedDateRange.start);
+                            const endDate = new Date(selectedDateRange.end);
+                            const currentDate = new Date(dateStr);
+
+                            if (currentDate >= startDate && currentDate <= endDate) {
+                                return [styles.miniSelectedDay];
+                            }
+                        }
+
 
                         return [];
                     }}
@@ -70,7 +98,6 @@ export default function CalendarMini({ clickedDate, createdEvents, canGoPrev }: 
                         center: "title",
                         end: `${selectedMonth > actualMonth + 1 ? "" : "next"}`,
                     }}
-
                     height="100%"
                     expandRows={true}
                     fixedWeekCount={false}

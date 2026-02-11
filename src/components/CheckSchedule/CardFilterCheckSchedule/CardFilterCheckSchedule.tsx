@@ -1,9 +1,10 @@
-import { SearchIcon } from "lucide-react";
+import { Calendar, SearchIcon } from "lucide-react";
 import Button from "../../Button/Button";
 import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
 import styles from "./CardFilterCheckSchedule.module.css"
 import Select from "../../Select/Select";
 import { useState } from "react";
+import CalendarMini, { type DateRange } from "../../Calendars/MiniCalendar/CalendarMini";
 
 type FilterProps = {
     onSearchChange: (filter: string) => void;
@@ -18,8 +19,18 @@ type FilterProps = {
     hasFilters?: boolean;
 }
 
+
+
 export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters, onSelectLinesPerPageChange, selectLinesPerPageValue }: FilterProps) {
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
+
+    const [openCalendar, setOpenCalendar] = useState(false);
+
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
+        start: "",
+        end: "",
+    });
+
 
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
@@ -58,6 +69,20 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     id="tipoAula"
                 />
 
+                <div className="relative flex items-center gap-2">
+                    <div className="border w-0.5 border-gray-300 h-full"></div>
+                    <Calendar color="#707070" className="cursor-pointer" onClick={() => setOpenCalendar(!openCalendar)} />
+
+                    {openCalendar && (
+                        <div className="absolute top-10 z-50 max-w-3xl w-80">
+                            <CalendarMini
+                                dateRange={true}
+                                selectedDateRange={selectedDateRange}
+                                setSelectedDateRange={setSelectedDateRange}
+                            />
+                        </div>
+                    )}
+                </div>
                 {/* // <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
                 //     <option value="" disabled>Todas as Solicitações</option>
                 //     <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
@@ -82,7 +107,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                         { label: "10", value: "10" },
                         { label: "11", value: "11" },
                         { label: "12", value: "12" },
-                        
+
                     ]}
                     setOpenSelectId={setOpenSelectId}
                     openSelectId={openSelectId}
@@ -102,6 +127,8 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                         }} />
                 </div>
             }
+
+
         </div>
     )
 }

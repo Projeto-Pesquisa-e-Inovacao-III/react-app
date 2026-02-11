@@ -7,7 +7,7 @@ import SmallerButton from "../../SmallerButton";
 import classNames from "classnames";
 import { findAppointmentById, rescheduleAppointment } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";
-import type { Schedule, ScheduleReschedule } from "../../../models/schedule";
+import type { ScheduleReschedule } from "../../../models/schedule";
 import useMobile from "../../../hooks/isMobile";
 
 type CheckScheduleModalProps = {
