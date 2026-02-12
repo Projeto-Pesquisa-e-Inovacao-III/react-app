@@ -14,17 +14,19 @@ type Props = {
     value?: string;
     mask?: (input: React.FormEvent<HTMLInputElement>) => void
     disabled?: boolean;
+
+    customClassName?: string;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
-        <div className={styles.wrapperInp} id={id}>
+        <div className={`${styles.wrapperInp} ${customClassName || ""}`} id={id}>
             {label &&
                 <label htmlFor={`${id}-input`}>{label}</label>
             }
-            <div className="relative">
+            <div className={`relative`}>
                 <div className={styles.inputIcon}>{icon}</div>
                 <input
                     id={`${id}-input`}

@@ -3,8 +3,9 @@ import Button from "../../Button/Button";
 import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
 import styles from "./CardFilterCheckSchedule.module.css"
 import Select from "../../Select/Select";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import CalendarMini, { type DateRange } from "../../Calendars/MiniCalendar/CalendarMini";
+import useClickOutside from "../../../hooks/useClickOutside";
 
 type FilterProps = {
     onSearchChange: (filter: string) => void;
@@ -17,7 +18,7 @@ type FilterProps = {
     searchValue?: string;
     onClear?: () => void;
     hasFilters?: boolean;
-    
+
     selectedDateRange?: DateRange;
     setSelectedDateRange?: React.Dispatch<React.SetStateAction<DateRange>>;
 }
@@ -31,6 +32,12 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
 
     console.log(selectedDateRange);
 
+    const calendarRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside({
+        ref: calendarRef,
+        callback: () => setOpenCalendar(false)
+    });
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
             <div className={styles.cardFilter}>
@@ -68,7 +75,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     id="tipoAula"
                 />
 
-                <div className="relative flex items-center gap-2">
+                <div ref={calendarRef} className="relative flex items-center gap-2">
                     <div className="border w-0.5 border-gray-300 h-full"></div>
                     <Calendar color="#707070" className="cursor-pointer" onClick={() => setOpenCalendar(!openCalendar)} />
 
@@ -82,12 +89,6 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                         </div>
                     )}
                 </div>
-                {/* // <select className={styles.selectStatus} name="" id="" value={selectStatusValue} onChange={(e) => onSelectStatusChange && onSelectStatusChange(e.target.value)}>
-                //     <option value="" disabled>Todas as Solicitações</option>
-                //     <option value="PENDENTE_PERSONAL_APROVACAO">Pendente</option>
-                //     <option value="APROVADO">Aprovado</option>
-                //     <option value="CANCELADO_PERSONAL">Rejeitado</option>
-                // </select> */}
 
             </div>
             <div>

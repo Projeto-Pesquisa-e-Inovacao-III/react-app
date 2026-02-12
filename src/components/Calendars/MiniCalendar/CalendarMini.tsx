@@ -2,7 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import InteractionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import styles from "./CalendarMini.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type DateRange = {
     start: string;
@@ -19,7 +19,7 @@ type Props = {
     setSelectedDateRange?: React.Dispatch<React.SetStateAction<DateRange>>;
 };
 
-export default function CalendarMini({ clickedDate, canGoPrev, dateRange, selectedDateRange, setSelectedDateRange }: Props) {
+export default function CalendarMini({ clickedDate, dateRange, selectedDateRange, setSelectedDateRange }: Props) {
     const [newEventDate, setNewEventDate] = useState<string>("");
     const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
@@ -27,8 +27,10 @@ export default function CalendarMini({ clickedDate, canGoPrev, dateRange, select
         clickedDate?.(newEventDate);
     }, [newEventDate, clickedDate]);
 
+    const calendarRef = useRef<HTMLDivElement>(null);
+
     return (
-        <div className={styles.miniContainerCalendar}>
+        <div ref={calendarRef} className={styles.miniContainerCalendar}>
             <div className={styles.miniWrapperStyledCalendar}>
                 <FullCalendar
                     plugins={[dayGridPlugin, InteractionPlugin]}

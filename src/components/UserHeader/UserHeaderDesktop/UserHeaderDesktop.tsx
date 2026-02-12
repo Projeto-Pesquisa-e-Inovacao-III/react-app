@@ -1,9 +1,10 @@
 import { Link, NavLink } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import styles from "./UserHeaderDesktop.module.css"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
+import useClickOutside from "../../../hooks/useClickOutside";
 
 type UserType = {
   userName: string;
@@ -17,6 +18,17 @@ export default function UserHeaderDesktop({userName, type }: UserType) {
   const queryClient = useQueryClient();
 
   queryClient.invalidateQueries({ queryKey: ['userImage'] });
+
+  const userRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside({
+    ref: userRef,
+    callback: () => {
+      if(openHeaderModal) {
+        setOpenHeaderModal(false);
+      }
+    }
+  });
 
   //verificar se o link está ativo para adicionar a classe active
   const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink;
@@ -32,15 +44,16 @@ export default function UserHeaderDesktop({userName, type }: UserType) {
               <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
               <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
               <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
-              <NavLink to="/packages" className={navLinkClass}>Planos</NavLink>
-              <NavLink to="/users" className={navLinkClass}>Usuários</NavLink>
+              <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+              <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
             </>
           ) : (
             <>
               <NavLink to="/home" className={navLinkClass}>Início</NavLink>
               <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
-              <NavLink to="/packages" className={navLinkClass}>Planos</NavLink>
-              <NavLink to="/plans-history" className={navLinkClass}>Histórico de planos</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+              <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
               <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
             </>
           )
@@ -56,11 +69,11 @@ export default function UserHeaderDesktop({userName, type }: UserType) {
       </header >
 
       {openHeaderModal && (
-        <div className={styles.headerModalDesktop} onClick={() => setOpenHeaderModal(false)}>
+        <div ref={userRef}  className={styles.headerModalDesktop} onClick={() => setOpenHeaderModal(false)}>
           <div className={styles.headerModalContentDesktop} onClick={(e) => e.stopPropagation()}>
-            <Link to="/edit-user">Editar perfil</Link>
-            {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
-            <Link to="/logout">Sair</Link>
+            <Link onClick={() => setOpenHeaderModal(false)} to="/edit-user">Editar perfil</Link>
+            {type === "personal" && <Link onClick={() => setOpenHeaderModal(false)} to="/set-availability">Ajustar disponibilidade</Link>}
+            <Link onClick={() => setOpenHeaderModal(false)} to="/logout">Sair</Link>
           </div>
         </div>
       )
