@@ -416,7 +416,7 @@ export function Overview() {
                                                 <TextWithoutPlan text="Contato direto com o personal" />
                                             </ul>
                                         </div>
-                                        <button className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform active:scale-95">
+                                        <button onClick={() => nav("/packages")} className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform">
                                             Ver Opções de Planos
                                             <span className="material-symbols-outlined"><ShoppingBag /></span>
                                         </button>

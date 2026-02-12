@@ -47,7 +47,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
   });
 
   return (
-    <div ref={selectRef} className={styles.selectWrapper}>
+    <div ref={selectRef} className={styles.selectWrapper} style={isOpen ? { border: "1px solid #c3c3c3" } : {}} >
       <div className={styles.triggerWrapper}>
         <span
           className={styles.trigger}

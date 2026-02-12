@@ -34,6 +34,7 @@
     "react": "^19.1.1",
     "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "^19.1.1",
+    "react-loader-spinner": "^8.0.2",
     "react-router-dom": "^7.9.1",
     "recharts": "^3.3.0",
     "shadcn": "^3.5.1",

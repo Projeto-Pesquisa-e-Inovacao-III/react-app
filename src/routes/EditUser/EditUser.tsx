@@ -4,7 +4,7 @@ import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
 import { BASE_URL } from "../../system";
@@ -20,6 +20,7 @@ import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../utils/validacao.ts";
 import useModal from "../../hooks/useModal.tsx";
+import useClickOutside from "../../hooks/useClickOutside.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -89,10 +90,6 @@ export default function EditUser() {
   const [confirmingDelete, setConfirmingDelete] = useState<boolean>(false);
 
 
-  const [userImage, setUserImage] = useState<string>("");
-  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
-  const [previewImage, setPreviewImage] = useState<string>("");
-  const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
   const [state, dispatch] = useReducer(reducer, initialEditUserState);
 
@@ -108,6 +105,19 @@ export default function EditUser() {
     confirmPassword: "",
   }
   )
+  const [userImage, setUserImage] = useState<string>("");
+  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
+  const [previewImage, setPreviewImage] = useState<string>("");
+  const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
+
+  const imagePreviewModal = useRef(null);
+
+  useClickOutside({
+    ref: imagePreviewModal,
+    callback: () => {
+        setOpenModal(null);
+    }
+  });
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
@@ -179,6 +189,7 @@ export default function EditUser() {
           insertUserImage(previewImageFormData)
             .then(() => {
               if (previewImage) {
+                console.log("Imagem do usuário atualizada com sucesso!", previewImage);
                 setUserImage(previewImage);
                 setUserImageFormData(previewImageFormData);
               }
@@ -198,7 +209,7 @@ export default function EditUser() {
       })
       .catch((error) => {
         console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
-        console.log("userImageFormData", userImageFormData);
+        console.log("previewImageFormData", previewImageFormData);
         setTextModal({
           title: "Houve um erro",
           content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
@@ -206,6 +217,47 @@ export default function EditUser() {
         setOpenModal("error");
       });
   }
+
+  function handleUpdatePersonalInfo() {
+    console.log(state.phone.substring(5).replace("-", ""))
+    const options: PersonalDTO = {
+      nome: state.firstName,
+      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      sexo: state.gender,
+      email: state.email,
+    }
+
+    editPersonalProfile(options).then(() => {
+      setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+      setOpenModal("success");
+    }).catch((error) => {
+      console.log("previewImageFormData", previewImageFormData);
+      console.error("Erro ao atualizar dados do usuário:", error);
+      setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
+      setOpenModal("error");
+    });
+
+    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+      console.log("inserting image");
+      insertUserImage(previewImageFormData).then(() => {
+        console.log("Imagem do usuário atualizada com sucesso!");
+        setUserImage(previewImage);
+        setUserImageFormData(previewImageFormData);
+        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+        setOpenModal("success");
+      }).catch((error) => {
+        console.log("previewImageFormData", previewImageFormData);
+        console.error("Erro ao atualizar imagem do usuário:", error);
+        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+        setOpenModal("error");
+        return;
+      });
+    }
+
+
+    setOpenModal("success");
+  }
+
 
   function deleteUser() {
     softDelete()
@@ -257,37 +309,7 @@ export default function EditUser() {
       });
   }
 
-  function handleUpdatePersonalInfo() {
-    const options: PersonalDTO = {
-      nome: state.firstName,
-      telefone: { numero: state.phone, ddd: "11", pais: "55" },
-      sexo: state.gender,
-      email: state.email,
-    }
 
-    editPersonalProfile(options).then(() => {
-      setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-      setOpenModal("success");
-    }).catch((error) => {
-      console.log("userImageFormData", userImageFormData);
-      console.error("Erro ao atualizar dados do usuário:", error);
-      setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
-      setOpenModal("error");
-    });
-    if (userImageFormData.has("imagem") && userImageFormData) {
-      console.log("inserting image");
-      insertUserImage(userImageFormData).then(() => {
-        console.log("Imagem do usuário atualizada com sucesso!");
-      }).catch((error) => {
-        console.log("userImageFormData", userImageFormData);
-        console.error("Erro ao atualizar imagem do usuário:", error);
-        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
-        setOpenModal("error");
-        return;
-      });
-    }
-    setOpenModal("success");
-  }
 
   useEffect(() => {
     handleGetUserInfo();
@@ -323,7 +345,7 @@ export default function EditUser() {
                 </label>
               </div>
 
-              {userImage ?
+              {userImage && (
                 <div >
                   <Button
                     typeButton="other"
@@ -336,7 +358,7 @@ export default function EditUser() {
                     }}
                   />
                 </div>
-                : null}
+              )}
             </div>
           </WhiteContainer>
         </div>
@@ -508,7 +530,7 @@ export default function EditUser() {
       {openModal === "adjustAvatar" && (
         <>
           <div className={`overlay z-auto!`}></div>
-          <div className="   fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50">
+          <div ref={imagePreviewModal}  className="   fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50">
             <div className={styles.profileSection + "max-w-full! max-h-full!"}>
               <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
                 {previewImage &&
@@ -529,7 +551,7 @@ export default function EditUser() {
                       type="button"
                       classNameVariable="buttonRemoveImage"
                       onClick={() => {
-                        handleUpdateUserInfo()
+                        (type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
                       }}
                     />
                   </div>
@@ -539,7 +561,7 @@ export default function EditUser() {
                       <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
                       {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
                       <label htmlFor="upload-photo">
-                        <span>Atualizar Foto</span>
+                        <span>Mudar Foto</span>
                       </label>
                     </div>
                   </div>

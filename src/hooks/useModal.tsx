@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type modalTypes = "timer" | "success" | "error" | null;
+type modalTypes = "timer" | "success" | "error" | "adjustAvatar" | null;
 
 export default function useModal(
     type: modalTypes,

@@ -23,6 +23,8 @@ export default function Login() {
 
   const nav = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
@@ -34,6 +36,7 @@ export default function Login() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const res = await userService.login(loginInfo.email, loginInfo.password);
@@ -50,7 +53,9 @@ export default function Login() {
         confirmButtonColor: "#166ba3ff",
         timer: 3000,
       });
-    } 
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -102,7 +107,7 @@ export default function Login() {
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
-              <Button type="submit" title="Entrar" />
+              <Button type="submit" title="Entrar" loading={loading} />
             </form>
             <span className={styles.mg15}>
               Não tem uma conta? <Link to="/register">Criar uma conta</Link>

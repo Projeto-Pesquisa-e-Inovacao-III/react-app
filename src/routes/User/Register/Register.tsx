@@ -61,7 +61,7 @@ export default function Register() {
             phone: "(11) 91234-5678",
             gender: "Masculino",
             confirmPassword: "123456789aA!",
-            birthDate: dayjs("01-01-2000").format("DD-MM-YYYY").toString()
+            birthDate: dayjs("2000-01-01").format("YYYY-MM-DD").toString()
         });
     }
 
@@ -69,8 +69,11 @@ export default function Register() {
         setRegister(prev => ({ ...prev, [field]: value }));
     };
 
+    const [loading, setLoading] = useState(false);
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setLoading(true);
 
         const userData: UserDTO = {
             nome: register.name,
@@ -98,19 +101,24 @@ export default function Register() {
         if (nullOrBlank) {
             setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos" });
             setOpenModal("error");
+            setLoading(false);
             return;
+
         } else if (!validation.validateEmail(register.email).startsWith("Email válido")) {
             setModalInfo({ title: "Erro de validação", content: "Email inválido." });
             setOpenModal("error");
+            setLoading(false);
             return;
 
         } else if (register.customerDocument && register.customerDocument.length !== 14) {
             setModalInfo({ title: "Erro de validação", content: "CPF inválido." });
             setOpenModal("error");
+            setLoading(false);
             return;
         } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
             setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
             setOpenModal("error");
+            setLoading(false);
             return;
         }
 
@@ -120,14 +128,18 @@ export default function Register() {
             .then(async () => {
                 setOpenModal("success");
 
-                setTimeout(() => {
-                    navigate("/login");
-                }, 4000);
-
+                if (openModal === "success") {
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 4000);
+                }
             })
             .catch((err) => {
                 setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || err.response?.data?.dataNascimento || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
                 setOpenModal("error");
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -178,7 +190,7 @@ export default function Register() {
                                                         field: { openPickerButtonPosition: 'start' },
                                                     }}
                                                     value={dayjs(register.birthDate)}
-                                                    onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("DD-MM-YYYY").toString() : "")}
+                                                    onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
                                                 />
                                             </DemoContainer>
                                         </LocalizationProvider>
@@ -242,7 +254,7 @@ export default function Register() {
                                     ))}
                                 </div>
                             )}
-                            <Button typeButton="other" type="submit" title="Cadastrar" />
+                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} />
                         </form>
                         <span>
                             Já tem uma conta? <Link to="/login">Faça login</Link>
