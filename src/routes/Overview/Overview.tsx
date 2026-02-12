@@ -231,10 +231,10 @@ export function Overview() {
                                     isMobile={isMobile}
                                 />
                                 <OverviewCard
-                                    title={"Status de planos"}
+                                    title={"Status de pacotes"}
                                     subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
                                     type={"usuario"}
-                                    titletbn={"Planos"}
+                                    titletbn={"Pacotes"}
                                     onClick={() => nav("/packages")}
                                     isMobile={isMobile}
                                 />
@@ -293,9 +293,9 @@ export function Overview() {
                                             <>
                                                 <div>
                                                     <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
-                                                    <h2 className="text-center text-gray-500">Confira nossos planos e escolha o melhor para você!</h2>
+                                                    <h2 className="text-center text-gray-500">Confira nossos pacotes e escolha o melhor para você!</h2>
                                                 </div>
-                                                {type?.type === "aluno" && <Button type="button" title="Comprar Plano Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                                                {type?.type === "aluno" && <Button type="button" title="Comprar Pacote Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
                                                     onClick={() => nav("/packages")}
                                                 />}
                                             </>
@@ -386,7 +386,7 @@ export function Overview() {
                                             </div>
                                         </div>
                                         <button className="text-indigo cursor-pointer w-full py-3 bg-white text-primary font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
-                                            Histórico de Planos
+                                            Histórico de compras
                                             <span className="material-icons-outlined text-sm"><ArrowRight size={17} /></span>
                                         </button>
                                     </div>
@@ -405,7 +405,7 @@ export function Overview() {
                                     <div className="relative z-10 flex flex-col h-full justify-between">
                                         <div>
                                             <div className="mb-6">
-                                                <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Nenhum plano ativo</span>
+                                                <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Nenhum pacote ativo</span>
                                                 <h3 className="text-4xl font-black leading-tight mb-3">Comece sua jornada hoje!</h3>
                                                 <p className="text-white/80 text-base font-medium mb-6">Assine agora e tenha acesso imediato a uma estrutura completa para o seu treino.</p>
                                             </div>
@@ -417,7 +417,7 @@ export function Overview() {
                                             </ul>
                                         </div>
                                         <button onClick={() => nav("/packages")} className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform">
-                                            Ver Opções de Planos
+                                            Ver Opções de Pacotes
                                             <span className="material-symbols-outlined"><ShoppingBag /></span>
                                         </button>
                                     </div>

@@ -35,7 +35,7 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                     </p>
 
                     {!isMobile && (
-                        <ButtonHome to="#plans-section" title="Conheça os planos" />
+                        <ButtonHome to="#plans-section" title="Conheça os pacotes disponíveis" />
                     )}
                 </div>
             </div>

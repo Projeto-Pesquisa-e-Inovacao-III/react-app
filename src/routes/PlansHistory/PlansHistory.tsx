@@ -101,7 +101,7 @@ export default function PlansHistory() {
                     />
                 ))
             ) : (
-                <p>Não há planos disponíveis</p>
+                <p>Não há pacotes disponíveis</p>
             )}
             
         </div>

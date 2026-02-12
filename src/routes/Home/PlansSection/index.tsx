@@ -33,6 +33,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>
+                {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-8"> */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {(isPackagesSelected
                         ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE")

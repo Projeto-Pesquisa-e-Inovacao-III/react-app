@@ -34,7 +34,7 @@ export default function PlansCard({ description, content, price, benefits, isLog
         </div>
 
         <div className="font-bold w-3/4 flex justify-center mx-auto mt-5">
-          <Button type="button" title="Ver detalhes" onClick={() => isLoggedIn ? navigate("/packages") : navigate("/login")} />
+          <Button type="button" title="Adquirir pacote" onClick={() => isLoggedIn ? navigate("/packages") : navigate("/login")} />
         </div>
       </div>
 

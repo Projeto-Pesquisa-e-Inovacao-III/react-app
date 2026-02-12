@@ -15,7 +15,7 @@ const titles = {
     "/register": "Cadastro | CSF Treinamentos",
     "/forgot-password": "Esqueci a senha | CSF Treinamentos",
     "/logout": "Saindo... | CSF Treinamentos",
-    "/plans-history": "Histórico de Planos | CSF Treinamentos",
+    "/plans-history": "Histórico de compra | CSF Treinamentos",
     "/schedule": "Agenda | CSF Treinamentos",
     "/schedule/": "Agenda | CSF Treinamentos",
     "/schedule-history": "Histórico de Agendamentos | CSF Treinamentos",
