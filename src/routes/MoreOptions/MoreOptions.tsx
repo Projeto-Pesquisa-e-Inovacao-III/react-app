@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, Eye, HistoryIcon, Hourglass, HourglassIcon, IdCard, LogOut, MapPin, Package, User, Users } from 'lucide-react';
+import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut} from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';

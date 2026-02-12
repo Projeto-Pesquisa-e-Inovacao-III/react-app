@@ -1,7 +1,7 @@
 import { use, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import Select from "../Inputs/Select/Select";

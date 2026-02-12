@@ -1,9 +1,9 @@
 import { useEffect, type JSX } from "react";
-import "./style.css";
+import styles from "./SmallerButton.module.css";
 type SmallerButtonProps = {
     type?: "button" | "submit";
     icon?: JSX.Element;
-    title: string;
+    title?: string;
     value?: string;
     selected?: boolean;
     classname?: string;
@@ -17,11 +17,11 @@ export default function SmallerButton({ type, icon, title, value, selected, clas
     }, [selected]);
     return (
         <button
-            className={`btn-sched ${classname ?? ""}`}
+            className={`${styles.btnSched} ${classname ?? ""}`}
             type={type}
             onClick={() => handleButtonClick?.(value ?? "")}
         >
-            {icon && <span className="icon">{icon}</span>}
+            {icon && <span className={styles.icon}>{icon}</span>}
             {title}
         </button>
     )

@@ -17,20 +17,19 @@ type FilterProps = {
     searchValue?: string;
     onClear?: () => void;
     hasFilters?: boolean;
+    
+    selectedDateRange?: DateRange;
+    setSelectedDateRange?: React.Dispatch<React.SetStateAction<DateRange>>;
 }
 
 
 
-export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters, onSelectLinesPerPageChange, selectLinesPerPageValue }: FilterProps) {
+export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters, onSelectLinesPerPageChange, selectLinesPerPageValue, selectedDateRange, setSelectedDateRange }: FilterProps) {
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
     const [openCalendar, setOpenCalendar] = useState(false);
 
-    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
-        start: "",
-        end: "",
-    });
-
+    console.log(selectedDateRange);
 
     return (
         <div className={styles.containerCardFilterCheckSchedule}>
@@ -74,7 +73,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                     <Calendar color="#707070" className="cursor-pointer" onClick={() => setOpenCalendar(!openCalendar)} />
 
                     {openCalendar && (
-                        <div className="absolute top-10 z-50 max-w-3xl w-80">
+                        <div className="absolute top-10 z-50 max-w-3xl w-72">
                             <CalendarMini
                                 dateRange={true}
                                 selectedDateRange={selectedDateRange}

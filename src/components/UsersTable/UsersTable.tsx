@@ -1,4 +1,4 @@
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import { useMediaQuery } from "@mui/material";
 import useMobile from "../../hooks/isMobile";
 import { useNavigate } from "react-router-dom";

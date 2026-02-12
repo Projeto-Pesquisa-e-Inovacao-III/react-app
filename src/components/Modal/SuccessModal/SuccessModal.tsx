@@ -1,6 +1,6 @@
 import "./successModalMobile.css";
 import "./successModal.css";
-import SmallerButton from "../../SmallerButton";
+import SmallerButton from "../../SmallerButton/SmallerButton";
 import { useEffect } from "react";
 
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {

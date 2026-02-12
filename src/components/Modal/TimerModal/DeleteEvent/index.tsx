@@ -1,6 +1,6 @@
 import "./style.css"
 import type { EventDTO } from "../../../../models/calendar";
-import SmallerButton from "../../../SmallerButton";
+import SmallerButton from "../../../SmallerButton/SmallerButton";
 
 type DeleteEventProps = {
     isMobile: boolean;

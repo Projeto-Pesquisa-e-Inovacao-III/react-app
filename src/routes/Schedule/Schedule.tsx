@@ -5,7 +5,7 @@ import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMont
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
-import SmallerButton from "../../components/SmallerButton";
+import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";

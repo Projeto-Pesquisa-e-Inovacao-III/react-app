@@ -3,10 +3,9 @@ import Button from "../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
 import { Plus, Trash } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
-import { useNavigate } from "react-router-dom";
 import Select from "../Inputs/Select/Select";
 
 type AddPackagePlanProps = {

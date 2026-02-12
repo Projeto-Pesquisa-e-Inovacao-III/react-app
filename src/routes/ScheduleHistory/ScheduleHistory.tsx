@@ -3,7 +3,7 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import classNames from "classnames";
 
 import styles from "./ScheduleHistory.module.css";
-import SmallerButton from "../../components/SmallerButton";
+import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";

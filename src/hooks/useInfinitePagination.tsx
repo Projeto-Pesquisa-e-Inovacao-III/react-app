@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRef, useEffect } from "react";
-type PaginatedResponse<T> = {
+export type PaginatedResponse<T> = {
     content: T[];
     page: {
         size: number;
@@ -59,5 +59,6 @@ export function useInfinitePagination<T>(
         ...query,
         loadMoreRef,
         data: query.data?.pages.flatMap(page => page.content) ?? [],
+            pagination: query.data?.pages.at(-1)?.page
     }
 }

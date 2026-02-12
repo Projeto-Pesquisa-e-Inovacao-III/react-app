@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import "./style.css"
 import type { dataCardProps } from "../CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import UserAvatar from "../UserAvatar/UserAvatar";

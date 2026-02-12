@@ -15,12 +15,14 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CircleCheck, CircleX, UserRound } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, ChevronLeft, ChevronRight, CircleCheck, CircleX, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import TableRow from "../../../components/CheckSchedule/Table/TableRow";
-import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
+import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
 import { statusProperties } from "./CardStatus/cardStatus";
+import type { DateRange } from "../../../components/Calendars/MiniCalendar/CalendarMini";
+import SmallerButton from "../../../components/SmallerButton/SmallerButton";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -65,15 +67,39 @@ export function CheckSchedule() {
     }
 
     const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
-    const {
-        data: userRescheduleAppointments,
-        // loadMoreRef,
-    } = useInfinitePagination<CheckSchedule>({
-        queryKey: ["userRescheduleAppointments"],
-        queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data)
+    // const {
+    //     data: userRescheduleAppointments,
+    //     loadMoreRef,
+    //     hasNextPage,
+    //     isFetchingNextPage,
+    //     pagination
+    // } = useInfinitePagination<CheckSchedule>({
+    //     queryKey: ["userRescheduleAppointments"],
+    //     queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data)
+    // });
+
+    const [page, setPage] = useState(0);
+
+const { data: userRescheduleAppointments } =
+    useQuery<PaginatedResponse<CheckSchedule>>({
+        queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
+        queryFn: () =>
+            findPersonalRequests(page, linesPerPageValue).then(res => res.data),
     });
 
+    const appointmentsList = userRescheduleAppointments?.content ?? [];
+    const pagination = userRescheduleAppointments?.page;
 
+    const hasNextPage =
+pagination ? pagination.number < pagination.totalPages - 1 : false;
+
+    const hasPreviousPage =
+    pagination ? pagination.number > 0 : false;
+
+
+    function handlePaginationChange(newPage: number) {
+        setPage(newPage);
+    }
 
     //filter
     const {
@@ -86,7 +112,7 @@ export function CheckSchedule() {
         filterTypeClass,
         setFilterTypeClass,
         clearFilters
-    } = useSearchFilter(userRescheduleAppointments, {
+    } = useSearchFilter(appointmentsList, {
         searchStatus: item => item.status,
         searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
         searchTypeClass: item => item.tipoAula,
@@ -103,19 +129,22 @@ export function CheckSchedule() {
     }, [searchParams, setFilterSearch]);
 
 
-    async function handleSuccessReschedule() {
+    async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+    }
+
+    async function handleSuccessReschedule() {
+        await handleInvalidateQueries();
         handleSuccessModal("Reagendamento Concluído", "O agendamento foi reagendado com sucesso.");
     }
 
     async function acceptAppointment(id: number) {
         await acceptUserAppointment(id).then(async (res) => {
             console.log("Agendamento aceito:", res);
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await handleInvalidateQueries();
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
@@ -124,9 +153,7 @@ export function CheckSchedule() {
 
     async function declineAppointment(id: number) {
         await refuseAppointment(id).then(async () => {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await handleInvalidateQueries();
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
         }).catch((error) => {
             console.error("Erro ao recusar o agendamento:", error);
@@ -139,22 +166,17 @@ export function CheckSchedule() {
             tipoUsuario: data.type,
             descricaoCancelamento: data.description === "" ? "" : data.description
         };
-        console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(async () => {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await handleInvalidateQueries();
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
         }).catch((error) => {
             console.error("Erro ao registrar a ausência:", error);
         });
     }
 
-    function handleConcludeAppointment(id: number) {
+    async function handleConcludeAppointment(id: number) {
         concludeAppointment(id).then(async () => {
-            await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+            await handleInvalidateQueries();
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
         }).catch((error) => {
             console.error("Erro ao concluir o agendamento:", error);
@@ -168,6 +190,13 @@ export function CheckSchedule() {
     })
 
 
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
+        start: "",
+        end: "",
+    });
+
+    console.log("Selected date range:", pagination?.number);
+
 
     return (
         <>
@@ -180,16 +209,16 @@ export function CheckSchedule() {
 
                         <CheckScheduleKpis
                             title="Total pendente"
-                            value={userRescheduleAppointments.length}
+                            value={appointmentsList.length}
                         />
                         <CheckScheduleKpis
                             title="Vence hoje"
-                            value={userRescheduleAppointments.length}
+                            value={appointmentsList.length}
                             color="#F59E0B"
                         />
                         <CheckScheduleKpis
                             title="Reagendados hoje"
-                            value={userRescheduleAppointments.length}
+                            value={appointmentsList.length}
                             color="#006faf"
                         />
                         <CheckScheduleKpis
@@ -212,6 +241,9 @@ export function CheckSchedule() {
                             searchValue={filterSearch}
                             onClear={clearFilters}
                             hasFilters={hasFilters}
+
+                            selectedDateRange={selectedDateRange}
+                            setSelectedDateRange={setSelectedDateRange}
                         />
                     </div>
                 </div>
@@ -287,7 +319,7 @@ export function CheckSchedule() {
                                     </tr>
                                 ))}
                                 {filteredData.length === 0 && (
-                                    <tr className="h-96">
+                                    <tr className="h-96 px-6 py-4">
                                         <td colSpan={6} className="text-center py-4 h-2/4">
                                             <span className="text-gray-500">
                                                 Nenhum agendamento encontrado.
@@ -297,6 +329,30 @@ export function CheckSchedule() {
                                 )}
                             </tbody>
                         </table>
+                        { (hasPreviousPage || hasNextPage) && (
+                            <div>
+                                <div className="flex justify-between items-center">
+                                    <div className="py-4 px-6 gap-4 flex">
+                                        <div>
+                                            <span className="text-gray-500">Página</span> {pagination?.number as number + 1} <span className="text-gray-500">de</span> {pagination?.totalPages}
+                                        </div>
+                                        <span className="text-gray-500">Mostrando {pagination?.size} de {pagination?.totalElements} agendamentos</span>
+                                    </div>
+                                    <div className="flex py-4 px-6 gap-3">
+                                        <SmallerButton 
+                                            icon={<ChevronLeft />} 
+                                            classname={`${pagination?.number === 0 ? 'bg-gray-400! cursor-default!' : ''} h-12`} 
+                                            handleButtonClick={() => handlePaginationChange(page - 1)}    
+                                        />
+                                        <SmallerButton 
+                                            icon={<ChevronRight />} 
+                                            classname={`${pagination?.totalPages && pagination?.number === pagination?.totalPages - 1 ? 'bg-gray-400! cursor-default!' : ''} h-12`} 
+                                            handleButtonClick={() => handlePaginationChange(page + 1)}    
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

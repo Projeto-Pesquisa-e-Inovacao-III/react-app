@@ -1,4 +1,4 @@
-.btn-sched {
+.btnSched {
     padding: 15px 30px;
     background-color: var(--bg-blue);
     color: white;
@@ -16,7 +16,7 @@
 
 @media (max-width: 1024px) {
 
-    .btn-sched {
+    .btnSched {
         padding: 15px 20px;
     }
 }

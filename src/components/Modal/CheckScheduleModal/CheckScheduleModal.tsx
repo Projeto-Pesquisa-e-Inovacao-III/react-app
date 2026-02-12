@@ -3,7 +3,7 @@ import styles from "./CheckScheduleModal.module.css";
 import Button from "../../Button/Button";
 import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
 import { format, parse } from "date-fns";
-import SmallerButton from "../../SmallerButton";
+import SmallerButton from "../../SmallerButton/SmallerButton";
 import classNames from "classnames";
 import { findAppointmentById, rescheduleAppointment } from "../../../constants/schedule";
 import { useQuery } from "@tanstack/react-query";

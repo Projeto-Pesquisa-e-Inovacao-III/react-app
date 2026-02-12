@@ -1,7 +1,6 @@
 import UsersTable from "../../../components/UsersTable/UsersTable";
 import styles from "./ListUsers.module.css"
 import { useEffect, useState } from "react";
-import { SearchBar } from "../../../components/SearchBar/SearchBar";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
 import { listStudents } from "../../../constants/personal";
@@ -11,9 +10,6 @@ import { SearchIcon } from "lucide-react";
 
 export default function ListUsers() {
     const isMobile = useMobile();
-
-
-    const [pesquisa, setPesquisa] = useState("")
 
     function fetchUsers() {
         listStudents()

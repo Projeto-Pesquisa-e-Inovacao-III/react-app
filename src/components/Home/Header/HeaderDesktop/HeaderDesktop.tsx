@@ -31,12 +31,11 @@ export default function HeaderDesktop() {
                             <Link to="/home" className="border-1 border-[#ffffff50] rounded-full">
                                 <UserAvatar useUserImage={true} />
                             </Link>
-                            <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Logout</Link>
-
+                            <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Sair</Link>
                         </div>
                     ) : (
                         <>
-                            <Link to="/login" className="p-3 text-white h-full rounded-md">Login</Link>
+                            <Link to="/login" className="p-3 text-white h-full rounded-md">Entrar</Link>
                             <Link to="/register" className=" p-3 bg-white text-black h-full rounded-md">Cadastro</Link>
                         </>
                     )}

@@ -1,12 +1,10 @@
 import KPICards from "../../../components/Dashboard/Cards/KPICards/KPICards";
 
 import styles from "./Dashboard.module.css"
-import { useMediaQuery } from "@mui/material";
 import Chart from "../../../components/Dashboard/Charts/Chart";
 import classnames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import { useState } from "react";
-import { set } from "date-fns";
 import { getConsultingSessions, getPlansSalesQuantity, getQuantityofActiveStudents, getQuantityofInactiveStudents, getSalesQuantity } from "../../../constants/dashboard";
 import { useEffect } from "react";
 

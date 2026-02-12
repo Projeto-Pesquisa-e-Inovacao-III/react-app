@@ -1,5 +1,5 @@
 import styles from './PackageCard.module.css'
-import SmallerButton from '../SmallerButton';
+import SmallerButton from '../SmallerButton/SmallerButton';
 import classnames from 'classnames';
 import { useEffect } from 'react';
 

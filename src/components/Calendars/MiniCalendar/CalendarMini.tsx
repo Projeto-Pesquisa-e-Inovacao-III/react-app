@@ -20,8 +20,6 @@ type Props = {
 };
 
 export default function CalendarMini({ clickedDate, canGoPrev, dateRange, selectedDateRange, setSelectedDateRange }: Props) {
-    const actualMonth = new Date().getMonth() + 1;
-
     const [newEventDate, setNewEventDate] = useState<string>("");
     const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
@@ -51,6 +49,7 @@ export default function CalendarMini({ clickedDate, canGoPrev, dateRange, select
                         const end = selectedDateRange?.end;
 
                         if (start && end) {
+                            setNewEventDate(info.dateStr);
                             setSelectedDateRange({
                                 start: info.dateStr,
                                 end: ""
@@ -94,9 +93,9 @@ export default function CalendarMini({ clickedDate, canGoPrev, dateRange, select
                         return [];
                     }}
                     headerToolbar={{
-                        start: `${!canGoPrev && selectedMonth >= actualMonth + 2 ? "prev" : ""}${canGoPrev ? "prev" : ""}`,
+                        start: `prev`,
                         center: "title",
-                        end: `${selectedMonth > actualMonth + 1 ? "" : "next"}`,
+                        end: `next`,
                     }}
                     height="100%"
                     expandRows={true}

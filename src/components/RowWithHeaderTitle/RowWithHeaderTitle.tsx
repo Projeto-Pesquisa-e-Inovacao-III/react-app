@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import styles from './RowWithHeaderTitle.module.css'
-import SmallerButton from '../SmallerButton'
+import SmallerButton from '../SmallerButton/SmallerButton'
 import type { ReactNode } from 'react';
 
 export type RowItem = {
