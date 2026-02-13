@@ -118,13 +118,16 @@
     .cardContainerMobile {
         min-width: 0;
         max-width: 100%;
-        padding: 20px 6px;
+        padding: 10px 6px;
         width: 100%;
+        height: 100% !important;
+        min-height: unset !important;
     }
 
     .cardTitleMobile {
         font-size: 1.4rem;
         margin-bottom: 5px;
+        padding: 0;
     }
 
     .cardSubtitleMobile {
@@ -140,6 +143,8 @@
     .cardBtnMobile {
         font-size: 0.95rem;
         padding: 7px 12px;
+        width: 100%;
+        max-width: none !important;
     }
 }
 

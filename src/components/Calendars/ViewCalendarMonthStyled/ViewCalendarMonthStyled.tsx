@@ -135,6 +135,8 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
             const tomorrowDate = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
+            
+
             if (!hasClassTomorrow && cellDate === tomorrowDate) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {

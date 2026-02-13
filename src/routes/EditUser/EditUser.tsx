@@ -115,7 +115,7 @@ export default function EditUser() {
   useClickOutside({
     ref: imagePreviewModal,
     callback: () => {
-        setOpenModal(null);
+      setOpenModal(null);
     }
   });
 
@@ -328,6 +328,7 @@ export default function EditUser() {
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
             {userImage ?
               <UserImg
+                classname="border-2 border-gray-300"
                 Source={userImage}
                 Height={216}
                 Width={216}
@@ -530,13 +531,16 @@ export default function EditUser() {
       {openModal === "adjustAvatar" && (
         <>
           <div className={`overlay z-auto!`}></div>
-          <div ref={imagePreviewModal}  className="   fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50">
+          <div 
+          ref={imagePreviewModal} 
+          className="w-3/4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
+          >
             <div className={styles.profileSection + "max-w-full! max-h-full!"}>
               <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
                 {previewImage &&
                   <UserImg
                     Source={previewImage}
-                    classname="border-2 border-gray-300"
+                    classname="h-fit! border-2 border-gray-300"
                     Height={500}
                     Width={500}
                     Alt="foto"

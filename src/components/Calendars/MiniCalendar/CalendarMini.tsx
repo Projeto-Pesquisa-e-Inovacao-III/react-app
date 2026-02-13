@@ -21,7 +21,6 @@ type Props = {
 
 export default function CalendarMini({ clickedDate, dateRange, selectedDateRange, setSelectedDateRange }: Props) {
     const [newEventDate, setNewEventDate] = useState<string>("");
-    const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
     useEffect(() => {
         clickedDate?.(newEventDate);
@@ -37,10 +36,10 @@ export default function CalendarMini({ clickedDate, dateRange, selectedDateRange
                     initialView="dayGridMonth"
                     locale={"pt-br"}
                     dayHeaderFormat={{ weekday: "short" }}
-                    datesSet={(info) => {
-                        const month = info.start.getMonth() + 2;
-                        setSelectedMonth(month);
-                    }}
+                    // datesSet={(info) => {
+                    //     const month = info.start.getMonth() + 2;
+                    //     setSelectedMonth(month);
+                    // }}
                     dateClick={(info) => {
                         if (!dateRange || !setSelectedDateRange) {
                             setNewEventDate(info.dateStr);

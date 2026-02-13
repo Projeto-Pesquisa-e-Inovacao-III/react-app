@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import { type ReactNode } from "react";
 import styles from "./WhiteContainer.module.css"
 import classNames from "classnames";
 
@@ -16,7 +16,7 @@ export function WhiteContainer({ title, children, gap, titleMarginBottom, conten
         <div className={classNames(styles.whiteContainer, containerClassName)}>
             <h2
             style={{
-                marginBottom: titleMarginBottom || 20
+                marginBottom: `${titleMarginBottom || 20}px`
             }}
             >{title}</h2>
             <div className={classNames(styles.content, contentClassName)}

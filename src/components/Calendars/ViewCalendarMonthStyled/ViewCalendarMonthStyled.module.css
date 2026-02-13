@@ -153,4 +153,9 @@
     border-radius: 50%;
     padding: 5px 9px;
   }
+
+  .wrapperCalendar :global(.fc-daygrid-day-top) {
+    margin: 0 auto !important;
+    width: fit-content;
+  }
 }
