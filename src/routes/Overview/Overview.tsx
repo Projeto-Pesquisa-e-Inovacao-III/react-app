@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -22,6 +22,7 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import TextWithoutPlan from "../../components/Overview/TextWithoutPlan";
 import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPersonal/OverviewCardPersonal";
+import SmallerButton from "../../components/SmallerButton/SmallerButton";
 
 type ModalType = "success" | "error" | "newEvent";
 
@@ -285,9 +286,14 @@ export function Overview() {
                                                     <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
                                                     <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
                                                 </div>
-                                                {type?.type === "aluno" && <Button type="button" title="Agendar Agora" icon={<PlusIcon />} classNameDiv="" classNameVariable="flex items-center gap-2 !text-lg !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                                    onClick={handleClickNewEvent}
-                                                />}
+                                                {type?.type === "aluno" &&
+                                                    <SmallerButton
+                                                        type="button"
+                                                        title="Agendar Agora"
+                                                        icon={<PlusIcon />}
+                                                        classname="w-1/4! py-2.5! px-0! flex items-center gap-2 text-base! rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
+                                                        handleButtonClick={handleClickNewEvent}
+                                                    />}
                                             </>
                                         ) : (
                                             <>
@@ -295,19 +301,24 @@ export function Overview() {
                                                     <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
                                                     <h2 className="text-center text-gray-500">Confira nossos pacotes e escolha o melhor para você!</h2>
                                                 </div>
-                                                {type?.type === "aluno" && <Button type="button" title="Comprar Pacote Agora" classNameDiv="" classNameVariable="flex items-center gap-2 mt-2 !text-lg font-semibold !rounded-lg bg-blue-600 text-white hover:bg-blue-700"
-                                                    onClick={() => nav("/packages")}
-                                                />}
+                                                {type?.type === "aluno" &&
+                                                    <SmallerButton
+                                                        type="button"
+                                                        title="Comprar Pacote Agora"
+                                                        classname="w-1/3! flex items-center gap-2 mt-2 text-lg! font-semibold rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
+                                                        icon={<Plus />}
+                                                        handleButtonClick={() => nav("/packages")}
+                                                    />}
                                             </>
                                         )
                                     )}
 
                                     {type?.type === "personal" && (
-                                            <>
-                                                <div>
-                                                    <h2 className="text-center text-gray-500">Você ainda não possui agendamentos pendentes.</h2>
-                                                </div>
-                                            </>
+                                        <>
+                                            <div>
+                                                <h2 className="text-center text-gray-500">Você ainda não possui agendamentos pendentes.</h2>
+                                            </div>
+                                        </>
                                     )}
                                 </div>
                             ) : (
@@ -385,7 +396,7 @@ export function Overview() {
                                                 <div className="bg-white h-full w-[80%]"></div>
                                             </div>
                                         </div>
-                                        <button className="text-indigo cursor-pointer w-full py-3 bg-white text-primary font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                                        <button className="h-11! text-indigo cursor-pointer w-full py-3 bg-white font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
                                             Histórico de compras
                                             <span className="material-icons-outlined text-sm"><ArrowRight size={17} /></span>
                                         </button>
@@ -416,10 +427,17 @@ export function Overview() {
                                                 <TextWithoutPlan text="Contato direto com o personal" />
                                             </ul>
                                         </div>
-                                        <button onClick={() => nav("/packages")} className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform">
+                                        <SmallerButton
+                                            title="Ver pacotes disponíveis"
+                                            handleButtonClick={() => nav("/packages")}
+                                            icon={<ShoppingBag />}
+                                            iconPosition="right"
+                                            classname={styles.btnOverview}
+                                        />
+                                        {/* <button onClick={() => nav("/packages")} className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform">
                                             Ver Opções de Pacotes
                                             <span className="material-symbols-outlined"><ShoppingBag /></span>
-                                        </button>
+                                        </button> */}
                                     </div>
                                 </section>
                             </div>

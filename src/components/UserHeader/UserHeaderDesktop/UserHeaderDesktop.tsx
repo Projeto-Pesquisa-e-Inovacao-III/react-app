@@ -11,20 +11,22 @@ type UserType = {
   type: "personal" | "student"
 }
 
-export default function UserHeaderDesktop({userName, type }: UserType) {
+export default function UserHeaderDesktop({ userName, type }: UserType) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
-  queryClient.invalidateQueries({ queryKey: ['userImage'] });
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ['userImage'] });
+  }, []);
 
   const userRef = useRef<HTMLDivElement>(null);
 
   useClickOutside({
     ref: userRef,
     callback: () => {
-      if(openHeaderModal) {
+      if (openHeaderModal) {
         setOpenHeaderModal(false);
       }
     }
@@ -37,7 +39,7 @@ export default function UserHeaderDesktop({userName, type }: UserType) {
     <>
       <header className={styles.userHeaderDesktop}>
         <nav className={styles.nav}>
-        <Link to="/"><LogoHeaderDesktop /></Link>
+          <Link to="/"><LogoHeaderDesktop /></Link>
           {type === 'personal' ? (
             <>
               <NavLink to="/home" className={navLinkClass}>Início</NavLink>
@@ -60,24 +62,29 @@ export default function UserHeaderDesktop({userName, type }: UserType) {
           }
         </nav>
 
-        <div className={styles.authLinks}>
-          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className={styles.userAvatarHeaderDesktop}>
-            <UserAvatar userName={userName} useUsername={true} useUserImage={true} />
-          </div>
-        </div>
+        <div ref={userRef} className={styles.authLinks}>
 
-      </header >
-
-      {openHeaderModal && (
-        <div ref={userRef}  className={styles.headerModalDesktop} onClick={() => setOpenHeaderModal(false)}>
-          <div className={styles.headerModalContentDesktop} onClick={(e) => e.stopPropagation()}>
-            <Link onClick={() => setOpenHeaderModal(false)} to="/edit-user">Editar perfil</Link>
-            {type === "personal" && <Link onClick={() => setOpenHeaderModal(false)} to="/set-availability">Ajustar disponibilidade</Link>}
-            <Link onClick={() => setOpenHeaderModal(false)} to="/logout">Sair</Link>
+          <div
+            onClick={() => setOpenHeaderModal(prev => !prev)}
+            className={styles.userAvatarHeaderDesktop}
+          >
+            <UserAvatar userName={userName} useUsername useUserImage />
           </div>
+
+          {openHeaderModal && (
+            <div className={styles.headerModalDesktop}>
+              <div className={styles.headerModalContentDesktop}>
+                <Link onClick={() => setOpenHeaderModal(false)} to="/edit-user">Editar perfil</Link>
+                {type === "personal" &&
+                  <Link onClick={() => setOpenHeaderModal(false)} to="/set-availability">
+                    Ajustar disponibilidade
+                  </Link>}
+                <Link onClick={() => setOpenHeaderModal(false)} to="/logout">Sair</Link>
+              </div>
+            </div>
+          )}
         </div>
-      )
-      }
+      </header>
     </>
   );
 }

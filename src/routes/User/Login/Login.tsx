@@ -107,7 +107,7 @@ export default function Login() {
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
-              <Button type="submit" title="Entrar" loading={loading} />
+              <Button type="submit" title="Entrar" loading={loading} classNameDiv={styles.btnDiv} classNameVariable={styles.btnLogin} />
             </form>
             <span className={styles.mg15}>
               Não tem uma conta? <Link to="/register">Criar uma conta</Link>

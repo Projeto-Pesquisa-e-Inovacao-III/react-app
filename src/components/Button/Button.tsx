@@ -22,20 +22,21 @@ export default function Button({ type, title, classNameVariable, classNameDiv, o
                 className={classNames(styles[`${typeButton}`], classNameVariable)}
                 type={type}
                 onClick={onClick}
+                
             >
                 {icon && <span className={styles.icon}>{icon}</span>}
                 {loading ?
 
                     <div className={styles.LoadingIcon}>
                         <Oval
-                            height={30}
-                            width={30}
+                            height={25}
+                            width={25}
                             color="#fff"
                             visible={true}
                             ariaLabel="oval-loading"
                             secondaryColor="#fff"
-                            strokeWidth={2}
-                            strokeWidthSecondary={2}
+                            strokeWidth={3}
+                            strokeWidthSecondary={3}
 
                         />
                     </div>

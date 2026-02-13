@@ -12,6 +12,8 @@ export default function HeaderDesktop() {
 
     const verify = !!userLoggedIn.data?.data?.autentificado;
 
+    const userName = userLoggedIn.data?.data?.user.nome || "Usuário";
+
     return (
         <>
             <header className="w-full fixed bg-indigo flex items-center justify-center h-20 p-[20px] pl-25 pr-25 text-white z-10">
@@ -28,10 +30,10 @@ export default function HeaderDesktop() {
                 <div className="text-lg flex gap-2">
                     {verify ? (
                         <div className="flex gap-3 items-center">
-                            <Link to="/home" className="border-1 border-[#ffffff50] rounded-full">
-                                <UserAvatar useUserImage={true} />
+                            <Link to="/home" className="border border-[#ffffff50] rounded-full">
+                                <UserAvatar userName={userName} useUsername={true} useUserImage={true} />
                             </Link>
-                            <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Sair</Link>
+                            {/* <Link to="/logout" className="p-3 bg-white text-black h-auto rounded-md">Sair</Link> */}
                         </div>
                     ) : (
                         <>

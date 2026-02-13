@@ -40,7 +40,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           Alt="foto"
         />
         :
-        <User width={216} height={216} />
+        <User width={216} height={216} color='#000' />
       }
     </div>
   )

@@ -1,14 +1,19 @@
 .miniSelectedDay {
-  background-color: #2e2e2e !important;
   color: white !important;
-  border-radius: 50%;
   padding: 6px 10px;
   transition: all 0.3s, color 0.3s;
   
 }
 
-.miniWrapperStyledCalendar :global(.fc .fc-daygrid-day .fc-day-today) {
-  background: transparent !important;
+.miniSelectedDay :global(.fc-daygrid-day-frame ) {
+  background: #4b4b4b !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+:global(.fc .fc-daygrid-day.fc-day-today) {
+  background: none !important;
+  background-color: none !important;
 }
 
 .miniWrapperStyledCalendar {
