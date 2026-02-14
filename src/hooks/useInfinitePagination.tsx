@@ -14,6 +14,7 @@ export type PaginatedResponse<T> = {
 type UseInfinitePaginationProps<T> = {
     queryKey: unknown[];
     queryFn: (page: number) => Promise<PaginatedResponse<T>>;
+    enable?: boolean
     getNextPageParam?: (
         lastPage: PaginatedResponse<T>,
         allPages: PaginatedResponse<T>[]
@@ -22,7 +23,7 @@ type UseInfinitePaginationProps<T> = {
 
 export function useInfinitePagination<T>(
 
-    { queryKey, queryFn, getNextPageParam }: UseInfinitePaginationProps<T>) {
+    { queryKey, queryFn, enable, getNextPageParam }: UseInfinitePaginationProps<T>) {
 
     const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
@@ -30,6 +31,7 @@ export function useInfinitePagination<T>(
         queryKey,
         queryFn: ({ pageParam = 0 }) => queryFn(pageParam),
         initialPageParam: 0,
+        enabled: enable && enable,
         getNextPageParam:
             getNextPageParam ??
             ((lastPage) => {

@@ -17,7 +17,7 @@ import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, RefreshCwIcon, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
-import { type PaginatedResponse } from "../../../hooks/useInfinitePagination";
+import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
 import { statusProperties } from "./CardStatus/cardStatus";
 import type { DateRange } from "../../../components/Calendars/MiniCalendar/CalendarMini";
@@ -66,16 +66,14 @@ export function CheckSchedule() {
     }
 
     const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
-    // const {
-    //     data: userRescheduleAppointments,
-    //     loadMoreRef,
-    //     hasNextPage,
-    //     isFetchingNextPage,
-    //     pagination
-    // } = useInfinitePagination<CheckSchedule>({
-    //     queryKey: ["userRescheduleAppointments"],
-    //     queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data)
-    // });
+    const {
+        data: infinitePaginationMobile,
+        loadMoreRef,
+    } = useInfinitePagination<CheckSchedule>({
+        queryKey: ["userRescheduleAppointmentsMobile"],
+        queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+        enable: isMobile
+    });
 
     const [page, setPage] = useState(0);
 
@@ -84,9 +82,10 @@ export function CheckSchedule() {
             queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
             queryFn: () =>
                 findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+            enabled: !isMobile
         });
 
-    const appointmentsList = userRescheduleAppointments?.content ?? [];
+    const appointmentsList = userRescheduleAppointments?.content ?? infinitePaginationMobile;
     const pagination = userRescheduleAppointments?.page;
 
     const hasNextPage =
@@ -132,6 +131,7 @@ export function CheckSchedule() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
     }
 
@@ -193,9 +193,6 @@ export function CheckSchedule() {
         start: "",
         end: "",
     });
-
-    console.log("Selected date range:", pagination?.number);
-
 
     return (
         <>
@@ -291,10 +288,18 @@ export function CheckSchedule() {
                             </div>
                         ) : (
                             filteredData.map((card) => (
-                                <div className={styles.mobileCardWrapper}>
+
+                                <div className={styles.mobileCardWrapper}
+                                    key={card.agendamentoId}
+                                    ref={loadMoreRef}
+
+                                >
                                     <div className={styles.mobileCard}>
 
-                                        <div className={styles.mobileCardHeader}>
+                                        <div className={styles.mobileCardHeader}
+
+
+                                        >
                                             <span
                                                 className={`${styles.mobileStatusBadge} ${statusProperties.find(
                                                     (status) => status.cardStatus === card.status
@@ -373,9 +378,12 @@ export function CheckSchedule() {
                                         </div>
 
                                     </div>
+
+
                                 </div>
 
                             ))
+
                         )}
                     </>
                 )}
