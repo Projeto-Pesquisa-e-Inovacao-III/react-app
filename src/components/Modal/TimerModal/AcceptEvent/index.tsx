@@ -20,9 +20,7 @@ export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, 
 
     return (
         <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
-            <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-green"}`} onClick={handleAcceptEvent}>
-                {buttonTitle || "Cancelar Evento"}
-            </button>
+            <SmallerButton type="button" classname={enableButton ? "bg-green-600!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Aceitar Evento"} handleButtonClick={handleAcceptEvent} disabled={!enableButton}/>
             <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />
         </div>
     )

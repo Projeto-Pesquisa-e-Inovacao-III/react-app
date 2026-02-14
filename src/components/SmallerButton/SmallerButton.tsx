@@ -9,8 +9,9 @@ type SmallerButtonProps = {
     selected?: boolean;
     classname?: string;
     handleButtonClick?: (value: string | boolean) => void;
+    disabled?: boolean;
 };
-export default function SmallerButton({ type, icon, iconPosition, title, value, selected, classname, handleButtonClick }: SmallerButtonProps) {
+export default function SmallerButton({ type, icon, iconPosition, title, value, selected, classname, handleButtonClick, disabled }: SmallerButtonProps) {
     useEffect(() => {
         if (selected && handleButtonClick) {
             handleButtonClick(value ?? "");
@@ -21,6 +22,7 @@ export default function SmallerButton({ type, icon, iconPosition, title, value, 
             className={`${styles.btnSched} ${classname ?? ""}`}
             type={type}
             onClick={() => handleButtonClick?.(value ?? "")}
+            disabled={disabled}
         >
 
             {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}

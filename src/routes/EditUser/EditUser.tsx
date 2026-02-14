@@ -497,6 +497,7 @@ export default function EditUser() {
       {openModal === "timer" && (
         <TimerModal
           isMobile={isMobile}
+          isDelete={true}
           closeThen={() => {
             setOpenModal(null);
             setConfirmingDelete(false);

@@ -10,10 +10,16 @@ type Props = {
 
 export default function CheckScheduleKpis({ title, value, color }: Props) {
     return (
-        <div className="flex gap-5 mb-5 bg-white p-5 px-2.5 rounded-lg border border-gray-300">
-            <div className="ml-3">
-                <h2 className='text-gray-500 text-sm font-semibold uppercase'>{title}</h2>
-                <p className='text-3xl font-extrabold mt-2' style={{ color: color }}>{value}</p>
+        <div className={styles.cardContainer}>
+            <div className={styles.cardContent}>
+                <h2 className={styles.cardTitle}>{title}</h2>
+
+                <p
+                    className={styles.cardValue}
+                    style={{ color: color }}
+                >
+                    {value}
+                </p>
             </div>
         </div>
     )

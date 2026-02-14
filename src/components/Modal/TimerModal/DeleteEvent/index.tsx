@@ -21,9 +21,11 @@ export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, 
 
     return (
         <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
-            <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-red"}`} onClick={handleDeleteEvent}>
+            {/* <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-red"}`} onClick={handleDeleteEvent}>
                 {buttonTitle || "Cancelar Evento"}
-            </button>
+            </button> */}
+            <SmallerButton type="button" classname={enableButton ? "bg-red-900!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Cancelar Evento"} handleButtonClick={handleDeleteEvent} disabled={!enableButton}/>
+
             <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />
         </div>
     )

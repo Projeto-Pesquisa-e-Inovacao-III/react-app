@@ -1,4 +1,4 @@
-import { Calendar, SearchIcon } from "lucide-react";
+import { Calendar, FilterIcon, SearchIcon } from "lucide-react";
 import Button from "../../Button/Button";
 import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
 import styles from "./CardFilterCheckSchedule.module.css"
@@ -6,6 +6,8 @@ import Select from "../../Select/Select";
 import { useRef, useState } from "react";
 import CalendarMini, { type DateRange } from "../../Calendars/MiniCalendar/CalendarMini";
 import useClickOutside from "../../../hooks/useClickOutside";
+import useMobile from "../../../hooks/isMobile";
+import SmallerButton from "../../SmallerButton/SmallerButton";
 
 type FilterProps = {
     onSearchChange: (filter: string) => void;
@@ -26,6 +28,8 @@ type FilterProps = {
 
 
 export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, onSelectTypeClassChange, searchValue, selectStatusValue, selectTypeClassValue, onClear, hasFilters, onSelectLinesPerPageChange, selectLinesPerPageValue, selectedDateRange, setSelectedDateRange }: FilterProps) {
+    const isMobile = useMobile()
+
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
     const [openCalendar, setOpenCalendar] = useState(false);
@@ -39,96 +43,122 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
         callback: () => setOpenCalendar(false)
     });
     return (
-        <div className={styles.containerCardFilterCheckSchedule}>
-            <div className={styles.cardFilter}>
-                <InputWithIcon
-                    type="text"
-                    placeholder="Buscar aluno"
-                    icon={<SearchIcon />}
-                    value={searchValue}
-                    onInputChange={onSearchChange}
-                />
-                <Select
-                    onSelectStatusChange={onSelectStatusChange}
-                    selectStatusValue={selectStatusValue}
-                    selectPlaceholder="Selecionar status"
-                    values={[
-                        { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
-                        { label: "Aprovado", value: "APROVADO" },
-                        { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
-                    ]}
-                    setOpenSelectId={setOpenSelectId}
-                    openSelectId={openSelectId}
-                    id="status"
-                />
-                <Select
-                    onSelectStatusChange={onSelectTypeClassChange}
-                    selectStatusValue={selectTypeClassValue}
-                    selectPlaceholder="Tipo de agendamento"
-                    values={[
-                        { label: "Presencial", value: "PRESENCIAL" },
-                        { label: "Residencial", value: "RESIDENCIAL" },
-                        { label: "Funcional", value: "FUNCIONAL" },
-                    ]}
-                    setOpenSelectId={setOpenSelectId}
-                    openSelectId={openSelectId}
-                    id="tipoAula"
-                />
+        <>
+            {!isMobile && (
+                <div className={styles.containerCardFilterCheckSchedule}>
+                    <div className={styles.cardFilter}>
+                        <InputWithIcon
+                            type="text"
+                            placeholder="Buscar aluno"
+                            icon={<SearchIcon />}
+                            value={searchValue}
+                            onInputChange={onSearchChange}
+                        />
+                        <Select
+                            onSelectStatusChange={onSelectStatusChange}
+                            selectStatusValue={selectStatusValue}
+                            selectPlaceholder="Selecionar status"
+                            values={[
+                                { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
+                                { label: "Aprovado", value: "APROVADO" },
+                                { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
+                            ]}
+                            setOpenSelectId={setOpenSelectId}
+                            openSelectId={openSelectId}
+                            id="status"
+                        />
+                        <Select
+                            onSelectStatusChange={onSelectTypeClassChange}
+                            selectStatusValue={selectTypeClassValue}
+                            selectPlaceholder="Tipo de agendamento"
+                            values={[
+                                { label: "Presencial", value: "PRESENCIAL" },
+                                { label: "Residencial", value: "RESIDENCIAL" },
+                                { label: "Funcional", value: "FUNCIONAL" },
+                            ]}
+                            setOpenSelectId={setOpenSelectId}
+                            openSelectId={openSelectId}
+                            id="tipoAula"
+                        />
 
-                <div ref={calendarRef} className="relative flex items-center gap-2">
-                    <div className="border w-0.5 border-gray-300 h-full"></div>
-                    <Calendar color="#707070" className="cursor-pointer" onClick={() => setOpenCalendar(!openCalendar)} />
+                        <div ref={calendarRef} className="relative flex items-center gap-2">
+                            <div className="border w-0.5 border-gray-300 h-full"></div>
+                            <Calendar color="#707070" className="cursor-pointer" onClick={() => setOpenCalendar(!openCalendar)} />
 
-                    {openCalendar && (
-                        <div className="absolute top-10 z-50 max-w-3xl w-72">
-                            <CalendarMini
-                                dateRange={true}
-                                selectedDateRange={selectedDateRange}
-                                setSelectedDateRange={setSelectedDateRange}
-                            />
+                            {openCalendar && (
+                                <div className="absolute top-10 z-50 max-w-3xl w-72">
+                                    <CalendarMini
+                                        dateRange={true}
+                                        selectedDateRange={selectedDateRange}
+                                        setSelectedDateRange={setSelectedDateRange}
+                                    />
+                                </div>
+                            )}
                         </div>
-                    )}
+
+                    </div>
+                    <div>
+                        <Select
+                            onSelectStatusChange={onSelectLinesPerPageChange}
+                            selectStatusValue={selectLinesPerPageValue}
+                            fixedText="Linhas por página:"
+                            showSelectAll={false}
+                            showSearchInput={false}
+                            values={[
+                                { label: "5", value: "5" },
+                                { label: "6", value: "6" },
+                                { label: "7", value: "7" },
+                                { label: "8", value: "8" },
+                                { label: "9", value: "9" },
+                                { label: "10", value: "10" },
+                                { label: "11", value: "11" },
+                                { label: "12", value: "12" },
+
+                            ]}
+                            setOpenSelectId={setOpenSelectId}
+                            openSelectId={openSelectId}
+                            defaultValue={selectLinesPerPageValue}
+                            id="linhasPorPagina"
+                        />
+                    </div>
+                    {hasFilters &&
+                        <div className={styles.divButtonFilter}>
+                            <Button
+                                type="button"
+                                typeButton="other"
+                                title="Limpar filtro"
+                                classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule}
+                                onClick={() => {
+                                    onClear?.();
+                                }} />
+                        </div>
+                    }
+
+
+                </div>
+            )}
+
+            {isMobile && (
+                <div className={styles.containerCardFilterCheckSchedule}>
+                        <InputWithIcon
+                            type="text"
+                            placeholder="Buscar aluno"
+                            customClassName="bg-white! rounded-lg"
+                            icon={<SearchIcon />}
+                            value={searchValue}
+                            onInputChange={onSearchChange}
+                        />
+                        <SmallerButton
+                            type="button"
+                            title="Filtros"
+                            icon={<FilterIcon />}
+                            classname={styles.buttonFilterMobile}
+                            handleButtonClick={() => setOpenFilters(!openFilters)}
+                        />
                 </div>
 
-            </div>
-            <div>
-                <Select
-                    onSelectStatusChange={onSelectLinesPerPageChange}
-                    selectStatusValue={selectLinesPerPageValue}
-                    fixedText="Linhas por página:"
-                    showSelectAll={false}
-                    showSearchInput={false}
-                    values={[
-                        { label: "5", value: "5" },
-                        { label: "6", value: "6" },
-                        { label: "7", value: "7" },
-                        { label: "8", value: "8" },
-                        { label: "9", value: "9" },
-                        { label: "10", value: "10" },
-                        { label: "11", value: "11" },
-                        { label: "12", value: "12" },
+            )}
 
-                    ]}
-                    setOpenSelectId={setOpenSelectId}
-                    openSelectId={openSelectId}
-                    defaultValue={selectLinesPerPageValue}
-                    id="linhasPorPagina"
-                />
-            </div>
-            {hasFilters &&
-                <div className={styles.divButtonFilter}>
-                    <Button
-                        type="button"
-                        typeButton="other"
-                        title="Limpar filtro"
-                        classNameDiv={styles.buttonFilter} classNameVariable={styles.btnCheckSchedule}
-                        onClick={() => {
-                            onClear?.();
-                        }} />
-                </div>
-            }
-
-
-        </div>
+        </>
     )
 }

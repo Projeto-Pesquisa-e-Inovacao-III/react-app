@@ -17,7 +17,6 @@ import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, ChevronLeft, ChevronRight, CircleCheck, CircleX, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
-import TableRow from "../../../components/CheckSchedule/Table/TableRow";
 import { type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
 import { statusProperties } from "./CardStatus/cardStatus";
@@ -80,21 +79,21 @@ export function CheckSchedule() {
 
     const [page, setPage] = useState(0);
 
-const { data: userRescheduleAppointments } =
-    useQuery<PaginatedResponse<CheckSchedule>>({
-        queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
-        queryFn: () =>
-            findPersonalRequests(page, linesPerPageValue).then(res => res.data),
-    });
+    const { data: userRescheduleAppointments } =
+        useQuery<PaginatedResponse<CheckSchedule>>({
+            queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
+            queryFn: () =>
+                findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+        });
 
     const appointmentsList = userRescheduleAppointments?.content ?? [];
     const pagination = userRescheduleAppointments?.page;
 
     const hasNextPage =
-pagination ? pagination.number < pagination.totalPages - 1 : false;
+        pagination ? pagination.number < pagination.totalPages - 1 : false;
 
     const hasPreviousPage =
-    pagination ? pagination.number > 0 : false;
+        pagination ? pagination.number > 0 : false;
 
 
     function handlePaginationChange(newPage: number) {
@@ -205,8 +204,7 @@ pagination ? pagination.number < pagination.totalPages - 1 : false;
                 <div className={styles.titleFilter}>
                     <h1>Solicitações de Agendamentos</h1>
 
-                    <div className="grid grid-cols-4 w-full gap-5 flex-wrap">
-
+                    <div className={styles.gridContainer}>
                         <CheckScheduleKpis
                             title="Total pendente"
                             value={appointmentsList.length}
@@ -266,11 +264,12 @@ pagination ? pagination.number < pagination.totalPages - 1 : false;
                     <div ref={loadMoreRef} style={{ height: "1px" }} />
                 </div>*/}
 
-                <div className="rounded-lg border border-slate-200 bg-white shadow-sm w-full z-10">
-                    <div className="overflow-x-auto rounded-t-lg">
-                        <table className="w-full text-left border-collapse">
-                            <thead className="">
-                                <tr className="bg-[#192633] border-b border-[#324d67]">
+
+                <div className={styles.container}>
+                    <div className={styles.tableWrapper}>
+                        <table className={styles.table}>
+                            <thead>
+                                <tr className={styles.theadRow}>
                                     <TableHeader title="Status" />
                                     <TableHeader title="Aluno" />
                                     <TableHeader title="Data" />
@@ -279,49 +278,98 @@ pagination ? pagination.number < pagination.totalPages - 1 : false;
                                     <TableHeader title="Ações" />
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#324d67]">
-                                {filteredData.length !== 0 && filteredData.map(card => (
-                                    <tr className="border border-gray-300">
-                                        <td className="px-6 py-4">
-                                            <span className={`flex w-full h-12 justify-center text-center items-center px-2.5 py-0.5 rounded-full text-sm font-semibold ${statusProperties.find(status => status.cardStatus === card.status)?.cardColor}`}>
-                                                {statusProperties.find(status => status.cardStatus === card.status)?.cardDescription}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="size-9 rounded-full bg-cover bg-center border border-slate-300 flex items-center justify-center" data-alt={`Client ${card.nome}`}>{card.foto ? <img src={card.foto} alt={`Client ${card.nome}`} className="rounded-full w-9 h-9 object-cover" /> : <UserRound />}</div>
-                                                <span className="text-sm font-semibold text-slate-900">{card.nome}</span>
-                                            </div>
-                                        </td>
-                                        <TableRow text={format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} />
-                                        <TableRow text={card.tipoAula} />
-                                        <TableRow text={card.endereco.cep.logradouro + ", " + card.endereco.numero + " - " + card.endereco.cep.bairro + " - " + card.endereco.cep.uf} />
-                                        <td className="px-6 py-4 text-right">
-                                            <div className="flex justify-between gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                                                <button className="cursor-pointer" onClick={() => {
-                                                    handleModal(card.agendamentoId, "accept")
-                                                }}>
-                                                    <CircleCheck className="text-green-500" />
-                                                </button>
-                                                <button className="cursor-pointer" onClick={() => {
-                                                    handleModal(card.agendamentoId, "decline")
-                                                }}>
-                                                    <CircleX className="text-red-500" />
-                                                </button>
-                                                <button className="cursor-pointer" onClick={() => {
-                                                    setClickedDate(card.dataInicio?.split("T")[0] || "");
-                                                    handleModal(card.agendamentoId, "reschedule");
-                                                }}>
-                                                    <CalendarClock className="text-blue-500" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+
+                            <tbody className={styles.tbody}>
+                                {filteredData.length !== 0 &&
+                                    filteredData.map((card) => (
+                                        <tr key={card.agendamentoId} className={styles.row}>
+
+                                            <td className={styles.cell}>
+                                                <span
+                                                    className={`${styles.statusSpan} ${statusProperties.find(
+                                                        (status) => status.cardStatus === card.status
+                                                    )?.cardColor || ""
+                                                        }`}
+                                                >
+                                                    {
+                                                        statusProperties.find(
+                                                            (status) => status.cardStatus === card.status
+                                                        )?.cardDescription
+                                                    }
+                                                </span>
+                                            </td>
+
+                                            <td className={styles.cell}>
+                                                <div className={styles.userWrapper}>
+                                                    <div
+                                                        className={styles.userAvatar}
+                                                        data-alt={`Client ${card.nome}`}
+                                                    >
+                                                        {card.foto ? (
+                                                            <img
+                                                                src={card.foto}
+                                                                alt={`Client ${card.nome}`}
+                                                                className={styles.userImage}
+                                                            />
+                                                        ) : (
+                                                            <UserRound />
+                                                        )}
+                                                    </div>
+                                                    <span className={styles.userName}>{card.nome}</span>
+                                                </div>
+                                            </td>
+
+                                            <td className={styles.cell}>
+                                                {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")}
+                                            </td>
+
+                                            <td className={styles.cell}>{card.tipoAula}</td>
+
+                                            <td className={styles.cell}>
+                                                {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                {card.endereco.cep.bairro} - {card.endereco.cep.uf}
+                                            </td>
+
+                                            <td className={styles.actionsCell}>
+                                                <div className={styles.actionsWrapper}>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() =>
+                                                            handleModal(card.agendamentoId, "accept")
+                                                        }
+                                                    >
+                                                        <CircleCheck className="text-green-500" />
+                                                    </button>
+
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() =>
+                                                            handleModal(card.agendamentoId, "decline")
+                                                        }
+                                                    >
+                                                        <CircleX className="text-red-500" />
+                                                    </button>
+
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => {
+                                                            setClickedDate(
+                                                                card.dataInicio?.split("T")[0] || ""
+                                                            );
+                                                            handleModal(card.agendamentoId, "reschedule");
+                                                        }}
+                                                    >
+                                                        <CalendarClock className="text-blue-500" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+
                                 {filteredData.length === 0 && (
-                                    <tr className="h-96 px-6 py-4">
-                                        <td colSpan={6} className="text-center py-4 h-2/4">
-                                            <span className="text-gray-500">
+                                    <tr className={styles.emptyRow}>
+                                        <td colSpan={6} className={styles.emptyCell}>
+                                            <span className={styles.emptyText}>
                                                 Nenhum agendamento encontrado.
                                             </span>
                                         </td>
@@ -329,32 +377,59 @@ pagination ? pagination.number < pagination.totalPages - 1 : false;
                                 )}
                             </tbody>
                         </table>
-                        { (hasPreviousPage || hasNextPage) && (
-                            <div>
-                                <div className="flex justify-between items-center">
-                                    <div className="py-4 px-6 gap-4 flex">
+
+                        {(hasPreviousPage || hasNextPage) && (
+                            <div className={styles.paginationContainer}>
+                                <div className={styles.paginationContent}>
+
+                                    <div className={styles.paginationInfoWrapper}>
                                         <div>
-                                            <span className="text-gray-500">Página</span> {pagination?.number as number + 1} <span className="text-gray-500">de</span> {pagination?.totalPages}
+                                            <span className={styles.paginationInfoText}>Página</span>{" "}
+                                            {(pagination?.number as number) + 1}{" "}
+                                            <span className={styles.paginationInfoText}>de</span>{" "}
+                                            {pagination?.totalPages}
                                         </div>
-                                        <span className="text-gray-500">Mostrando {pagination?.size} de {pagination?.totalElements} agendamentos</span>
+
+                                        <span className={styles.paginationInfoText}>
+                                            Mostrando {pagination?.size} de {pagination?.totalElements} agendamentos
+                                        </span>
                                     </div>
-                                    <div className="flex py-4 px-6 gap-3">
-                                        <SmallerButton 
-                                            icon={<ChevronLeft />} 
-                                            classname={`${pagination?.number === 0 ? 'bg-gray-400! cursor-default!' : ''} h-12`} 
-                                            handleButtonClick={() => handlePaginationChange(page - 1)}    
+
+                                    <div className={styles.paginationButtonsWrapper}>
+
+                                        <SmallerButton
+                                            icon={<ChevronLeft />}
+                                            classname={`${styles.buttonHeight} ${pagination?.number === 0 ? styles.buttonDisabled : ""
+                                                }`}
+                                            handleButtonClick={() => {
+                                                if (pagination?.number !== 0) {
+                                                    handlePaginationChange(page - 1)
+                                                }
+                                            }}
                                         />
-                                        <SmallerButton 
-                                            icon={<ChevronRight />} 
-                                            classname={`${pagination?.totalPages && pagination?.number === pagination?.totalPages - 1 ? 'bg-gray-400! cursor-default!' : ''} h-12`} 
-                                            handleButtonClick={() => handlePaginationChange(page + 1)}    
+
+                                        <SmallerButton
+                                            icon={<ChevronRight />}
+                                            classname={`${styles.buttonHeight} ${pagination?.totalPages &&
+                                                pagination?.number === pagination?.totalPages - 1
+                                                ? styles.buttonDisabled
+                                                : ""
+                                                }`}
+                                            handleButtonClick={() => {
+                                                if (pagination?.totalPages && pagination?.number !== pagination?.totalPages - 1) {
+                                                    handlePaginationChange(page + 1)
+                                                }
+                                            }}
                                         />
+
                                     </div>
                                 </div>
                             </div>
                         )}
+
                     </div>
                 </div>
+
             </div>
 
             {/* {isFetchingNextPage && <p>Carregando mais...</p>} */}
