@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, ChevronLeft, ChevronRight, CircleCheck, CircleX, UserRound } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, RefreshCwIcon, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -263,196 +263,232 @@ export function CheckSchedule() {
                     ))}
                     <div ref={loadMoreRef} style={{ height: "1px" }} />
                 </div>*/}
+                {isMobile && (
+                    <>
+                        {filteredData.length === 0 && (
+                            <div className={styles.mobileEmptyContainer}>
 
-
-                <div className={styles.container}>
-                    <div className={styles.tableWrapper}>
-                        <table className={styles.table}>
-                            <thead>
-                                <tr className={styles.theadRow}>
-                                    <TableHeader title="Status" />
-                                    <TableHeader title="Aluno" />
-                                    <TableHeader title="Data" />
-                                    <TableHeader title="Tipo de agendamento" />
-                                    <TableHeader title="Endereço" />
-                                    <TableHeader title="Ações" />
-                                </tr>
-                            </thead>
-
-                            <tbody className={styles.tbody}>
-                                {filteredData.length !== 0 &&
-                                    filteredData.map((card) => (
-                                        <tr key={card.agendamentoId} className={styles.row}>
-
-                                            <td className={styles.cell}>
-                                                <span
-                                                    className={`${styles.statusSpan} ${statusProperties.find(
-                                                        (status) => status.cardStatus === card.status
-                                                    )?.cardColor || ""
-                                                        }`}
-                                                >
-                                                    {
-                                                        statusProperties.find(
-                                                            (status) => status.cardStatus === card.status
-                                                        )?.cardDescription
-                                                    }
-                                                </span>
-                                            </td>
-
-                                            <td className={styles.cell}>
-                                                <div className={styles.userWrapper}>
-                                                    <div
-                                                        className={styles.userAvatar}
-                                                        data-alt={`Client ${card.nome}`}
-                                                    >
-                                                        {card.foto ? (
-                                                            <img
-                                                                src={card.foto}
-                                                                alt={`Client ${card.nome}`}
-                                                                className={styles.userImage}
-                                                            />
-                                                        ) : (
-                                                            <UserRound />
-                                                        )}
-                                                    </div>
-                                                    <span className={styles.userName}>{card.nome}</span>
-                                                </div>
-                                            </td>
-
-                                            <td className={styles.cell}>
-                                                {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")}
-                                            </td>
-
-                                            <td className={styles.cell}>{card.tipoAula}</td>
-
-                                            <td className={styles.cell}>
-                                                {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
-                                                {card.endereco.cep.bairro} - {card.endereco.cep.uf}
-                                            </td>
-
-                                            <td className={styles.actionsCell}>
-                                                <div className={styles.actionsWrapper}>
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() =>
-                                                            handleModal(card.agendamentoId, "accept")
-                                                        }
-                                                    >
-                                                        <CircleCheck className="text-green-500" />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() =>
-                                                            handleModal(card.agendamentoId, "decline")
-                                                        }
-                                                    >
-                                                        <CircleX className="text-red-500" />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => {
-                                                            setClickedDate(
-                                                                card.dataInicio?.split("T")[0] || ""
-                                                            );
-                                                            handleModal(card.agendamentoId, "reschedule");
-                                                        }}
-                                                    >
-                                                        <CalendarClock className="text-blue-500" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-
-                                {filteredData.length === 0 && (
-                                    <tr className={styles.emptyRow}>
-                                        <td colSpan={6} className={styles.emptyCell}>
-                                            <span className={styles.emptyText}>
-                                                Nenhum agendamento encontrado.
-                                            </span>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-
-                        {(hasPreviousPage || hasNextPage) && (
-                            <div className={styles.paginationContainer}>
-                                <div className={styles.paginationContent}>
-
-                                    <div className={styles.paginationInfoWrapper}>
-                                        <div>
-                                            <span className={styles.paginationInfoText}>Página</span>{" "}
-                                            {(pagination?.number as number) + 1}{" "}
-                                            <span className={styles.paginationInfoText}>de</span>{" "}
-                                            {pagination?.totalPages}
-                                        </div>
-
-                                        <span className={styles.paginationInfoText}>
-                                            Mostrando {pagination?.size} de {pagination?.totalElements} agendamentos
-                                        </span>
-                                    </div>
-
-                                    <div className={styles.paginationButtonsWrapper}>
-
-                                        <SmallerButton
-                                            icon={<ChevronLeft />}
-                                            classname={`${styles.buttonHeight} ${pagination?.number === 0 ? styles.buttonDisabled : ""
-                                                }`}
-                                            handleButtonClick={() => {
-                                                if (pagination?.number !== 0) {
-                                                    handlePaginationChange(page - 1)
-                                                }
-                                            }}
-                                        />
-
-                                        <SmallerButton
-                                            icon={<ChevronRight />}
-                                            classname={`${styles.buttonHeight} ${pagination?.totalPages &&
-                                                pagination?.number === pagination?.totalPages - 1
-                                                ? styles.buttonDisabled
-                                                : ""
-                                                }`}
-                                            handleButtonClick={() => {
-                                                if (pagination?.totalPages && pagination?.number !== pagination?.totalPages - 1) {
-                                                    handlePaginationChange(page + 1)
-                                                }
-                                            }}
-                                        />
-
-                                    </div>
+                                <div className={styles.mobileIconWrapper}>
+                                    <CalendarX className={styles.mobileIcon} />
                                 </div>
+
+                                <h3 className={styles.mobileTitle}>
+                                    Nenhum agendamento encontrado
+                                </h3>
+
+                                <p className={styles.mobileText}>
+                                    Não encontramos solicitações com os filtros selecionados ou ainda não há agendamentos.
+                                </p>
+
+                                {hasFilters &&
+                                    <SmallerButton
+                                        title="Limpar filtros"
+                                        icon={<RefreshCwIcon />}
+                                        handleButtonClick={clearFilters}
+                                        classname={styles.mobileButton}
+                                    />
+                                }
                             </div>
                         )}
+                    </>
+                )}
 
+
+                {!isMobile && (
+
+
+                    <div className={styles.container}>
+                        <div className={styles.tableWrapper}>
+                            <table className={styles.table}>
+                                <thead>
+                                    <tr className={styles.theadRow}>
+                                        <TableHeader title="Status" />
+                                        <TableHeader title="Aluno" />
+                                        <TableHeader title="Data" />
+                                        <TableHeader title="Tipo de agendamento" />
+                                        <TableHeader title="Endereço" />
+                                        <TableHeader title="Ações" />
+                                    </tr>
+                                </thead>
+
+                                <tbody className={styles.tbody}>
+                                    {filteredData.length !== 0 &&
+                                        filteredData.map((card) => (
+                                            <tr key={card.agendamentoId} className={styles.row}>
+
+                                                <td className={styles.cell}>
+                                                    <span
+                                                        className={`${styles.statusSpan} ${statusProperties.find(
+                                                            (status) => status.cardStatus === card.status
+                                                        )?.cardColor || ""
+                                                            }`}
+                                                    >
+                                                        {
+                                                            statusProperties.find(
+                                                                (status) => status.cardStatus === card.status
+                                                            )?.cardDescription
+                                                        }
+                                                    </span>
+                                                </td>
+
+                                                <td className={styles.cell}>
+                                                    <div className={styles.userWrapper}>
+                                                        <div
+                                                            className={styles.userAvatar}
+                                                            data-alt={`Client ${card.nome}`}
+                                                        >
+                                                            {card.foto ? (
+                                                                <img
+                                                                    src={card.foto}
+                                                                    alt={`Client ${card.nome}`}
+                                                                    className={styles.userImage}
+                                                                />
+                                                            ) : (
+                                                                <UserRound />
+                                                            )}
+                                                        </div>
+                                                        <span className={styles.userName}>{card.nome}</span>
+                                                    </div>
+                                                </td>
+
+                                                <td className={styles.cell}>
+                                                    {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")}
+                                                </td>
+
+                                                <td className={styles.cell}>{card.tipoAula}</td>
+
+                                                <td className={styles.cell}>
+                                                    {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                    {card.endereco.cep.bairro} - {card.endereco.cep.uf}
+                                                </td>
+
+                                                <td className={styles.actionsCell}>
+                                                    <div className={styles.actionsWrapper}>
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={() =>
+                                                                handleModal(card.agendamentoId, "accept")
+                                                            }
+                                                        >
+                                                            <CircleCheck className="text-green-500" />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={() =>
+                                                                handleModal(card.agendamentoId, "decline")
+                                                            }
+                                                        >
+                                                            <CircleX className="text-red-500" />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={() => {
+                                                                setClickedDate(
+                                                                    card.dataInicio?.split("T")[0] || ""
+                                                                );
+                                                                handleModal(card.agendamentoId, "reschedule");
+                                                            }}
+                                                        >
+                                                            <CalendarClock className="text-blue-500" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+
+                                    {filteredData.length === 0 && (
+                                        <tr className={styles.emptyRow}>
+                                            <td colSpan={6} className={styles.emptyCell}>
+                                                <span className={styles.emptyText}>
+                                                    Nenhum agendamento encontrado.
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+
+                            {(hasPreviousPage || hasNextPage) && (
+                                <div className={styles.paginationContainer}>
+                                    <div className={styles.paginationContent}>
+
+                                        <div className={styles.paginationInfoWrapper}>
+                                            <div>
+                                                <span className={styles.paginationInfoText}>Página</span>{" "}
+                                                {(pagination?.number as number) + 1}{" "}
+                                                <span className={styles.paginationInfoText}>de</span>{" "}
+                                                {pagination?.totalPages}
+                                            </div>
+
+                                            <span className={styles.paginationInfoText}>
+                                                Mostrando {pagination?.size} de {pagination?.totalElements} agendamentos
+                                            </span>
+                                        </div>
+
+                                        <div className={styles.paginationButtonsWrapper}>
+
+                                            <SmallerButton
+                                                icon={<ChevronLeft />}
+                                                classname={`${styles.buttonHeight} ${pagination?.number === 0 ? styles.buttonDisabled : ""
+                                                    }`}
+                                                handleButtonClick={() => {
+                                                    if (pagination?.number !== 0) {
+                                                        handlePaginationChange(page - 1)
+                                                    }
+                                                }}
+                                            />
+
+                                            <SmallerButton
+                                                icon={<ChevronRight />}
+                                                classname={`${styles.buttonHeight} ${pagination?.totalPages &&
+                                                    pagination?.number === pagination?.totalPages - 1
+                                                    ? styles.buttonDisabled
+                                                    : ""
+                                                    }`}
+                                                handleButtonClick={() => {
+                                                    if (pagination?.totalPages && pagination?.number !== pagination?.totalPages - 1) {
+                                                        handlePaginationChange(page + 1)
+                                                    }
+                                                }}
+                                            />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
                     </div>
-                </div>
 
-            </div>
+                )}
+
+            </div >
 
             {/* {isFetchingNextPage && <p>Carregando mais...</p>} */}
-            {openModal === "reschedule" && (
-                <>
-                    <NewEvent
-                        isMobile={isMobile}
-                        close={() => setOpenModal(null)}
-                        openModalExtern={handleSuccessReschedule}
-                        errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
-                        insertedEvents={appointments.data?.data}
-                        title="Reagendar horário"
-                        buttonTitle="Reagendar"
-                        isReschedule={true}
-                        clickedDate={clickedDate}
-                        rescheduleId={appointmentId}
-                        goToNextStep={false}
-                        appoitmentData={appointment.data}
-                        typeUser={type ?? undefined}
+            {
+                openModal === "reschedule" && (
+                    <>
+                        <NewEvent
+                            isMobile={isMobile}
+                            close={() => setOpenModal(null)}
+                            openModalExtern={handleSuccessReschedule}
+                            errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
+                            insertedEvents={appointments.data?.data}
+                            title="Reagendar horário"
+                            buttonTitle="Reagendar"
+                            isReschedule={true}
+                            clickedDate={clickedDate}
+                            rescheduleId={appointmentId}
+                            goToNextStep={false}
+                            appoitmentData={appointment.data}
+                            typeUser={type ?? undefined}
 
-                    />
-                </>
-            )}
+                        />
+                    </>
+                )
+            }
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 
@@ -464,7 +500,8 @@ export function CheckSchedule() {
 
             {openModal === "error" && <ErrorModal closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
-            {openModal === "registerAbsence" &&
+            {
+                openModal === "registerAbsence" &&
                 <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
             }
         </>

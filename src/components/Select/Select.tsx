@@ -17,9 +17,11 @@ type Props = {
   showSearchInput?: boolean;
   defaultValue?: string;
   fixedText?: string;
+
+  dropDownClassName?: string
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName }: Props) {
   const isOpen = openSelectId === id;
 
   const [textSearch, setTextSearch] = useState<string>("");
@@ -61,7 +63,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
         </span>
       </div>
       {isOpen && (
-        <div className={styles.dropdownContainer}>
+        <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>
           {showSearchInput !== false && (
             <InputWithIcon
               icon={<Search size={16} />}

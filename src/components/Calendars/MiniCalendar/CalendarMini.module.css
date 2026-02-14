@@ -2,10 +2,10 @@
   color: white !important;
   padding: 6px 10px;
   transition: all 0.3s, color 0.3s;
-  
+
 }
 
-.miniSelectedDay :global(.fc-daygrid-day-frame ) {
+.miniSelectedDay :global(.fc-daygrid-day-frame) {
   background: #4b4b4b !important;
   color: white !important;
   border-radius: 50%;
@@ -131,4 +131,26 @@
 
 .miniWrapperStyledCalendar :global(.fc-toolbar.fc-header-toolbar) {
   margin: 0;
+}
+
+@media (max-width: 768px) {
+  .miniContainerCalendar {
+    height: 45vh;
+  }
+
+  .miniWrapperStyledCalendar {
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 468px) {
+  .miniContainerCalendar {
+    height: 50vh;
+  }
+
+  .miniWrapperStyledCalendar {
+    height: 100% !important;
+  }
+
+
 }

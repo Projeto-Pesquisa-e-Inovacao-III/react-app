@@ -66,6 +66,48 @@
   cursor: pointer;
 }
 
-.iconBorderIndigo {
-  border-color: #4f46e5;
+@media (max-width: 1280px) {
+  .trigger {
+    width: 100% !important;
+  }
+
 }
+
+@media (max-width: 1024px) {
+  .selectWrapper {
+    width: 100%;
+    height: unset !important;
+    border-radius: 8px;
+  }
+
+  .trigger {
+    padding: 12px !important;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .trigger {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 468px) {
+  .selectWrapper {
+    width: 100% !important;
+
+  }
+
+  .trigger {
+    padding: 8px !important;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 350px) {
+
+  .optionsList {
+    width: unset !important;
+  }
+}
+
