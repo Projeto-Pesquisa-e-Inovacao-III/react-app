@@ -15,7 +15,7 @@ import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
-import { LinearProgress } from "@mui/material";
+import { LinearProgress, Skeleton } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
@@ -414,7 +414,7 @@ export function Overview() {
                         <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
-                                subtitle={countAppointmentsToday ?? 0}
+                                subtitle={countAppointmentsToday ?? <Skeleton />}
                                 icon={<CalendarCheck color="#0a3557" />}
                                 iconColor=""
                                 titletbn={"Agendamentos"}
@@ -423,7 +423,7 @@ export function Overview() {
                             />
                             <OverviewCardPersonal
                                 title={"Aulas pendentes para aprovação"}
-                                subtitle={countAppointmentsPending ?? 0}
+                                subtitle={countAppointmentsPending ?? <Skeleton />}
                                 titletbn={"Solicitações"}
                                 icon={<ClipboardClock color="#0a3557" />}
                                 onClick={() => nav("/personal/check-schedule")}

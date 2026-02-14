@@ -20,6 +20,8 @@ import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
 import useModal from "../../hooks/useModal";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
 
 type NewEventProps = {
     isMobile: boolean;
@@ -532,7 +534,7 @@ export default function NewEvent(
                                 {typeUser === "personal" ? (
                                     <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                                 ) : (
-                                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`${personalList.data[0]?.dataNascimento ? `Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos` : ""}`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
                                 )}
                                 {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
                                 <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
@@ -563,7 +565,6 @@ export default function NewEvent(
                                         </div>
                                         {newEventDate && (
                                             <>
-
                                                 <span className="flex gap-1 mt-5 text-sm items-center">
                                                     <Clock />
                                                     Horários disponíveis para{" "}
@@ -578,7 +579,16 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (
+                                                                <Skeleton
+                                                                    count={6}
+                                                                    width={10000}
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+                                                        )}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {

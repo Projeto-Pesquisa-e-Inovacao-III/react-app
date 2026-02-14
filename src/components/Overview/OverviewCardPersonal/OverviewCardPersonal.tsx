@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import styles from './OverviewCardPersonal.module.css';
 import classNames from 'classnames';
+import { Skeleton } from '@mui/material';
 
 type OverviewCardProps = {
     title: string;
@@ -27,7 +28,7 @@ export function OverviewCardPersonal(props: OverviewCardProps) {
             <div className={classNames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>{props.subtitle}</div>
             <div className={classNames(styles.cardButtonContainer, { [styles.cardButtonContainerMobile]: isMobile })}>
                 {
-                    props.titletbn === "" ? null :
+                    props.titletbn === "" ? <Skeleton /> :
                         <button className={classNames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })} onClick={props.onClick}>
                             {props.titletbn}
                         </button>
