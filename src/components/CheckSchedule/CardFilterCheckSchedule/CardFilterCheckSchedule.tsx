@@ -186,13 +186,13 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             dropDownClassName={styles.dropdownTipoAula}
                         />
 
-                        <div ref={calendarRef} className={styles.calendarWrapper}>
+                        <div ref={calendarRef} className={styles.calendarWrapper} onClick={() => setOpenCalendar(!openCalendar)}>
 
                             <div className={styles.calendarIconContainer}>
                                 <Calendar
                                     color="#707070"
                                     className={styles.calendarIcon}
-                                    onClick={() => setOpenCalendar(!openCalendar)}
+                                    
                                 />
                             </div>
                             {openCalendar && (

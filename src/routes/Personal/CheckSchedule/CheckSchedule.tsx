@@ -265,7 +265,7 @@ export function CheckSchedule() {
                 </div>*/}
                 {isMobile && (
                     <>
-                        {filteredData.length === 0 && (
+                        {filteredData.length === 0 ? (
                             <div className={styles.mobileEmptyContainer}>
 
                                 <div className={styles.mobileIconWrapper}>
@@ -289,6 +289,93 @@ export function CheckSchedule() {
                                     />
                                 }
                             </div>
+                        ) : (
+                            filteredData.map((card) => (
+                                <div className={styles.mobileCardWrapper}>
+                                    <div className={styles.mobileCard}>
+
+                                        <div className={styles.mobileCardHeader}>
+                                            <span
+                                                className={`${styles.mobileStatusBadge} ${statusProperties.find(
+                                                    (status) => status.cardStatus === card.status
+                                                )?.cardColor || ""
+                                                    }`}
+                                            >
+                                                {
+                                                    statusProperties.find(
+                                                        (status) => status.cardStatus === card.status
+                                                    )?.cardDescription
+                                                }
+                                            </span>
+                                            <span className={styles.mobileCardType}>
+                                                {card.tipoAula}
+                                            </span>
+                                        </div>
+
+                                        <div className={styles.mobileUserSection}>
+                                            <div className={styles.mobileAvatarWrapper}>
+                                                {card.foto ? (
+                                                    <img
+                                                        src={card.foto}
+                                                        alt={`Client ${card.nome}`}
+                                                        className={styles.userImage}
+                                                    />
+                                                ) : (
+                                                    <UserRound />
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <h3 className={styles.mobileUserName}>
+                                                    {card.nome}
+                                                </h3>
+                                                <p className={styles.mobileUserDate}>
+                                                    {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} -{" "}
+                                                    {format(parseISO(card.dataFim), "HH:mm")}
+                                                </p>
+                                                <p className={styles.mobileAddress}>
+                                                    {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                    {card.endereco.cep.bairro} - {card.endereco.cep.uf}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className={styles.mobileActions}>
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    handleModal(card.agendamentoId, "accept")
+                                                }
+                                            >
+                                                <CircleCheck className={styles.iconAccept} />
+                                            </button>
+
+                                            <button
+                                                className={styles.button}
+                                                onClick={() =>
+                                                    handleModal(card.agendamentoId, "decline")
+                                                }
+                                            >
+                                                <CircleX className={styles.iconDecline} />
+                                            </button>
+
+                                            <button
+                                                className={styles.button}
+                                                onClick={() => {
+                                                    setClickedDate(
+                                                        card.dataInicio?.split("T")[0] || ""
+                                                    );
+                                                    handleModal(card.agendamentoId, "reschedule");
+                                                }}
+                                            >
+                                                <CalendarClock className={styles.iconReschedule} />
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            ))
                         )}
                     </>
                 )}
