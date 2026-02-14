@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { EventDTO } from "../../../../models/calendar";
 import SmallerButton from "../../../SmallerButton/SmallerButton";
 
@@ -13,14 +14,16 @@ type DeleteEventProps = {
 }
 
 export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
-    function handleAcceptEvent() {
+    const [loading, setLoading] = useState(false);
 
-            callSuccessModal?.(true);
+    function handleAcceptEvent() {
+        setLoading(true);
+        callSuccessModal?.(true);
     }
 
     return (
         <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
-            <SmallerButton type="button" classname={enableButton ? "bg-green-600!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Aceitar Evento"} handleButtonClick={handleAcceptEvent} disabled={!enableButton}/>
+            <SmallerButton type="button" classname={enableButton ? "bg-green-600!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Aceitar Evento"} handleButtonClick={handleAcceptEvent} disabled={!enableButton} loading={loading} />
             <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />
         </div>
     )

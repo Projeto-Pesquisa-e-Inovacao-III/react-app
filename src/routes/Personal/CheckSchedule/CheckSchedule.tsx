@@ -409,6 +409,7 @@ export function CheckSchedule() {
                                 <tbody className={styles.tbody}>
                                     {filteredData.length !== 0 &&
                                         filteredData.map((card) => (
+
                                             <tr key={card.agendamentoId} className={styles.row}>
 
                                                 <td className={styles.cell}>
@@ -425,7 +426,6 @@ export function CheckSchedule() {
                                                         }
                                                     </span>
                                                 </td>
-
                                                 <td className={styles.cell}>
                                                     <div className={styles.userWrapper}>
                                                         <div
@@ -457,39 +457,42 @@ export function CheckSchedule() {
                                                     {card.endereco.cep.bairro} - {card.endereco.cep.uf}
                                                 </td>
 
-                                                <td className={styles.actionsCell}>
-                                                    <div className={styles.actionsWrapper}>
-                                                        <button
-                                                            className={styles.button}
-                                                            onClick={() =>
-                                                                handleModal(card.agendamentoId, "accept")
-                                                            }
-                                                        >
-                                                            <CircleCheck className="text-green-500" />
-                                                        </button>
+                                                {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
+                                                    <td className={styles.actionsCell}>
+                                                        <div className={styles.actionsWrapper}>
+                                                            <button
+                                                                className={styles.button}
+                                                                onClick={() =>
+                                                                    handleModal(card.agendamentoId, "accept")
+                                                                }
+                                                            >
+                                                                <CircleCheck className="text-green-500" />
+                                                            </button>
 
-                                                        <button
-                                                            className={styles.button}
-                                                            onClick={() =>
-                                                                handleModal(card.agendamentoId, "decline")
-                                                            }
-                                                        >
-                                                            <CircleX className="text-red-500" />
-                                                        </button>
+                                                            <button
+                                                                className={styles.button}
+                                                                onClick={() =>
+                                                                    handleModal(card.agendamentoId, "decline")
+                                                                }
+                                                            >
+                                                                <CircleX className="text-red-500" />
+                                                            </button>
 
-                                                        <button
-                                                            className={styles.button}
-                                                            onClick={() => {
-                                                                setClickedDate(
-                                                                    card.dataInicio?.split("T")[0] || ""
-                                                                );
-                                                                handleModal(card.agendamentoId, "reschedule");
-                                                            }}
-                                                        >
-                                                            <CalendarClock className="text-blue-500" />
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                                            <button
+                                                                className={styles.button}
+                                                                onClick={() => {
+                                                                    setClickedDate(
+                                                                        card.dataInicio?.split("T")[0] || ""
+                                                                    );
+                                                                    handleModal(card.agendamentoId, "reschedule");
+                                                                }}
+                                                            >
+                                                                <CalendarClock className="text-blue-500" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                )}
+
                                             </tr>
                                         ))}
 

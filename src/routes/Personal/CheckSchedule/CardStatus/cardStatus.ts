@@ -32,12 +32,12 @@ export const statusProperties = [
     {
         "cardStatus": "CANCELADO_PERSONAL",
         "cardDescription": "Cancelado pelo personal",
-        "cardColor": "#345"
+        "cardColor": "bg-red-200 text-red-900 border border-red-800"
     },
     {
         "cardStatus": "CANCELADO_CLIENTE",
         "cardDescription": "Cancelado pelo cliente",
-        "cardColor": "#678"
+        "cardColor": "bg-red-200 text-red-900 border border-red-800"
     },
     {
         "cardStatus": "AUSENCIA_CLIENTE",

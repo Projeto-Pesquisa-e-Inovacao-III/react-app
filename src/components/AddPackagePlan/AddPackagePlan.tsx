@@ -60,6 +60,8 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
 
     function handleAddPackage() {
+        setLoading(true)
+
         const data: ProductExhibition = {
             titulo: packageInfo.name,
             subtitulo: "",
@@ -83,14 +85,16 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             if (packageCreated) {
                 packageCreated(prev => [...prev, res.data]);
             }
+            setLoading(false);
             callSuccessModal();
         }).catch((error) => {
             console.error("Erro ao adicionar pacote:", error);
+            setLoading(false);
         });
     }
 
     function handleEditPackage() {
-        console.log("Editing package with id:", typePackage);
+        setLoading(true)
         const data: ProductExhibition = {
             titulo: packageInfo.name,
             subtitulo: "",
@@ -114,8 +118,11 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                 packageCreated(prev => [...prev, res.data]);
             }
             onClose(true);
+            setLoading(false);
+
         }).catch((error) => {
             console.error("Erro ao editar pacote:", error);
+            setLoading(false);
         });
     }
 
@@ -125,6 +132,8 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             benefits: prev.benefits.filter((_, i) => i !== index)
         }));
     }
+
+    const [loading, setLoading] = useState(false);
 
     return (
         <div className={styles.modalOverlay}>
@@ -168,7 +177,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                     </div>
 
                     <div className={styles.modalButtons}>
-                        <Button type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
+                        <Button loading={loading} type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
                         <Button type="button" title="Cancelar" classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
                     </div>
                 </form>

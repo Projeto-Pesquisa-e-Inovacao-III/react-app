@@ -1,6 +1,7 @@
 import "./style.css"
 import type { EventDTO } from "../../../../models/calendar";
 import SmallerButton from "../../../SmallerButton/SmallerButton";
+import { useState } from "react";
 
 type DeleteEventProps = {
     isMobile: boolean;
@@ -14,9 +15,13 @@ type DeleteEventProps = {
 }
 
 export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
+    const [loading, setLoading] = useState(false);
+
+
     function handleDeleteEvent() {
-            setEvents?.(events!.filter(event => event.id !== id));
-            callSuccessModal?.(true);
+        setLoading(true);
+        setEvents?.(events!.filter(event => event.id !== id));
+        callSuccessModal?.(true);
     }
 
     return (
@@ -24,7 +29,7 @@ export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, 
             {/* <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-red"}`} onClick={handleDeleteEvent}>
                 {buttonTitle || "Cancelar Evento"}
             </button> */}
-            <SmallerButton type="button" classname={enableButton ? "bg-red-900!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Cancelar Evento"} handleButtonClick={handleDeleteEvent} disabled={!enableButton}/>
+            <SmallerButton type="button" classname={enableButton ? "bg-red-900!" : "bg-gray-400! cursor-not-allowed!"} title={buttonTitle || "Cancelar Evento"} handleButtonClick={handleDeleteEvent} disabled={!enableButton} loading={loading}/>
 
             <SmallerButton type="button" title="Voltar" handleButtonClick={handleCloseModal} />
         </div>
