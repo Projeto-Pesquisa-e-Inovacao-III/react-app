@@ -50,12 +50,12 @@ type AddressState = {
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {
-      const {
+    const {
         openModal,
         setOpenModal,
         textModal,
         setTextModal
-      } = useModal(null, {title:"", content:""})
+    } = useModal(null, { title: "", content: "" })
 
 
     console.log("clickedDate prop:", clickedDate);
@@ -64,6 +64,7 @@ export default function NewEvent(
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
     const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+    const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
         queryKey: ["personalList"],
@@ -144,8 +145,18 @@ export default function NewEvent(
 
     const url = window.location.href;
 
+    async function handleInvalidateQueries() {
+        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+
+    }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
+        setLoading(true)
 
         if (addressData.address.includes("undefined")) {
             setOpenModal("error");
@@ -203,21 +214,14 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-
+                setLoading(false)
                 if (calculatedTitle && newEventDate) {
-                    await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-
+                    handleInvalidateQueries()
                     if (url.includes("/schedule")) {
                         if (newAppointmentCreated) {
                             newAppointmentCreated(true);
                         }
-                        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+                        handleInvalidateQueries()
 
                         openModalExtern();
                         navigation("/schedule");
@@ -228,6 +232,8 @@ export default function NewEvent(
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
+                setLoading(false)
+
                 if (error.status === 400) {
                     setTextModal({
                         title: "Erro ao agendar",
@@ -261,6 +267,7 @@ export default function NewEvent(
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
+        setLoading(true)
         e?.preventDefault();
 
 
@@ -297,31 +304,26 @@ export default function NewEvent(
 
         await rescheduleAppointment(payload).then(async response => {
             console.log("Evento reagendado com sucesso:", response.data);
+            setLoading(false)
 
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
+            errorModal("Erro ao reagendar", "Ocorreu um erro ao tentar reagendar o evento.");
+
             //errorModal();
+            setLoading(false)
+
         });
 
         if (!goToNextStep) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
@@ -757,7 +759,7 @@ export default function NewEvent(
                                 </div>
 
                                 <div className={classnames(styles.buttonNextStep, { [styles.buttonNextStepMobile]: isMobile })}>
-                                    <SmallerButton type="submit" title={"Confirmar agendamento"} />
+                                    <SmallerButton loading={loading} type="submit" title={"Confirmar agendamento"} />
                                 </div>
                             </form>
                         </div>
