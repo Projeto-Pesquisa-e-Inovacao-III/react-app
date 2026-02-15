@@ -7,7 +7,6 @@ import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
-import { BASE_URL } from "../../system";
 import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword } from "../../constants/user";
 import type { UpdateUserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
@@ -21,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../utils/validacao.ts";
 import useModal from "../../hooks/useModal.tsx";
 import useClickOutside from "../../hooks/useClickOutside.tsx";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -33,7 +33,28 @@ type EditUserState = {
   birthDate: string;
 };
 
+type UserPhone = {
+  id: number;
+  ddd: string;
+  numero: string;
+  numeroCompleto?: string;
+};
+
+type UserDataResponse = {
+  ativo: boolean;
+  caminhoFoto: string | null;
+  cref?: string;
+  cpf?: string;
+  dataNascimento: string;
+  email: string;
+  id: number;
+  nome: string;
+  sexo: string;
+  telefones: UserPhone[];
+};
+
 type EditUserAction =
+  | { type: "hydrateForm"; payload: UserDataResponse }
   | { type: "setFirstName"; payload: string }
   | { type: "setLastName"; payload: string }
   | { type: "setCPF"; payload: string }
@@ -64,6 +85,17 @@ function reducer(state: EditUserState, action: EditUserAction): EditUserState {
       return { ...state, password: action.payload };
     case "setBirthDate":
       return { ...state, birthDate: action.payload };
+    case "hydrateForm":
+      return {
+        ...state,
+        firstName: action.payload.nome,
+        cpf: action.payload.cpf ?? "",
+        cref: action.payload.cref ?? "",
+        phone: action.payload.telefones?.[0]?.numeroCompleto ?? "",
+        gender: action.payload.sexo ?? "",
+        email: action.payload.email ?? "",
+        birthDate: action.payload.dataNascimento ?? "",
+      };
     default:
       return state;
   }
@@ -152,27 +184,28 @@ export default function EditUser() {
 
   }
 
-  function handleGetUserInfo() {
-    findUserData().then((response) => {
-      const userData = response.data;
-      console.log("Dados do usuário:", userData);
-      dispatch({ type: "setFirstName", payload: userData.nome });
-      dispatch({ type: "setCPF", payload: userData.cpf });
-      dispatch({ type: "setCREF", payload: userData.cref });
-      dispatch({ type: "setPhone", payload: userData.telefones[0].numeroCompleto });
-      dispatch({ type: "setGender", payload: userData.sexo });
-      dispatch({ type: "setEmail", payload: userData.email });
-      dispatch({ type: "setBirthDate", payload: userData.dataNascimento });
+  const userInfo = useQuery<UserDataResponse>({
+    queryKey: ["userData"],
+    queryFn: async () => {
+      const response = await findUserData();
+      return response.data as UserDataResponse;
+    },
+  });
 
-      if (userData.caminhoFoto) {
-        setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+  useEffect(() => {
+    if (!userInfo.data) return;
 
-      }
-
-    }).catch((error) => {
-      console.error("Erro ao buscar dados do usuário:", error);
+    dispatch({
+      type: "hydrateForm",
+      payload: userInfo.data,
     });
-  }
+
+  }, [userInfo.data]);
+
+  const queryClient = useQueryClient();
+
+
+
 
   function handleUpdateUserInfo() {
     console.log(state.phone.substring(5).replace("-", ""))
@@ -184,10 +217,11 @@ export default function EditUser() {
     };
     console.log("options", userImageFormData);
     update(options)
-      .then(() => {
+      .then(async () => {
+
         if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
           insertUserImage(previewImageFormData)
-            .then(() => {
+            .then(async () => {
               if (previewImage) {
                 console.log("Imagem do usuário atualizada com sucesso!", previewImage);
                 setUserImage(previewImage);
@@ -196,12 +230,18 @@ export default function EditUser() {
               console.log("Imagem do usuário atualizada com sucesso!");
               setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
               setOpenModal("success");
+              await queryClient.refetchQueries({
+                queryKey: ["userData"]
+              });
             })
             .catch((error) => {
               console.error("Erro ao atualizar imagem do usuário:", error);
               setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
               setOpenModal("error");
             });
+          await queryClient.refetchQueries({
+            queryKey: ["userData"]
+          });
         } else {
           setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
           setOpenModal("success");
@@ -227,9 +267,12 @@ export default function EditUser() {
       email: state.email,
     }
 
-    editPersonalProfile(options).then(() => {
+    editPersonalProfile(options).then(async () => {
       setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setOpenModal("success");
+      await queryClient.refetchQueries({
+        queryKey: ["userData"]
+      });
     }).catch((error) => {
       console.log("previewImageFormData", previewImageFormData);
       console.error("Erro ao atualizar dados do usuário:", error);
@@ -239,12 +282,15 @@ export default function EditUser() {
 
     if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
       console.log("inserting image");
-      insertUserImage(previewImageFormData).then(() => {
+      insertUserImage(previewImageFormData).then(async () => {
         console.log("Imagem do usuário atualizada com sucesso!");
         setUserImage(previewImage);
         setUserImageFormData(previewImageFormData);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
+        await queryClient.refetchQueries({
+          queryKey: ["userData"]
+        });
       }).catch((error) => {
         console.log("previewImageFormData", previewImageFormData);
         console.error("Erro ao atualizar imagem do usuário:", error);
@@ -309,12 +355,6 @@ export default function EditUser() {
       });
   }
 
-
-
-  useEffect(() => {
-    handleGetUserInfo();
-  }, []);
-
   return (
     <>
       <div className={styles.editUserGrid}>
@@ -372,6 +412,7 @@ export default function EditUser() {
               placeholder="Digite seu nome"
               icon={<User />}
               label="Nome"
+              isLoading={userInfo.isLoading}
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
@@ -381,6 +422,7 @@ export default function EditUser() {
                 type="text"
                 placeholder="Digite seu CPF"
                 icon={<IdCard />}
+                isLoading={userInfo.isLoading}
                 label="CPF"
                 value={state.cpf}
                 onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
@@ -393,6 +435,7 @@ export default function EditUser() {
                 type="text"
                 placeholder="Digite seu CREF"
                 icon={<IdCard />}
+                isLoading={userInfo.isLoading}
                 label="CREF"
                 value={state.cref}
                 onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
@@ -405,11 +448,13 @@ export default function EditUser() {
               type="text"
               placeholder="Digite seu telefone"
               icon={<Phone />}
+              isLoading={userInfo.isLoading}
               label="Telefone"
               value={state.phone}
               onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
               mask={cellphoneMask}
             ></InputWithIcon>
+
             <Select
               id="genero"
               label="Gênero"
@@ -420,6 +465,7 @@ export default function EditUser() {
               ]}
               placeholder="Selecione seu gênero"
               value={state.gender}
+              isLoading={userInfo.isLoading}
               onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
             />
           </WhiteContainer>
@@ -432,6 +478,7 @@ export default function EditUser() {
               type="email"
               placeholder="Digite seu email"
               icon={<Mail />}
+              isLoading={userInfo.isLoading}
               label="Email"
               value={state.email}
               onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
@@ -441,6 +488,7 @@ export default function EditUser() {
               type="password"
               placeholder="*************"
               icon={<LockKeyhole />}
+              isLoading={userInfo.isLoading}
               label="Senha Atual"
               isPassword={password.currentPassword ? true : false}
               value={password.currentPassword}
@@ -454,6 +502,7 @@ export default function EditUser() {
               type="password"
               placeholder="*************"
               icon={<LockKeyhole />}
+              isLoading={userInfo.isLoading}
               label="Nova Senha"
               isPassword={password.confirmPassword ? true : false}
               value={password.confirmPassword}
@@ -532,9 +581,9 @@ export default function EditUser() {
       {openModal === "adjustAvatar" && (
         <>
           <div className={`overlay z-auto!`}></div>
-          <div 
-          ref={imagePreviewModal} 
-          className="w-3/4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
+          <div
+            ref={imagePreviewModal}
+            className="w-3/4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
           >
             <div className={styles.profileSection + "max-w-full! max-h-full!"}>
               <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>

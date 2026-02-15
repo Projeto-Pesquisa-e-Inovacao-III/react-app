@@ -1,3 +1,4 @@
+import Skeleton from "react-loading-skeleton";
 import "./style.css"
 
 type Props = {
@@ -11,26 +12,35 @@ type Props = {
     valuesName?: string[];
     options?: string[];
     className?: string;
+
+    isLoading?: boolean;
 }
 
-export default function Select({ placeholder, label, id, onInputChange, icon, value, name, options, valuesName, className }: Props) {
+export default function Select({ placeholder, label, id, onInputChange, icon, value, name, options, valuesName, className, isLoading }: Props) {
 
     return (
-        <div className={`wrapper_inp ${className}`}>
-            <label htmlFor={`${id}-select`}>{label}</label>
-            {icon && <div className="select-icon">{icon}</div>}
-            <select
-                id={`${id}-select`}
-                name={name}
-                value={value}
-                onChange={(e) => onInputChange(e.target.value)}
-                className={`input-with-icon ${!icon ? "dont-has-icon" : ""}`}
-            >
-                <option value="" disabled>{placeholder}</option>
-                {options?.map((option, index) => (
-                    <option key={index} value={option} >{valuesName ? valuesName[index] : option}</option>
-                ))}
-            </select>
-        </div>
+        <>
+
+            {isLoading ? (
+                <Skeleton height={40} />
+            ) : (
+                <div className={`wrapper_inp ${className}`}>
+                    <label htmlFor={`${id}-select`}>{label}</label>
+                    {icon && <div className="select-icon">{icon}</div>}
+                    <select
+                        id={`${id}-select`}
+                        name={name}
+                        value={value}
+                        onChange={(e) => onInputChange(e.target.value)}
+                        className={`input-with-icon ${!icon ? "dont-has-icon" : ""}`}
+                    >
+                        <option value="" disabled>{placeholder}</option>
+                        {options?.map((option, index) => (
+                            <option key={index} value={option} >{valuesName ? valuesName[index] : option}</option>
+                        ))}
+                    </select>
+                </div>
+            )}
+        </>
     )
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./InputWithIcon.module.css"
 import { Eye, EyeOff } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 
 type Props = {
     type: string;
@@ -16,9 +17,10 @@ type Props = {
     disabled?: boolean;
 
     customClassName?: string;
+    isLoading?: boolean;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, isLoading }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -28,25 +30,31 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
             }
             <div className={`relative`}>
                 <div className={styles.inputIcon}>{icon}</div>
-                <input
-                    id={`${id}-input`}
-                    type={isPassword && showPassword ? "text" : type}
-                    className={isPassword ? styles.passwordInput : undefined}
-                    placeholder={placeholder}
-                    onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
-                    onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
-                    onInput={(e) => mask ? mask(e) : undefined}
-                    value={value}
-                    disabled={disabled}
-                />
-                {isPassword && (
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className={styles.passwordToggle}
-                    >
-                        {showPassword ? <EyeOff /> : <Eye />}
-                    </button>
+                {isLoading ? (
+                    <Skeleton height={40} />
+                ) : (
+                    <>
+                        <input
+                            id={`${id}-input`}
+                            type={isPassword && showPassword ? "text" : type}
+                            className={isPassword ? styles.passwordInput : undefined}
+                            placeholder={placeholder}
+                            onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
+                            onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
+                            onInput={(e) => mask ? mask(e) : undefined}
+                            value={value}
+                            disabled={disabled}
+                        />
+                        {isPassword && (
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className={styles.passwordToggle}
+                            >
+                                {showPassword ? <EyeOff /> : <Eye />}
+                            </button>
+                        )}
+                    </>
                 )}
             </div>
         </div>
