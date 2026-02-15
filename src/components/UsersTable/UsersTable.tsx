@@ -1,8 +1,6 @@
 import SmallerButton from "../SmallerButton/SmallerButton";
-import { useMediaQuery } from "@mui/material";
 import useMobile from "../../hooks/isMobile";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../system";
 import styles from "./UsersTable.module.css";
 import classNames from "classnames";
 import UserAvatar from "../UserAvatar/UserAvatar";

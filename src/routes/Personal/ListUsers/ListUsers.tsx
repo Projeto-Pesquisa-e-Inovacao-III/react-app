@@ -1,6 +1,5 @@
 import UsersTable from "../../../components/UsersTable/UsersTable";
 import styles from "./ListUsers.module.css"
-import { useEffect, useState } from "react";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
 import { listStudents } from "../../../constants/personal";
