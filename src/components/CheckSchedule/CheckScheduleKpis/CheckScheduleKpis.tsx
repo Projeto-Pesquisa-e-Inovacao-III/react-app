@@ -2,8 +2,8 @@ import React from 'react'
 import styles from './CheckScheduleKpis.module.css'
 
 type Props = {
-    title: string
-    value: string | number
+    title: string | React.ReactNode
+    value: string | number | React.ReactNode
     color?: string
     customClass?: string
 }

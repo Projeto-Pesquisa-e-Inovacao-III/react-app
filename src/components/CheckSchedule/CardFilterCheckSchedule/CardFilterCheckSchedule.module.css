@@ -171,8 +171,12 @@
     .cardFilterMobile {
         width: 100%;
         gap: 8px !important;
-
     }
+
+    .cardFilterMobile span{
+        font-size: 14px !important;
+    }
+
 
 }
 
@@ -181,7 +185,8 @@
         flex-wrap: wrap !important;
     }
 
-    .calendarWrapper, .calendarIconContainer {
+    .calendarWrapper,
+    .calendarIconContainer {
         width: 100% !important;
         padding: 8px 0;
     }
