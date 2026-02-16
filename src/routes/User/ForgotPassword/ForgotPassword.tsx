@@ -27,14 +27,22 @@ export default function ForgotPassword() {
 
     if (step === 1 && isIncrease) {
       const isCodeSent: boolean = await handleSendCode();
-      if (!isCodeSent) return;
+      if (!isCodeSent) {
+        setTextModal({ title: "Houve um erro", content: "Não foi possível enviar o código. Verifique o número e tente novamente." });
+        setOpenModal("error");
+        return;
+      };
       setStep(2);
       return;
     }
 
     if (step === 2 && isIncrease) {
       const isCodeCorrect: boolean = await handleVerifyCode(inputCode);
-      if (!isCodeCorrect) return;
+      if (!isCodeCorrect) {
+        setTextModal({ title: "Houve um erro", content: "Código incorreto. Verifique o código enviado para o seu WhatsApp e tente novamente." });
+        setOpenModal("error");
+        return;
+      };
       setStep(3);
       return;
     }
@@ -218,11 +226,7 @@ export default function ForgotPassword() {
             }
 
             <div className={styles.continueButton} onClick={(e) => handleStep(e, true)}>
-              {isLoading ? (
-                <div className={styles.loader}></div>
-              ) : (
-                <Button type="submit" title="Continuar" />
-              )}
+                <Button type="submit" title="Continuar" loading={isLoading} />
             </div>
 
           </div>
