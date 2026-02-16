@@ -11,7 +11,6 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
-import Skeleton from "react-loading-skeleton";
 import { useQuery } from "@tanstack/react-query";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
@@ -255,12 +254,10 @@ export function Packages() {
 
             {
                 openModal === "edit" && (
-                    <>
-                        <AddPackagePlan title="Editar Pacote" onClose={(e) => {
-                            setOpenModal(e ? "success" : null)
-                            setPackageId(null)
-                        }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
-                    </>
+                    <AddPackagePlan title="Editar Pacote" onClose={(e) => {
+                        setOpenModal(e ? "success" : null)
+                        setPackageId(null)
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 )
             }
 

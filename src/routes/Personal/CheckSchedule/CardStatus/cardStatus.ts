@@ -5,11 +5,6 @@ export const statusProperties = [
         "cardColor": "#123"
     },
     {
-        "cardStatus": "student_pending",
-        "cardDescription": "Pendente resposta do aluno",
-        "cardColor": "#456"
-    },
-    {
         "cardStatus": "PENDENTE_PERSONAL_APROVACAO",
         "cardDescription": "Pendente resposta do personal",
         "cardColor": "bg-amber-300/30 text-amber-700 700 border border-amber-500 "
@@ -17,7 +12,7 @@ export const statusProperties = [
     {
         "cardStatus": "PENDENTE_CLIENTE_APROVACAO",
         "cardDescription": "Pendente resposta do aluno",
-        "cardColor": "#ABC"
+        "cardColor": "bg-amber-300/30 text-amber-700 700 border border-amber-500 "
     },
     {
         "cardStatus": "APROVADO",

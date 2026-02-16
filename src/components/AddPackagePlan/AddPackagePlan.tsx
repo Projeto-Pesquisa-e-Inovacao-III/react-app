@@ -3,10 +3,12 @@ import Button from "../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
 import { Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
 import Select from "../Inputs/Select/Select";
+import Skeleton from "react-loading-skeleton";
+import useClickOutside from "../../hooks/useClickOutside";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -135,51 +137,103 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
     const [loading, setLoading] = useState(false);
 
+    
+    const packageCard = useRef<HTMLDivElement>(null);
+
+    useClickOutside({
+        ref: packageCard,
+        callback: () => onClose(false)
+    });
+
     return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modalContent}>
+        <div className={styles.modalOverlay} >
+            <div className={styles.modalContent} ref={packageCard}>
                 <button onClick={handleAutoFill} className="border-2">Auto Preencher</button>
                 <h1>{title}</h1>
                 {/* Formulário para adicionar pacote */}
                 <form className={styles.addPackageForm}>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="packageName">Nome:</label>
-                        <Input type="text" value={packageInfo.name} onInputChange={(value) => setPackageInfo({ ...packageInfo, name: value })} />
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <Select className={styles.selectType} options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]} valuesName={["Presencial", "Residencial", "Funcional"]} label="Tipo de aula:" value={packageInfo.type} placeholder={"Selecione o tipo"} onInputChange={(value) => setPackageInfo({ ...packageInfo, type: value })} />
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="packagePrice">Preço:</label>
-                        <Input type="text" value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="packagePrice">Quantidade de aulas:</label>
-                        <Input type="number" value={packageInfo.quantity} onInputChange={(value) => setPackageInfo({ ...packageInfo, quantity: value })} />
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="packagePrice">Prazo:</label>
-                        <Input type="number" value={packageInfo.deadline} onInputChange={(value) => setPackageInfo({ ...packageInfo, deadline: value })} />
-                    </div>
 
-                    {packageInfo.benefits.map((benefit, index) => (
-                        <div className={styles.inputContainer}>
-                            <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
+                    {!packageInfo ? (
+                        <>
+                            <div className={styles.inputContainer}>
+                                <Skeleton width={150} height={35} />
+                                <Skeleton width={250} height={35} className="ml-3" />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                <Skeleton width={150} height={35} />
+                                <Skeleton width={250} height={35} className="ml-3" />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                
+                                <Skeleton width={150} height={35} />
+                                <Skeleton width={250} height={35} className="ml-3" />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                
+                                <Skeleton width={150} height={35} />
+                                <Skeleton width={250} height={35} className="ml-3" />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                
+                                <Skeleton width={150} height={35} />
+                                <Skeleton width={250} height={35} className="ml-3" />
+                            </div>
+                            {Array.from({ length: 2 }).map((_, index) => (
+                                <div key={index} className={styles.inputContainer}>
+                                    <Skeleton width={50} height={35} />
+                                    <Skeleton width={350} height={35} className="ml-3" />
+                                </div>
+                            ))}
+                            <div className={styles.buttonContainer}>
+                                <Skeleton  height={40} />
+                            </div>
+                            <div className={styles.modalButtons}>
+                                <Skeleton width={120} height={40} style={{ marginRight: '10px' }} />
+                                <Skeleton width={120} height={40} />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className={styles.inputContainer}>
+                                <label htmlFor="packageName">Nome:</label>
+                                <Input type="text" value={packageInfo.name} onInputChange={(value) => setPackageInfo({ ...packageInfo, name: value })} />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                <Select className={styles.selectType} options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]} valuesName={["Presencial", "Residencial", "Funcional"]} label="Tipo de aula:" value={packageInfo.type} placeholder={"Selecione o tipo"} onInputChange={(value) => setPackageInfo({ ...packageInfo, type: value })} />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                <label htmlFor="packagePrice">Preço:</label>
+                                <Input type="text" value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                <label htmlFor="packagePrice">Quantidade de aulas:</label>
+                                <Input type="number" value={packageInfo.quantity} onInputChange={(value) => setPackageInfo({ ...packageInfo, quantity: value })} />
+                            </div>
+                            <div className={styles.inputContainer}>
+                                <label htmlFor="packagePrice">Prazo:</label>
+                                <Input type="number" value={packageInfo.deadline} onInputChange={(value) => setPackageInfo({ ...packageInfo, deadline: value })} />
+                            </div>
 
-                            <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} icon={<Trash />} onClickIcon={() => {
-                                handleRemoveBenefit(index);
-                            }} />
-                        </div>
-                    ))}
+                            {packageInfo.benefits.map((benefit, index) => (
+                                <div className={styles.inputContainer}>
+                                    <label htmlFor={`benefit-${index}`}>Benefício {index + 1}:</label>
 
-                    <div className={styles.buttonContainer}>
-                        <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={handleAddBenefit} />
-                    </div>
+                                    <Input key={index} type="text" value={benefit} onInputChange={(value) => handleBenefitChange(index, value)} icon={<Trash />} onClickIcon={() => {
+                                        handleRemoveBenefit(index);
+                                    }} />
+                                </div>
+                            ))}
 
-                    <div className={styles.modalButtons}>
-                        <Button loading={loading} type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
-                        <Button type="button" title="Cancelar" classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
-                    </div>
+                            <div className={styles.buttonContainer}>
+                                <Button icon={<Plus />} type="button" title="Adicionar benefício" classNameVariable={styles.buttonAddBenefit} onClick={handleAddBenefit} />
+                            </div>
+
+                            <div className={styles.modalButtons}>
+                                <Button loading={loading} type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={isEdit ? handleEditPackage : handleAddPackage} />
+                                <Button type="button" title="Cancelar" classNameDiv={styles.buttonsAction} classNameVariable={styles.buttonAddBenefit} onClick={() => onClose(false)} />
+                            </div>
+                        </>
+                    )}
                 </form>
             </div>
         </div>

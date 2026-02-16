@@ -3,6 +3,10 @@ import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircleCheck, Clock, Loader } from "lucide-react";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import TimeCell from "../../../components/Inputs/TimeCell/TimeCell";
+import AvailabilitySkeleton from "./AvailabilitySkeleton/AvailabilitySkeleton";
 
 export interface TimeSlot {
     id?: string;
@@ -94,8 +98,8 @@ export default function SetAvailability() {
         value: string,
         id: string
     ) {
+        console.log("Updating slot:", { dayIndex, slotIndex, field, value, id });
         setStatus("loading");
-
         const newSchedule = [...schedule];
         newSchedule[dayIndex].slots[slotIndex] = {
             ...newSchedule[dayIndex].slots[slotIndex],
@@ -148,12 +152,14 @@ export default function SetAvailability() {
         };
     }, []);
 
+    if (getInitialCronogram.isLoading || personalBuffer.isLoading) {
+        return <AvailabilitySkeleton />;
+    }
 
     return (
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Definir horário</h1>
-                {/* <p className={styles.subtitle}>Disponibilidade de dias da semana</p> */}
             </div>
 
             <div className={styles.defaultsSection}>
@@ -206,67 +212,62 @@ export default function SetAvailability() {
                         </tr>
                     </thead>
                     <tbody className={styles.tableBody}>
-                        {schedule.map((daySchedule, dayIndex) => {
-                            const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
-                            const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            {schedule.map((daySchedule, dayIndex) => {
+                                const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
+                                const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
 
-                            const workSlot = daySchedule.slots[workIndex] || {};
-                            const breakSlot = daySchedule.slots[breakIndex] || {};
+                                const workSlot = daySchedule.slots[workIndex] || {};
+                                const breakSlot = daySchedule.slots[breakIndex] || {};
+                                if (workIndex === -1 || breakIndex === -1) return null;
 
-                            return (
-                                <tr key={dayIndex}>
-                                    <td className={`${styles.tableCell} ${styles.dayCell}`}>
-                                        <div className={styles.dayCellContent}>
-                                            <span>{DAYS_OF_WEEK_DISPLAY[dayIndex]}</span>
-                                        </div>
-                                    </td>
+                                return (
+                                    <tr key={dayIndex}>
+                                        <td className={`${styles.tableCell} ${styles.dayCell}`}>
+                                            <div className={styles.dayCellContent}>
+                                                <span>{DAYS_OF_WEEK_DISPLAY[dayIndex]}</span>
+                                            </div>
+                                        </td>
 
-                                    <td className={styles.tableCell}>
-                                        <input
-                                            type="time"
-                                            value={workSlot.horaInicio || ""}
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, workIndex, "horaInicio", e.target.value, workSlot.id!)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </td>
+                                        <td className={styles.tableCell}>
+                                            <TimeCell
+                                                value={workSlot.horaInicio}
+                                                onChange={(time) =>
+                                                    updateSlot(dayIndex, workIndex, "horaInicio", time, workSlot.id!)
+                                                }
+                                            />
+                                        </td>
 
-                                    <td className={styles.tableCell}>
-                                        <input
-                                            type="time"
-                                            value={breakSlot.horaInicio || ""}
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, breakIndex, "horaInicio", e.target.value, breakSlot.id!)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </td>
+                                        <td className={styles.tableCell}>
+                                            <TimeCell
+                                                value={breakSlot.horaInicio}
+                                                onChange={(time) =>
+                                                    updateSlot(dayIndex, breakIndex, "horaInicio", time, breakSlot.id!)
+                                                }
+                                            />
+                                        </td>
 
-                                    <td className={styles.tableCell}>
-                                        <input
-                                            type="time"
-                                            value={breakSlot.horaFim || ""}
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, breakIndex, "horaFim", e.target.value, breakSlot.id!)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </td>
+                                        <td className={styles.tableCell}>
+                                            <TimeCell
+                                                value={breakSlot.horaFim}
+                                                onChange={(time) =>
+                                                    updateSlot(dayIndex, breakIndex, "horaFim", time, breakSlot.id!)
+                                                }
+                                            />
+                                        </td>
 
-                                    <td className={styles.tableCell}>
-                                        <input
-                                            type="time"
-                                            value={workSlot.horaFim || ""}
-                                            onChange={(e) =>
-                                                updateSlot(dayIndex, workIndex, "horaFim", e.target.value, workSlot.id!)
-                                            }
-                                            className={styles.input}
-                                        />
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                                        <td className={styles.tableCell}>
+                                            <TimeCell
+                                                value={workSlot.horaFim}
+                                                onChange={(time) =>
+                                                    updateSlot(dayIndex, workIndex, "horaFim", time, workSlot.id!)
+                                                }
+                                            />
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </LocalizationProvider>
                     </tbody>
                 </table>
             </div>
