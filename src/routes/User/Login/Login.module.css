@@ -85,6 +85,11 @@
   background-color: var(--bg-orange) !important;
   font-size: 1em;
   cursor: pointer;
+  padding: 10px !important;
+
+}
+
+.btnDiv {
 }
 
 @media (max-width: 1024px) {

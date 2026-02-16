@@ -355,7 +355,7 @@ export function Overview() {
                                                         type="button"
                                                         title="Agendar Agora"
                                                         icon={<PlusIcon />}
-                                                        classname="w-1/4    ! py-2.5! px-0! flex items-center gap-2 text-base! rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
+                                                        classname="w-1/4! py-2.5! px-0! flex items-center gap-2 text-base! rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
                                                         handleButtonClick={handleClickNewEvent}
                                                     />}
                                             </>

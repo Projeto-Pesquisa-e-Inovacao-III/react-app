@@ -254,7 +254,7 @@ export default function Register() {
                                     ))}
                                 </div>
                             )}
-                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} />
+                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} classNameVariable={styles.btnCad}/>
                         </form>
                         <span>
                             Já tem uma conta? <Link to="/login">Faça login</Link>

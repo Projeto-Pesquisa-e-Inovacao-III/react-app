@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, RefreshCwIcon, UserRound } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, Map, MapPin, RefreshCwIcon, UserRound } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -296,6 +296,11 @@ export function CheckSchedule() {
     }
 
 
+    function handleOpenMap(endereco: string) {
+        const query = encodeURIComponent(endereco);
+        window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+    }
+
     return (
         <>
             <div className={styles.containerCheckSchedule}
@@ -345,7 +350,7 @@ export function CheckSchedule() {
                     </div>
                 </div>
 
-               {isMobile && (
+                {isMobile && (
                     <>
                         {isLoadingAppointments ? (
                             renderMobileCardsSkeleton()
@@ -540,8 +545,11 @@ export function CheckSchedule() {
                                                     <td className={styles.cell}>{card.tipoAula}</td>
 
                                                     <td className={styles.cell}>
-                                                        {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
-                                                        {card.endereco.cep.bairro} - {card.endereco.cep.uf}
+                                                        <div className="flex items-center justify-start">
+                                                            <span className="w-fit">{card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                                {card.endereco.cep.bairro} - {card.endereco.cep.uf}</span>
+                                                            <MapPin className="cursor-pointer" size={30} onClick={() => handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`)} />
+                                                        </div>
                                                     </td>
 
                                                     {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
