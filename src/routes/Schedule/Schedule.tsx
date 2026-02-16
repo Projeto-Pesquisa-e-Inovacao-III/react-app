@@ -56,6 +56,8 @@ export default function Schedule() {
 
     const queryClient = useQueryClient();
 
+    const isTypeReady = type !== null && type.type !== null;
+
     function handleSuccessModalInfo(title: string, description: string) {
         setModalInfo({ title, description });
         setOpenModal("success");
@@ -71,7 +73,7 @@ export default function Schedule() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: isTypeReady && type?.type === "aluno"
     });
 
     const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
@@ -80,23 +82,24 @@ export default function Schedule() {
                 queryKey: ["totalPRESENCIALSchedule"],
                 queryFn: () => getTotalByClassType("PRESENCIAL"),
                 refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-
+                enabled: isTypeReady && type?.type === "aluno"
             },
+
             {
                 queryKey: ["totalRESIDENCIALSchedule"],
                 queryFn: () => getTotalByClassType("RESIDENCIAL"),
                 refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
+                enabled: isTypeReady && type?.type === "aluno"
             },
             {
                 queryKey: ["totalFUNCIONALSchedule"],
                 queryFn: () => getTotalByClassType("FUNCIONAL"),
                 refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
+                enabled: isTypeReady && type?.type === "aluno"
             }
         ]
     });
+
 
     function handleOpenNewEventModal() {
         if (!actualPlanQuery?.data?.data.nome) {
@@ -144,12 +147,14 @@ export default function Schedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
         refetchOnWindowFocus: false,
+        enabled: isTypeReady
     })
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
         queryFn: () => findUserAppointments(),
         refetchOnWindowFocus: false,
+        enabled: isTypeReady,
         select: (res) => {
             console.log("Fetched user appointments:", res.data);
             return [...res.data].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
@@ -161,7 +166,7 @@ export default function Schedule() {
         loadMoreRef,
     } = useInfinitePagination<RescheduleAppointment>({
         queryKey: ["userRescheduleAppointments"],
-        queryFn: (page) => findPersonalRequests(page).then(res => res.data)
+        queryFn: (page) => findPersonalRequests(page).then(res => res.data),
     });
 
     console.log("userRescheduleAppointments", userRescheduleAppointments);
@@ -214,8 +219,17 @@ export default function Schedule() {
 
     return (
         <>
-            {type?.type === "personal" ? (
-                <CalendarWeek insertedEvents={appointmentsUser || []} openModal={() => setOpenModal("newEvent")} isMobile={isMobile} />
+            {!isTypeReady ? (
+                <div className={styles.loadingContainer}>
+                    <div className={styles.spinner}></div>
+                </div>
+            ) : type.type === "personal" ? (
+                <CalendarWeek
+                    insertedEvents={appointmentsUser || []}
+                    openModal={() => setOpenModal("newEvent")}
+                    isMobile={isMobile}
+                    isLoading={appointments.isLoading}
+                />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
 

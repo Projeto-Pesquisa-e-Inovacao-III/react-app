@@ -140,7 +140,7 @@ export default function ScheduleHistory() {
                 )}
             </div>
 
-            <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} />
+            <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} isLoading={listOfAppointments.isLoading}/>
         </div>
     );
 }
