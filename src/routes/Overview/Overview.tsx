@@ -15,7 +15,7 @@ import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
-import { LinearProgress, Skeleton } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
@@ -24,6 +24,7 @@ import TextWithoutPlan from "../../components/Overview/TextWithoutPlan";
 import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPersonal/OverviewCardPersonal";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import OverviewCardPackageStatus from "../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
+import Skeleton from "react-loading-skeleton";
 
 type ModalType = "success" | "error" | "newEvent";
 
@@ -33,6 +34,8 @@ export function Overview() {
     const nav = useNavigate();
 
     const type = useContext(TypeContext);
+
+
 
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
@@ -216,6 +219,27 @@ export function Overview() {
 
         setModalType("newEvent")
     }
+
+
+    const isTypeLoading = type?.type === undefined;
+
+    const isAlunoLoading =
+        type?.type === "aluno" &&
+        (
+            actualPlanQuery.isPending ||
+            aulaPresencial.isPending ||
+            aulaResidencial.isPending ||
+            aulaFuncional.isPending
+        );
+
+    const isLoadingCalendar =
+        isTypeLoading ||
+        appointments.isPending ||
+        isAlunoLoading;
+
+    console.log("Type:", type?.type);
+
+
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -260,17 +284,59 @@ export function Overview() {
                         )}
 
                         <div className={classNames(styles.schedulePageCalendar, { [styles.schedulePageCalendarMobile]: isMobile })}>
-                            <ViewCalendarMonthStyled
-                                isMobile={isMobile}
-                                events={appointments.data?.data}
-                                isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false}
-                                canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
-                                modalInfo={setModalText}
-                                modalType={setModalType}
-                            />
+                            {isLoadingCalendar ? (
+                                <div className="w-full bg-white rounded-xl p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <Skeleton height={28} width={180} />
+                                        <div className="flex gap-2">
+                                            <Skeleton height={36} width={36} circle={true} />
+                                            <Skeleton height={36} width={36} circle={true} />
+                                            <Skeleton height={36} width={70} borderRadius={6} />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-7 gap-2 mb-3">
+                                        {[...Array(7)].map((_, i) => (
+                                            <Skeleton key={`day-${i}`} height={16} />
+                                        ))}
+                                    </div>
+
+                                    <div className="grid grid-cols-7 gap-2">
+                                        {[...Array(35)].map((_, i) => (
+                                            <div key={`cell-${i}`} className="w-full">
+                                                <Skeleton height={70} borderRadius={8} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <ViewCalendarMonthStyled
+                                    isMobile={isMobile}
+                                    events={appointments.data?.data}
+                                    isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false}
+                                    canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                                    modalInfo={setModalText}
+                                    modalType={setModalType}
+                                />
+                            )}
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
-                            {appointmentsCards.data?.length === 0 ? (
+                            {appointmentsCards.isLoading ? (
+                                <div className="flex flex-col items-center justify-center gap-4">
+                                    <div className="rounded-full bg-gray-200 p-5 w-fit">
+                                        <Skeleton height={26} width={30} borderRadius={90} />
+                                    </div>
+                                    <Skeleton height={28} width={180} />
+
+                                    <div className="space-y-4">
+                                        {[...Array(3)].map((_, i) => (
+                                            <div key={`card-skeleton-${i}`} className="w-full">
+                                                <Skeleton height={20} width={500} borderRadius={8} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : appointmentsCards.data?.length === 0 ? (
                                 <div className="flex flex-col items-center justify-center gap-4">
                                     <div className="rounded-full bg-gray-200 p-5 w-fit">
                                         <CalendarX className="" color="#0a3a5c" size={40} />
@@ -347,8 +413,43 @@ export function Overview() {
                             )}
                         </div>
                     </div>
-                    {!isMobile && type?.type === "aluno" && (
-                        actualPlanQuery?.data?.data ? (
+
+                    {!type || type?.type === null && (
+                        <div className={styles.schedulePageUserActions}>
+                            <div className="bg-white rounded-xl shadow-xl p-6">
+                                <Skeleton height={24} width={350} className="mb-4" />
+                                <Skeleton height={20} width={450} className="mb-4" />
+                                <Skeleton height={20} width={450} className="mb-4" />
+                                <Skeleton height={20} width={450} className="mb-6" />
+                                <Skeleton height={40} width={450} />
+                            </div>
+                            <div className="bg-white rounded-xl shadow-xl p-6">
+                                <Skeleton height={24} width={350} className="mb-4" />
+                                <Skeleton height={40} width={450} className="mb-4" />
+                                <Skeleton height={40} width={450} className="mb-4" />
+                                <Skeleton height={48} width={450} />
+                            </div>
+                        </div>
+                    )}
+
+                    {!isMobile && (!type || type?.type === "aluno") && (
+                        isLoadingCalendar ? (
+                            <div className={styles.schedulePageUserActions}>
+                                <div className="bg-white rounded-xl shadow-xl p-6">
+                                    <Skeleton height={24} width={350} className="mb-4" />
+                                    <Skeleton height={20} width={450} className="mb-4" />
+                                    <Skeleton height={20} width={450} className="mb-4" />
+                                    <Skeleton height={20} width={450} className="mb-6" />
+                                    <Skeleton height={40} width={450} />
+                                </div>
+                                <div className="bg-white rounded-xl shadow-xl p-6">
+                                    <Skeleton height={24} width={350} className="mb-4" />
+                                    <Skeleton height={40} width={450} className="mb-4" />
+                                    <Skeleton height={40} width={450} className="mb-4" />
+                                    <Skeleton height={48} width={450} />
+                                </div>
+                            </div>
+                        ) : actualPlanQuery?.data?.data ? (
                             <div className={styles.schedulePageUserActions}>
                                 <OverviewCard
                                     title={"Saldo de aulas"}
@@ -358,16 +459,9 @@ export function Overview() {
                                     onClick={() => nav("/schedule")}
                                     isMobile={isMobile}
                                 />
-                                {/* <OverviewCard
-                                title={"Status de planos"}
-                                subtitle={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
-                                type={"usuario"}
-                                titletbn={"Planos"}
-                                onClick={() => nav("/packages")}
-                                isMobile={isMobile}
-                            /> */}
-
-                                <OverviewCardPackageStatus actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"} />
+                                <OverviewCardPackageStatus
+                                    actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
+                                />
                             </div>
                         ) : (
                             <div className={styles.schedulePageUserActions}>
@@ -410,7 +504,7 @@ export function Overview() {
                         )
                     )}
 
-                    {!isMobile && type?.type !== "aluno" && (
+                    {!isMobile && type?.type && type.type !== "aluno" && (
                         <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
@@ -433,7 +527,7 @@ export function Overview() {
                     )}
 
                 </div>
-            </div>
+            </div >
 
             {modalType === "newEvent" && (
                 <>
@@ -447,25 +541,30 @@ export function Overview() {
                         buttonTitle="Avançar"
                     />
                 </>
-            )}
+            )
+            }
 
-            {modalType === "success" && (
-                // export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
-                <SuccessModal
-                    isMobile={isMobile}
-                    closeThen={() => setModalType(null)}
-                    title={modalText.title}
-                    content={modalText.description}
-                />
-            )}
+            {
+                modalType === "success" && (
+                    // export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
+                    <SuccessModal
+                        isMobile={isMobile}
+                        closeThen={() => setModalType(null)}
+                        title={modalText.title}
+                        content={modalText.description}
+                    />
+                )
+            }
 
-            {modalType === "error" && (
-                <ErrorModal
-                    closeThen={() => setModalType(null)}
-                    title={modalText.title}
-                    content={modalText.description}
-                />
-            )}
+            {
+                modalType === "error" && (
+                    <ErrorModal
+                        closeThen={() => setModalType(null)}
+                        title={modalText.title}
+                        content={modalText.description}
+                    />
+                )
+            }
         </>
     );
 }

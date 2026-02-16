@@ -12,6 +12,7 @@ type OverviewCardProps = {
     titletbn: string;
     onClick: () => void;
     isMobile?: boolean;
+    isLoading?: boolean;
 };
 
 export function OverviewCardPersonal(props: OverviewCardProps) {
@@ -28,7 +29,7 @@ export function OverviewCardPersonal(props: OverviewCardProps) {
             <div className={classNames(styles.cardSubtitle, { [styles.cardSubtitleMobile]: isMobile })}>{props.subtitle}</div>
             <div className={classNames(styles.cardButtonContainer, { [styles.cardButtonContainerMobile]: isMobile })}>
                 {
-                    props.titletbn === "" ? <Skeleton /> :
+                    props.isLoading ? <Skeleton /> :
                         <button className={classNames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })} onClick={props.onClick}>
                             {props.titletbn}
                         </button>

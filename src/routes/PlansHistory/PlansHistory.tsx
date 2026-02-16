@@ -98,6 +98,15 @@ export default function PlansHistory() {
                         includeDetailsButton={true} 
                         buttonLabel="Ver Detalhes" 
                         handleDetailsClick={() => handleDetailsClick(item.id)} 
+                        isLoading={userPlans.isLoading}
+                    />
+                ))
+            ) : userPlans.isLoading ? (
+                [...Array(1)].map((_, index) => (
+                    <RowWithHeaderTitle 
+                        key={`skeleton-${index}`} 
+                        data={[{ headerTitle: '', title: '', subtitle: '', id: index }]}
+                        isLoading={true}
                     />
                 ))
             ) : (
