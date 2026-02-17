@@ -45,7 +45,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
             type: "PRESENCIAL",
             price: "100",
             deadline: "12",
-            benefits: ["Benefício 1", "Benefício 2"],
+            benefits: ["Benefício 1", "Benefício 2", "Benefício 3", "Benefício 4", "ve", "ea", "das", "asd", "asds", "asd"],
             quantity: 10
         });
     }

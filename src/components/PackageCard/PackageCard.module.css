@@ -1,16 +1,23 @@
 .packageCardContainer {
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08);
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    max-width: 500px;
+    max-width: 512px;
+
+    border-top: 15px solid var(--bg-blue);
 }
 
+
+
+.cardContent {
+    height: 100%;
+    padding: 30px;
+}
 .cardVariantConsultoria {
     min-height: 600px;
 }
@@ -20,7 +27,7 @@
 }
 
 .cardTitle {
-    font-size: 24px;
+    font-size: 1.8rem;
     font-weight: 700;
     color: #333;
     margin-bottom: 10px;
@@ -39,8 +46,18 @@
     align-items: baseline;
 }
 
+.cardPaymentInfo {
+    background-color: #ddffe9;
+    color: #0d8037;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
 .cardPriceSection .cardPriceValue {
-    font-size: 36px;
+    font-size: 3rem;
     font-weight: 800;
     color: #000;
     margin-right: 8px;
@@ -52,11 +69,25 @@
     font-weight: 500;
 }
 
+.cardDuration {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #666;
+    margin-top: 0 !important;
+    margin: 8px 0;
+}
+
 .cardBenefitsList {
     list-style: none;
     padding: 0;
-    margin: 0 0 4px 0;
+    margin: 40px 0;
+    margin-bottom: 0 !important;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .cardBenefitsList .benefitItem {
@@ -71,6 +102,18 @@
     display: flex;
     align-items: center;
     width: 100%;
+    color: #000000;
+    font-weight: 400;
+}
+
+.benefitItemIcon {
+    background-color: #22C55E;
+    border-radius: 50%;
+    margin-right: 18px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cardBtn {
@@ -89,6 +132,9 @@
     display: flex;
     width: 100%;
     gap: 20px;
+    background-color: #f8fafc;
+    padding: 30px;
+    border-radius: 30px;
 }
 
 .cardBtn:hover {

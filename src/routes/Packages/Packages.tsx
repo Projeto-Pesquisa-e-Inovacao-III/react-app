@@ -12,6 +12,7 @@ import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
+import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
 
@@ -166,7 +167,7 @@ export function Packages() {
                     </h1>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
+                            <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
                         </div>
                     )}
                 </div>
@@ -191,8 +192,26 @@ export function Packages() {
                     ) : (
                         <p>Não há pacotes disponíveis no momento.</p>
                     )}
+
+                    <div
+                        className={styles.addCard}
+                        onClick={() => setOpenModal("add")}
+                    >
+                        <div className={styles.addIconWrapper}>
+                            <Plus size={24} color="#a2afc1" />
+                        </div>
+
+                        <h4 className={styles.addTitle}>
+                            Criar Novo Pacote
+                        </h4>
+
+                        <p className={styles.addText}>
+                            Adicione novas modalidades ou planos de fidelidade.
+                        </p>
+                    </div>
+
                 </div>
-            </div>
+            </div >
 
             <div
                 className={classnames(
@@ -229,14 +248,29 @@ export function Packages() {
                         )
                     ))
                 ) : (
-                    <p>Não há pacotes adicionais disponíveis no momento.</p>
+                    <div className={styles.emptyPackageContainer}>
+
+                        <div className={styles.emptyPackageIconWrapper}>
+                            <Package color="#0a3a5c" size={40} />
+                        </div>
+
+                        <h3 className={styles.emptyPackageTitle}>
+                            Sem pacotes adicionais
+                        </h3>
+
+                        <p className={styles.emptyPackageText}>
+                            Você ainda não cadastrou pacotes adicionais como suplementação, toalhas ou avaliações avulsas.
+                        </p>
+
+                    </div>
+
                 )}
             </div>
 
-
-            {openModal === "add" && (
-                <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
-            )
+            {
+                openModal === "add" && (
+                    <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
+                )
             }
 
             {
@@ -293,8 +327,7 @@ export function Packages() {
                     <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
                 )
             }
-
-
         </>
+
     );
 }

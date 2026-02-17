@@ -7,6 +7,95 @@
     padding-bottom: 30px;
 }
 
+.packagesTitleContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.addCard {
+    max-width: 32rem;
+    width: 100%;
+    border: 2px dashed #64748b;
+    border-radius: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: all 0.2s ease;
+    min-height: 500px;
+    cursor: pointer;
+}
+
+.addCard:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.addIconWrapper {
+    height: 4rem;
+    width: 4rem;
+    background-color: #f1f5f9;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease;
+}
+
+.addCard:hover .addIconWrapper {
+    transform: scale(1.1);
+}
+
+.addTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.addText {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    text-align: center;
+    max-width: 200px;
+}
+
+
+.emptyPackageContainer {
+    background-color: #ffffff;
+    width: 100%;
+    padding: 2.5rem 0;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.emptyPackageIconWrapper {
+    border-radius: 9999px;
+    background-color: #e5e7eb;
+    padding: 1.25rem;
+    width: fit-content;
+}
+
+.emptyPackageTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 0.5rem;
+}
+
+.emptyPackageText {
+    color: #64748b;
+    max-width: 24rem;
+    margin: 0 auto;
+    text-align: center;
+}
+
+
 @media (max-width: 1260px) {
     .packagesListWrapperDesktop {
         justify-content: center;
