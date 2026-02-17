@@ -17,6 +17,10 @@
     text-overflow: ellipsis;
 }
 
+.wrapperInp input::placeholder {
+    color: #666 !important;
+}
+
 .inputIcon {
     display: flex;
     position: absolute;

@@ -34,8 +34,8 @@
 
 .cardIcon {
     background-color: #ececec81;
-padding: 8px;
-border-radius: 8px;
+    padding: 8px;
+    border-radius: 8px;
 }
 
 .cardTipoAulaPresential {
@@ -224,7 +224,8 @@ border-radius: 8px;
         padding: 10px 20px 30px 20px;
     }
 
-    .editButton, .deleteButton {
+    .editButton,
+    .deleteButton {
         width: 100% !important;
     }
 }
@@ -330,13 +331,15 @@ border-radius: 8px;
     background-color: var(--bg-blue, #0d47a1);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 12px 18px;
-    font-size: 1rem;
+    padding: 20px;
+
+    font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
     margin-top: auto;
     transition: background-color 0.3s ease;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
 }
 
 .cardBtnMobile:hover {
@@ -344,17 +347,17 @@ border-radius: 8px;
 }
 
 .editButton {
-  width: 47%;
-  background: white;
-  color: black;
-  font-weight: 600;
-  border: 1px solid #e5e7eb;
+    width: 47%;
+    background: white;
+    color: black;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
 }
 
 .deleteButton {
-  width: 47%;
-  background: #fee2e2;
-  color: #b91c1c;
-  font-weight: 600;
-  border: 1px solid #fecaca;
+    width: 47%;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 600;
+    border: 1px solid #fecaca;
 }
