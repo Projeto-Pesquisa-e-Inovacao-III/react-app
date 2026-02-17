@@ -148,7 +148,7 @@ border-radius: 8px;
 }
 
 .benefitItemIcon {
-    background-color: #22C55E;
+    background-color: #e7f8f2;
     border-radius: 50%;
     margin-right: 18px;
     padding: 5px;
@@ -185,6 +185,10 @@ border-radius: 8px;
 }
 
 @media (max-width: 1024px) {
+    .cardContent {
+        width: 100% !important;
+    }
+
     .packageCardContainer {
         max-width: unset;
     }
@@ -219,12 +223,17 @@ border-radius: 8px;
         width: 100%;
         padding: 10px 20px 30px 20px;
     }
+
+    .editButton, .deleteButton {
+        width: 100% !important;
+    }
 }
 
 .cardBtnPersonalMobile {
     display: flex;
     width: 100%;
     gap: 20px;
+    flex-wrap: wrap !important;
 }
 
 .cardVariantConsultoriaMobile,
@@ -288,9 +297,6 @@ border-radius: 8px;
 
 .cardBenefitsListMobile {
     list-style: none;
-    padding: 0;
-    margin: 0 0 25px 0;
-    width: 100%;
     text-align: left;
     flex-grow: 1;
 }
@@ -306,7 +312,6 @@ border-radius: 8px;
 }
 
 .benefitItemMobile svg {
-    margin-right: 8px;
     fill: #22C55E;
     flex-shrink: 0;
 }
@@ -336,4 +341,20 @@ border-radius: 8px;
 
 .cardBtnMobile:hover {
     background-color: #003580;
+}
+
+.editButton {
+  width: 47%;
+  background: white;
+  color: black;
+  font-weight: 600;
+  border: 1px solid #e5e7eb;
+}
+
+.deleteButton {
+  width: 47%;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-weight: 600;
+  border: 1px solid #fecaca;
 }

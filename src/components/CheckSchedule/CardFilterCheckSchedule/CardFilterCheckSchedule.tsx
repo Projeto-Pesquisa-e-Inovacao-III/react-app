@@ -104,7 +104,6 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
 
 
                     </div>
-                    <div>
                         <Select
                             onSelectStatusChange={onSelectLinesPerPageChange}
                             selectStatusValue={selectLinesPerPageValue}
@@ -127,7 +126,6 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             defaultValue={selectLinesPerPageValue}
                             id="linhasPorPagina"
                         />
-                    </div>
                     {hasFilters &&
                         <div className={styles.divButtonFilter}>
                             <Button

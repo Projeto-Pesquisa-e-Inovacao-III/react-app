@@ -21,7 +21,7 @@ export function Packages() {
 
     const type = useContext(TypeContext);
 
-    const [openModal, setOpenModal] = useState<ModalType | null>(null);
+    const [openModal, setOpenModal] = useState<ModalType | null>("add");
 
 
     const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
@@ -297,7 +297,7 @@ export function Packages() {
 
             {
                 openModal === "add" && (
-                    <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
+                    <AddPackagePlan title="Criar Novo Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
                 )
             }
 

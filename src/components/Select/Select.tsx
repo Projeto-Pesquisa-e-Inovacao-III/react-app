@@ -10,7 +10,7 @@ type Props = {
   setOpenSelectId: (id: string | null) => void;
   onSelectStatusChange: React.Dispatch<React.SetStateAction<string>>;
   selectStatusValue?: string;
-  values?: Array<{ label: string; value: string }>;
+  values?: Array<{ icon?: React.ReactNode; label: string; value: string }>;
   selectPlaceholder?: string;
 
   showSelectAll?: boolean;
@@ -19,23 +19,29 @@ type Props = {
   fixedText?: string;
 
   dropDownClassName?: string
+  label?: string;
+  triggerClassName?: string;
+  triggerWrapperClassName?: string;
+  selectWrapperClassName?: string;
+  containerClassName?: string;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
   const isOpen = openSelectId === id;
 
-  const [textSearch, setTextSearch] = useState<string>("");
+  const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
-  const [selectValue, setSelectValue] = useState<string>("");
-
+  const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
   useEffect(() => {
     if (defaultValue && onSelectStatusChange) {
       onSelectStatusChange(defaultValue);
-      setSelectValue(defaultValue);
+      const defaultOption = values?.find(option => option.value === defaultValue);
+      console.log(defaultOption)
+      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
     }
-  }, [defaultValue, onSelectStatusChange]);
+  }, []);
 
   const selectRef = useRef<HTMLDivElement>(null);
 
@@ -49,80 +55,89 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
   });
 
   return (
-    <div ref={selectRef} className={styles.selectWrapper} style={isOpen ? { border: "1px solid #c3c3c3" } : {}} >
-      <div className={styles.triggerWrapper}>
-        <span
-          className={styles.trigger}
-          onClick={() => setOpenSelectId(isOpen ? null : id)}
-        >
-          {fixedText ? fixedText : ""} {(selectStatusValue === "" ? selectPlaceholder : selectValue)}
-          <ChevronDown
-            className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
-            size={16}
-          />
-        </span>
-      </div>
-      {isOpen && (
-        <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>
-          {showSearchInput !== false && (
-            <InputWithIcon
-              icon={<Search size={16} />}
-              placeholder='O que você procura?'
-              value={textSearch}
-              onInputChange={setTextSearch}
-              type='text'
-              customClassName={"p-3"}
+    <div className={containerClassName}>
+      {label && <span className={styles.label} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
+      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{...(label && {marginTop: "8px"}), ...(isOpen && { border: "1px solid #c3c3c3" })}} >
+        <div className={`${styles.triggerWrapper} ${triggerWrapperClassName || ""}`}>
+          <span
+            className={`${styles.trigger} ${triggerClassName || ""}`}
+            onClick={() => setOpenSelectId(isOpen ? null : id)}
+          >
+            <span className={styles.iconPlaceholder}>
+              {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
+              {fixedText ? fixedText : ""} {(selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
+            </span>
+            <ChevronDown
+              className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
+              size={16}
             />
-          )}
-          <div className={styles.optionsList}>
-            {showSelectAll !== false && (
-              <span
-                className={styles.optionItem}
-                onMouseEnter={() => setHoveredOption("")}
-                onMouseLeave={() => setHoveredOption(null)}
-                onClick={() => onSelectStatusChange && onSelectStatusChange("")}
-              >
-                {selectStatusValue !== "" &&
-                  (hoveredOption === "" ?
-                    <SquareCheck color='#093A5D' />
-                    :
-                    <Square className={styles.iconBorderIndigo} color='#093A5D' />
-                  )
-                }
-                {selectStatusValue === "" && <SquareCheck color='#093A5D' />}
-
-                Selecionar todos
-              </span>
+          </span>
+        </div>
+        {isOpen && (
+          <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>
+            {showSearchInput !== false && (
+              <InputWithIcon
+                icon={<Search size={16} />}
+                placeholder='O que você procura?'
+                value={textSearch.text}
+                onInputChange={(value) => setTextSearch({ icon: textSearch.icon, text: value })}
+                type='text'
+                customClassName={"p-3"}
+              />
             )}
-            {values && values.map((option) => (
-              (textSearch === "" || option.label.toLowerCase().includes(textSearch.toLowerCase())) && (
+            <div className={styles.optionsList}>
+              {showSelectAll !== false && (
                 <span
                   className={styles.optionItem}
-                  key={option.value}
-                  onMouseEnter={() => setHoveredOption(option.value)}
+                  onMouseEnter={() => setHoveredOption("")}
                   onMouseLeave={() => setHoveredOption(null)}
-                  onClick={() => {
-                    setSelectValue(option.label);
-                    if (onSelectStatusChange) {
-                      onSelectStatusChange(option.value);
-                    }
-                  }}
+                  onClick={() => onSelectStatusChange && onSelectStatusChange("")}
                 >
-                  {selectStatusValue !== option.value &&
-                    (hoveredOption === option.value ?
+                  {selectStatusValue !== "" &&
+                    (hoveredOption === "" ?
                       <SquareCheck color='#093A5D' />
                       :
                       <Square className={styles.iconBorderIndigo} color='#093A5D' />
                     )
                   }
-                  {selectStatusValue === option.value && <SquareCheck color='#093A5D' />}
-                  {option.label}
+                  {selectStatusValue === "" && <SquareCheck color='#093A5D' />}
+
+                  Selecionar todos
                 </span>
-              )
-            ))}
+              )}
+              {values && values.map((option) => (
+                (textSearch.text === "" || option.label.toLowerCase().includes(textSearch.text.toLowerCase())) && (
+                  <span
+                    className={styles.optionItem}
+                    key={option.value}
+                    onMouseEnter={() => setHoveredOption(option.value)}
+                    onMouseLeave={() => setHoveredOption(null)}
+                    onClick={() => {
+                      setSelectValue({ icon: option.icon, text: option.label });
+                      if (onSelectStatusChange) {
+                        onSelectStatusChange(option.value);
+                      }
+                      setOpenSelectId(isOpen ? null : id)
+                    }}
+                  >
+                    {!option.icon && (
+                      selectStatusValue !== option.value &&
+                      (hoveredOption === option.value ?
+                        <SquareCheck color='#093A5D' />
+                        :
+                        <Square className={styles.iconBorderIndigo} color='#093A5D' />
+                      )
+                    )}
+                    {!option.icon && selectStatusValue === option.value && <SquareCheck color='#093A5D' />}
+                    {option.icon && <span className={styles.iconOption}>{option.icon}</span>}
+                    {option.label}
+                  </span>
+                )
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

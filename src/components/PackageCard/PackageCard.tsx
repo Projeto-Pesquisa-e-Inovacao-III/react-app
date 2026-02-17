@@ -3,7 +3,7 @@ import SmallerButton from '../SmallerButton/SmallerButton';
 import classnames from 'classnames';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Calendar, Dumbbell, Heart, HeartPulse, Home, Pencil, Trash } from 'lucide-react';
+import { Calendar, Dumbbell, Heart, HeartPulse, Home, Pencil, Trash, Trash2 } from 'lucide-react';
 
 type PackageCardProps = {
     titlebtn?: string | React.ReactNode;
@@ -35,6 +35,8 @@ export function PackageCard(props: PackageCardProps) {
         props.setHandleDelete(true);
     }
 
+    console.log(props.descricao, props.tipoAula);
+
     useEffect(() => {
         if (typeof props.descricao === 'string') {
             console.warn("PackageCard: 'descricao' prop should be an array of strings, but received a string.");
@@ -44,17 +46,17 @@ export function PackageCard(props: PackageCardProps) {
     return (
         <div
             className={classnames(
-                styles.packageCardContainer, { [styles.packageCardPresential]: props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctional]: props.tipoAula === "FUNCIONAL" },
+                styles.packageCardContainer, { [styles.packageCardPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctional]: props.tipoAula === "FUNCIONAL" },
                 styles[`cardVariant${variant[0].toUpperCase() + variant.slice(1)}`],
                 { [styles.packageCardContainerMobile]: isMobile }
             )}
         >
             <div className={styles.cardContent}>
                 <div className='flex justify-between items-center'>
-                    <p className={classnames(styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
+                    <p className={classnames(styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
                     <span className={styles.cardIcon}>
-                        {props.tipoAula === "PRESENCIAL" && <Dumbbell />}
-                        {props.tipoAula === "RESIDENCIAL" && <Home />}
+                        {props.tipoAula && props.tipoAula === "PRESENCIAL" && <Dumbbell />}
+                        {props.tipoAula && props.tipoAula === "RESIDENCIAL" && <Home />}
                         {props.tipoAula === "FUNCIONAL" && <HeartPulse />}
                     </span>
                 </div>
@@ -142,7 +144,7 @@ export function PackageCard(props: PackageCardProps) {
                                     >
                                         <path
                                             d="M5.00006 8.66065L11.5334 0.939436C11.7778 0.650547 12.089 0.506104 12.4667 0.506104C12.8445 0.506104 13.1556 0.650547 13.4001 0.939436C13.6445 1.22833 13.7667 1.596 13.7667 2.04247C13.7667 2.48893 13.6445 2.85661 13.4001 3.1455L5.9334 11.9697C5.66673 12.2849 5.35562 12.4425 5.00006 12.4425C4.64451 12.4425 4.3334 12.2849 4.06673 11.9697L0.600065 7.87277C0.35562 7.58388 0.233398 7.2162 0.233398 6.76974C0.233398 6.32327 0.35562 5.9556 0.600065 5.66671C0.844509 5.37782 1.15562 5.23338 1.5334 5.23338C1.91118 5.23338 2.22229 5.37782 2.46673 5.66671L5.00006 8.66065Z"
-                                            fill="#fff"
+                                            fill="#22C55E"
                                         />
                                     </svg>
                                 </div>
@@ -167,7 +169,7 @@ export function PackageCard(props: PackageCardProps) {
                                         >
                                             <path
                                                 d="M5.00006 8.66065L11.5334 0.939436C11.7778 0.650547 12.089 0.506104 12.4667 0.506104C12.8445 0.506104 13.1556 0.650547 13.4001 0.939436C13.6445 1.22833 13.7667 1.596 13.7667 2.04247C13.7667 2.48893 13.6445 2.85661 13.4001 3.1455L5.9334 11.9697C5.66673 12.2849 5.35562 12.4425 5.00006 12.4425C4.64451 12.4425 4.3334 12.2849 4.06673 11.9697L0.600065 7.87277C0.35562 7.58388 0.233398 7.2162 0.233398 6.76974C0.233398 6.32327 0.35562 5.9556 0.600065 5.66671C0.844509 5.37782 1.15562 5.23338 1.5334 5.23338C1.91118 5.23338 2.22229 5.37782 2.46673 5.66671L5.00006 8.66065Z"
-                                                fill="#fff"
+                                                fill="#04b57a"
                                             />
                                         </svg>
                                     </div>
@@ -204,8 +206,21 @@ export function PackageCard(props: PackageCardProps) {
                             [styles.cardBtnPersonalMobile]: isMobile,
                         })}
                     >
-                        <SmallerButton type="button" title="Editar" classname='bg-white! text-black!  font-semibold border! border-gray-200!' handleButtonClick={handleOpenEdit} icon={<Pencil color='#000' />} />
-                        <SmallerButton type="button" title="Deletar" classname='bg-red-100! text-red-700! font-semibold border! border-red-200!' handleButtonClick={handleOpenDelete} icon={<Trash color='#c00' />} />
+                        <SmallerButton
+                            type="button"
+                            title="Editar"
+                            classname={styles.editButton}
+                            handleButtonClick={handleOpenEdit}
+                            icon={<Pencil color="#000" />}
+                        />
+
+                        <SmallerButton
+                            type="button"
+                            title="Deletar"
+                            classname={styles.deleteButton}
+                            handleButtonClick={handleOpenDelete}
+                            icon={<Trash2 color="#c00" />}
+                        />
                     </div>
                 ) : (
                     <button

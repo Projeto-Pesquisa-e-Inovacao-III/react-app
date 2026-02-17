@@ -17,10 +17,11 @@ type Props = {
     disabled?: boolean;
 
     customClassName?: string;
+    classNameInput?: string;
     isLoading?: boolean;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, isLoading }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -37,7 +38,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                         <input
                             id={`${id}-input`}
                             type={isPassword && showPassword ? "text" : type}
-                            className={isPassword ? styles.passwordInput : undefined}
+                            className={`${isPassword ? styles.passwordInput : undefined} ${classNameInput || ""}`}
                             placeholder={placeholder}
                             onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                             onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}

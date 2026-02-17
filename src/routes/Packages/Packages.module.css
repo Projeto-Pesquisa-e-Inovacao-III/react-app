@@ -1,5 +1,6 @@
 .packagesListWrapperDesktop {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     flex-wrap: wrap;
     gap: 40px;
     width: auto;
@@ -11,6 +12,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.packagesTitleContainerMobile {
+    flex-wrap: wrap;
 }
 
 .addCard {
@@ -118,6 +123,10 @@
 }
 
 @media (max-width: 1024px) {
+    .addCard {
+        max-width: unset !important;
+    }
+
     .packagesListWrapperDesktop {
         display: flex;
         flex-direction: column;
@@ -140,6 +149,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        flex-wrap: wrap !important;
     }
 
     .addButtonContainer {

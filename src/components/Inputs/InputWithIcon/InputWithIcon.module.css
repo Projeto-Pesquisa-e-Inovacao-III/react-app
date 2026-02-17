@@ -3,6 +3,7 @@
     flex-direction: column;
     position: relative;
     background: none;
+    gap: 8px;
 }
 
 .wrapperInp input {
