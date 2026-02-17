@@ -144,8 +144,6 @@
     color: #333;
 }
 
-/* ── Mobile classes ── */
-
 .mobileHeader {
     display: flex;
     align-items: center;
@@ -153,10 +151,13 @@
     padding: 14px 0;
     background-color: #ffffff;
     flex-shrink: 0;
+    width: 100%;
+    text-align: center;
 }
 
 .mobileHeaderBack,
 .mobileHeaderMenu {
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -173,6 +174,8 @@
     font-size: 17px;
     font-weight: 600;
     color: #1e293b;
+    width: 100%;
+    text-align: center;
 }
 
 .mobilePreviewCard {

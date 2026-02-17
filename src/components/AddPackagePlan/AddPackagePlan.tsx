@@ -170,8 +170,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                                 <ArrowLeft size={22} color="#1e293b" />
                             </button>
                             <span className={styles.mobileHeaderTitle}>{title}</span>
-                            <button className={styles.mobileHeaderMenu} type="button">
-                                <MoreVertical size={22} color="#1e293b" />
+                            <button type="button">
                             </button>
                         </div>
                     ) : (
