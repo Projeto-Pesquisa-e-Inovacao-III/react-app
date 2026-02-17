@@ -175,7 +175,7 @@ export function Packages() {
                 <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
                     {isLoading ? (
                         renderPackageCardSkeleton()
-                    ) : productsExhibitions.length > 0 ? (
+                    ) : productsExhibitions.length > 0 && productsExhibitions.some(p => p.status === "ATIVO") ? (
                         productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
                             pacote.status === "ATIVO" &&
                             <PackageCard
@@ -190,25 +190,39 @@ export function Packages() {
                             />
                         ))
                     ) : (
-                        <p>Não há pacotes disponíveis no momento.</p>
+                        <div className={styles.emptyPackageContainer}>
+                            <div className={styles.emptyPackageIconWrapper}>
+                                <Package color="#0a3a5c" size={40} />
+                            </div>
+
+                            <h3 className={styles.emptyPackageTitle}>
+                                Sem pacotes
+                            </h3>
+
+                            <p className={styles.emptyPackageText}>
+                                Você ainda não cadastrou pacotes.
+                            </p>
+                        </div>
                     )}
 
-                    <div
-                        className={styles.addCard}
-                        onClick={() => setOpenModal("add")}
-                    >
-                        <div className={styles.addIconWrapper}>
-                            <Plus size={24} color="#a2afc1" />
+                    {isPersonal && productsExhibitions.length > 0 && productsExhibitions.some(p => p.status === "ATIVO") && (
+                        <div
+                            className={styles.addCard}
+                            onClick={() => setOpenModal("add")}
+                        >
+                            <div className={styles.addIconWrapper}>
+                                <Plus size={24} color="#a2afc1" />
+                            </div>
+
+                            <h4 className={styles.addTitle}>
+                                Criar Novo Pacote
+                            </h4>
+
+                            <p className={styles.addText}>
+                                Adicione novas modalidades ou planos de fidelidade.
+                            </p>
                         </div>
-
-                        <h4 className={styles.addTitle}>
-                            Criar Novo Pacote
-                        </h4>
-
-                        <p className={styles.addText}>
-                            Adicione novas modalidades ou planos de fidelidade.
-                        </p>
-                    </div>
+                    )}
 
                 </div>
             </div >
@@ -231,9 +245,8 @@ export function Packages() {
             <div className={classnames(styles.packagesListWrapperDesktop, { [styles.packagesListWrapperMobile]: isMobile })}>
                 {isLoading ? (
                     renderPackageCardSkeleton()
-                ) : productsExhibitionsAdicional.length > 0 ? (
+                ) : productsExhibitionsAdicional.length > 0 && productsExhibitionsAdicional.some(p => p.status === "ATIVO") ? (
                     productsExhibitionsAdicional.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
-                        pacote.status === "ATIVO" &&
                         pacote.status === "ATIVO" && (
                             <PackageCard
                                 key={`adicional-${index}-` + pacote.id! + pacote.titulo}
@@ -249,7 +262,6 @@ export function Packages() {
                     ))
                 ) : (
                     <div className={styles.emptyPackageContainer}>
-
                         <div className={styles.emptyPackageIconWrapper}>
                             <Package color="#0a3a5c" size={40} />
                         </div>
@@ -259,11 +271,27 @@ export function Packages() {
                         </h3>
 
                         <p className={styles.emptyPackageText}>
-                            Você ainda não cadastrou pacotes adicionais como suplementação, toalhas ou avaliações avulsas.
+                            Você ainda não cadastrou pacotes adicionais.
                         </p>
-
                     </div>
+                )}
+                {isPersonal && productsExhibitionsAdicional.some(p => p.status === "ATIVO") && (
+                    <div
+                        className={styles.addCard}
+                        onClick={() => setOpenModal("add")}
+                    >
+                        <div className={styles.addIconWrapper}>
+                            <Plus size={24} color="#a2afc1" />
+                        </div>
 
+                        <h4 className={styles.addTitle}>
+                            Criar Novo Adicional
+                        </h4>
+
+                        <p className={styles.addText}>
+                            Adicione novas modalidades ou planos de fidelidade.
+                        </p>
+                    </div>
                 )}
             </div>
 

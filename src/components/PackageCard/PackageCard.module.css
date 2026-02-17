@@ -9,15 +9,56 @@
     text-align: left;
     max-width: 512px;
 
+}
+
+.packageCardPresential {
     border-top: 15px solid var(--bg-blue);
 }
 
+.packageCardHome {
+    border-top: 15px solid var(--bg-orange);
+}
 
+.packageCardFunctional {
+    border-top: 15px solid var(--carol);
+}
+
+.cardTipoAulaPresential,
+.cardTipoAulaHome,
+.cardTipoAulaFunctional {
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 700;
+}
+
+.cardIcon {
+    background-color: #ececec81;
+padding: 8px;
+border-radius: 8px;
+}
+
+.cardTipoAulaPresential {
+    background-color: #bbd8ec81;
+    color: var(--bg-blue);
+}
+
+
+.cardTipoAulaHome {
+    background-color: #eb825c36;
+    color: var(--bg-orange);
+}
+
+.cardTipoAulaFunctional {
+    background-color: #c4e0f081;
+    color: #5c7d8f;
+}
 
 .cardContent {
     height: 100%;
     padding: 30px;
 }
+
 .cardVariantConsultoria {
     min-height: 600px;
 }
@@ -120,12 +161,14 @@
     background-color: var(--bg-blue);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 25px 20px;
+    font-size: 1.2rem;
     cursor: pointer;
     width: 100%;
     margin-top: auto;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    transition: background-color 0.3s ease;
 }
 
 .cardBtnPersonal {
@@ -138,7 +181,7 @@
 }
 
 .cardBtn:hover {
-    background-color: #023c7a;
+    background-color: var(--btn-hover-bg);
 }
 
 @media (max-width: 1024px) {

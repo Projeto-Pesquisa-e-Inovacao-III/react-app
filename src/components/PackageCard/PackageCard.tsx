@@ -3,7 +3,7 @@ import SmallerButton from '../SmallerButton/SmallerButton';
 import classnames from 'classnames';
 import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Calendar, Pencil, Trash } from 'lucide-react';
+import { Calendar, Dumbbell, Heart, HeartPulse, Home, Pencil, Trash } from 'lucide-react';
 
 type PackageCardProps = {
     titlebtn?: string | React.ReactNode;
@@ -44,17 +44,25 @@ export function PackageCard(props: PackageCardProps) {
     return (
         <div
             className={classnames(
-                styles.packageCardContainer,
+                styles.packageCardContainer, { [styles.packageCardPresential]: props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctional]: props.tipoAula === "FUNCIONAL" },
                 styles[`cardVariant${variant[0].toUpperCase() + variant.slice(1)}`],
                 { [styles.packageCardContainerMobile]: isMobile }
             )}
         >
             <div className={styles.cardContent}>
+                <div className='flex justify-between items-center'>
+                    <p className={classnames(styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
+                    <span className={styles.cardIcon}>
+                        {props.tipoAula === "PRESENCIAL" && <Dumbbell />}
+                        {props.tipoAula === "RESIDENCIAL" && <Home />}
+                        {props.tipoAula === "FUNCIONAL" && <HeartPulse />}
+                    </span>
+                </div>
                 <h2 className={classnames(styles.cardTitle, { [styles.cardTitleMobile]: isMobile })}>
                     {isLoading ? (
                         <Skeleton width={isMobile ? "80%" : 300} />
                     ) : (
-                        `${props.titulo} - ${props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}`
+                        `${props.titulo}`
                     )}
                 </h2>
 
