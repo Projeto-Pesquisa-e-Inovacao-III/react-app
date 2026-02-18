@@ -501,51 +501,46 @@ export default function NewEvent(
                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
                         )}
                         {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                        <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                            <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                <Select
-                                    defaultValue="PRESENCIAL"
-                                    id="type-select"
-                                    openSelectId={openSelectId}
-                                    setOpenSelectId={setOpenSelectId}
-                                    onSelectStatusChange={setSelectedType}
-                                    values={[
-                                        { label: "Presencial", value: "PRESENCIAL" },
-                                        { label: "Residencial", value: "RESIDENCIAL" },
-                                        { label: "Funcional", value: "FUNCIONAL" }
-                                    ]}
-                                    triggerClassName="p-3"
-                                    selectWrapperClassName="bg-white! rounded-xl!"
-                                    selectPlaceholder="Selecione o tipo"
-                                    label="Tipo de Atendimento"
-                                    showSelectAll={false}
-                                    showSearchInput={false}
-                                />
-                            </div>
-                        </div>
-                        <div className="mt-auto hidden md:block">
-                            <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
-                                <div className="flex items-start gap-2 text-primary dark:text-blue-400">
-                                    <span className="material-icons-round text-sm mt-0.5"><Info size={16} className="" /></span>
-                                    <p className="text-xs leading-relaxed">Selecione uma data e horário disponível para prosseguir com seu agendamento.</p>
+                        {step === 1 && (
+                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                    <Select
+                                        defaultValue="PRESENCIAL"
+                                        id="type-select"
+                                        openSelectId={openSelectId}
+                                        setOpenSelectId={setOpenSelectId}
+                                        onSelectStatusChange={setSelectedType}
+                                        values={[
+                                            { label: "Presencial", value: "PRESENCIAL" },
+                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                            { label: "Funcional", value: "FUNCIONAL" }
+                                        ]}
+                                        containerClassName="w-full!"
+                                        triggerClassName="p-3 w-full!"
+                                        selectWrapperClassName="bg-white! rounded-xl! w-full!"
+                                        selectPlaceholder="Selecione o tipo"
+                                        label="Tipo de Atendimento"
+                                        showSelectAll={false}
+                                        showSearchInput={false}
+                                    />
                                 </div>
                             </div>
-                        </div>
+                        )}
+                        {step === 1 && (
+                            <div className="mt-auto hidden md:block">
+                                <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
+                                    <div className="flex items-start gap-2 text-primary">
+                                        <span className="material-icons-round text-sm mt-0.5"><Info size={16} className="" /></span>
+                                        <p className="text-xs leading-relaxed">Selecione uma data e horário disponível para prosseguir com seu agendamento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
-                        {step === 2 && (
-                            <div className={styles.goBackButton} onClick={() => handleStepChange(1)}>
-                                <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                    <path
-                                        d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                        stroke="black"
-                                    />
-                                </svg>
-                                <span>Voltar</span>
-                            </div>
-                        )}
+
 
                         <h1>{title}</h1>
                         <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
@@ -573,38 +568,38 @@ export default function NewEvent(
                         <div className={styles.stepOneContainer}>
 
                             <div className={styles.containerForm} >
-                            {isMobile && (
-                                <>
-                                    {typeUser === "personal" ? (
-                                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
-                                    ) : (
-                                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
-                                    )}
-                                    <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                                        <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                            <Select
-                                                defaultValue="PRESENCIAL"
-                                                id="type-select"
-                                                openSelectId={openSelectId}
-                                                setOpenSelectId={setOpenSelectId}
-                                                onSelectStatusChange={setSelectedType}
-                                                values={[
-                                                    { label: "Presencial", value: "PRESENCIAL" },
-                                                    { label: "Residencial", value: "RESIDENCIAL" },
-                                                    { label: "Funcional", value: "FUNCIONAL" }
-                                                ]}
-                                                containerClassName="w-full"
-                                                triggerClassName="p-3 w-full!"
-                                                selectWrapperClassName="rounded-xl!"
-                                                selectPlaceholder="Selecione o tipo"
-                                                label="Tipo de Atendimento"
-                                                showSelectAll={false}
-                                                showSearchInput={false}
-                                            />
+                                {isMobile && (
+                                    <>
+                                        {typeUser === "personal" ? (
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                        ) : (
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                        )}
+                                        <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                            <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                                <Select
+                                                    defaultValue="PRESENCIAL"
+                                                    id="type-select"
+                                                    openSelectId={openSelectId}
+                                                    setOpenSelectId={setOpenSelectId}
+                                                    onSelectStatusChange={setSelectedType}
+                                                    values={[
+                                                        { label: "Presencial", value: "PRESENCIAL" },
+                                                        { label: "Residencial", value: "RESIDENCIAL" },
+                                                        { label: "Funcional", value: "FUNCIONAL" }
+                                                    ]}
+                                                    containerClassName="w-full"
+                                                    triggerClassName="p-3 w-full!"
+                                                    selectWrapperClassName="rounded-xl!"
+                                                    selectPlaceholder="Selecione o tipo"
+                                                    label="Tipo de Atendimento"
+                                                    showSelectAll={false}
+                                                    showSearchInput={false}
+                                                />
+                                            </div>
                                         </div>
-                                    </div>
-                                </>
-                            )}
+                                    </>
+                                )}
 
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
