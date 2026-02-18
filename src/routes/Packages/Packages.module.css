@@ -101,6 +101,9 @@
     text-align: center;
 }
 
+.packagesListWrapperDesktopEmpty {
+    display: flex !important;
+}
 
 @media (max-width: 1260px) {
     .packagesListWrapperDesktop {

@@ -164,7 +164,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                 <div className={styles.formContainer}>
 
 
-                    {isMobile ? (
+                    {isMobile && (
                         <div className={styles.mobileHeader}>
                             <button className={styles.mobileHeaderBack} type="button" onClick={() => onClose(false)}>
                                 <ArrowLeft size={22} color="#1e293b" />
@@ -172,11 +172,6 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                             <span className={styles.mobileHeaderTitle}>{title}</span>
                             <button type="button">
                             </button>
-                        </div>
-                    ) : (
-                        <div className="flex items-center justify-between mb-2! w-full">
-                            <h1 className="mb-0!">{title}</h1>
-                            <X size={30} color="#909fb5" cursor={"pointer"} onClick={() => onClose(false)} />
                         </div>
                     )}
 
@@ -209,6 +204,14 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
 
                     <form className={styles.addPackageForm}>
+
+                    {!isMobile && (
+
+                        <div className="flex items-center justify-between mb-4! w-full">
+                            <h1 className="mb-0!">{title}</h1>
+                            <X size={30} color="#909fb5" cursor={"pointer"} onClick={() => onClose(false)} />
+                        </div>
+                    )}
                         {!packageInfo ? (
                             <>
                                 <div className={styles.inputContainer}>

@@ -21,7 +21,7 @@ export function Packages() {
 
     const type = useContext(TypeContext);
 
-    const [openModal, setOpenModal] = useState<ModalType | null>("add");
+    const [openModal, setOpenModal] = useState<ModalType | null>(null);
 
 
     const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
@@ -172,7 +172,9 @@ export function Packages() {
                     )}
                 </div>
 
-                <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
+                <div className={classnames(styles.packagesListWrapperDesktop, 
+                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) }, 
+                    { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
                         renderPackageCardSkeleton()
                     ) : productsExhibitions.length > 0 && productsExhibitions.some(p => p.status === "ATIVO") ? (
@@ -242,7 +244,10 @@ export function Packages() {
                 )}
             </div>
 
-            <div className={classnames(styles.packagesListWrapperDesktop, { [styles.packagesListWrapperMobile]: isMobile })}>
+            <div className={classnames(
+                styles.packagesListWrapperDesktop,
+                { [styles.packagesListWrapperDesktopEmpty]: productsExhibitionsAdicional.length === 0 || (productsExhibitionsAdicional.length > 0 && !productsExhibitionsAdicional.some(p => p.status === "ATIVO")) },
+                { [styles.packagesListWrapperMobile]: isMobile })}>
                 {isLoading ? (
                     renderPackageCardSkeleton()
                 ) : productsExhibitionsAdicional.length > 0 && productsExhibitionsAdicional.some(p => p.status === "ATIVO") ? (
