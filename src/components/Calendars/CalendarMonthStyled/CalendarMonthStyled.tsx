@@ -115,7 +115,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           }}
           headerToolbar={{
             start: "title",
-            end: `prev,next,today`,
+            end: `prev,today,next`,
           }}
           buttonText={{
             today: 'Hoje',

@@ -12,11 +12,12 @@ type CardInfoProps = {
     includeImg?: boolean;
     imgUrl?: string;
     isLoading?: boolean;
+    classname?: string;
 }
 
 export default function CardInfo(props: CardInfoProps) {
     return (
-        <div className={styles.cardInfo}>
+        <div className={classnames(styles.cardInfo, props.classname)}>
             <div className={classnames(styles.rowHeader)}>
                 {props.isLoading ? <Skeleton width={150} /> : <p>{props.HeaderTitle}</p>}
             </div>

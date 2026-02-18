@@ -66,10 +66,9 @@
 .mainTitle {
   display: flex;
   align-items: center;
-  padding: 30px;
+  padding: 28px;
   font-size: 28px;
   font-weight: 500;
-  margin-bottom: 10px;
   background-color: white;
   position: sticky;
   top: 0;
@@ -84,6 +83,13 @@
   font-size: 16px;
   font-weight: 300;
 
+}
+
+.stepOneContainer {
+  display: flex;
+  gap: 30px;
+  padding: 2rem;
+  padding-left: 28px;
 }
 
 .containerCalendar {
@@ -183,6 +189,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding-right: 28px;
 }
 
 .wrapperNewEvent form {
@@ -233,11 +240,6 @@
   padding: 0;
   padding-left: 10px;
 
-}
-
-
-.containerForm {
-  padding: 20px;
 }
 
 .doubleInput {
@@ -323,7 +325,8 @@
 
 .newEventForm {
   width: 100%;
-  border-radius: 8px;
+  border-radius: 16px;
+  display: flex;
 }
 
 .newEventFormMobile {
