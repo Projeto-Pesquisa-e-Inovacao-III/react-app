@@ -16,14 +16,17 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+        max-height: 90vh;
+    overflow: hidden;
 }
 
 .modalContent {
     background-color: white;
     border-radius: 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
     display: flex;
+    max-height: 90vh;
+    overflow: hidden;
 }
 
 .modalContent h1 {
@@ -75,19 +78,25 @@
 
 .packagePreview {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     background-color: #f3f4f6;
     padding: 20px;
     flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
 }
 
-.packagePreview .previewInfo {
+.previewInfo {
     display: flex;
     align-items: center;
     gap: 8px;
     color: #777777;
     margin-top: 12px;
+    flex-shrink: 0;      /* ← não encolhe */
+    width: 100%;
+    justify-content: center;
 }
 
 .buttonAddBenefit {
@@ -320,6 +329,57 @@
     border: solid 1px #e2e8f0 !important;
 }
 
+.addPackageForm {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    min-height: 0;
+}
+
+.mobilePreviewOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;   /* ← drawer sobe de baixo */
+}
+
+.mobilePreviewDrawer {
+    background: #f3f4f6;
+    width: 100%;
+    max-height: 85dvh;       /* ← nunca ocupa a tela toda */
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mobilePreviewDrawerScroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobilePreviewClose {
+    flex-shrink: 0;
+    width: 100%;
+    padding: 16px;
+    background: #1e293b;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
 @media (max-width: 1024px) {
 
     .modalOverlay {
@@ -349,6 +409,7 @@
         padding: 16px;
         gap: 0;
         min-height: 0;
+        max-height: unset !important;
     }
 
     .addPackageForm {

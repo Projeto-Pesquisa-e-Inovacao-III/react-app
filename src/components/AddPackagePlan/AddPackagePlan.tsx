@@ -177,41 +177,49 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
 
                     {isMobile && (
-
                         <>
                             <div className={styles.mobilePreviewCard} onClick={() => setOpenPreviewMobile(!openPreviewMobile)}>
-                                <div className={styles.mobilePreviewHeader} >
+                                <div className={styles.mobilePreviewHeader}>
                                     <span className={styles.mobilePreviewLabel}>PRÉ-VISUALIZAÇÃO</span>
-                                    {!openPreviewMobile && <Eye size={18} color="#94a3b8" />}
-                                    {openPreviewMobile && <EyeOff size={18} color="#94a3b8" />}
+                                    {!openPreviewMobile ? <Eye size={18} color="#94a3b8" /> : <EyeOff size={18} color="#94a3b8" />}
                                 </div>
                             </div>
-                            <div className="mb-3 absolute top-[15%] left-0 w-full z-10">
-                                {openPreviewMobile && (
-                                    <PackageCard
-                                        titulo={packageInfo.name || "Nome do Pacote"}
-                                        preco={packageInfo.price || "0"}
-                                        duracaoMes={packageInfo.deadline || "X"}
-                                        quantidadeAula={packageInfo.quantity || 0}
-                                        tipoAula={packageInfo.type || "PRESENCIAL"}
-                                        descricao={packageInfo.benefits || []}
-                                        isMobile={true}
-                                    />
-                                )}
-                            </div>
+
+                            {openPreviewMobile && (
+                                <div className={styles.mobilePreviewOverlay} onClick={() => setOpenPreviewMobile(false)}>
+                                    <div className={styles.mobilePreviewDrawer} onClick={(e) => e.stopPropagation()}>
+                                        <div className={styles.mobilePreviewDrawerScroll}>
+                                            <PackageCard
+                                                titulo={packageInfo.name || "Nome do Pacote"}
+                                                preco={packageInfo.price || "0"}
+                                                duracaoMes={packageInfo.deadline || "X"}
+                                                quantidadeAula={packageInfo.quantity || 0}
+                                                tipoAula={packageInfo.type || "PRESENCIAL"}
+                                                descricao={packageInfo.benefits || []}
+                                                isMobile={true}
+                                            />
+                                        </div>
+                                        <button
+                                            className={styles.mobilePreviewClose}
+                                            onClick={() => setOpenPreviewMobile(false)}
+                                        >
+                                            Fechar Pré-visualização
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </>
                     )}
 
-
                     <form className={styles.addPackageForm}>
 
-                    {!isMobile && (
+                        {!isMobile && (
 
-                        <div className="flex items-center justify-between mb-4! w-full">
-                            <h1 className="mb-0!">{title}</h1>
-                            <X size={30} color="#909fb5" cursor={"pointer"} onClick={() => onClose(false)} />
-                        </div>
-                    )}
+                            <div className="flex items-center justify-between mb-4! w-full">
+                                <h1 className="mb-0!">{title}</h1>
+                                <X size={30} color="#909fb5" cursor={"pointer"} onClick={() => onClose(false)} />
+                            </div>
+                        )}
                         {!packageInfo ? (
                             <>
                                 <div className={styles.inputContainer}>
@@ -442,16 +450,20 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
 
                 {!isMobile && (
                     <div className={styles.packagePreview}>
-                        <PackageCard
-                            titulo={packageInfo.name || "Título do Pacote"}
-                            preco={packageInfo.price || "0"}
-                            duracaoMes={packageInfo.deadline || "X"}
-                            quantidadeAula={packageInfo.quantity || "X"}
-                            tipoAula={packageInfo.type || "PRESENCIAL"}
-                            descricao={packageInfo.benefits || ["Benefício 1", "Benefício 2", "Benefício 3"]}
-                            isMobile={isMobile}
-                        />
-                        <span className={styles.previewInfo}><Info size={20} /> Os alunos veram exatamente este visual</span>
+                        <div className={styles.packagePreviewScroll}>
+                            <PackageCard
+                                titulo={packageInfo.name || "Título do Pacote"}
+                                preco={packageInfo.price || "0"}
+                                duracaoMes={packageInfo.deadline || "X"}
+                                quantidadeAula={packageInfo.quantity || "X"}
+                                tipoAula={packageInfo.type || "PRESENCIAL"}
+                                descricao={packageInfo.benefits || ["Benefício 1", "Benefício 2", "Benefício 3"]}
+                                isMobile={isMobile}
+                            />
+                        </div>
+                        <span className={styles.previewInfo}>
+                            <Info size={20} /> Os alunos veram exatamente este visual
+                        </span>
                     </div>
                 )}
             </div>

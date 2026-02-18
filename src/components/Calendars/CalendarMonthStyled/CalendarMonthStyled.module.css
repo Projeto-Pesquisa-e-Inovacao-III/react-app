@@ -118,3 +118,9 @@
 .wrapperStyledCallendar :global(.fc) :global(.fc-scrollgrid-section-sticky>*) {
   position: relative !important;
 }
+
+@media (max-width: 1024px) {
+    .wrapperStyledCallendar :global(.fc-daygrid-day-top) {
+      margin: 5px auto !important;
+    }
+}

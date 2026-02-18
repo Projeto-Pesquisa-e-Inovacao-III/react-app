@@ -492,36 +492,37 @@ export default function NewEvent(
             <div className={styles.overlay} onClick={handleClose}></div>
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
-                <div className="p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex justify-between flex-col" style={{ zIndex: 1000 }}>
+                {!isMobile && (
+                    <div className="p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex justify-between flex-col" style={{ zIndex: 1000 }}>
 
-                    {typeUser === "personal" ? (
-                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
-                    ) : (
-                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
-                    )}
-                    {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                    <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                        <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                            <Select
-                                defaultValue="PRESENCIAL"
-                                id="type-select"
-                                openSelectId={openSelectId}
-                                setOpenSelectId={setOpenSelectId}
-                                onSelectStatusChange={setSelectedType}
-                                values={[
-                                    { label: "Presencial", value: "PRESENCIAL" },
-                                    { label: "Residencial", value: "RESIDENCIAL" },
-                                    { label: "Funcional", value: "FUNCIONAL" }
-                                ]}
-                                triggerClassName="p-3"
-                                selectWrapperClassName="bg-white! rounded-xl!"
-                                selectPlaceholder="Selecione o tipo"
-                                label="Tipo de Atendimento"
-                                showSelectAll={false}
-                                showSearchInput={false}
-                            />
+                        {typeUser === "personal" ? (
+                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                        ) : (
+                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                        )}
+                        {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
+                        <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                            <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                <Select
+                                    defaultValue="PRESENCIAL"
+                                    id="type-select"
+                                    openSelectId={openSelectId}
+                                    setOpenSelectId={setOpenSelectId}
+                                    onSelectStatusChange={setSelectedType}
+                                    values={[
+                                        { label: "Presencial", value: "PRESENCIAL" },
+                                        { label: "Residencial", value: "RESIDENCIAL" },
+                                        { label: "Funcional", value: "FUNCIONAL" }
+                                    ]}
+                                    triggerClassName="p-3"
+                                    selectWrapperClassName="bg-white! rounded-xl!"
+                                    selectPlaceholder="Selecione o tipo"
+                                    label="Tipo de Atendimento"
+                                    showSelectAll={false}
+                                    showSearchInput={false}
+                                />
+                            </div>
                         </div>
-                    </div>
                         <div className="mt-auto hidden md:block">
                             <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
                                 <div className="flex items-start gap-2 text-primary dark:text-blue-400">
@@ -530,7 +531,8 @@ export default function NewEvent(
                                 </div>
                             </div>
                         </div>
-                </div>
+                    </div>
+                )}
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
                         {step === 2 && (
@@ -568,9 +570,41 @@ export default function NewEvent(
                         </div>
                     </div>
                     {step === 1 && (
-                        < div className={styles.stepOneContainer}>
+                        <div className={styles.stepOneContainer}>
 
                             <div className={styles.containerForm} >
+                            {isMobile && (
+                                <>
+                                    {typeUser === "personal" ? (
+                                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                    ) : (
+                                        <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                    )}
+                                    <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                        <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                            <Select
+                                                defaultValue="PRESENCIAL"
+                                                id="type-select"
+                                                openSelectId={openSelectId}
+                                                setOpenSelectId={setOpenSelectId}
+                                                onSelectStatusChange={setSelectedType}
+                                                values={[
+                                                    { label: "Presencial", value: "PRESENCIAL" },
+                                                    { label: "Residencial", value: "RESIDENCIAL" },
+                                                    { label: "Funcional", value: "FUNCIONAL" }
+                                                ]}
+                                                containerClassName="w-full"
+                                                triggerClassName="p-3 w-full!"
+                                                selectWrapperClassName="rounded-xl!"
+                                                selectPlaceholder="Selecione o tipo"
+                                                label="Tipo de Atendimento"
+                                                showSelectAll={false}
+                                                showSearchInput={false}
+                                            />
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
