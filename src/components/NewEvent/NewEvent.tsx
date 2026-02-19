@@ -497,7 +497,13 @@ export default function NewEvent(
                 {!isMobile && (
                     <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
                         {typeUser === "personal" ? (
-                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                            // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                            <InformationCard
+                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
+                                    title="Aluno"
+                                    subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
+                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
+                                />
                         ) : (
                             <>
                                 {step === 2 && (
@@ -531,7 +537,7 @@ export default function NewEvent(
                             </>
                         )}
                         {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                        {step === 1 && (
+                        {step === 1 && !isReschedule && (
                             <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
                                 <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
                                     <Select
@@ -616,35 +622,38 @@ export default function NewEvent(
                                                 subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                             />
                                         )}
-                                        <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                                            <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                                <Select
-                                                    defaultValue="PRESENCIAL"
-                                                    id="type-select"
-                                                    openSelectId={openSelectId}
-                                                    setOpenSelectId={setOpenSelectId}
-                                                    onSelectStatusChange={setSelectedType}
-                                                    values={[
-                                                        { label: "Presencial", value: "PRESENCIAL" },
-                                                        { label: "Residencial", value: "RESIDENCIAL" },
-                                                        { label: "Funcional", value: "FUNCIONAL" }
-                                                    ]}
-                                                    containerClassName="w-full"
-                                                    triggerClassName="p-3 w-full!"
-                                                    selectWrapperClassName="rounded-xl!"
-                                                    selectPlaceholder="Selecione o tipo"
-                                                    label="Tipo de Atendimento"
-                                                    showSelectAll={false}
-                                                    showSearchInput={false}
-                                                />
+                                        {!isReschedule && (
+
+                                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                                    <Select
+                                                        defaultValue="PRESENCIAL"
+                                                        id="type-select"
+                                                        openSelectId={openSelectId}
+                                                        setOpenSelectId={setOpenSelectId}
+                                                        onSelectStatusChange={setSelectedType}
+                                                        values={[
+                                                            { label: "Presencial", value: "PRESENCIAL" },
+                                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                                            { label: "Funcional", value: "FUNCIONAL" }
+                                                        ]}
+                                                        containerClassName="w-full"
+                                                        triggerClassName="p-3 w-full!"
+                                                        selectWrapperClassName="rounded-xl!"
+                                                        selectPlaceholder="Selecione o tipo"
+                                                        label="Tipo de Atendimento"
+                                                        showSelectAll={false}
+                                                        showSearchInput={false}
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </>
                                 )}
 
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
-                                        <div className="">
+                                        <div className={`${isReschedule && "mt-6"}`}>
                                             <CalendarMonthStyled
                                                 clickedDate={setNewEventDate}
                                                 clickedDateStr={newEventDate ? newEventDate.split("T")[0] : clickedDate?.split("T")[0]}
@@ -781,11 +790,11 @@ export default function NewEvent(
                     {step === 2 && (
 
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            {step === 2 && (
+                            {step === 2 && isMobile && (
                                 <div className="gap-4 flex flex-col">
-                                        <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
-                                            Resumo do agendamento
-                                        </h1>
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
                                     <InformationCard
                                         icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
                                         title="Personal Trainer"

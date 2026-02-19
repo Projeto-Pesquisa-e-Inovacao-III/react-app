@@ -247,18 +247,59 @@ export function Overview() {
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
 
                         {isMobile && type?.type === "aluno" && (
-                            <div className={styles.schedulePageUserActionsMobile}>
-                                <OverviewCard
-                                    title={"Agendamentos Restantes"}
-                                    subtitle={getBalance()}
-                                    type={"usuario"}
-                                    titletbn={"Agendamentos"}
-                                    onClick={() => nav("/schedule")}
-                                    isMobile={isMobile}
-                                />
-                                <OverviewCardPackageStatus actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"} />
+                            actualPlanQuery?.data?.data ? (
+                                <div className={styles.schedulePageUserActionsMobile}>
 
-                            </div>
+                                    <OverviewCard
+                                        title={"Agendamentos Restantes"}
+                                        subtitle={getBalance()}
+                                        type={"usuario"}
+                                        titletbn={"Agendamentos"}
+                                        onClick={() => nav("/schedule")}
+                                        isMobile={isMobile}
+                                    />
+                                    <OverviewCardPackageStatus actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"} />
+
+                                </div>
+                            ) : (
+                                <div className={styles.schedulePageUserActions}>
+                                    <section className="bg-indigo rounded-xl shadow-xl p-8 h-3/4 text-white relative overflow-hidden group border border-white/10">
+                                        <div className="absolute right-0 bottom-0 text-white/10 transition-transform duration-700">
+                                            <span className="material-symbols-outlined text-[12rem]">
+                                                <svg width="129" height="135" viewBox="0 0 129 135" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M90.2383 158.117L79.0584 146.937L107.408 118.588L39.5292 50.7096L11.18 79.0588L0 67.8788L11.18 56.2996L0 45.1196L16.77 28.3496L5.58999 16.7704L16.77 5.59041L28.3492 16.7704L45.1192 0.000427246L56.2991 11.1804L67.8784 0.000427246L79.0584 11.1804L50.7092 39.5296L118.588 107.408L146.937 79.0588L158.117 90.2388L146.937 101.818L158.117 112.998L141.347 129.768L152.527 141.347L141.347 152.527L129.768 141.347L112.998 158.117L101.818 146.937L90.2383 158.117Z" fill="white" fill-opacity="0.1" />
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <div className="relative z-10 flex flex-col h-full justify-between">
+                                            <div>
+                                                <div className="mb-6">
+                                                    <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm font-black uppercase tracking-wider shadow-sm mb-4 inline-block">Nenhum pacote ativo</span>
+                                                    <h3 className="text-4xl font-black leading-tight mb-3">Comece sua jornada hoje!</h3>
+                                                    <p className="text-white/80 text-base font-medium mb-6">Assine agora e tenha acesso imediato a uma estrutura completa para o seu treino.</p>
+                                                </div>
+                                                <ul className="space-y-3 mb-8">
+                                                    <TextWithoutPlan text="Plano de treino personalizado" />
+                                                    <TextWithoutPlan text="Agendamentos de consultoria presencial" />
+                                                    <TextWithoutPlan text="Consultoria online via Whatsapp" />
+                                                    <TextWithoutPlan text="Contato direto com o personal" />
+                                                </ul>
+                                            </div>
+                                            <SmallerButton
+                                                title="Ver pacotes disponíveis"
+                                                handleButtonClick={() => nav("/packages")}
+                                                icon={<ShoppingBag />}
+                                                iconPosition="right"
+                                                classname={styles.btnOverview}
+                                            />
+                                            {/* <button onClick={() => nav("/packages")} className="cursor-pointer w-full py-4 bg-white text-indigo font-black rounded-xl shadow-2xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2 transform">
+                                            Ver Opções de Pacotes
+                                            <span className="material-symbols-outlined"><ShoppingBag /></span>
+                                        </button> */}
+                                        </div>
+                                    </section>
+                                </div>
+                            )
                         )}
 
                         {isMobile && type?.type !== "aluno" && (
@@ -287,11 +328,11 @@ export function Overview() {
                             {isLoadingCalendar ? (
                                 <div className="w-full bg-white rounded-xl p-6">
                                     <div className="flex items-center justify-between mb-4">
-                                        <Skeleton height={28} width={180} />
+                                        <Skeleton height={28} />
                                         <div className="flex gap-2">
-                                            <Skeleton height={36} width={36} circle={true} />
-                                            <Skeleton height={36} width={36} circle={true} />
-                                            <Skeleton height={36} width={70} borderRadius={6} />
+                                            <Skeleton height={36} circle={true} />
+                                            <Skeleton height={36} circle={true} />
+                                            <Skeleton height={36} borderRadius={6} />
                                         </div>
                                     </div>
 
@@ -341,11 +382,11 @@ export function Overview() {
                                     <div className="rounded-full bg-gray-200 p-5 w-fit">
                                         <CalendarX className="" color="#0a3a5c" size={40} />
                                     </div>
-                                    <h1>Sem agendamentos para hoje</h1>
 
                                     {type?.type === "aluno" && (
                                         actualPlanQuery?.data?.data ? (
                                             <>
+                                                <h1 className="text-center">Sem agendamentos para hoje</h1>
                                                 <div>
                                                     <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
                                                     <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
@@ -355,12 +396,13 @@ export function Overview() {
                                                         type="button"
                                                         title="Agendar Agora"
                                                         icon={<PlusIcon />}
-                                                        classname="w-1/4! py-2.5! px-0! flex items-center gap-2 text-base! rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
+                                                        classname={`${isMobile ? "w-full" : "w-1/4!"} py-2.5 px-0 flex items-center gap-2 text-base rounded-lg bg-blue-600 text-white hover:bg-blue-700`}
                                                         handleButtonClick={handleClickNewEvent}
                                                     />}
                                             </>
                                         ) : (
                                             <>
+                                    <h1 className="text-center">Nenhum pacote ativo</h1>
                                                 <div>
                                                     <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
                                                     <h2 className="text-center text-gray-500">Confira nossos pacotes e escolha o melhor para você!</h2>
@@ -369,7 +411,7 @@ export function Overview() {
                                                     <SmallerButton
                                                         type="button"
                                                         title="Comprar Pacote Agora"
-                                                        classname="w-1/3! flex items-center gap-2 mt-2 text-lg! font-semibold rounded-lg! bg-blue-600 text-white hover:bg-blue-700"
+                                                        classname={`${isMobile ? "w-full" : "w-1/3!"} flex items-center gap-2 mt-2 text-lg font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700`}
                                                         icon={<Plus />}
                                                         handleButtonClick={() => nav("/packages")}
                                                     />}
