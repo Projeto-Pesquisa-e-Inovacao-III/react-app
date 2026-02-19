@@ -17,16 +17,17 @@ type Props = {
   showSearchInput?: boolean;
   defaultValue?: string;
   fixedText?: string;
-
-  dropDownClassName?: string
   label?: string;
+
+  labelClassName?: string;
+  dropDownClassName?: string
   triggerClassName?: string;
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
   const isOpen = openSelectId === id;
 
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
@@ -56,7 +57,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
 
   return (
     <div className={containerClassName}>
-      {label && <span className={styles.label} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
+      {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
       <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{...(label && {marginTop: "8px"}), ...(isOpen && { border: "1px solid #c3c3c3" })}} >
         <div className={`${styles.triggerWrapper} ${triggerWrapperClassName || ""}`}>
           <span

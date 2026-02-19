@@ -483,6 +483,7 @@
   padding: 20px;
 }
 
+
 .inputInfosFormContainer .title {
   display: flex;
   align-items: center;
@@ -508,6 +509,13 @@
   gap: 2px;
   width: 100%;
   align-items: baseline;
+}
+
+.summaryTitle {
+    font-size: 0.975rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1a1f25;
 }
 
 .labelInput input::placeholder {

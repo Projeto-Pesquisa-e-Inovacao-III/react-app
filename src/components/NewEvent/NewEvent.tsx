@@ -6,7 +6,7 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { Clock, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
@@ -22,6 +22,8 @@ import useModal from "../../hooks/useModal";
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import InformationCard from "./InformationCard/InformationCard";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -493,12 +495,40 @@ export default function NewEvent(
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
                 {!isMobile && (
-                    <div className="p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex justify-between flex-col" style={{ zIndex: 1000 }}>
-
+                    <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
                         {typeUser === "personal" ? (
                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                         ) : (
-                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                            <>
+                                {step === 2 && (
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
+                                )}
+                                
+                                <InformationCard
+                                    icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                    title="Personal Trainer"
+                                    subtitle={personalList.data?.[0]?.nome || ""}
+                                    subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                />
+                            </>
+                        )}
+                        {step === 2 && (
+                            <>
+                                <InformationCard
+                                    icon={<Calendar />}
+                                    title="Data e Horário"
+                                    subtitle={formattedDate?.split(" das ")[0] || ""}
+                                    subtitle2={formattedDate?.split(" das ")[1]}
+                                />
+
+                                <InformationCard
+                                    icon={<MapPin fill="#000" color="#fff" />}
+                                    title="Tipo de aula"
+                                    subtitle={selectedType}
+                                />
+                            </>
                         )}
                         {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
                         {step === 1 && (
@@ -519,6 +549,7 @@ export default function NewEvent(
                                         triggerClassName="p-3 w-full!"
                                         selectWrapperClassName="bg-white! rounded-xl! w-full!"
                                         selectPlaceholder="Selecione o tipo"
+                                        labelClassName="text-slate-500! font-bold text-sm uppercase"
                                         label="Tipo de Atendimento"
                                         showSelectAll={false}
                                         showSearchInput={false}
@@ -541,8 +572,12 @@ export default function NewEvent(
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
 
-
-                        <h1>{title}</h1>
+                        <div className="flex items-center gap-3">
+                            {step === 2 && (
+                                <span className="cursor-pointer  flex items-center m-0! pr-3! border-r border-gray-400" onClick={() => setStep(1)}><ArrowLeft className="w-5 h-5 text-gray-700" /> Voltar</span>
+                            )}
+                            <h1>{title}</h1>
+                        </div>
                         <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
 
                             <div className={styles.closeButtonHeader}>
@@ -739,7 +774,6 @@ export default function NewEvent(
 
                     {step === 2 && (
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate ? formattedDate : ""} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
                             <div className={styles.title}>
                                 <MapPin />
                                 <span>Endereço do local</span>
@@ -761,7 +795,7 @@ export default function NewEvent(
                                             <input
                                                 type="text"
                                                 id="cep"
-                                                placeholder="CEP"
+                                                placeholder="00000-000"
                                                 onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
                                                 onInput={cepMask}
                                             />
