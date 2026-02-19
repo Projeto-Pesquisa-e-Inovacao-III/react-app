@@ -505,7 +505,7 @@ export default function NewEvent(
                                         Resumo do agendamento
                                     </h1>
                                 )}
-                                
+
                                 <InformationCard
                                     icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
                                     title="Personal Trainer"
@@ -569,6 +569,7 @@ export default function NewEvent(
                         )}
                     </div>
                 )}
+
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
 
@@ -608,7 +609,12 @@ export default function NewEvent(
                                         {typeUser === "personal" ? (
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                                         ) : (
-                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Personal trainer" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={personalList.data && personalList.data[0]?.dataNascimento ? `Idade: ${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                                            <InformationCard
+                                                icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                                title="Personal Trainer"
+                                                subtitle={personalList.data?.[0]?.nome || ""}
+                                                subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                            />
                                         )}
                                         <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
                                             <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
@@ -773,7 +779,34 @@ export default function NewEvent(
                     )}
 
                     {step === 2 && (
+
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
+                            {step === 2 && (
+                                <div className="gap-4 flex flex-col">
+                                        <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                            Resumo do agendamento
+                                        </h1>
+                                    <InformationCard
+                                        icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                        title="Personal Trainer"
+                                        subtitle={personalList.data?.[0]?.nome || ""}
+                                        subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                    />
+
+                                    <InformationCard
+                                        icon={<Calendar />}
+                                        title="Data e Horário"
+                                        subtitle={formattedDate?.split(" das ")[0] || ""}
+                                        subtitle2={formattedDate?.split(" das ")[1]}
+                                    />
+
+                                    <InformationCard
+                                        icon={<MapPin fill="#000" color="#fff" />}
+                                        title="Tipo de aula"
+                                        subtitle={selectedType}
+                                    />
+                                </div>
+                            )}
                             <div className={styles.title}>
                                 <MapPin />
                                 <span>Endereço do local</span>
