@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "./routes/User/Login/Login";
 import Home from "./routes/Home/Home";
 import Register from "./routes/User/Register/Register";
-import EditUser from "./routes/EditUser/EditUser";
+import EditUser from "./routes/EditUser/UserInfomartations/EditUser";
 import Logout from "./routes/User/Logout/Logout";
 import ViewSchedule from "./routes/Schedule/Schedule";
 import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
@@ -23,6 +23,7 @@ import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
 import NoCodeTool from "./routes/Personal/NoCodeTool/NoCodeTool";
+import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
 
 // todo: 
 // safari support // deixa baixo
@@ -65,6 +66,7 @@ const [type, setType] = useState<UserType | null>(null);
                 <Route path="/more-options" element={<MoreOptions />} />
                 <Route path="/schedule" element={<ViewSchedule />} />
                 <Route path="/edit-user" element={<EditUser />} />
+                <Route path="/edit-user/security" element={<SecurityInformations />} />
               </Route>
             </Route>
 

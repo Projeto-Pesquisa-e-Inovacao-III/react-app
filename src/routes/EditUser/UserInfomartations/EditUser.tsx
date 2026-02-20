@@ -1,28 +1,29 @@
 import styles from "./EditUser.module.css";
-import Button from "../../components/Button/Button";
-import { UserImg } from "../../components/UserImg/UserImg";
-import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
-import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
+import Button from "../../../components/Button/Button.tsx";
+import { UserImg } from "../../../components/UserImg/UserImg.tsx";
+import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
 import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
-import useMobile from "../../hooks/isMobile";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword } from "../../constants/user";
-import type { UpdateUserDTO } from "../../models/user";
-import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
-import TimerModal from "../../components/Modal/TimerModal/TimerModal";
-import { cellphoneMask, cpfMask } from "../../utils/mascara";
-import { TypeContext } from "../../App";
-import type { PersonalDTO } from "../../models/personal";
-import { editPersonalProfile } from "../../constants/personal";
-import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import useMobile from "../../../hooks/isMobile.tsx";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword, getUserImage } from "../../../constants/user.ts";
+import type { UpdateUserDTO } from "../../../models/user.ts";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
+import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
+import { cellphoneMask, cpfMask } from "../../../utils/mascara.ts";
+import { TypeContext } from "../../../App.tsx";
+import type { PersonalDTO } from "../../../models/personal.ts";
+import { editPersonalProfile } from "../../../constants/personal.ts";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
 import { Link, useNavigate } from "react-router-dom";
-import { validatePassword } from "../../utils/validacao.ts";
-import useModal from "../../hooks/useModal.tsx";
-import useClickOutside from "../../hooks/useClickOutside.tsx";
+import { validatePassword } from "../../../utils/validacao.ts";
+import useModal from "../../../hooks/useModal.tsx";
+import useClickOutside from "../../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import classNames from "classnames";
-import Select from "../../components/Select/Select.tsx";
-import SmallerButton from "../../components/SmallerButton/SmallerButton.tsx";
+import Select from "../../../components/Select/Select.tsx";
+import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
+import { BASE_URL } from "../../../system.ts";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -202,6 +203,11 @@ export default function EditUser() {
       payload: userInfo.data,
     });
 
+    if (userInfo.data.caminhoFoto) {
+      setUserImage(`${BASE_URL}/usuarios/me/imagem`);
+    }
+
+
   }, [userInfo.data]);
 
   const queryClient = useQueryClient();
@@ -374,6 +380,8 @@ export default function EditUser() {
     }
   }
 
+  console.log(userImage)
+
   return (
     <>
       <div className={styles.editUserGrid}>
@@ -388,17 +396,19 @@ export default function EditUser() {
             <div className={styles.fotoArea} >
               <div className={classNames("flex gap-8 items-center", { ["flex flex-col text-center gap-8 items-center"]: isMobile })}>
                 <div className="bg-gray-300 flex items-center rounded-full ">
-                  {userImage ?
-                    <UserImg
-                      classname="border-2 border-gray-300"
-                      Source={userImage}
-                      Height={150}
-                      Width={150}
-                      Alt="foto"
-                    />
-                    :
+                  {userImage ? (
+                    <div className="w-max">
+                      <UserImg
+                        classname="border-2 border-gray-300"
+                        Source={userImage}
+                        Height={150}
+                        Width={150}
+                        Alt="foto"
+                      />
+                    </div>
+                  ) : (
                     <User width={150} height={150} />
-                  }
+                  )}
                 </div>
 
                 <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>
@@ -520,7 +530,7 @@ export default function EditUser() {
               showSearchInput={false}
           /> */}
 
-            <div className={classNames({["w-full!"]:isMobile})} id="genero">
+            <div className={classNames({ ["w-full!"]: isMobile })} id="genero">
               <Select
                 id="genero"
                 defaultValue={state.gender}
@@ -545,11 +555,11 @@ export default function EditUser() {
             <div className={styles.footer}>
               <div className={styles.dashLine}></div>
               <div className={styles.divButtons}>
-                <SmallerButton 
-                type="button" 
-                classname="w-full! transition " 
-                title="Salvar Alterações" 
-                onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                <SmallerButton
+                  type="button"
+                  classname="w-full! transition "
+                  title="Salvar Alterações"
+                  onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
                 <SmallerButton
                   title="Descartar alterações"
                   type="button"
@@ -572,7 +582,7 @@ export default function EditUser() {
                   Informações Pessoais
                 </Link>
 
-                <Link
+                <Link to="/edit-user/security" 
                   className={classNames(styles.link, styles.linkInactive)}
                 >
                   <Shield />

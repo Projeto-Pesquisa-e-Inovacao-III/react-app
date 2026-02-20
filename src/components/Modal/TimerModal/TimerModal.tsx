@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import "./timerModal.css"
 import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
 import AcceptEvent from './AcceptEvent';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 type TimerModalProps = {
     isMobile: boolean;
@@ -31,13 +32,23 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
 
     }, [])
 
+    const modalRef = useRef<HTMLDivElement>(null);
+
+      useClickOutside({
+    ref: modalRef,
+    callback: () => {
+      closeThen(false);
+
+    }
+  });
+
 
     const [enableButton, setEnableButton] = useState(false);
 
     return (
         <>
             <div className="overlay"></div>
-            <div className={`modal-event-created${isMobile ? "-mobile" : ""} ${classNameDiv ? classNameDiv : ""}`}>
+            <div ref={modalRef} className={`modal-event-created${isMobile ? "-mobile" : ""} ${classNameDiv ? classNameDiv : ""}`}>
                 <h2>{title || "Cancelar!"}</h2>
                 <p className={`content-modal ${classNameText ? classNameText : ""}`}>{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer

@@ -158,8 +158,8 @@
     "nome nome genero genero"
     "cpf cpf telefone telefone"
     "footer footer footer footer"
-    
-    ;
+
+  ;
 }
 
 .personalInfoGrid :global(.wrapper_inp) {
@@ -179,7 +179,9 @@
   width: 100%;
 }
 
-.personalInfoGrid .fotoArea { grid-area: foto; }
+.personalInfoGrid .fotoArea {
+  grid-area: foto;
+}
 
 .personalInfoGrid :global(#nome) {
   grid-area: nome;
@@ -265,6 +267,11 @@
   .profileSection {
     max-width: none;
     max-height: none;
+  }
+
+  .footer .divButtons {
+    display: flex;
+    flex-direction: column;
   }
 }
 
