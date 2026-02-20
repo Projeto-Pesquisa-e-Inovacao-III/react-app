@@ -26,7 +26,7 @@ export default function SuccessModal({ isMobile, closeThen, title, content }: { 
                     <path d="M19.625 25.5L23.875 29.75L32.375 21.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
 
-                <SmallerButton type="button" title="Fechar" handleButtonClick={handleCloseModal} />
+                <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleCloseModal} />
 
             </div>
         </>

@@ -8,7 +8,7 @@ type Props = {
   id: string;
   openSelectId: string | null;
   setOpenSelectId: (id: string | null) => void;
-  onSelectStatusChange: React.Dispatch<React.SetStateAction<string>>;
+  onSelectStatusChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
   selectStatusValue?: string;
   values?: Array<{ icon?: React.ReactNode; label: string; value: string }>;
   selectPlaceholder?: string;
@@ -29,20 +29,19 @@ type Props = {
 
 export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
   const isOpen = openSelectId === id;
-
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+
 
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
   useEffect(() => {
     if (defaultValue && onSelectStatusChange) {
       onSelectStatusChange(defaultValue);
       const defaultOption = values?.find(option => option.value === defaultValue);
-      console.log(defaultOption)
       setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
     }
-  }, []);
+  }, [defaultValue]);
 
   const selectRef = useRef<HTMLDivElement>(null);
 

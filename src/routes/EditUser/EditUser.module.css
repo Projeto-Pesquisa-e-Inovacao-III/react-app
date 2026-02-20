@@ -8,7 +8,6 @@
     "header   header "
     "profile personal"
     "profile personal"
-    "footer   footer "
 }
 
 .aside {
@@ -108,7 +107,7 @@
 
 
 .footer {
-  width: 380px;
+  width: 500px;
 }
 
 .footer .divButtons {
@@ -157,7 +156,10 @@
   grid-template-areas:
     "foto foto foto foto"
     "nome nome genero genero"
-    "cpf cpf telefone telefone";
+    "cpf cpf telefone telefone"
+    "footer footer footer footer"
+    
+    ;
 }
 
 .personalInfoGrid :global(.wrapper_inp) {

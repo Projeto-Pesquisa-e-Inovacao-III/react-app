@@ -6,19 +6,25 @@ type WhiteContainerProps = {
     title?: string | "",
     children?: ReactNode,
     gap?: number,
+    icon?: ReactNode,
+
+    titleFontSize?: number,
     titleMarginBottom?: number,
+    titleClassName?: string,
+    
     containerClassName?: string,
     contentClassName?: string
 }
 
-export function WhiteContainer({ title, children, gap, titleMarginBottom, contentClassName, containerClassName }: WhiteContainerProps) {
+export function WhiteContainer({ title, children, gap, titleMarginBottom, titleClassName, contentClassName, containerClassName, titleFontSize, icon }: WhiteContainerProps) {
     return (
         <div className={classNames(styles.whiteContainer, containerClassName)}>
-            <h2
+            <h2 className={classNames(styles.title, titleClassName)}
             style={{
-                marginBottom: `${titleMarginBottom || 20}px`
+                marginBottom: `${titleMarginBottom || 20}px`,
+                fontSize: `${titleFontSize || 16}px`
             }}
-            >{title}</h2>
+            >{icon && <span className={styles.icon}>{icon}</span>} {title}</h2>
             <div className={classNames(styles.content, contentClassName)}
             style={{
                 gap: `${gap || 0}px` 

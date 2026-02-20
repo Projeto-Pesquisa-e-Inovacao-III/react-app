@@ -30,7 +30,7 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
                 </svg>
 
 
-                <SmallerButton type="button" title="Fechar" handleButtonClick={handleCloseModal} />
+                <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleCloseModal} />
 
             </div>
         </>

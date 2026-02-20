@@ -3,10 +3,9 @@ import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
-import { IdCard, Lock, LockKeyhole, Mail, Phone, Shield, User } from "lucide-react";
+import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../hooks/isMobile";
-import Select from "../../components/Inputs/Select/Select";
 import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword } from "../../constants/user";
 import type { UpdateUserDTO } from "../../models/user";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
@@ -22,7 +21,8 @@ import useModal from "../../hooks/useModal.tsx";
 import useClickOutside from "../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import classNames from "classnames";
-import UserAvatar from "../../components/UserAvatar/UserAvatar.tsx";
+import Select from "../../components/Select/Select.tsx";
+import SmallerButton from "../../components/SmallerButton/SmallerButton.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -357,6 +357,23 @@ export default function EditUser() {
       });
   }
 
+
+  const [openSelectId, setOpenSelectId] = useState<string | null>(null);
+
+  function handleUndoChanges() {
+    if (userInfo.data) {
+      dispatch({
+        type: "hydrateForm",
+        payload: userInfo.data,
+      });
+      if (userInfo.data.caminhoFoto) {
+        setUserImage(userInfo.data.caminhoFoto);
+      } else {
+        setUserImage("");
+      }
+    }
+  }
+
   return (
     <>
       <div className={styles.editUserGrid}>
@@ -367,50 +384,53 @@ export default function EditUser() {
         }
 
         <div className={styles.personalInfo}>
-          <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
+          <WhiteContainer title="Informações Pessoais" icon={<User size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
             <div className={styles.fotoArea} >
-              <div className="flex ">
-                {userImage ?
-                  <UserImg
-                    classname="border-2 border-gray-300"
-                    Source={userImage}
-                    Height={216}
-                    Width={216}
-                    Alt="foto"
-                  />
-                  :
-                  <User width={216} height={216} />
-                }
-                <div className="flex flex-col gap-4">
-                  <span className="font-semibold text-xl">Foto de Perfil</span>
-                  <span className="text-slate-500 w-3/5">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.
-                    Esta foto será visível para o personal.</span>
-              <div className={styles.atualizarFotoContainer}>
-                <div className="w-1/3!">
-                  <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-                  {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
-                  <label htmlFor="upload-photo">
-                    <span>Atualizar Foto</span>
-                  </label>
+              <div className={classNames("flex gap-8 items-center", { ["flex flex-col text-center gap-8 items-center"]: isMobile })}>
+                <div className="bg-gray-300 flex items-center rounded-full ">
+                  {userImage ?
+                    <UserImg
+                      classname="border-2 border-gray-300"
+                      Source={userImage}
+                      Height={150}
+                      Width={150}
+                      Alt="foto"
+                    />
+                    :
+                    <User width={150} height={150} />
+                  }
                 </div>
 
-                {userImage && (
-                  <div >
-                    <Button
-                      typeButton="other"
-                      title="Remover Foto"
-                      type="button"
-                      classNameDiv=""
-                      classNameVariable="buttonRemoveImage "
-                      onClick={() => {
-                        setConfirmingDelete(false);
-                        setOpenModal("timer");
-                      }}
-                    />
-                  </div>
-                )}
+                <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>
+                  <span className="font-semibold text-xl">Foto de Perfil</span>
+                  <span className={classNames("text-slate-500 w-3/5", { ["text-slate-500 w-full"]: isMobile })}>Formatos aceitos: JPG, PNG. Tamanho máximo: 5MB.
+                    Esta foto será visível para o personal.</span>
+                  <div className={styles.atualizarFotoContainer}>
+                    <div className={classNames("w-1/3!", { ["w-full!"]: isMobile })}>
+                      <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                      {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
+                      <label htmlFor="upload-photo">
+                        <span className="gap-4"><Upload /> Atualizar Foto</span>
+                      </label>
+                    </div>
 
-              </div>
+                    {userImage && (
+                      <div >
+                        <Button
+                          typeButton="other"
+                          title="Remover Foto"
+                          type="button"
+                          classNameDiv=""
+                          classNameVariable="buttonRemoveImage "
+                          onClick={() => {
+                            setConfirmingDelete(false);
+                            setOpenModal("timer");
+                          }}
+                        />
+                      </div>
+                    )}
+
+                  </div>
 
                 </div>
               </div>
@@ -465,8 +485,7 @@ export default function EditUser() {
               onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
               mask={cellphoneMask}
             ></InputWithIcon>
-
-            <Select
+            {/* <Select
               id="genero"
               label="Gênero"
               options={[
@@ -478,7 +497,67 @@ export default function EditUser() {
               value={state.gender}
               isLoading={userInfo.isLoading}
               onInputChange={(value: string) => dispatch({ type: "setGender", payload: value })}
-            />
+            />*/}
+
+            {/* <Select
+              defaultValue="PRESENCIAL"
+              id="type-select"
+              openSelectId={openSelectId}
+              setOpenSelectId={setOpenSelectId}
+              onSelectStatusChange={setSelectedType}
+              values={[
+                  { label: "Presencial", value: "PRESENCIAL" },
+                  { label: "Residencial", value: "RESIDENCIAL" },
+                  { label: "Funcional", value: "FUNCIONAL" }
+              ]}
+              containerClassName="w-full!"
+              triggerClassName="p-3 w-full!"
+              selectWrapperClassName="bg-white! rounded-xl! w-full!"
+              selectPlaceholder="Selecione o tipo"
+              labelClassName="text-slate-500! font-bold text-sm uppercase"
+              label="Tipo de Atendimento"
+              showSelectAll={false}
+              showSearchInput={false}
+          /> */}
+
+            <div className={classNames({["w-full!"]:isMobile})} id="genero">
+              <Select
+                id="genero"
+                defaultValue={state.gender}
+                label="Gênero"
+                selectPlaceholder="Selecione o gênero"
+                values={[
+                  { label: "Masculino", value: "M" },
+                  { label: "Feminino", value: "F" },
+                  { label: "Outro", value: "O" },
+                ]}
+                onSelectStatusChange={(value: string) => dispatch({ type: "setGender", payload: value })}
+                openSelectId={openSelectId}
+                setOpenSelectId={setOpenSelectId}
+                showSearchInput={false}
+                showSelectAll={false}
+                triggerClassName="pt-3 pr-4 pl-4 pb-3 w-full!"
+                selectWrapperClassName="rounded-xl! w-full!"
+              />
+            </div>
+
+
+            <div className={styles.footer}>
+              <div className={styles.dashLine}></div>
+              <div className={styles.divButtons}>
+                <SmallerButton 
+                type="button" 
+                classname="w-full! transition " 
+                title="Salvar Alterações" 
+                onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                <SmallerButton
+                  title="Descartar alterações"
+                  type="button"
+                  classname="w-full! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
+                  onClick={() => handleUndoChanges()}
+                />
+              </div>
+            </div>
           </WhiteContainer>
         </div>
 
@@ -486,7 +565,7 @@ export default function EditUser() {
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
             <aside className={styles.aside}>
               <nav className={styles.nav}>
-                <Link
+                <Link to="/edit-user"
                   className={classNames(styles.link, styles.linkActive)}
                 >
                   <User />
@@ -504,21 +583,7 @@ export default function EditUser() {
           </WhiteContainer>
         </div>
 
-        <div className={styles.footer}>
-          <div className={styles.dashLine}></div>
-          <div className={styles.divButtons}>
-            <Button title="Salvar Alterações" type="button" onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
-            <Button
-              title="Apagar Perfil"
-              type="button"
-              classNameVariable="buttonDanger"
-              onClick={() => {
-                setConfirmingDelete(true);
-                setOpenModal("timer");
-              }}
-            />
-          </div>
-        </div>
+
       </div>
 
       {openModal === "success" && (
