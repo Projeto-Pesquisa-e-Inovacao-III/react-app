@@ -3,7 +3,7 @@ import Button from "../../components/Button/Button";
 import { UserImg } from "../../components/UserImg/UserImg";
 import { WhiteContainer } from "../../components/WhiteContainer/WhiteContainer";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
-import { IdCard, LockKeyhole, Mail, Phone, User } from "lucide-react";
+import { IdCard, Lock, LockKeyhole, Mail, Phone, Shield, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../hooks/isMobile";
 import Select from "../../components/Inputs/Select/Select";
@@ -16,11 +16,13 @@ import { TypeContext } from "../../App";
 import type { PersonalDTO } from "../../models/personal";
 import { editPersonalProfile } from "../../constants/personal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validatePassword } from "../../utils/validacao.ts";
 import useModal from "../../hooks/useModal.tsx";
 import useClickOutside from "../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import classNames from "classnames";
+import UserAvatar from "../../components/UserAvatar/UserAvatar.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -364,48 +366,57 @@ export default function EditUser() {
           </div>
         }
 
-        <div className={styles.profileSection}>
-          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
-            {userImage ?
-              <UserImg
-                classname="border-2 border-gray-300"
-                Source={userImage}
-                Height={216}
-                Width={216}
-                Alt="foto"
-              />
-              :
-              <User width={216} height={216} />
-            }
-            <div className={styles.atualizarFotoContainer}>
-              <div>
-                <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-                {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
-                <label htmlFor="upload-photo">
-                  <span>Atualizar Foto</span>
-                </label>
-              </div>
-
-              {userImage && (
-                <div >
-                  <Button
-                    typeButton="other"
-                    title="Remover Foto"
-                    type="button"
-                    classNameVariable="buttonRemoveImage"
-                    onClick={() => {
-                      setConfirmingDelete(false);
-                      setOpenModal("timer");
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </WhiteContainer>
-        </div>
-
         <div className={styles.personalInfo}>
           <WhiteContainer title="Informações Pessoais" contentClassName={styles.personalInfoGrid} gap={20}>
+            <div className={styles.fotoArea} >
+              <div className="flex ">
+                {userImage ?
+                  <UserImg
+                    classname="border-2 border-gray-300"
+                    Source={userImage}
+                    Height={216}
+                    Width={216}
+                    Alt="foto"
+                  />
+                  :
+                  <User width={216} height={216} />
+                }
+                <div className="flex flex-col gap-4">
+                  <span className="font-semibold text-xl">Foto de Perfil</span>
+                  <span className="text-slate-500 w-3/5">Formatos aceitos: JPG, PNG. Tamanho máximo: 2MB.
+                    Esta foto será visível para o personal.</span>
+              <div className={styles.atualizarFotoContainer}>
+                <div className="w-1/3!">
+                  <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
+                  {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
+                  <label htmlFor="upload-photo">
+                    <span>Atualizar Foto</span>
+                  </label>
+                </div>
+
+                {userImage && (
+                  <div >
+                    <Button
+                      typeButton="other"
+                      title="Remover Foto"
+                      type="button"
+                      classNameDiv=""
+                      classNameVariable="buttonRemoveImage "
+                      onClick={() => {
+                        setConfirmingDelete(false);
+                        setOpenModal("timer");
+                      }}
+                    />
+                  </div>
+                )}
+
+              </div>
+
+                </div>
+              </div>
+            </div>
+
+
             <InputWithIcon
               id="nome"
               type="text"
@@ -471,49 +482,25 @@ export default function EditUser() {
           </WhiteContainer>
         </div>
 
-        <div className={styles.loginInfo}>
-          <WhiteContainer gap={20} contentClassName={styles.loginInfoContainer} title="Informações de Login">
-            <InputWithIcon
-              id="email"
-              type="email"
-              placeholder="Digite seu email"
-              icon={<Mail />}
-              isLoading={userInfo.isLoading}
-              label="Email"
-              value={state.email}
-              onInputChange={(value: string) => dispatch({ type: "setEmail", payload: value })}
-            ></InputWithIcon>
-            <InputWithIcon
-              id="senha"
-              type="password"
-              placeholder="*************"
-              icon={<LockKeyhole />}
-              isLoading={userInfo.isLoading}
-              label="Senha Atual"
-              isPassword={password.currentPassword ? true : false}
-              value={password.currentPassword}
-              onInputChange={(value: string) => setPassword({
-                ...password,
-                currentPassword: value
-              })}
-            ></InputWithIcon>
-            <InputWithIcon
-              id="senha"
-              type="password"
-              placeholder="*************"
-              icon={<LockKeyhole />}
-              isLoading={userInfo.isLoading}
-              label="Nova Senha"
-              isPassword={password.confirmPassword ? true : false}
-              value={password.confirmPassword}
-              onInputChange={(value: string) => setPassword({
-                ...password,
-                confirmPassword: value
-              })}
-            ></InputWithIcon>
-            <Button classNameDiv={styles.saveButton} classNameVariable={styles.btnEditPassword}
-              title="Alterar Senha" type="button" onClick={() => updatePassword()}
-            />
+        <div className={styles.profileSection}>
+          <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
+            <aside className={styles.aside}>
+              <nav className={styles.nav}>
+                <Link
+                  className={classNames(styles.link, styles.linkActive)}
+                >
+                  <User />
+                  Informações Pessoais
+                </Link>
+
+                <Link
+                  className={classNames(styles.link, styles.linkInactive)}
+                >
+                  <Shield />
+                  Segurança
+                </Link>
+              </nav>
+            </aside>
           </WhiteContainer>
         </div>
 
