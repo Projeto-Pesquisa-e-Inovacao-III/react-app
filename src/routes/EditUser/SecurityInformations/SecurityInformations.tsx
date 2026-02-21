@@ -148,6 +148,7 @@ export default function EditUser() {
             <InputWithIcon
               id="senhaAtual"
               type="password"
+              isPassword={true}
               placeholder="Senha atual"
               icon={<Lock size={22} />}
               isLoading={userInfo.isLoading}
@@ -159,6 +160,7 @@ export default function EditUser() {
             <InputWithIcon
               id="novaSenha"
               type="password"
+              isPassword={true}
               placeholder="Nova senha"
               icon={<Lock size={22} />}
               isLoading={userInfo.isLoading}

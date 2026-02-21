@@ -1,6 +1,6 @@
 .packagesListWrapperDesktop {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); 
+    grid-template-columns: repeat(4, 1fr);
     flex-wrap: wrap;
     gap: 40px;
     width: auto;
@@ -19,7 +19,7 @@
 }
 
 .addCard {
-    max-width: 32rem;
+    max-width: 25rem;
     width: 100%;
     border: 2px dashed #64748b;
     border-radius: 1.5rem;
@@ -31,10 +31,17 @@
     transition: all 0.2s ease;
     min-height: 500px;
     cursor: pointer;
+    height: 100%;
 }
 
 .addCard:hover {
     background-color: rgba(255, 255, 255, 0.15);
+}
+
+.addCardMobile {
+    max-width: unset !important;
+    min-height: unset !important;
+    height: 100%;
 }
 
 .addIconWrapper {
@@ -105,11 +112,6 @@
     display: flex !important;
 }
 
-@media (max-width: 1260px) {
-    .packagesListWrapperDesktop {
-        justify-content: center;
-    }
-}
 
 .packagesContainerBlock {
     overflow: hidden;
@@ -124,6 +126,136 @@
 .addButtonContainer {
     width: 25%;
 }
+
+.embla {
+    width: 100%;
+    overflow: hidden;
+}
+
+
+.emblaViewport {
+    width: 100%;
+}
+
+.emblaContainer {
+    display: flex;
+    gap: 0;
+}
+
+
+.emblaSlide,
+.emblaSlideUser {
+    flex: 0 0 40.33%;
+    min-width: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+.emblaSlideUser {
+    flex: 0 0 24%;
+}
+
+
+
+.emblaSlide:last-child {
+    padding-right: 12px;
+}
+
+.emblaButtonPrev {
+    left: -14px;
+}
+
+.emblaButtonNext {
+    right: -14px;
+}
+
+.emblaButtonPrev,
+.emblaButtonNext {
+    position: static;
+    transform: none;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: #0a3a5c;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.emblaButtonPrev {
+    left: -14px;
+}
+
+.emblaButtonNext {
+    right: -14px;
+}
+
+.emblaSlideAdd {
+    flex: 0 0 25%;
+    min-width: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+}
+
+.emblaSlideAdd .addCard {
+    min-height: unset;
+    height: 100%;
+    max-width: unset;
+    flex: 0 0 200px;
+}
+
+.emblaWrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 1440px) {
+    .emblaSlide {
+        flex: 0 0 55% !important;
+    }
+
+    .emblaSlideUser {
+        flex: 0 0 30% !important;
+    }
+
+    .emblaSlideAdd {
+        flex: 0 0 30% !important;
+    }
+
+    .addCard {
+        width: 30rem;
+    }
+}
+
+@media (max-width: 1280px) {
+    .packagesListWrapperDesktop {
+        justify-content: center;
+    }
+
+    .emblaSlide {
+        flex: 0 0 90% !important;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+
+    .addCard {
+        width: 30rem;
+    }
+
+}
+
+
 
 @media (max-width: 1024px) {
     .addCard {
@@ -181,4 +313,62 @@
         margin-top: 15px;
     }
 
+    .emblaSlide {
+        flex: 0 0 50% !important;
+        padding: 0 12px;
+        box-sizing: border-box;
+    }
+
+    .emblaSlideUser {
+        flex: 0 0 50% !important;
+    }
+
+    .emblaWrapper .addCard {
+        flex: 0 0 160px !important;
+        width: 160px !important;
+        min-height: 300px !important;
+    }
+
+    .emblaButtonPrev,
+    .emblaButtonNext {
+        position: absolute;
+        z-index: 10;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .emblaSlide {
+        flex: 0 0 100% !important;
+        padding: 0 8px;
+        box-sizing: border-box;
+    }
+
+    .emblaSlideUser {
+        flex: 0 0 100%;
+    }
+
+    .emblaWrapper .addCard {
+        flex: 0 0 120px;
+        width: 120px;
+        min-height: 250px;
+        padding: 1rem;
+    }
+
+    .addTitle {
+        font-size: 0.875rem;
+    }
+
+    .addText {
+        font-size: 0.75rem;
+    }
+
+    .emblaButtonPrev,
+    .emblaButtonNext {
+        position: absolute;
+        z-index: 10;
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+    }
 }

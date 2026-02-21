@@ -420,7 +420,7 @@ export default function EditUser() {
                       <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
                       {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
                       <label htmlFor="upload-photo">
-                        <span className="gap-4"><Upload /> Atualizar Foto</span>
+                        <span className="flex items-center h-12! gap-4 border-2 border-indigo bg-white! text-black! rounded-2xl!"><Upload /> Atualizar Foto</span>
                       </label>
                     </div>
 

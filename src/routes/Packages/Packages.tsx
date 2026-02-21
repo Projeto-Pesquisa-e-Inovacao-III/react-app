@@ -2,7 +2,7 @@ import { PackageCard } from "../../components/PackageCard/PackageCard";
 import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import classnames from "classnames";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
@@ -13,6 +13,7 @@ import { buyProductExhibition, desactivateProductExhibition, getProductsExhibiti
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
 
@@ -152,6 +153,28 @@ export function Packages() {
         )
     }
 
+    const activePackages = productsExhibitions
+        .filter(p => p.status === "ATIVO")
+        .sort((a, b) => b.preco - a.preco)
+
+    const shouldUseCarousel = activePackages.length >= 5
+
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false, startIndex: activePackages.length },
+        []
+    )
+
+    const scrollPrev = useCallback(() => {
+        emblaApi?.scrollPrev()
+    }, [emblaApi])
+
+    const scrollNext = useCallback(() => {
+        emblaApi?.scrollNext()
+    }, [emblaApi])
+
+    const slidesToRender = shouldUseCarousel
+        ? [...activePackages, ...activePackages, ...activePackages]
+        : activePackages
 
     return (
         <>
@@ -162,9 +185,21 @@ export function Packages() {
                         { [styles.packagesTitleContainerMobile]: isMobile }
                     )}
                 >
-                    <h1>
-                        {isPersonal ? "Pacotes Atuais" : "Pacotes de Consultoria"}
-                    </h1>
+                    <div>
+                        {isPersonal ? (
+                            <>
+                                <h1>
+                                    Pacotes Atuais
+                                </h1>
+                                <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                            </>
+                        ) : (
+                            <h1>
+                                Pacotes de Consultoria
+                            </h1>
+                        )
+                        }
+                    </div>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
                             <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
@@ -172,25 +207,63 @@ export function Packages() {
                     )}
                 </div>
 
-                <div className={classnames(styles.packagesListWrapperDesktop, 
-                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) }, 
+                <div className={classnames(styles.packagesListWrapperDesktop,
+                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
                     { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
                         renderPackageCardSkeleton()
-                    ) : productsExhibitions.length > 0 && productsExhibitions.some(p => p.status === "ATIVO") ? (
-                        productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
-                            pacote.status === "ATIVO" &&
-                            <PackageCard
-                                key={pacote.id! + pacote.titulo + index}
-                                {...pacote}
-                                descricao={safeParseDescricao(pacote.descricao)}
-                                onClick={() => handleBuyClick(pacote.id!)}
-                                isMobile={isMobile}
-                                isPersonal={isPersonal}
-                                setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                                setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
-                            />
-                        ))
+                    ) : activePackages.length > 0 ? (
+                        shouldUseCarousel ? (
+                            <>
+                                <div className={styles.emblaWrapper}>
+                                    <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                    <div className={styles.embla}>
+                                        <div className={styles.emblaViewport} ref={emblaRef}>
+                                            <div className={styles.emblaContainer}>
+                                                {slidesToRender.map((pacote, index) => (
+                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                        <PackageCard
+                                                            {...pacote}
+                                                            descricao={safeParseDescricao(pacote.descricao)}
+                                                            onClick={() => handleBuyClick(pacote.id!)}
+                                                            isMobile={isMobile}
+                                                            isPersonal={isPersonal}
+                                                            setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                                            setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
+                                                        />
+                                                    </div>
+                                                ))}
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
+                                    {isPersonal && !isMobile && (
+                                        <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                            <div className={styles.addIconWrapper}>
+                                                <Plus size={24} color="#a2afc1" />
+                                            </div>
+                                            <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
+                                            <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                            </>
+                        ) : (
+                            activePackages.map((pacote, index) => (
+                                <PackageCard
+                                    key={pacote.id! + pacote.titulo + index}
+                                    {...pacote}
+                                    descricao={safeParseDescricao(pacote.descricao)}
+                                    onClick={() => handleBuyClick(pacote.id!)}
+                                    isMobile={isMobile}
+                                    isPersonal={isPersonal}
+                                    setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                    setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
+                                />
+                            ))
+                        )
                     ) : (
                         <div className={styles.emptyPackageContainer}>
                             <div className={styles.emptyPackageIconWrapper}>
@@ -206,29 +279,17 @@ export function Packages() {
                             </p>
                         </div>
                     )}
-
-                    {isPersonal && productsExhibitions.length > 0 && productsExhibitions.some(p => p.status === "ATIVO") && (
-                        <div
-                            className={styles.addCard}
-                            onClick={() => setOpenModal("add")}
-                        >
-                            <div className={styles.addIconWrapper}>
-                                <Plus size={24} color="#a2afc1" />
-                            </div>
-
-                            <h4 className={styles.addTitle}>
-                                Criar Novo Pacote
-                            </h4>
-
-                            <p className={styles.addText}>
-                                Adicione novas modalidades ou planos de fidelidade.
-                            </p>
-                        </div>
-                    )}
-
                 </div>
             </div >
-
+                            {isPersonal && isMobile && (
+                                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile })} onClick={() => setOpenModal("add")}>
+                                    <div className={styles.addIconWrapper}>
+                                        <Plus size={24} color="#a2afc1" />
+                                    </div>
+                                    <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
+                                    <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                </div>
+                            )}
             <div
                 className={classnames(
                     styles.packagesTitleContainer,

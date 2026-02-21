@@ -457,7 +457,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                                 duracaoMes={packageInfo.deadline || "X"}
                                 quantidadeAula={packageInfo.quantity || "X"}
                                 tipoAula={packageInfo.type || "PRESENCIAL"}
-                                descricao={packageInfo.benefits || ["Benefício 1", "Benefício 2", "Benefício 3"]}
+                                descricao={packageInfo.benefits ?? ["Benefício 1", "Benefício 2", "Benefício 3"]}
                                 isMobile={isMobile}
                             />
                         </div>
