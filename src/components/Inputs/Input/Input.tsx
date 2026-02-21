@@ -13,8 +13,8 @@ type Props = {
     value?: string | number;
     icon?: React.ReactNode;
     onClickIcon?: () => void;
-    classname: string;
-    classnameInput: string;
+    classname?: string;
+    classnameInput?: string;
 }
 
 export default function Input({ type, placeholder, label, id, name, onInputChange, onInputClick, isPassword, value, icon, onClickIcon, classname, classnameInput }: Props) {
