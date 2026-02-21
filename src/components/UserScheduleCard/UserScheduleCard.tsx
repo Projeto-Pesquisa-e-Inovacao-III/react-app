@@ -1,10 +1,9 @@
 import classNames from "classnames";
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import "./style.css"
-import type { dataCardProps } from "../CardCheckSchedule/CardCheckSchedule";
+import type { dataCardProps } from "../CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import UserAvatar from "../UserAvatar/UserAvatar";
-import { BASE_URL } from "../../system";
-import Button from "../Button/Button";
+import Skeleton from "react-loading-skeleton";
 
 type UserScheduleCardProps = {
     data: dataCardProps;
@@ -24,19 +23,22 @@ type UserScheduleCardProps = {
 }
 
 export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, handleAcceptReschedule, isMobile }: UserScheduleCardProps) {
-    console.log("dataCardProps", data);
+    console.log("dataCardProps", finalHour);
+
+    const skeleton = <Skeleton count={1} width={100} height={20} baseColor="#e5e7eb" highlightColor="#f3f4f6" />
+
     return (
         <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
             <div className="left">
-                <span className="user-personal">{data.tipoAula}</span>
+                <span className="user-personal">{data.tipoAula || skeleton}</span>
                 <p>{isReschedule ? "Horário reagendado" : ""}</p>
                 <div className="schedule-page-user">
                     <UserAvatar
-                        foto={data.caminhoFoto ?? additionalInfo?.foto}
+                        foto={data.caminhoFoto ?? additionalInfo?.foto }
                         useUserImage={false}
                     />
                     <span>
-                        {data.personalNome ?? additionalInfo?.nome ?? ""}
+                        {data.personalNome ?? additionalInfo?.nome ?? skeleton}
                     </span>
                 </div>
                 {isReschedule &&

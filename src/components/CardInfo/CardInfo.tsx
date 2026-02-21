@@ -2,21 +2,24 @@ import classnames from 'classnames'
 import styles from './CardInfo.module.css'
 import React from 'react'
 import UserAvatar from '../UserAvatar/UserAvatar';
+import Skeleton from 'react-loading-skeleton';
 
 type CardInfoProps = {
     isMobile: boolean;
-    HeaderTitle: string;
-    title: string;
-    subtitle?: string;
+    HeaderTitle: string | React.ReactNode;
+    title: string | React.ReactNode;
+    subtitle?: string | React.ReactNode;
     includeImg?: boolean;
     imgUrl?: string;
+    isLoading?: boolean;
+    classname?: string;
 }
 
 export default function CardInfo(props: CardInfoProps) {
     return (
-        <div className={styles.cardInfo}>
+        <div className={classnames(styles.cardInfo, props.classname)}>
             <div className={classnames(styles.rowHeader)}>
-                <p>{props.HeaderTitle}</p>
+                {props.isLoading ? <Skeleton width={150} /> : <p>{props.HeaderTitle}</p>}
             </div>
             <div className={classnames(styles.usersTableCard, { [styles.usersTableCardMobile]: props.isMobile })}>
                 <div className={classnames(styles.userDataFull, { [styles.userDataFullMobile]: props.isMobile })}>
@@ -25,10 +28,10 @@ export default function CardInfo(props: CardInfoProps) {
                     )}
                     <div className={styles.userData}>
                         <span>
-                            {props.title}
+                            {props.isLoading ? <Skeleton width={200} /> : props.title}
                         </span>
                         <span>
-                            {props.subtitle}
+                            {props.isLoading ? <Skeleton width={150} /> : props.subtitle}
                         </span>
                     </div>
                 </div>

@@ -1,11 +1,8 @@
-import useMobile from "../../../hooks/isMobile";
 import { Editor, Frame, Element } from "@craftjs/core";
 import Text from "../../../components/NoCodeToolsComponents/Text";
 import { Container } from "../../../components/NoCodeToolsComponents/Container";
 
 export default function NoCodeTool() {
-  const isMobile = useMobile();
-
   return (
     <>
       <section

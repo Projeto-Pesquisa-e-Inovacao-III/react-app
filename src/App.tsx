@@ -3,7 +3,7 @@ import "./App.css";
 import Login from "./routes/User/Login/Login";
 import Home from "./routes/Home/Home";
 import Register from "./routes/User/Register/Register";
-import EditUser from "./routes/EditUser/EditUser";
+import EditUser from "./routes/EditUser/UserInfomartations/EditUser";
 import Logout from "./routes/User/Logout/Logout";
 import ViewSchedule from "./routes/Schedule/Schedule";
 import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
@@ -12,7 +12,7 @@ import { Overview } from "./routes/Overview/Overview";
 import { Packages } from "./routes/Packages/Packages";
 import ListUsers from "./routes/Personal/ListUsers/ListUsers"
 import Layout from "./components/Layout/Layout";
-import { useState, createContext, useContext } from "react";
+import { useState, createContext } from "react";
 import PlansHistory from "./routes/PlansHistory/PlansHistory";
 import Dashboard from "./routes/Personal/Dashboard/dashboard";
 import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
@@ -23,6 +23,7 @@ import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
 import NoCodeTool from "./routes/Personal/NoCodeTool/NoCodeTool";
+import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
 
 // todo: 
 // safari support // deixa baixo
@@ -49,7 +50,7 @@ const [type, setType] = useState<UserType | null>(null);
 
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
-              {/* temp */}
+              {/* temp */}  
               <Route path="/no-code-tool" element={<NoCodeTool />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
@@ -65,6 +66,7 @@ const [type, setType] = useState<UserType | null>(null);
                 <Route path="/more-options" element={<MoreOptions />} />
                 <Route path="/schedule" element={<ViewSchedule />} />
                 <Route path="/edit-user" element={<EditUser />} />
+                <Route path="/edit-user/security" element={<SecurityInformations />} />
               </Route>
             </Route>
 

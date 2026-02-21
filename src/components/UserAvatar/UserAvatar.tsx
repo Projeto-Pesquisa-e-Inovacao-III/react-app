@@ -7,10 +7,12 @@ import styles from "./UserAvatar.module.css"
 
 interface UserAvatarProps {
   foto?: string;
+  userName?: string;
   useUserImage?: boolean;
+  useUsername?: boolean;
 }
 
-export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false }: UserAvatarProps) {
 
   const userImage = useQuery({
     queryKey: ['userImage'],
@@ -27,7 +29,9 @@ export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
     retry: false,
   })
   return (
-    <div className={styles.userAvatar}>
+    <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
+      {useUsername && <p>{userName}</p>}
+
       {userImage.data || foto ?
         <UserImg
           Source={`${foto ? `${BASE_URL}/usuarios/foto/${foto}` : userImage.data || ""}`}
@@ -36,7 +40,7 @@ export default function UserAvatar({ foto, useUserImage }: UserAvatarProps) {
           Alt="foto"
         />
         :
-        <User width={216} height={216} />
+        <User width={216} height={216} color='#000' />
       }
     </div>
   )

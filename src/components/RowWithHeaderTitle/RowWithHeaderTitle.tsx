@@ -1,47 +1,74 @@
 import classNames from 'classnames'
 import styles from './RowWithHeaderTitle.module.css'
-import React from 'react'
-import SmallerButton from '../SmallerButton'
+import SmallerButton from '../SmallerButton/SmallerButton'
+import type { ReactNode } from 'react';
+import Skeleton from 'react-loading-skeleton';
 
+export type RowItem = {
+    headerTitle: string;
+    title: string;
+    subtitle: ReactNode;
+    id: number;
+}
 
 type RowWithHeaderTitleProps = {
-    data: Array<{
-        headerTitle: string,
-        title: string,
-        subtitle: string
-    }>,
+    data: RowItem[],
     includeDetailsButton?: boolean,
     buttonLabel?: string,
-    handleDetailsClick?: () => void
+    handleDetailsClick?: (id: number) => void
+    isLoading?: boolean;
 }
 
 export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
-    console.log("Rendering RowWithHeaderTitle with data:", props.data);
+    const dataToRender = props.isLoading ? [...Array(3)].map((_, index) => (index)) : props.data;
     return (
         <>
-            {props.data.map((plan: any, index: number) => (
-                <div key={`${plan.headerTitle}-${index}`} className={classNames(styles.rowCard)}>
+            {dataToRender.map((plan, index: number) => (
+                <div key={props.isLoading ? `skeleton-${index}` : `${plan?.headerTitle}-${index}`} className={classNames(styles.rowCard)}>
                     <div className={classNames(styles.rowHeader)}>
-                        <p>{plan.headerTitle}</p>
+                        <p>
+                            {props.isLoading ? (
+                                <Skeleton width={200} />
+                            ) : (
+                                plan.headerTitle
+                            )}
+                        </p>
                     </div>
                     <div className={classNames(styles.rowWrapperText)}>
-
                         <div className={classNames(styles.rowInfo)}>
-                            <h2>{plan.title}</h2>
-                            <p>{plan.subtitle}</p>
+                            <h2>
+                                {props.isLoading ? (
+                                    <Skeleton width={250} />
+                                ) : (
+                                    plan.title
+                                )}
+                            </h2>
+                            <p>
+                                {props.isLoading ? (
+                                    <Skeleton width={300} />
+                                ) : (
+                                    plan.subtitle
+                                )}
+                            </p>
                         </div>
-                        {props.includeDetailsButton && props.handleDetailsClick && (
-                            <div className={classNames(styles.rowButton)} onClick={() => props.handleDetailsClick(plan.id)}>
-                                <SmallerButton title={props.buttonLabel || "Detalhes"} />
+                        {props.includeDetailsButton && (
+                            <div
+                                className={classNames(styles.rowButton)}
+                                onClick={props.isLoading ? undefined : () => props.handleDetailsClick?.(plan?.id)}
+                            >
+                                {props.isLoading ? (
+                                    <Skeleton width={100} height={36} borderRadius={8} />
+                                ) : (
+                                    <SmallerButton title={props.buttonLabel || "Detalhes"} />
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
             ))}
-
-            {props.data.length === 0 && (
+            {!props.isLoading && props.data.length === 0 && (
                 <div className={classNames(styles.noData)}>
-                    <p>Não há nada por aqui...</p>
+                    {/* <p>Não há nada por aqui...</p> */}
                 </div>
             )}
         </>

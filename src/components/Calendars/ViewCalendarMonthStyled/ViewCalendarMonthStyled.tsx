@@ -18,13 +18,12 @@ type Props = {
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
   modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
+  hasClassTomorrow?: boolean;
 
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, hasClassTomorrow }: Props) {
   const type = useContext(TypeContext);
-
-
 
   const nav = useNavigate();
 
@@ -116,7 +115,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if (!canMakeAppointment) {
+            if (!canMakeAppointment && type?.type === "aluno") {
               modalInfo?.({ title: "Aulas indisponíveis", description: "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal." });
               modalType?.("error");
               return;
@@ -134,11 +133,15 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
+            const tomorrowDate = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+
+            
+
+            if (!hasClassTomorrow && cellDate === tomorrowDate) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {
               return [styles.fcTodayCustom];
             }
-
 
             return [];
           }}

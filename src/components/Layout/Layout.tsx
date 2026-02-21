@@ -10,12 +10,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 const titles = {
+    "*": "Carregando... | CSF Treinamentos",
     "/": "Início | CSF Treinamentos",
     "/login": "Login | CSF Treinamentos",
     "/register": "Cadastro | CSF Treinamentos",
     "/forgot-password": "Esqueci a senha | CSF Treinamentos",
     "/logout": "Saindo... | CSF Treinamentos",
-    "/plans-history": "Histórico de Planos | CSF Treinamentos",
+    "/plans-history": "Histórico de compra | CSF Treinamentos",
     "/schedule": "Agenda | CSF Treinamentos",
     "/schedule/": "Agenda | CSF Treinamentos",
     "/schedule-history": "Histórico de Agendamentos | CSF Treinamentos",
@@ -29,10 +30,13 @@ const titles = {
     "/users": "Usuários | CSF Treinamentos",
     "/users/view-user-data": "Dados do Usuário | CSF Treinamentos",
     "/edit-user": "Editar Usuário | CSF Treinamentos",
+    "/edit-user/security": "Editar Usuário | CSF Treinamentos",
     "/personal/check-schedule": "Solicitações | CSF Treinamentos",
     "/more-options": "Mais Opções | CSF Treinamentos",
     "/set-availability": "Definir Horário | CSF Treinamentos",
 };
+
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
 
 export default function Layout() {
     const isMobile = useMobile();
@@ -47,7 +51,6 @@ export default function Layout() {
         document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
     }, [location.pathname]);
 
-    const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
     const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
 
     const isLoggedIn = useQuery({
@@ -65,11 +68,13 @@ export default function Layout() {
     const { type, setType } = context;
 
     useEffect(() => {
-        const notAuthenticated = (isLoggedIn.isError && !isLoggedIn.isLoading) || (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
+        console.log("logado e nao carregando", !isLoggedIn.isLoading && !isLoggedIn.data?.autentificado)
+        console.log("erro e nao carregando", isLoggedIn.isError && !isLoggedIn.isLoading)
+        const notAuthenticated = (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
         if (notAuthenticated && !exceptions.includes(location.pathname)) {
             nav("/login");
         }
-    }, [isLoggedIn, location.pathname, isLoggedIn.data, isLoggedIn.isError, isLoggedIn.isLoading, type]);
+    }, [isLoggedIn, location.pathname, isLoggedIn.data, isLoggedIn.isError, isLoggedIn.isLoading, type, nav]);
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {
@@ -82,7 +87,7 @@ export default function Layout() {
     return (
         <div>
             <>
-                {!isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} />}
                 {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                     <LogoHeaderMobile />
                 </div>}

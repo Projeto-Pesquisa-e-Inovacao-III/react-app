@@ -45,6 +45,33 @@ export type ScheduleAfterInserted = {
     tipoAulaProdutoContratado: string
 }
 
+export type CheckSchedule = {
+    agendamentoId: number;
+    status: string;
+    dataFim: string;
+    dataInicio: string;
+    nome: string;
+    idade: string;
+    foto: string;
+    endereco: {
+        cep: {
+            bairro: string
+            id: string
+            localidade: string
+            logradouro: string
+            uf: string
+        };
+        numero: string
+    };
+    telefone: {
+        ddd: string;
+        numero: string;
+        pais: string;
+    };
+    tipoAula: string;
+}
+
+
 
 export type ScheduleReschedule = {
     idAgendamento?: number,
@@ -65,4 +92,10 @@ export type ScheduleReschedule = {
     },
     personalId: number,
     tipoAulaProdutoContratado: string
+}
+
+export type AbsenceAppointment = {
+    idAgendamento: number,
+    tipoUsuario: string,
+    descricaoCancelamento?: string,
 }

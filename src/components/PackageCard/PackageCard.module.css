@@ -1,14 +1,62 @@
 .packageCardContainer {
     background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08);
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    max-width: 500px;
+    max-width: 512px;
+    height: 100%;
+}
+
+.packageCardPresential {
+    border-top: 15px solid var(--bg-blue);
+}
+
+.packageCardHome {
+    border-top: 15px solid var(--bg-orange);
+}
+
+.packageCardFunctional {
+    border-top: 15px solid var(--carol);
+}
+
+.cardTipoAulaPresential,
+.cardTipoAulaHome,
+.cardTipoAulaFunctional {
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 700;
+}
+
+.cardIcon {
+    background-color: #ececec81;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.cardTipoAulaPresential {
+    background-color: #bbd8ec81;
+    color: var(--bg-blue);
+}
+
+
+.cardTipoAulaHome {
+    background-color: #eb825c36;
+    color: var(--bg-orange);
+}
+
+.cardTipoAulaFunctional {
+    background-color: #c4e0f081;
+    color: #5c7d8f;
+}
+
+.cardContent {
+    height: 100%;
+    padding: 30px;
 }
 
 .cardVariantConsultoria {
@@ -20,7 +68,7 @@
 }
 
 .cardTitle {
-    font-size: 24px;
+    font-size: 1.8rem;
     font-weight: 700;
     color: #333;
     margin-bottom: 10px;
@@ -39,8 +87,18 @@
     align-items: baseline;
 }
 
+.cardPaymentInfo {
+    background-color: #ddffe9;
+    color: #0d8037;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
 .cardPriceSection .cardPriceValue {
-    font-size: 36px;
+    font-size: 3rem;
     font-weight: 800;
     color: #000;
     margin-right: 8px;
@@ -52,11 +110,25 @@
     font-weight: 500;
 }
 
+.cardDuration {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #666;
+    margin-top: 0 !important;
+    margin: 8px 0;
+}
+
 .cardBenefitsList {
     list-style: none;
     padding: 0;
-    margin: 0 0 4px 0;
+    margin: 40px 0;
+    margin-bottom: 0 !important;
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .cardBenefitsList .benefitItem {
@@ -71,31 +143,52 @@
     display: flex;
     align-items: center;
     width: 100%;
+    color: #000000;
+    font-weight: 400;
+}
+
+.benefitItemIcon {
+    background-color: #e7f8f2;
+    border-radius: 50%;
+    margin-right: 18px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cardBtn {
     background-color: var(--bg-blue);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 12px 20px;
-    font-size: 1rem;
+    padding: 25px 20px;
+    font-size: 1.2rem;
     cursor: pointer;
     width: 100%;
     margin-top: auto;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    transition: background-color 0.3s ease;
 }
 
 .cardBtnPersonal {
     display: flex;
     width: 100%;
     gap: 20px;
+    background-color: #f8fafc;
+    padding: 30px;
+    border-radius: 30px;
 }
 
 .cardBtn:hover {
-    background-color: #023c7a;
+    background-color: var(--btn-hover-bg);
 }
 
 @media (max-width: 1024px) {
+    .cardContent {
+        width: 100% !important;
+    }
+
     .packageCardContainer {
         max-width: unset;
     }
@@ -130,12 +223,18 @@
         width: 100%;
         padding: 10px 20px 30px 20px;
     }
+
+    .editButton,
+    .deleteButton {
+        width: 100% !important;
+    }
 }
 
 .cardBtnPersonalMobile {
     display: flex;
     width: 100%;
     gap: 20px;
+    flex-wrap: wrap !important;
 }
 
 .cardVariantConsultoriaMobile,
@@ -199,9 +298,6 @@
 
 .cardBenefitsListMobile {
     list-style: none;
-    padding: 0;
-    margin: 0 0 25px 0;
-    width: 100%;
     text-align: left;
     flex-grow: 1;
 }
@@ -217,7 +313,6 @@
 }
 
 .benefitItemMobile svg {
-    margin-right: 8px;
     fill: #22C55E;
     flex-shrink: 0;
 }
@@ -236,15 +331,33 @@
     background-color: var(--bg-blue, #0d47a1);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    padding: 12px 18px;
-    font-size: 1rem;
+    padding: 20px;
+
+    font-size: 1.1rem;
     font-weight: 500;
     cursor: pointer;
     margin-top: auto;
     transition: background-color 0.3s ease;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
 }
 
 .cardBtnMobile:hover {
     background-color: #003580;
+}
+
+.editButton {
+    width: 47%;
+    background: white;
+    color: black;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+}
+
+.deleteButton {
+    width: 47%;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 600;
+    border: 1px solid #fecaca;
 }

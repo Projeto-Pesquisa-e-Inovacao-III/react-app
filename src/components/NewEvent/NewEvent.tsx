@@ -1,13 +1,12 @@
 import { use, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
-import Select from "../Inputs/Select/Select";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { Clock, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
@@ -20,6 +19,11 @@ import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
 import useModal from "../../hooks/useModal";
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
+import Select from "../Select/Select";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import InformationCard from "./InformationCard/InformationCard";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -47,17 +51,15 @@ type AddressState = {
     complement: string;
 };
 
-type modalTypes = "error" | null;
-
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {
-      const {
+    const {
         openModal,
         setOpenModal,
         textModal,
         setTextModal
-      } = useModal(null, {title:"", content:""})
+    } = useModal(null, { title: "", content: "" })
 
 
     console.log("clickedDate prop:", clickedDate);
@@ -66,6 +68,7 @@ export default function NewEvent(
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
     const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+    const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
         queryKey: ["personalList"],
@@ -146,8 +149,18 @@ export default function NewEvent(
 
     const url = window.location.href;
 
+    async function handleInvalidateQueries() {
+        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+
+    }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
+        setLoading(true)
 
         if (addressData.address.includes("undefined")) {
             setOpenModal("error");
@@ -205,19 +218,14 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-
+                setLoading(false)
                 if (calculatedTitle && newEventDate) {
-                    await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-
+                    handleInvalidateQueries()
                     if (url.includes("/schedule")) {
-                        newAppointmentCreated && newAppointmentCreated(true);
-                        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+                        if (newAppointmentCreated) {
+                            newAppointmentCreated(true);
+                        }
+                        handleInvalidateQueries()
 
                         openModalExtern();
                         navigation("/schedule");
@@ -228,6 +236,8 @@ export default function NewEvent(
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
+                setLoading(false)
+
                 if (error.status === 400) {
                     setTextModal({
                         title: "Erro ao agendar",
@@ -261,6 +271,7 @@ export default function NewEvent(
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
+        setLoading(true)
         e?.preventDefault();
 
 
@@ -297,36 +308,29 @@ export default function NewEvent(
 
         await rescheduleAppointment(payload).then(async response => {
             console.log("Evento reagendado com sucesso:", response.data);
+            setLoading(false)
 
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
+            errorModal("Erro ao reagendar", "Ocorreu um erro ao tentar reagendar o evento.");
+
             //errorModal();
+            setLoading(false)
+
         });
 
         if (!goToNextStep) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
-
-
 
     }
 
@@ -483,27 +487,104 @@ export default function NewEvent(
         refetchOnWindowFocus: false,
     });
 
+    const [openSelectId, setOpenSelectId] = useState<string | null>(null);
+
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
+                {!isMobile && (
+                    <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
+                        {typeUser === "personal" ? (
+                            // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                            <InformationCard
+                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
+                                    title="Aluno"
+                                    subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
+                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
+                                />
+                        ) : (
+                            <>
+                                {step === 2 && (
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
+                                )}
+
+                                <InformationCard
+                                    icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                    title="Personal Trainer"
+                                    subtitle={personalList.data?.[0]?.nome || ""}
+                                    subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                />
+                            </>
+                        )}
+                        {step === 2 && (
+                            <>
+                                <InformationCard
+                                    icon={<Calendar />}
+                                    title="Data e Horário"
+                                    subtitle={formattedDate?.split(" das ")[0] || ""}
+                                    subtitle2={formattedDate?.split(" das ")[1]}
+                                />
+
+                                <InformationCard
+                                    icon={<MapPin fill="#000" color="#fff" />}
+                                    title="Tipo de aula"
+                                    subtitle={selectedType}
+                                />
+                            </>
+                        )}
+                        {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
+                        {step === 1 && !isReschedule && (
+                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                    <Select
+                                        defaultValue="PRESENCIAL"
+                                        id="type-select"
+                                        openSelectId={openSelectId}
+                                        setOpenSelectId={setOpenSelectId}
+                                        onSelectStatusChange={setSelectedType}
+                                        values={[
+                                            { label: "Presencial", value: "PRESENCIAL" },
+                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                            { label: "Funcional", value: "FUNCIONAL" }
+                                        ]}
+                                        containerClassName="w-full!"
+                                        triggerClassName="p-3 w-full!"
+                                        selectWrapperClassName="bg-white! rounded-xl! w-full!"
+                                        selectPlaceholder="Selecione o tipo"
+                                        labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                        label="Tipo de Atendimento"
+                                        showSelectAll={false}
+                                        showSearchInput={false}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {step === 1 && (
+                            <div className="mt-auto hidden md:block">
+                                <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
+                                    <div className="flex items-start gap-2 text-primary">
+                                        <span className="material-icons-round text-sm mt-0.5"><Info size={16} className="" /></span>
+                                        <p className="text-xs leading-relaxed">Selecione uma data e horário disponível para prosseguir com seu agendamento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
-                        {step === 2 && (
-                            <div className={styles.goBackButton} onClick={() => handleStepChange(1)}>
-                                <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                    <path
-                                        d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                        stroke="black"
-                                    />
-                                </svg>
-                                <span>Voltar</span>
-                            </div>
-                        )}
 
-                        <h1>{title}</h1>
+                        <div className="flex items-center gap-3">
+                            {step === 2 && (
+                                <span className="cursor-pointer  flex items-center m-0! pr-3! border-r border-gray-400" onClick={() => setStep(1)}><ArrowLeft className="w-5 h-5 text-gray-700" /> Voltar</span>
+                            )}
+                            <h1>{title}</h1>
+                        </div>
                         <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
 
                             <div className={styles.closeButtonHeader}>
@@ -526,31 +607,53 @@ export default function NewEvent(
                         </div>
                     </div>
                     {step === 1 && (
-                        <>
-                            <div className={styles.containerForm}>
+                        <div className={styles.stepOneContainer}>
 
-                                {typeUser === "personal" ? (
-                                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
-                                ) : (
-                                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                            <div className={styles.containerForm} >
+                                {isMobile && (
+                                    <>
+                                        {typeUser === "personal" ? (
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                        ) : (
+                                            <InformationCard
+                                                icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                                title="Personal Trainer"
+                                                subtitle={personalList.data?.[0]?.nome || ""}
+                                                subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                            />
+                                        )}
+                                        {!isReschedule && (
+
+                                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                                    <Select
+                                                        defaultValue="PRESENCIAL"
+                                                        id="type-select"
+                                                        openSelectId={openSelectId}
+                                                        setOpenSelectId={setOpenSelectId}
+                                                        onSelectStatusChange={setSelectedType}
+                                                        values={[
+                                                            { label: "Presencial", value: "PRESENCIAL" },
+                                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                                            { label: "Funcional", value: "FUNCIONAL" }
+                                                        ]}
+                                                        containerClassName="w-full"
+                                                        triggerClassName="p-3 w-full!"
+                                                        selectWrapperClassName="rounded-xl!"
+                                                        selectPlaceholder="Selecione o tipo"
+                                                        label="Tipo de Atendimento"
+                                                        showSelectAll={false}
+                                                        showSearchInput={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
-                                {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                                <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                                    <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                        <Select
-                                            placeholder="Selecione o tipo"
-                                            label="Tipo"
-                                            options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
-                                            valuesName={["Presencial", "Residencial", "Funcional"]}
-                                            value={selectedType}
-                                            onInputChange={setSelectedType}
-                                            className={styles.selectComponent}
-                                        />
-                                    </div>
-                                </div>
+
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
-                                        <div className="border-2 border-gray-200 rounded-md p-5">
+                                        <div className={`${isReschedule && "mt-6"}`}>
                                             <CalendarMonthStyled
                                                 clickedDate={setNewEventDate}
                                                 clickedDateStr={newEventDate ? newEventDate.split("T")[0] : clickedDate?.split("T")[0]}
@@ -563,7 +666,6 @@ export default function NewEvent(
                                         </div>
                                         {newEventDate && (
                                             <>
-
                                                 <span className="flex gap-1 mt-5 text-sm items-center">
                                                     <Clock />
                                                     Horários disponíveis para{" "}
@@ -578,7 +680,29 @@ export default function NewEvent(
 
                                                 {chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (
+                                                            <>
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+                                                            </>
+                                                        )}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
@@ -660,12 +784,38 @@ export default function NewEvent(
                                 </div>
 
                             </div>
-                        </>
+                        </div>
                     )}
 
                     {step === 2 && (
+
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate ? formattedDate : ""} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
+                            {step === 2 && isMobile && (
+                                <div className="gap-4 flex flex-col">
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
+                                    <InformationCard
+                                        icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                        title="Personal Trainer"
+                                        subtitle={personalList.data?.[0]?.nome || ""}
+                                        subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                    />
+
+                                    <InformationCard
+                                        icon={<Calendar />}
+                                        title="Data e Horário"
+                                        subtitle={formattedDate?.split(" das ")[0] || ""}
+                                        subtitle2={formattedDate?.split(" das ")[1]}
+                                    />
+
+                                    <InformationCard
+                                        icon={<MapPin fill="#000" color="#fff" />}
+                                        title="Tipo de aula"
+                                        subtitle={selectedType}
+                                    />
+                                </div>
+                            )}
                             <div className={styles.title}>
                                 <MapPin />
                                 <span>Endereço do local</span>
@@ -687,7 +837,7 @@ export default function NewEvent(
                                             <input
                                                 type="text"
                                                 id="cep"
-                                                placeholder="CEP"
+                                                placeholder="00000-000"
                                                 onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
                                                 onInput={cepMask}
                                             />
@@ -759,7 +909,7 @@ export default function NewEvent(
                                 </div>
 
                                 <div className={classnames(styles.buttonNextStep, { [styles.buttonNextStepMobile]: isMobile })}>
-                                    <SmallerButton type="submit" title={"Confirmar agendamento"} />
+                                    <SmallerButton loading={loading} type="submit" title={"Confirmar agendamento"} />
                                 </div>
                             </form>
                         </div>

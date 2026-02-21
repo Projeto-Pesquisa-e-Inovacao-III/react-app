@@ -1,7 +1,4 @@
-import SmallerButton from "../../SmallerButton";
-import { useEffect, useState } from "react";
 import styles from "./TextareaModal.module.css"
-import Select from "../../Inputs/Select/Select";
 
 type Props = {
     title?: string;
@@ -12,9 +9,6 @@ type Props = {
 }
 
 export default function TextareaModal(props: Props) {
-    const [motivo, setMotivo] = useState("");
-    const [justificado, setJustificado] = useState(false);
-
     return (
         <>
             <div className="overlay"></div>

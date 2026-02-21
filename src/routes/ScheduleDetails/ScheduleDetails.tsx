@@ -5,17 +5,19 @@ import useMobile from '../../hooks/isMobile';
 import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import CheckScheduleModal from '../../components/Modal/CheckScheduleModal/CheckScheduleModal';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
 import NewEvent from '../../components/NewEvent/NewEvent';
 import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
+import type { AbsenceAppointment } from '../../models/schedule';
+import Skeleton from 'react-loading-skeleton';
+import { TypeContext } from '../../App';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
@@ -23,7 +25,8 @@ export default function ScheduleDetails() {
     const isMobile = useMobile();
     const queryClient = useQueryClient();
 
-    const type: string = useOutletContext();
+    const type = useContext(TypeContext);
+
 
     console.log("User type in ScheduleDetails:", type);
 
@@ -92,7 +95,7 @@ export default function ScheduleDetails() {
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(async (res) => {
+        await refuseAppointment(id).then(async () => {
             handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
@@ -114,11 +117,12 @@ export default function ScheduleDetails() {
     }
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
-        const payload = {
+        const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? null : data.description
+            descricaoCancelamento: data.description === "" ? "" : data.description
         };
+
         console.log("Payload de ausência:", payload);
         await reportAbsencePersonal(payload).then(async () => {
             handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
@@ -209,20 +213,23 @@ export default function ScheduleDetails() {
                     <div className={classNames(styles.contentRow)}>
                         <div className={styles.content}>
                             <div className={styles.textWithIcon}>
-                                <span><CalendarDays /></span><span>{formattedDate}</span>
+                                <span><CalendarDays /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : formattedDate}</span>
                             </div>
                             <div className={styles.textWithIcon}>
-                                <span><Clock /></span><span>{appointment.data?.duracaoMinutos} minutos</span>
+                                <span><Clock /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : `${appointment.data?.duracaoMinutos} minutos`}</span>
                             </div>
                         </div>
                     </div>
-
-                    {type === "aluno" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal?.nome} subtitle={`Idade: ${appointment.data?.personal?.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} />
+                    {!type || type?.type === null &&
+                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={<Skeleton width={150} height={20} />} subtitle={<Skeleton width={150} height={20} />} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
                     }
 
-                    {type === "personal" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno?.nome} subtitle={`Idade: ${appointment.data?.aluno?.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno?.avatarUrl ? appointment.data?.aluno?.avatarUrl : undefined} />
+                    {type?.type === "aluno" &&
+                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal?.nome} subtitle={`Idade: ${appointment.data?.personal?.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
+                    }
+
+                    {type?.type === "personal" &&
+                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno?.nome} subtitle={`Idade: ${appointment.data?.aluno?.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno?.avatarUrl ? appointment.data?.aluno?.avatarUrl : undefined} isLoading={appointment.isLoading} />
                     }
 
                     <div className={styles.contentDetails}>
@@ -230,7 +237,7 @@ export default function ScheduleDetails() {
                         <div className={styles.planDetails}>
                             <span className={styles.planDetailsDescription}>
                                 Tipo:
-                                <span className={styles.planDetailsText}>{appointment.data?.tipoAula
+                                <span className={styles.planDetailsText}>{appointment.isLoading ? <Skeleton width={250} className='mb-2' /> : appointment.data?.tipoAula
                                     ?.toLowerCase()
                                     ?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                 </span>
@@ -238,41 +245,50 @@ export default function ScheduleDetails() {
                             <span className={styles.planDetailsDescription}>
                                 Local:
                                 <span className={styles.planDetailsText}>
-                                    {appointment.data?.endereco.tipo?.toLowerCase()
+                                    {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.tipo?.toLowerCase()
                                         ?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                 </span>
                             </span>
-                            <span className={styles.planDetailsDescription}>Endereço: {appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
+                            <span className={styles.planDetailsDescription}>Endereço: {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
                             {appointment.data?.endereco.complemento && <span className={styles.planDetailsDescription}>Complemento: {appointment.data?.endereco.complemento}</span>}
                         </div>
                     </div>
                 </div>
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
-                    {type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {type?.type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
+
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")} />
+                                {appointment.isLoading ? (
+                                    <Skeleton width="100%" height={40} />
+                                ) : (
+                                    <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")} />
+                                )}
                             </div>
 
                             <div className={styles.buttonAbsence}>
-                                <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => {
-                                    handleModal(appointment.data?.id, "registerAbsence");
-                                }} />
+                                {appointment.isLoading ? (
+                                    <Skeleton width="100%" height={40} />
+                                ) : (
+                                    <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => {
+                                        handleModal(appointment.data?.id, "registerAbsence");
+                                    }} />
+                                )}
                             </div>
                         </>
                     }
 
                     {
                         (
-                            (type === "personal" && (
-                                
+                            (type?.type === "personal" && (
+
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
-                            (type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
+                            (type?.type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
-                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type === "personal" || type === "aluno" })}>
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "aluno" })}>
                                 <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />
@@ -285,6 +301,13 @@ export default function ScheduleDetails() {
                             </div>
                         )
                     }
+
+                    {(!type || type?.type === null || appointment.isLoading || !appointment.data) && (
+                        <div className={classNames(styles.buttonGroup)}>
+                            <Skeleton width={200} height={60} />
+                            <Skeleton width={200} height={60} />
+                        </div>
+                    )}
 
                     {appointment.data?.status === "APROVADO" && (
                         <div className={classNames(styles.buttonGroup)}>

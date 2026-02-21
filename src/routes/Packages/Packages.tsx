@@ -1,9 +1,8 @@
 import { PackageCard } from "../../components/PackageCard/PackageCard";
-import { packagesMockAdicional } from "./mocks/packagesMockAdicional";
 import styles from "./Packages.module.css"
-import SmallerButton from "../../components/SmallerButton";
+import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import classnames from "classnames";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
@@ -12,8 +11,11 @@ import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import { useQuery } from "@tanstack/react-query";
+import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" |null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -36,7 +38,7 @@ export function Packages() {
 
     const isPersonal = type?.type === "personal";
 
-    function handleBuyClick(id: number, packageTitle: string) {
+    function handleBuyClick(id: number) {
         buyProductExhibition(id).then((response) => {
             const href: string = response.data.href
             window.location.href = href;
@@ -60,27 +62,31 @@ export function Packages() {
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
     const [productsExhibitionsAdicional, setProductsExhibitionsAdicional] = useState<ProductExhibition[]>([]);
 
+    const { data: productsData, isLoading } = useQuery({
+        queryKey: ['productsExhibitions'],
+        queryFn: () => getProductsExhibitions(),
+        select: (response) => {
+            console.log("Produtos de Exibição obtidos com sucesso!", response);
+            return {
+                pacotes: response.data.filter((product: ProductExhibition) => product.tipoProduto === "PACOTE"),
+                adicionais: response.data.filter((product: ProductExhibition) => product.tipoProduto === "ADICIONAL")
+            };
+        }
+    });
+
     useEffect(() => {
-        console.log("productsExhibitions state updated:", productsExhibitions);
-    }, [productsExhibitions]);
+        if (productsData) {
+            setProductsExhibitions(productsData.pacotes);
+            setProductsExhibitionsAdicional(productsData.adicionais);
+        }
+    }, [productsData]);
 
-    async function handleGetProductsExhibitions() {
-        await getProductsExhibitions().then(
-            (res) => {
-                console.log("Produtos de Exibição obtidos com sucesso!", res);
-
-                setProductsExhibitions(res.data.filter((product: ProductExhibition) => product.tipoProduto === "PACOTE"));
-                setProductsExhibitionsAdicional(res.data.filter((product: ProductExhibition) => product.tipoProduto === "ADICIONAL"));
-
-            }
-        );
-    }
 
     function handleErrorModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
         setOpenModal("error");
     }
-    
+
     function handleSuccessModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
         setOpenModal("success");
@@ -128,12 +134,59 @@ export function Packages() {
         }
     }
 
+    function renderPackageCardSkeleton() {
+        return (
+            <>{[...Array(3)].map((_, index) => (
+                <PackageCard
+                    key={`skeleton-${index}`}
+                    titulo=""
+                    descricao={[]}
+                    preco={0}
+                    onClick={() => { }}
+                    isMobile={isMobile}
+                    isPersonal={isPersonal}
+                    setHandleDelete={() => { }}
+                    setHandleEdit={() => { }}
+                    isLoading={true}
+                />
+            ))}</>
+        )
+    }
 
-    useEffect(() => {
-        handleGetProductsExhibitions();
-        console.log("Fetched products exhibitions", productsExhibitions);
-    }, []);
+    const activePackages = productsExhibitions
+        .filter(p => p.status === "ATIVO")
+        .sort((a, b) => b.preco - a.preco)
 
+    const activeAdicionais = productsExhibitionsAdicional
+        .filter(p => p.status === "ATIVO")
+        .sort((a, b) => b.preco - a.preco)
+
+    const packagesToRender = 5
+
+    const shouldUseCarousel = isPersonal ? activePackages.length >= 4 : activePackages.length >= packagesToRender
+
+    const shouldUseCarouselAdicional = isPersonal ? activeAdicionais.length >= 4 : activePackages.length >= packagesToRender
+
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false, startIndex: activePackages.length },
+        []
+    )
+
+    const scrollPrev = useCallback(() => {
+        emblaApi?.scrollPrev()
+    }, [emblaApi])
+
+    const scrollNext = useCallback(() => {
+        emblaApi?.scrollNext()
+    }, [emblaApi])
+
+    const slidesToRender = shouldUseCarousel
+        ? [...activePackages, ...activePackages, ...activePackages]
+        : activePackages
+
+    const slidesToRenderAdicional = shouldUseCarousel
+        ? [...productsExhibitionsAdicional, ...productsExhibitionsAdicional, ...productsExhibitionsAdicional]
+        : productsExhibitionsAdicional
 
     return (
         <>
@@ -144,117 +197,294 @@ export function Packages() {
                         { [styles.packagesTitleContainerMobile]: isMobile }
                     )}
                 >
-                    <h1>
-                        {isPersonal ? "Pacotes Atuais" : "Pacotes de Consultoria"}
-                    </h1>
-                    {isPersonal && (
-                        <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
-                        </div>
-                    )}
-                </div>
-
-                <div className={isMobile ? styles.packagesListWrapperMobile : styles.packagesListWrapperDesktop}>
-                    {productsExhibitions.length > 0 ? (productsExhibitions.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
-                        pacote.status === "ATIVO" &&
-                        <PackageCard
-                            key={pacote.id! + pacote.titulo + index}
-                            {...pacote}
-                            descricao={safeParseDescricao(pacote.descricao)}
-                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
-                            isMobile={isMobile}
-                            isPersonal={isPersonal}
-                            setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                            setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
-                        />
-                    ))) : (<p>Não há pacotes disponíveis no momento.</p>)}
-                </div>
-
-                <div
-                    className={classnames(
-                        styles.packagesTitleContainer,
-                        styles.additionalTitle,
-                        { [styles.packagesTitleContainerMobile]: isMobile }
-                    )}
-                >
-                    <h1>Pacotes Adicionais</h1>
-                    {isPersonal && (
-                        <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
-                        </div>
-                    )}
-                </div>
-
-                <div className={classnames(styles.packagesListWrapperDesktop, { [styles.packagesListWrapperMobile]: isMobile })}>
-                    {productsExhibitionsAdicional.length > 0 ? (productsExhibitionsAdicional.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
-                        pacote.status === "ATIVO" &&
-                        pacote.status === "ATIVO" && (
-                            <PackageCard
-                                key={`adicional-${index}-` + pacote.id! + pacote.titulo}
-                                {...pacote}
-                                descricao={safeParseDescricao(pacote.descricao)}
-                                onClick={() => handleBuyClick(pacote.id!, pacote.titulo)}
-                                isMobile={isMobile}
-                                setHandleEdit={(e) => { handleUpdatePackage(pacote.id!, true) }}
-                                setHandleDelete={(e) => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                                isPersonal={isPersonal}
-                            />
+                    <div>
+                        {isPersonal ? (
+                            <>
+                                <h1>
+                                    Pacotes Atuais
+                                </h1>
+                                <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                            </>
+                        ) : (
+                            <h1>
+                                Pacotes de Consultoria
+                            </h1>
                         )
-                    ))) : (<p>Não há pacotes adicionais disponíveis no momento.</p>)}
+                        }
+                    </div>
+                    {isPersonal && (
+                        <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
+                            <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
+                        </div>
+                    )}
                 </div>
+
+                <div className={classnames(styles.packagesListWrapperDesktop,
+                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
+                    { [styles.packagesListWrapperMobile]: isMobile })}>
+                    {isLoading ? (
+                        renderPackageCardSkeleton()
+                    ) : activePackages.length > 0 ? (
+                        shouldUseCarousel ? (
+                            <>
+                                <div className={styles.emblaWrapper}>
+                                    <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                    <div className={styles.embla}>
+                                        <div className={styles.emblaViewport} ref={emblaRef}>
+                                            <div className={styles.emblaContainer}>
+                                                {slidesToRender.map((pacote, index) => (
+                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                        <PackageCard
+                                                            {...pacote}
+                                                            descricao={safeParseDescricao(pacote.descricao)}
+                                                            onClick={() => handleBuyClick(pacote.id!)}
+                                                            isMobile={isMobile}
+                                                            isPersonal={isPersonal}
+                                                            setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                                            setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
+                                    {isPersonal && !isMobile && (
+                                        <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                            <div className={styles.addIconWrapper}>
+                                                <Plus size={24} color="#a2afc1" />
+                                            </div>
+                                            <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
+                                            <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {activePackages.map((pacote, index) => (
+                                    <PackageCard
+                                        key={pacote.id! + pacote.titulo + index}
+                                        {...pacote}
+                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        isMobile={isMobile}
+                                        isPersonal={isPersonal}
+                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
+                                    />
+                                ))}
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Crear Nuevo Paquete</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </>
+                        )
+                    ) : (
+                        <div className={styles.emptyPackageContainer}>
+                            <div className={styles.emptyPackageIconWrapper}>
+                                <Package color="#0a3a5c" size={40} />
+                            </div>
+
+                            <h3 className={styles.emptyPackageTitle}>
+                                Sem pacotes
+                            </h3>
+
+                            <p className={styles.emptyPackageText}>
+                                Você ainda não cadastrou pacotes.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div >
+            {isPersonal && isMobile && (
+                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile })} onClick={() => setOpenModal("add")}>
+                    <div className={styles.addIconWrapper}>
+                        <Plus size={24} color="#a2afc1" />
+                    </div>
+                    <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
+                    <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                </div>
+            )}
+            <div
+                className={classnames(
+                    styles.packagesTitleContainer,
+                    styles.additionalTitle,
+                    { [styles.packagesTitleContainerMobile]: isMobile }
+                )}
+            >
+                <div>
+                    {isPersonal ? (
+                        <>
+                            <h1>
+                                Pacotes Adicionais
+                            </h1>
+                            <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                        </>
+                    ) : (
+                        <h1>
+                            Pacotes Adicionais
+                        </h1>
+                    )
+                    }
+                </div>
+                {isPersonal && (
+                    <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
+                        <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
+                    </div>
+                )}
             </div>
 
+            <div className={classnames(
+                styles.packagesListWrapperDesktop,
+                { [styles.packagesListWrapperDesktopEmpty]: productsExhibitionsAdicional.length === 0 || (productsExhibitionsAdicional.length > 0 && !productsExhibitionsAdicional.some(p => p.status === "ATIVO")) },
+                { [styles.packagesListWrapperMobile]: isMobile })}>
+                {isLoading ? (
+                    renderPackageCardSkeleton()
+                ) : productsExhibitionsAdicional.length > 0 && productsExhibitionsAdicional.some(p => p.status === "ATIVO") ? (
+                    <>
+                        {shouldUseCarouselAdicional ? (
+                            <div className={styles.emblaWrapper}>
+                                <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                <div className={styles.embla}>
+                                    <div className={styles.emblaViewport} ref={emblaRef}>
+                                        <div className={styles.emblaContainer}>
+                                            {slidesToRenderAdicional.map((pacote, index) => (
+                                                <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                    <PackageCard
+                                                        {...pacote}
+                                                        descricao={safeParseDescricao(pacote.descricao)}
+                                                        onClick={() => handleBuyClick(pacote.id!)}
+                                                        isMobile={isMobile}
+                                                        isPersonal={isPersonal}
+                                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                {activeAdicionais.map((pacote, index) => (
+                                    <PackageCard
+                                        key={pacote.id! + pacote.titulo + index}
+                                        {...pacote}
+                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        isMobile={isMobile}
+                                        isPersonal={isPersonal}
+                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                    />
+                                ))}
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </>
+                ) : (
+                    <div className={styles.emptyPackageContainer}>
+                        <div className={styles.emptyPackageIconWrapper}>
+                            <Package color="#0a3a5c" size={40} />
+                        </div>
 
-            {openModal === "add" && (
-                <AddPackagePlan title="Adicionar Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
-            )}
+                        <h3 className={styles.emptyPackageTitle}>
+                            Sem pacotes adicionais
+                        </h3>
 
-            {openModal === "addAdditional" && (
-                <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
-            )}
+                        <p className={styles.emptyPackageText}>
+                            Você ainda não cadastrou pacotes adicionais.
+                        </p>
+                    </div>
+                )}
+            </div>
 
-            {openModal === "error" && (
-                <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
-            )}
+            {
+                openModal === "add" && (
+                    <AddPackagePlan title="Criar Novo Pacote" typePackage="PACOTE" onClose={handleCloseModal} packageCreated={setProductsExhibitions} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote foi adicionado com sucesso")} idOnCreate={setPackageId} />
+                )
+            }
+
+            {
+                openModal === "addAdditional" && (
+                    <AddPackagePlan title="Adicionar Pacote Adicional" typePackage="ADICIONAL" onClose={handleCloseModal} packageCreated={setProductsExhibitionsAdicional} callSuccessModal={() => handleSuccessModalInfos("Adição concluída", "O pacote adicional foi adicionado com sucesso")} />
+                )
+            }
+
+            {
+                openModal === "error" && (
+                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                )
+            }
 
 
-            {openModal === "edit" && (
-                <>
+            {
+                openModal === "edit" && (
                     <AddPackagePlan title="Editar Pacote" onClose={(e) => {
                         setOpenModal(e ? "success" : null)
                         setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
-                </>
-            )}
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                )
+            }
 
-            {openModal === "editAdditional" && (
-                <>
-                    <AddPackagePlan title="Editar Adicional" onClose={(e) => {
-                        setOpenModal(e ? "success" : null)
-                        setPackageId(null)
-                    }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
-                </>
-            )}
-
-
-
-            {openModal === "delete" && (
-                <TimerModal
-                    isMobile={isMobile}
-                    title="Confirmar Exclusão"
-                    content="Tem certeza de que deseja excluir este pacote?"
-                    closeThen={handleCloseModal}
-                    isDelete={true}
-                    buttonTitle="Excluir Pacote"
-                    callSuccessModal={() => handleDeletePackage(packageId)}
-                />
-            )}
-
-            {openModal === "success" && (
-                <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
-            )}
+            {
+                openModal === "editAdditional" && (
+                    <>
+                        <AddPackagePlan title="Editar Adicional" onClose={(e) => {
+                            setOpenModal(e ? "success" : null)
+                            setPackageId(null)
+                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={packageId && productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
+                    </>
+                )
+            }
 
 
+
+            {
+                openModal === "delete" && (
+                    <TimerModal
+                        isMobile={isMobile}
+                        title="Confirmar Exclusão"
+                        content="Tem certeza de que deseja excluir este pacote?"
+                        closeThen={handleCloseModal}
+                        isDelete={true}
+                        buttonTitle="Excluir Pacote"
+                        callSuccessModal={() => packageId && handleDeletePackage(packageId)}
+                    />
+                )
+            }
+
+            {
+                openModal === "success" && (
+                    <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                )
+            }
         </>
+
     );
 }

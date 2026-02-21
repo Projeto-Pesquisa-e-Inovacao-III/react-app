@@ -3,16 +3,25 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import classNames from "classnames";
 
 import styles from "./PlansHistory.module.css";
-import SmallerButton from "../../components/SmallerButton";
-import { PlansHistoryMock } from "./mocks/PlansHistoryMock";
+import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
 import { getUserPlansHistory } from "../../constants/products";
-import { format, parse, parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+type UserPlan = {
+  id: number;
+  dataCompra: string;
+  produtoExibicao: {
+    titulo: string;
+    subtitulo: string;
+  };
+};
+
 
 export default function PlansHistory() {
     const nav = useNavigate();
@@ -22,10 +31,12 @@ export default function PlansHistory() {
     }
 
 
-    const userPlans = useQuery({
+    const userPlans = useQuery<UserPlan[]>({
         queryKey: ['user-plans'],
-        queryFn: getUserPlansHistory,
-        select: (res) => res.data,
+        queryFn: async () => {
+            const response = await getUserPlansHistory();
+            return response.data;
+        },
     });
 
     const {
@@ -38,7 +49,7 @@ export default function PlansHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(userPlans.data, {
+    } = useSearchFilter(userPlans.data ?? [], {
         searchName: (item) => [item.produtoExibicao.titulo],
         dateFilter: (item) => item.dataCompra,
     });
@@ -73,21 +84,33 @@ export default function PlansHistory() {
             </div>
 
             {filteredData && filteredData.length > 0 ? (
-                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item, index) => (
+                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item) => (
                     <RowWithHeaderTitle 
-                        key={index}
+                        key={item.id}
                         data={[
-                            {headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
-                            title: item.produtoExibicao.titulo, 
-                            subtitle: item.produtoExibicao.subtitulo }
+                            {
+                                headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
+                                title: item.produtoExibicao.titulo, 
+                                subtitle: item.produtoExibicao.subtitulo,
+                                id: item.id
+                            }
                         ]} 
                         includeDetailsButton={true} 
                         buttonLabel="Ver Detalhes" 
                         handleDetailsClick={() => handleDetailsClick(item.id)} 
+                        isLoading={userPlans.isLoading}
+                    />
+                ))
+            ) : userPlans.isLoading ? (
+                [...Array(1)].map((_, index) => (
+                    <RowWithHeaderTitle 
+                        key={`skeleton-${index}`} 
+                        data={[{ headerTitle: '', title: '', subtitle: '', id: index }]}
+                        isLoading={true}
                     />
                 ))
             ) : (
-                <p>Não há planos disponíveis</p>
+                <p>Não há pacotes disponíveis</p>
             )}
             
         </div>

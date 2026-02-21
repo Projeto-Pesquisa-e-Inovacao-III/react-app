@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import styles from "./ErrorModal.module.css";
 import useMobile from '../../../hooks/isMobile';
-import SmallerButton from '../../SmallerButton';
+import SmallerButton from '../../SmallerButton/SmallerButton';
 
 export default function ErrorModal({ closeThen, title, content }: { closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
@@ -30,7 +30,7 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
                 </svg>
 
 
-                <SmallerButton type="button" title="Fechar" handleButtonClick={handleCloseModal} />
+                <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleCloseModal} />
 
             </div>
         </>

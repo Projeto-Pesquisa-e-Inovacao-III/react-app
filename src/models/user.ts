@@ -22,6 +22,11 @@ export type UpdateUserDTO = {
         numero: string;
         pais: string;
     };
+    telefones?: [{
+        numero: string;
+        ddd: string;
+        id: number;
+    }];
 }
 
 export type UserDTOSprint2 = {

@@ -49,3 +49,10 @@
 .rescheduleModal:hover {
     background-color: #051128;
 }
+
+.LoadingIcon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}

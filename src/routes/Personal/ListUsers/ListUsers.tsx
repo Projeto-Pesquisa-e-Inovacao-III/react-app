@@ -1,41 +1,27 @@
 import UsersTable from "../../../components/UsersTable/UsersTable";
 import styles from "./ListUsers.module.css"
-import { useEffect, useState } from "react";
-import { SearchBar } from "../../../components/SearchBar/SearchBar";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
 import { listStudents } from "../../../constants/personal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
+    const users = useQuery({
+        queryKey: ["students"],
+        queryFn: async () => {
+            const response = await listStudents();
+            return response.data;
+        }
+    });
 
-    const [pesquisa, setPesquisa] = useState("")
+    console.log(users.data);
 
-    function fetchUsers() {
-        listStudents()
-            .then(response => {
-                console.log(response.data);
-                setUsers(response.data);
-            }).catch(error => {
-                console.error("Error fetching users:", error);
-            });
-    }
-
-    const [users, setUsers] = useState([
-        { nome: "João Silva", idade: 25 },
-        { nome: "Maria Souza", idade: 30 },
-        { nome: "Pedro Oliveira", idade: 22 }
-    ]);
-
-    useEffect(() => {
-        fetchUsers();
-    }, [])
-
-    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(users, {
+    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(users.data ?? [], {
         searchName: (item) => [item.nome],
     });
 
@@ -53,7 +39,7 @@ export default function ListUsers() {
                     onInputChange={setFilterSearch}
                 />
             </div>
-            <UsersTable input={filterSearch} users={filteredData} />
+            <UsersTable input={filterSearch} users={filteredData} isLoading={users.isLoading} />
         </div>
     )
 }

@@ -174,3 +174,12 @@
     width: 100%;
     flex: 1;
 }
+
+.btnCad {
+  background-color: var(--bg-orange) !important;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 10px !important;
+
+
+}

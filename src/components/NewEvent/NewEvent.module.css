@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  width: 100%;
 }
 
 .containerMobile {
@@ -45,7 +46,7 @@
   z-index: 1000;
   overflow: auto;
   max-height: 92vh;
-  max-width: 56rem;
+  max-width: 80rem;
   font-family: "Poppins", sans-serif;
 }
 
@@ -66,10 +67,9 @@
 .mainTitle {
   display: flex;
   align-items: center;
-  padding: 30px;
+  padding: 28px;
   font-size: 28px;
   font-weight: 500;
-  margin-bottom: 10px;
   background-color: white;
   position: sticky;
   top: 0;
@@ -84,6 +84,13 @@
   font-size: 16px;
   font-weight: 300;
 
+}
+
+.stepOneContainer {
+  display: flex;
+  gap: 30px;
+  padding: 2rem;
+  padding-left: 28px;
 }
 
 .containerCalendar {
@@ -183,6 +190,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding-right: 28px;
 }
 
 .wrapperNewEvent form {
@@ -233,11 +241,6 @@
   padding: 0;
   padding-left: 10px;
 
-}
-
-
-.containerForm {
-  padding: 20px;
 }
 
 .doubleInput {
@@ -322,8 +325,9 @@
 }
 
 .newEventForm {
-  width: 70%;
-  border-radius: 8px;
+  width: 100%;
+  border-radius: 16px;
+  display: flex;
 }
 
 .newEventFormMobile {
@@ -439,6 +443,7 @@
   display: flex;
   flex-direction: column;
   gap: 30px;
+  padding: 0 !important;
 }
 
 .wrapperNewEventMobile form {
@@ -478,6 +483,7 @@
   padding: 20px;
 }
 
+
 .inputInfosFormContainer .title {
   display: flex;
   align-items: center;
@@ -503,6 +509,13 @@
   gap: 2px;
   width: 100%;
   align-items: baseline;
+}
+
+.summaryTitle {
+    font-size: 0.975rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1a1f25;
 }
 
 .labelInput input::placeholder {

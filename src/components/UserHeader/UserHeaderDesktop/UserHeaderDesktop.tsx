@@ -1,83 +1,90 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
-import "./style.css"
-import { Bell } from "lucide-react";
-import { useEffect, useState } from "react";
-import Notification from "../Notification/Notification";
+import styles from "./UserHeaderDesktop.module.css"
+import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
+import useClickOutside from "../../../hooks/useClickOutside";
 
 type UserType = {
+  userName: string;
   type: "personal" | "student"
 }
 
-export default function UserHeaderDesktop({ type }: UserType) {
+export default function UserHeaderDesktop({ userName, type }: UserType) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
 
-  queryClient.invalidateQueries({ queryKey: ['userImage'] });
-
   useEffect(() => {
-    
-  }, [])
+    queryClient.invalidateQueries({ queryKey: ['userImage'] });
+  }, []);
+
+  const userRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside({
+    ref: userRef,
+    callback: () => {
+      if (openHeaderModal) {
+        setOpenHeaderModal(false);
+      }
+    }
+  });
+
+  //verificar se o link está ativo para adicionar a classe active
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink;
 
   return (
     <>
-      <header className="user-header-desktop">
-        <Link to="/"><LogoHeaderDesktop /></Link>
-        <nav>
+      <header className={styles.userHeaderDesktop}>
+        <nav className={styles.nav}>
+          <Link to="/"><LogoHeaderDesktop /></Link>
           {type === 'personal' ? (
             <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/personal/check-schedule">Solicitações</Link>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/users">Usuários</Link>
+              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+              <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
+              <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
+              <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+              <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
             </>
           ) : (
             <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/plans-history">Histórico de planos</Link>
-              <Link to="/schedule-history">Histórico de agendamentos</Link>
+              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+              <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
+              <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
             </>
           )
           }
         </nav>
 
-        <div className="auth-links">
-          {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
-          {/* <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
-            <Bell />
-          </div> */}
-          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
-            <UserAvatar useUserImage={true} />
-          </div>
-        </div>
+        <div ref={userRef} className={styles.authLinks}>
 
-      </header >
-      {/* 
-      {openNotification && (
-        <Notification notifications={notifications} />
-      )
-      } */}
-
-      {openHeaderModal && (
-        <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
-          <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
-            <Link to="/edit-user">Editar perfil</Link>
-            {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
-            <Link to="/logout">Sair</Link>
+          <div
+            onClick={() => setOpenHeaderModal(prev => !prev)}
+            className={styles.userAvatarHeaderDesktop}
+          >
+            <UserAvatar userName={userName} useUsername useUserImage />
           </div>
+
+          {openHeaderModal && (
+            <div className={styles.headerModalDesktop}>
+              <div className={styles.headerModalContentDesktop}>
+                <Link onClick={() => setOpenHeaderModal(false)} to="/edit-user">Editar perfil</Link>
+                {type === "personal" &&
+                  <Link onClick={() => setOpenHeaderModal(false)} to="/set-availability">
+                    Ajustar disponibilidade
+                  </Link>}
+                <Link onClick={() => setOpenHeaderModal(false)} to="/logout">Sair</Link>
+              </div>
+            </div>
+          )}
         </div>
-      )
-      }
+      </header>
     </>
   );
 }
-
-

@@ -1,21 +1,15 @@
 import classNames from "classnames";
-import SmallerButton from "../../../components/SmallerButton";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useState } from "react";
-import Input from "../../../components/Inputs/Input/Input";
-import Select from "../../../components/Inputs/Select/Select";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 import { differenceInYears, parse } from "date-fns";
+import Skeleton from "react-loading-skeleton";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
-
-    const [openModalCreateTraining, setOpenModalCreateTraining] = useState(false);
-    const [trainingDay, setTrainingDay] = useState("");
 
     const [params] = useSearchParams();
 
@@ -38,12 +32,16 @@ export default function ViewUserData() {
                         <UserAvatar foto={user.data?.caminhoFoto} />
                         <div className={styles.wrapperInfos}>
                             <div className={styles.info}>
-                                <p><strong>Nome: </strong><span>{user.data?.nome}</span></p>
-                                <p><strong>Idade: </strong><span> {user.data?.dataNascimento ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"}</span></p>
+                                {user.isLoading ? <Skeleton width={150} height={20} /> : <p><strong>Nome: </strong><span> {user.data?.nome}</span></p>}
+                                
+                                {user.isLoading ? <Skeleton width={150} height={20} /> : <p><strong>Idade: </strong><span> {user.data?.dataNascimento ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"}</span></p>}
+
                             </div>
                             <div className={styles.info}>
-                                <p><strong>Email: </strong><span> {user.data?.email}</span></p>
-                                <p><strong>Telefone: </strong><span> {user.data?.telefones[0].numeroCompleto}</span></p>
+                                {user.isLoading ? <Skeleton width={150} height={20} /> : <p><strong>Email: </strong><span> {user.data?.email}</span></p>}
+                                
+                                {user.isLoading ? <Skeleton width={150} height={20} /> : <p><strong>Telefone: </strong><span> {user.data?.telefones[0]?.numeroCompleto}</span></p>}
+
                             </div>
                         </div>
                     </div>

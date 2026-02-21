@@ -1,17 +1,14 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
 import Swal from "sweetalert2";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
-import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
-import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
-import { useQueryClient } from "@tanstack/react-query";
 
 const initialLoginState = {
   email: "",
@@ -24,26 +21,22 @@ export default function Login() {
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const [successLogin, setSuccessLogin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
   const nav = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
 
-  const queryClient = useQueryClient();
   function navToHome() {
-    queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-
     nav("/home");
-    setSuccessLogin(false);
     return;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
       const res = await userService.login(loginInfo.email, loginInfo.password);
@@ -61,7 +54,7 @@ export default function Login() {
         timer: 3000,
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -114,7 +107,7 @@ export default function Login() {
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
-              <Button type="submit" title="Entrar" />
+              <Button type="submit" title="Entrar" loading={loading} classNameDiv={styles.btnDiv} classNameVariable={styles.btnLogin} />
             </form>
             <span className={styles.mg15}>
               Não tem uma conta? <Link to="/register">Criar uma conta</Link>

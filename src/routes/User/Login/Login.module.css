@@ -80,6 +80,15 @@
   text-decoration: underline;
 }
 
+
+.btnLogin {
+  background-color: var(--bg-orange) !important;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 10px !important;
+
+}
+
 @media (max-width: 1024px) {
   .containerLogin {
     flex-direction: column;
