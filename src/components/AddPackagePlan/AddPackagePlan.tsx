@@ -2,7 +2,7 @@ import type React from "react";
 import Button from "../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../Inputs/Input/Input";
-import { ArrowLeft, Banknote, Calendar, CalendarSync, CheckCircle2, Eye, EyeClosed, EyeOff, HeartPulse, Home, Info, MoreVertical, Plus, PlusCircle, Tag, Trash, Trash2, Users, X } from "lucide-react";
+import { ArrowLeft, Banknote, Calendar, CalendarSync, CheckCircle2, Eye, EyeClosed, EyeOff, HeartPulse, Home, Info, MoreVertical, Plus, PlusCircle, Tag, Trash, Trash2, Users, X, XCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { newProductExhibition, updateProductExhibition } from "../../constants/products";
 import type { ProductExhibition } from "../../models/products";
@@ -382,7 +382,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                                 )}
 
                                 <div className={styles.mobileBenefitsHeader}>
-                                    <span className={styles.labelBenefits}>Benefícios inclusos</span>
+                                    <span className={styles.labelBenefits}>Benefícios inclusos <span className="text-slate-500">({packageInfo.benefits.length}/8)</span></span>
 
                                 </div>
 
@@ -397,6 +397,7 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                                             value={benefit}
                                             onInputChange={(value) => handleBenefitChange(index, value)}
                                             onClickIcon={() => handleRemoveBenefit(index)}
+                                            limit={50}
                                         />
                                         {isMobile ? (
                                             <Trash2 color="#ca0909" cursor={"pointer"} size={22} onClick={() => handleRemoveBenefit(index)} />
@@ -407,14 +408,24 @@ export default function AddPackagePlan({ onClose, title, values, packageCreated,
                                 ))}
 
                                 <div className={styles.buttonContainer}>
-                                    <button
-                                        onClick={() => handleAddBenefit()}
-                                        className="w-full py-3 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
-                                        type="button"
-                                    >
-                                        <PlusCircle size={25} />
-                                        {isMobile ? "Adicionar Benefício" : "Adicionar novo benefício"}
-                                    </button>
+                                    {packageInfo.benefits.length < 8 ? (
+                                        <button
+                                            onClick={() => handleAddBenefit()}
+                                            className="w-full py-3 border-2 border-dashed border-slate-300 rounded-2xl text-slate-500 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                                            type="button"
+                                        >
+                                            <PlusCircle size={25} />
+                                            {isMobile ? "Adicionar Benefício" : "Adicionar novo benefício"}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="w-full py-3 border-2 border-dashed bg-red-50 border-red-300 rounded-2xl text-slate-500 font-medium hover:bg-red-50 transition-all flex items-center justify-center gap-2"
+                                            type="button"
+                                        >
+                                            <XCircle size={25} />
+                                            {isMobile ? "Limite atingido" : "Limite de benefícios atingido"}
+                                        </button>
+                                    )}
                                 </div>
                             </>
                         )}
