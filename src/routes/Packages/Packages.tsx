@@ -157,7 +157,15 @@ export function Packages() {
         .filter(p => p.status === "ATIVO")
         .sort((a, b) => b.preco - a.preco)
 
-    const shouldUseCarousel = activePackages.length >= 5
+    const activeAdicionais = productsExhibitionsAdicional
+        .filter(p => p.status === "ATIVO")
+        .sort((a, b) => b.preco - a.preco)
+
+    const packagesToRender = 5
+
+    const shouldUseCarousel = isPersonal ? activePackages.length >= 4 : activePackages.length >= packagesToRender
+
+    const shouldUseCarouselAdicional = isPersonal ? activeAdicionais.length >= 4 : activePackages.length >= packagesToRender
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { align: "start", loop: true, skipSnaps: false, startIndex: activePackages.length },
@@ -175,6 +183,10 @@ export function Packages() {
     const slidesToRender = shouldUseCarousel
         ? [...activePackages, ...activePackages, ...activePackages]
         : activePackages
+
+    const slidesToRenderAdicional = shouldUseCarousel
+        ? [...productsExhibitionsAdicional, ...productsExhibitionsAdicional, ...productsExhibitionsAdicional]
+        : productsExhibitionsAdicional
 
     return (
         <>
@@ -233,7 +245,6 @@ export function Packages() {
                                                         />
                                                     </div>
                                                 ))}
-
                                             </div>
                                         </div>
                                     </div>
@@ -248,21 +259,31 @@ export function Packages() {
                                         </div>
                                     )}
                                 </div>
-
                             </>
                         ) : (
-                            activePackages.map((pacote, index) => (
-                                <PackageCard
-                                    key={pacote.id! + pacote.titulo + index}
-                                    {...pacote}
-                                    descricao={safeParseDescricao(pacote.descricao)}
-                                    onClick={() => handleBuyClick(pacote.id!)}
-                                    isMobile={isMobile}
-                                    isPersonal={isPersonal}
-                                    setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                                    setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
-                                />
-                            ))
+                            <>
+                                {activePackages.map((pacote, index) => (
+                                    <PackageCard
+                                        key={pacote.id! + pacote.titulo + index}
+                                        {...pacote}
+                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        isMobile={isMobile}
+                                        isPersonal={isPersonal}
+                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
+                                    />
+                                ))}
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Crear Nuevo Paquete</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </>
                         )
                     ) : (
                         <div className={styles.emptyPackageContainer}>
@@ -281,15 +302,15 @@ export function Packages() {
                     )}
                 </div>
             </div >
-                            {isPersonal && isMobile && (
-                                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile })} onClick={() => setOpenModal("add")}>
-                                    <div className={styles.addIconWrapper}>
-                                        <Plus size={24} color="#a2afc1" />
-                                    </div>
-                                    <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
-                                    <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
-                                </div>
-                            )}
+            {isPersonal && isMobile && (
+                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile })} onClick={() => setOpenModal("add")}>
+                    <div className={styles.addIconWrapper}>
+                        <Plus size={24} color="#a2afc1" />
+                    </div>
+                    <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
+                    <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                </div>
+            )}
             <div
                 className={classnames(
                     styles.packagesTitleContainer,
@@ -297,7 +318,21 @@ export function Packages() {
                     { [styles.packagesTitleContainerMobile]: isMobile }
                 )}
             >
-                <h1>Pacotes Adicionais</h1>
+                <div>
+                    {isPersonal ? (
+                        <>
+                            <h1>
+                                Pacotes Adicionais
+                            </h1>
+                            <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                        </>
+                    ) : (
+                        <h1>
+                            Pacotes Adicionais
+                        </h1>
+                    )
+                    }
+                </div>
                 {isPersonal && (
                     <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
                         <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
@@ -312,20 +347,66 @@ export function Packages() {
                 {isLoading ? (
                     renderPackageCardSkeleton()
                 ) : productsExhibitionsAdicional.length > 0 && productsExhibitionsAdicional.some(p => p.status === "ATIVO") ? (
-                    productsExhibitionsAdicional.sort((a, b) => b.preco - a.preco).map((pacote, index) => (
-                        pacote.status === "ATIVO" && (
-                            <PackageCard
-                                key={`adicional-${index}-` + pacote.id! + pacote.titulo}
-                                {...pacote}
-                                descricao={safeParseDescricao(pacote.descricao)}
-                                onClick={() => handleBuyClick(pacote.id!)}
-                                isMobile={isMobile}
-                                setHandleEdit={() => { handleUpdatePackage(pacote.id!, true) }}
-                                setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
-                                isPersonal={isPersonal}
-                            />
-                        )
-                    ))
+                    <>
+                        {shouldUseCarouselAdicional ? (
+                            <div className={styles.emblaWrapper}>
+                                <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                <div className={styles.embla}>
+                                    <div className={styles.emblaViewport} ref={emblaRef}>
+                                        <div className={styles.emblaContainer}>
+                                            {slidesToRenderAdicional.map((pacote, index) => (
+                                                <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                    <PackageCard
+                                                        {...pacote}
+                                                        descricao={safeParseDescricao(pacote.descricao)}
+                                                        onClick={() => handleBuyClick(pacote.id!)}
+                                                        isMobile={isMobile}
+                                                        isPersonal={isPersonal}
+                                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                {activeAdicionais.map((pacote, index) => (
+                                    <PackageCard
+                                        key={pacote.id! + pacote.titulo + index}
+                                        {...pacote}
+                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        isMobile={isMobile}
+                                        isPersonal={isPersonal}
+                                        setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
+                                        setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                    />
+                                ))}
+                                {isPersonal && !isMobile && (
+                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
+                                        <div className={styles.addIconWrapper}>
+                                            <Plus size={24} color="#a2afc1" />
+                                        </div>
+                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
+                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </>
                 ) : (
                     <div className={styles.emptyPackageContainer}>
                         <div className={styles.emptyPackageIconWrapper}>
@@ -338,24 +419,6 @@ export function Packages() {
 
                         <p className={styles.emptyPackageText}>
                             Você ainda não cadastrou pacotes adicionais.
-                        </p>
-                    </div>
-                )}
-                {isPersonal && productsExhibitionsAdicional.some(p => p.status === "ATIVO") && (
-                    <div
-                        className={styles.addCard}
-                        onClick={() => setOpenModal("add")}
-                    >
-                        <div className={styles.addIconWrapper}>
-                            <Plus size={24} color="#a2afc1" />
-                        </div>
-
-                        <h4 className={styles.addTitle}>
-                            Criar Novo Adicional
-                        </h4>
-
-                        <p className={styles.addText}>
-                            Adicione novas modalidades ou planos de fidelidade.
                         </p>
                     </div>
                 )}
