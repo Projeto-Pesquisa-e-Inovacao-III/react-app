@@ -15,9 +15,11 @@ type Props = {
     onClickIcon?: () => void;
     classname?: string;
     classnameInput?: string;
+
+    limit?: number;
 }
 
-export default function Input({ type, placeholder, label, id, name, onInputChange, onInputClick, isPassword, value, icon, onClickIcon, classname, classnameInput }: Props) {
+export default function Input({ type, placeholder, label, id, name, onInputChange, onInputClick, isPassword, value, icon, onClickIcon, classname, classnameInput, limit }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     return (
@@ -35,12 +37,17 @@ export default function Input({ type, placeholder, label, id, name, onInputChang
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                 onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
                 value={value}
+                maxLength={limit}
             />
 
             {icon && (
                 <div className={styles.inputIcon} onClick={onClickIcon}>
                     {icon}
                 </div>
+            )}
+
+            {limit && (
+                <span className={styles.inputLimit}>{`${value?.toString().length || 0}/${limit}`}</span>
             )}
 
             {isPassword && (

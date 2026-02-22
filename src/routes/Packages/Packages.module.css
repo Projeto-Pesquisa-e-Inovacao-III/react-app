@@ -6,6 +6,7 @@
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
+    
 }
 
 .packagesTitleContainer {
@@ -31,7 +32,7 @@
     transition: all 0.2s ease;
     min-height: 500px;
     cursor: pointer;
-    height: 100%;
+    height: 800px;
 }
 
 .addCard:hover {
@@ -145,7 +146,7 @@
 
 .emblaSlide,
 .emblaSlideUser {
-    flex: 0 0 40.33%;
+    flex: 0 0 45.33%;
     min-width: 0;
     padding: 0 12px;
     box-sizing: border-box;
@@ -219,9 +220,27 @@
     grid-column: 1 / -1;
 }
 
+@media (max-width: 1536px) {
+    .emblaSlide {
+        flex: 0 0 70% !important;
+    }
+
+    .emblaSlideUser {
+        flex: 0 0 30% !important;
+    }
+
+    .emblaSlideAdd {
+        flex: 0 0 30% !important;
+    }
+
+    .addCard {
+        width: 30rem;
+    }
+}
+
 @media (max-width: 1440px) {
     .emblaSlide {
-        flex: 0 0 55% !important;
+        flex: 0 0 80.33% !important;
     }
 
     .emblaSlideUser {
@@ -260,6 +279,7 @@
 @media (max-width: 1024px) {
     .addCard {
         max-width: unset !important;
+        width: 100%;
     }
 
     .packagesListWrapperDesktop {

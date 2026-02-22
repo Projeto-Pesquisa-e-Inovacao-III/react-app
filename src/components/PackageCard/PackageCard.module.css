@@ -8,7 +8,23 @@
     align-items: flex-start;
     text-align: left;
     max-width: 512px;
-    height: 100%;
+    height: 800px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.packageCardExpanded {
+    height: auto !important;
+}
+
+.verMaisBtn {
+    background: none;
+    border: none;
+    color: #0a3a5c;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0 0 0;
+    font-weight: 500;
 }
 
 .packageCardPresential {
@@ -55,6 +71,7 @@
 }
 
 .cardContent {
+    width: 100%;
     height: 100%;
     padding: 30px;
 }
@@ -228,6 +245,10 @@
     .deleteButton {
         width: 100% !important;
     }
+
+    .cardTipoAulaPresential {
+        text-align: center;
+    }
 }
 
 .cardBtnPersonalMobile {
@@ -235,6 +256,7 @@
     width: 100%;
     gap: 20px;
     flex-wrap: wrap !important;
+    padding: 10px !important;
 }
 
 .cardVariantConsultoriaMobile,

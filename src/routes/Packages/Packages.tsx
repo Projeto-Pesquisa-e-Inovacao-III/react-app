@@ -168,7 +168,7 @@ export function Packages() {
     const shouldUseCarouselAdicional = isPersonal ? activeAdicionais.length >= 4 : activePackages.length >= packagesToRender
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { align: "start", loop: true, skipSnaps: false, startIndex: activePackages.length },
+        { align: "start", loop: true, skipSnaps: false },
         []
     )
 
@@ -180,13 +180,9 @@ export function Packages() {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const slidesToRender = shouldUseCarousel
-        ? [...activePackages, ...activePackages, ...activePackages]
-        : activePackages
+    const slidesToRender = activePackages
 
-    const slidesToRenderAdicional = shouldUseCarousel
-        ? [...productsExhibitionsAdicional, ...productsExhibitionsAdicional, ...productsExhibitionsAdicional]
-        : productsExhibitionsAdicional
+    const slidesToRenderAdicional = productsExhibitionsAdicional
 
     return (
         <>
@@ -203,7 +199,9 @@ export function Packages() {
                                 <h1>
                                     Pacotes Atuais
                                 </h1>
-                                <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                                <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
+                                    <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                                </div>
                             </>
                         ) : (
                             <h1>
@@ -236,7 +234,7 @@ export function Packages() {
                                                     <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
                                                         <PackageCard
                                                             {...pacote}
-                                                            descricao={safeParseDescricao(pacote.descricao)}
+                                                            descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
                                                             isPersonal={isPersonal}
@@ -266,7 +264,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
@@ -279,7 +277,7 @@ export function Packages() {
                                         <div className={styles.addIconWrapper}>
                                             <Plus size={24} color="#a2afc1" />
                                         </div>
-                                        <h4 className={styles.addTitle}>Crear Nuevo Paquete</h4>
+                                        <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
                                         <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
                                     </div>
                                 )}
@@ -324,7 +322,10 @@ export function Packages() {
                             <h1>
                                 Pacotes Adicionais
                             </h1>
-                            <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+
+                            <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
+                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">adicionais ativos</span>
+                            </div>
                         </>
                     ) : (
                         <h1>
@@ -355,10 +356,10 @@ export function Packages() {
                                     <div className={styles.emblaViewport} ref={emblaRef}>
                                         <div className={styles.emblaContainer}>
                                             {slidesToRenderAdicional.map((pacote, index) => (
-                                                <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })}>
                                                     <PackageCard
                                                         {...pacote}
-                                                        descricao={safeParseDescricao(pacote.descricao)}
+                                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
                                                         isPersonal={isPersonal}
@@ -387,7 +388,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={safeParseDescricao(pacote.descricao)}
+                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
