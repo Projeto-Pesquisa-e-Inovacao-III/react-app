@@ -6,7 +6,7 @@ import { CalendarDays, Clock } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -350,9 +350,9 @@ export default function ScheduleDetails() {
                             isReschedule={true}
                             rescheduleId={appointmentId}
                             clickedDate={appointment.data?.dataInicio.split("T")[0] || ""}
-                            typeUser={type}
+                            typeUser={type?.type || undefined}
                             appoitmentData={appointment.data}
-                            goToNextStep={type === "personal" ? false : true}
+                            goToNextStep={type?.type === "personal" ? false : true}
                         />
                     </>
                 )}

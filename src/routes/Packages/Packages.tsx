@@ -12,7 +12,7 @@ import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import { LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
@@ -125,15 +125,6 @@ export function Packages() {
         return productsExhibitions.find(pkg => pkg.id === id);
     }
 
-    //temp
-    function safeParseDescricao(descricao: string) {
-        try {
-            return JSON.parse(descricao);
-        } catch {
-            return descricao;
-        }
-    }
-
     function renderPackageCardSkeleton() {
         return (
             <>{[...Array(3)].map((_, index) => (
@@ -155,11 +146,11 @@ export function Packages() {
 
     const activePackages = productsExhibitions
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
     const activeAdicionais = productsExhibitionsAdicional
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
     const packagesToRender = 5
 

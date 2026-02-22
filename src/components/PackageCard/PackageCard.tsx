@@ -3,7 +3,7 @@ import SmallerButton from '../SmallerButton/SmallerButton';
 import classnames from 'classnames';
 import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Calendar, Dumbbell, Heart, HeartPulse, Home, Pencil, Trash, Trash2 } from 'lucide-react';
+import { Calendar, Dumbbell, HeartPulse, Home, Pencil, Trash2 } from 'lucide-react';
 import { BenefitsList } from './BenefitList/BenefitList';
 
 type PackageCardProps = {
@@ -16,9 +16,9 @@ type PackageCardProps = {
     quantidadeAula?: number | React.ReactNode;
     descricao: string[] | React.ReactNode[];
     beneficios?: string[] | React.ReactNode[];
-    onClick: () => void;
-    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
-    setHandleDelete: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    onClick?: () => void;
+    setHandleEdit?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    setHandleDelete?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     isMobile?: boolean;
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";

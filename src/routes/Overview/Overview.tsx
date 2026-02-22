@@ -14,7 +14,7 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";

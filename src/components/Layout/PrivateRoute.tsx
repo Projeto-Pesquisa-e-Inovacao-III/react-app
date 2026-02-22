@@ -1,4 +1,3 @@
-import React, { useContext } from 'react'
 import { TypeContext } from '../../App';
 import { Navigate, Outlet } from 'react-router-dom';
 

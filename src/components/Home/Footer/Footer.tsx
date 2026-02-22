@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import LinksCol from "./LinksCol";
 
 export default function Footer({ isMobile }: { isMobile: boolean }) {
-    const nav = useNavigate();
 
     function handleNavigate(url: string) {
         window.open(url, "_blank");

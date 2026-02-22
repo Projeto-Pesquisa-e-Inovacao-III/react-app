@@ -1,4 +1,4 @@
-import { Canvas, useNode } from "@craftjs/core";
+import { useNode } from "@craftjs/core";
 
 type Props = {
     children: React.ReactNode;

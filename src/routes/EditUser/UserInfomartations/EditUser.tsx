@@ -6,7 +6,7 @@ import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIco
 import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword, getUserImage } from "../../../constants/user.ts";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete} from "../../../constants/user.ts";
 import type { UpdateUserDTO } from "../../../models/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
@@ -16,7 +16,6 @@ import type { PersonalDTO } from "../../../models/personal.ts";
 import { editPersonalProfile } from "../../../constants/personal.ts";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
 import { Link, useNavigate } from "react-router-dom";
-import { validatePassword } from "../../../utils/validacao.ts";
 import useModal from "../../../hooks/useModal.tsx";
 import useClickOutside from "../../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -135,11 +134,6 @@ export default function EditUser() {
     setTextModal
   } = useModal(null, { title: "", content: "" })
 
-  const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
-    currentPassword: "",
-    confirmPassword: "",
-  }
-  )
   const [userImage, setUserImage] = useState<string>("");
   const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -324,45 +318,6 @@ export default function EditUser() {
         setOpenModal("error");
       });
   }
-
-  function updatePassword() {
-    const current = password.currentPassword ?? "";
-    const newP = password.confirmPassword ?? "";
-
-    if (!current) {
-      setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
-      setOpenModal("error");
-      return;
-    }
-
-    if (!newP) {
-      setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
-      setOpenModal("error");
-      return;
-    }
-
-    const validation = validatePassword(newP);
-    if (validation !== "password válida!") {
-      setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
-      setOpenModal("error");
-      return;
-    }
-    changePassword(current, newP)
-      .then(() => {
-        setPassword({
-          currentPassword: "",
-          confirmPassword: ""
-        })
-        setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
-        setOpenModal("success");
-      })
-      .catch((error) => {
-        console.error("Erro ao atualizar senha:", error);
-        setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
-        setOpenModal("error");
-      });
-  }
-
 
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 

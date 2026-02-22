@@ -25,7 +25,7 @@ type EventType = {
 
 export default function CalendarWeek({ insertedEvents, isMobile, openModal, isLoading }: CalendarWeekProps) {
 
-    const [openNewEvent, setOpenNewEvent] = useState<boolean>(false);
+    const [setOpenNewEvent] = useState<boolean>(false);
     // i could use just a react-query to get the events
     const [events, setEvents] = useState<EventType[]>([]);
 
