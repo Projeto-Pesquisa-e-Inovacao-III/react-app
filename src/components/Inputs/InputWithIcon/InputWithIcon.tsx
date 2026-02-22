@@ -12,10 +12,9 @@ type Props = {
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
-    value?: string;
+    value?: string | number | undefined | null;
     mask?: (input: React.FormEvent<HTMLInputElement>) => void
     disabled?: boolean;
-
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;

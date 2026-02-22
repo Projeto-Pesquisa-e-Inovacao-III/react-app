@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import LinksCol from "./LinksCol";
 
 export default function Footer({ isMobile }: { isMobile: boolean }) {

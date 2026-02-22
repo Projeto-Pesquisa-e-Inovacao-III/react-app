@@ -225,7 +225,7 @@ export function Packages() {
                                                     <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
                                                         <PackageCard
                                                             {...pacote}
-                                                            descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                            descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
                                                             isPersonal={isPersonal}
@@ -255,7 +255,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
@@ -350,7 +350,7 @@ export function Packages() {
                                                 <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })}>
                                                     <PackageCard
                                                         {...pacote}
-                                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
                                                         isPersonal={isPersonal}
@@ -379,7 +379,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
