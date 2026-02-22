@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link id="favicon-dark-svg" rel="icon" type="image/svg+xml" href="/favicon/black/favicon.svg" media="(prefers-color-scheme: dark)" />
+
+  <link id="favicon-light-svg" rel="icon" type="image/svg+xml" href="/favicon/black/favicon.svg" media="(prefers-color-scheme: light)" />
+
+  <link id="favicon-dark-png" rel="icon" type="image/png" href="/favicon/black/favicon-96x96.png" sizes="96x96"
+    media="(prefers-color-scheme: dark)" />
+
+  <link id="favicon-light-png" rel="icon" type="image/png" href="/favicon/black/favicon-96x96.png" sizes="96x96"
+    media="(prefers-color-scheme: light)" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSF Treinamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget("https://vlibras.gov.br/app");
+  </script>
+
+  <script>
+    const faviconLightPng = document.getElementById("favicon-light-png");
+    const faviconLightSvg = document.getElementById("favicon-light-svg");
+    const faviconDarkPng = document.getElementById("favicon-dark-png");
+    const faviconDarkSvg = document.getElementById("favicon-dark-svg");
+
+    // Source - https://stackoverflow.com/a/57795495
+    // Posted by Mark Szabo, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-02-13, License - CC BY-SA 4.0
+    const darkModeMql = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+
+    if (darkModeMql && darkModeMql.matches) {
+      // dark mode
+      faviconDarkPng.href = "/favicon/light/favicon-96x96.png";
+      faviconDarkSvg.href = "/favicon/light/favicon.svg";
+    } else {
+      // light mode
+      faviconLightPng.href = "/favicon/black/favicon-96x96.png";
+      faviconLightSvg.href = "/favicon/black/favicon.svg";
+    }
+
+  </script>
+</body>
+
+</html>

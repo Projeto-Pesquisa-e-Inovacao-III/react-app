@@ -1,0 +1,42 @@
+.cardInfo {
+    border: 1px solid #b3b3b3;
+    border-radius: 8px;
+}
+
+.cardInfo .rowHeader {
+    border-bottom: 1px solid #b3b3b3;
+    padding: 4px 16px;
+    font-size: 1.2rem;
+}
+
+.cardInfo .usersTableCard {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+}
+
+.cardInfo .userDataFull {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.cardInfo .userDataFull img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+.cardInfo .userData {
+    display: flex;
+    flex-direction: column;
+}
+
+.cardInfo .userData span {
+    font-weight: 400;
+}
+
+.cardInfo .userData span:last-of-type {
+    color: #a0a0a0;
+}

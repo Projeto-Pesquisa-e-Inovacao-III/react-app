@@ -1,0 +1,385 @@
+.packageCardContainer {
+    background-color: #ffffff;
+    border-radius: 30px;
+    box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 512px;
+    height: 800px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+.packageCardExpanded {
+    height: auto !important;
+}
+
+.verMaisBtn {
+    background: none;
+    border: none;
+    color: #0a3a5c;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 0 0 0;
+    font-weight: 500;
+}
+
+.packageCardPresential {
+    border-top: 15px solid var(--bg-blue);
+}
+
+.packageCardHome {
+    border-top: 15px solid var(--bg-orange);
+}
+
+.packageCardFunctional {
+    border-top: 15px solid var(--carol);
+}
+
+.cardTipoAulaPresential,
+.cardTipoAulaHome,
+.cardTipoAulaFunctional {
+    width: fit-content;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-weight: 700;
+}
+
+.cardIcon {
+    background-color: #ececec81;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.cardTipoAulaPresential {
+    background-color: #bbd8ec81;
+    color: var(--bg-blue);
+}
+
+
+.cardTipoAulaHome {
+    background-color: #eb825c36;
+    color: var(--bg-orange);
+}
+
+.cardTipoAulaFunctional {
+    background-color: #c4e0f081;
+    color: #5c7d8f;
+}
+
+.cardContent {
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+}
+
+.cardVariantConsultoria {
+    min-height: 600px;
+}
+
+.cardVariantAdicional {
+    min-height: 500px;
+}
+
+.cardTitle {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.cardSubtitle {
+    font-size: 15px;
+    color: #777;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    min-height: 45px;
+}
+
+.cardPriceSection {
+    display: flex;
+    align-items: baseline;
+}
+
+.cardPaymentInfo {
+    background-color: #ddffe9;
+    color: #0d8037;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.cardPriceSection .cardPriceValue {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #000;
+    margin-right: 8px;
+}
+
+.cardPriceSection .cardDuration {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+.cardDuration {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: #666;
+    margin-top: 0 !important;
+    margin: 8px 0;
+}
+
+.cardBenefitsList {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0;
+    margin-bottom: 0 !important;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.cardBenefitsList .benefitItem {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.benefitItem span {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    color: #000000;
+    font-weight: 400;
+}
+
+.benefitItemIcon {
+    background-color: #e7f8f2;
+    border-radius: 50%;
+    margin-right: 18px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardBtn {
+    background-color: var(--bg-blue);
+    color: #fff;
+    border: none;
+    padding: 25px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    width: 100%;
+    margin-top: auto;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.cardBtnPersonal {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    background-color: #f8fafc;
+    padding: 30px;
+    border-radius: 30px;
+}
+
+.cardBtn:hover {
+    background-color: var(--btn-hover-bg);
+}
+
+@media (max-width: 1024px) {
+    .cardContent {
+        width: 100% !important;
+    }
+
+    .packageCardContainer {
+        max-width: unset;
+    }
+
+    .packagesTitleContainer {
+        text-align: center;
+        margin: 15px 20px 0 20px;
+        padding: 0 0 15px 0;
+    }
+
+    .packagesTitleContainer h1 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #333;
+        margin-top: 15px;
+    }
+
+    .packagesListWrapperDesktop {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .packagesListWrapperMobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        padding: 10px 20px 30px 20px;
+    }
+
+    .editButton,
+    .deleteButton {
+        width: 100% !important;
+    }
+
+    .cardTipoAulaPresential {
+        text-align: center;
+    }
+}
+
+.cardBtnPersonalMobile {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    flex-wrap: wrap !important;
+    padding: 10px !important;
+}
+
+.cardVariantConsultoriaMobile,
+.cardVariantAdicionalMobile {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 500px;
+    min-width: auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.cardTitleMobile {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 5px;
+    text-align: left;
+    width: 100%;
+}
+
+.cardSubtitleMobile {
+    font-size: 0.85rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    min-height: auto;
+    text-align: left;
+    width: 100%;
+}
+
+.cardPriceSectionMobile {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 15px;
+    width: 100%;
+    min-width: 0;
+}
+
+.cardPriceValueMobile {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #000;
+    margin-right: 5px;
+    line-height: 1.1;
+}
+
+.cardDurationMobile {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.cardBenefitsListMobile {
+    list-style: none;
+    text-align: left;
+    flex-grow: 1;
+}
+
+.benefitItemMobile {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.benefitItemMobile svg {
+    fill: #22C55E;
+    flex-shrink: 0;
+}
+
+.benefitItemMobile span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+    display: flex;
+}
+
+.cardBtnMobile {
+    width: 100%;
+    background-color: var(--bg-blue, #0d47a1);
+    color: #fff;
+    border: none;
+    padding: 20px;
+
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: auto;
+    transition: background-color 0.3s ease;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.cardBtnMobile:hover {
+    background-color: #003580;
+}
+
+.editButton {
+    width: 47%;
+    background: white;
+    color: black;
+    font-weight: 600;
+    border: 1px solid #e5e7eb;
+}
+
+.deleteButton {
+    width: 47%;
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: 600;
+    border: 1px solid #fecaca;
+}

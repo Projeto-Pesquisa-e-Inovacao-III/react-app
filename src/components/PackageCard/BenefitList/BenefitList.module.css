@@ -1,0 +1,72 @@
+.benefitItem {
+    font-size: 16px;
+    color: #000000;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.benefitItemWithMore:last-child {
+       color: transparent;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+
+.benefitItemMobile {
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.benefitItemMobile svg {
+    fill: #22C55E;
+    flex-shrink: 0;
+}
+
+.benefitItemIcon {
+    background-color: #e7f8f2;
+    border-radius: 50%;
+    margin-right: 18px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.benefitItemMobile span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    text-align: left;
+    display: flex;
+}
+
+
+.benefitToggle {
+    list-style: none;
+    padding: 0;
+}
+
+.benefitToggleButton {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--bg-blue);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 4px 0;
+    margin-top: 4px;
+    transition: opacity 0.2s ease;
+}
+
+.benefitToggleButton:hover {
+    opacity: 0.75;
+}

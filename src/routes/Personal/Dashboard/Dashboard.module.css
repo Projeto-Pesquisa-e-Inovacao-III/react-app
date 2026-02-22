@@ -1,0 +1,63 @@
+.dashMobile {
+}
+
+.wrapperDashboardPersonalLogoMobile {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.wrapperElementsDashboard {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.textDashboardPersonal h1 {
+    font-weight: 600;
+    font-size: 30px;
+    color: #333;
+}
+
+.textDashboardPersonal h3 {
+    font-size: 1.2rem;
+    color: #7c7c7c;
+    font-weight: 500;
+}
+
+.kpisDashboardPersonal {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 26px;
+}
+
+.kpisDashboardPersonalMobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.wrapperChartsDashboardPersonal {
+    display: flex;
+    gap: 20px;
+    padding: 0 !important;
+    height: auto;
+}
+
+.chartBarPersonal {
+    flex: 1;
+    background-color: #fff;
+    padding: 26px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 50vh;
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .wrapperChartsDashboardPersonal {
+        flex-direction: column;
+        height: 100vh;
+    }
+}

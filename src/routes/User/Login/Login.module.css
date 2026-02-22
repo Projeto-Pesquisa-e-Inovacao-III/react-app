@@ -1,0 +1,106 @@
+.containerLogin {
+  display: flex;
+  background-color: var(--bg-blue-darker);
+  font-family: "Poppins", sans-serif;
+}
+
+.sectionLogoLogin {
+  padding: 30px 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg-blue-darker);
+}
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 100vh;
+  height: auto;
+  width: 100vw;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  background-color: white;
+  position: relative;
+}
+
+.login a {
+  color: var(--link-text);
+  text-decoration: underline;
+}
+
+.wrapperLoginElements {
+  width: 23vw;
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 1.5em;
+}
+
+.welcomeMessage h1 {
+  font-size: 2em;
+  font-weight: 500;
+}
+
+.wrapperLoginElements form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.wrapperInputsLoginPage {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.btnGeneric {
+  margin-top: 2rem;
+}
+
+.wrapperLoginElements input[type="checkbox"] {
+  background-color: transparent;
+}
+
+.configLogin {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.configLogin span {
+  margin-left: 10px;
+}
+
+.configLogin a {
+  text-decoration: underline;
+}
+
+
+.btnLogin {
+  background-color: var(--bg-orange) !important;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 10px !important;
+
+}
+
+@media (max-width: 1024px) {
+  .containerLogin {
+    flex-direction: column;
+  }
+
+  .login {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .wrapperLoginElements {
+    width: 80vw;
+  }
+}

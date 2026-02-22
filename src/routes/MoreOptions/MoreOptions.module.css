@@ -1,0 +1,45 @@
+.container {
+    min-height: 100vh;
+    height: auto;
+}
+
+.header {
+    display: flex;
+    background-color: var( --indigo );
+    padding: 20px;
+}
+
+.header :global(img), .header :global(svg) {
+    width: 100px !important;
+    height: 100px !important;
+    border-radius: 50%;
+}
+.header svg {
+    background-color: #ccc;
+}
+
+.header h2 {
+    margin-left: 20px;
+    align-self: center;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonOption {
+    display: flex !important;
+    flex-direction: row !important;
+    background-color: transparent !important;
+    color: black !important;
+    border-bottom: 1px solid #ccc !important;
+    padding: 10px 0;
+    text-align: left;
+    font-size: 16px;
+    gap: 20px;
+    max-width: none !important;
+}

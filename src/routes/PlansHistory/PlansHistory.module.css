@@ -1,0 +1,50 @@
+.container {
+}
+
+.container .title {
+    margin-bottom: 24px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.container .title h1 {
+    color: #333;
+}
+
+.search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.search input {
+    border: 1px solid #ccc;
+}
+
+.datePickerWrapper {
+    display: flex;
+    gap: 8px;
+}
+
+
+
+@media (max-width: 1024px) {
+
+    .container {
+    }
+
+    .search {
+        flex-wrap: wrap;
+
+    }
+
+    .search input {
+        width: 100%;
+
+    }
+
+    .searchInput {
+        width: 100%;
+    }
+
+}

@@ -1,0 +1,32 @@
+.modal-event-created,
+.modal-event-created-mobile {
+
+    .content-modal {
+        white-space: pre-line;
+    }
+
+    .buttons-group-modal {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
+
+
+.modal-event-created-mobile {
+
+    padding: 20px !important;
+
+    .buttons-group-modal-mobile {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+    }
+}

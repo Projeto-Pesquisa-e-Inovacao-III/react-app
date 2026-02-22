@@ -1,0 +1,156 @@
+.miniSelectedDay {
+  color: white !important;
+  padding: 6px 10px;
+  transition: all 0.3s, color 0.3s;
+
+}
+
+.miniSelectedDay :global(.fc-daygrid-day-frame) {
+  background: #4b4b4b !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+:global(.fc .fc-daygrid-day.fc-day-today) {
+  background: none !important;
+  background-color: none !important;
+}
+
+.miniWrapperStyledCalendar {
+  width: 100%;
+  max-width: 600px;
+  height: 80%;
+  margin: 0 auto;
+  font-size: 14px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.miniWrapperStyledCalendar :global(.fc-col-header-cell) {
+  padding: 0 !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-scrollgrid-sync-table) {
+  table-layout: auto !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-day-disabled) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc .fc-scrollgrid-section table) {
+  height: 0px !important;
+}
+
+.miniContainerCalendar {
+  height: 40vh;
+}
+
+
+.miniWrapperStyledCalendar :global(.fc) {
+  font-family: "Poppins", sans-serif !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-toolbar-title) {
+  font-size: 1.4rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-scroller-liquid-absolute) {
+  height: 100% !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-prev-button),
+.miniWrapperStyledCalendar :global(.fc-next-button) {
+  background: none !important;
+  border: none !important;
+  font: .95rem !important;
+  color: #333 !important;
+  cursor: pointer;
+}
+
+.miniWrapperStyledCalendar :global(.fc-col-header-cell) {
+  font-weight: 500;
+  color: #555;
+  padding: 8px 0;
+  border: none !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day) {
+  border: none !important;
+  text-align: center;
+  padding: 4px !important;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 50%;
+
+}
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day-top) {
+  margin: 0 auto !important;
+  width: fit-content !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day-number) {
+  font-size: 0.95rem !important;
+}
+
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day:hover) {
+  background: #4b4b4b !important;
+  color: white !important;
+  border-radius: 50%;
+}
+
+.miniWrapperStyledCalendar :global(.fc-col-header-cell-cushion)::first-letter,
+.miniWrapperStyledCalendar :global(.fc-toolbar-title)::first-letter {
+  text-transform: capitalize;
+}
+
+.miniWrapperStyledCalendar :global(.fc-scrollgrid-section-sticky)>* {
+  background: transparent;
+  position: sticky;
+  z-index: 3;
+}
+
+.miniWrapperStyledCalendar :global(.fc-scrollgrid-section table) {
+  height: 50px;
+}
+
+.miniWrapperStyledCalendar :global(.fc-theme-standard td),
+.miniWrapperStyledCalendar :global(.fc-theme-standard .fc-scrollgrid) {
+  border: none;
+}
+
+.miniWrapperStyledCalendar :global(.fc-toolbar-title) {
+  margin-left: 15px;
+}
+
+.miniWrapperStyledCalendar :global(.fc-toolbar.fc-header-toolbar) {
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .miniContainerCalendar {
+    height: 45vh;
+  }
+
+  .miniWrapperStyledCalendar {
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 468px) {
+  .miniContainerCalendar {
+    height: 50vh;
+  }
+
+  .miniWrapperStyledCalendar {
+    height: 100% !important;
+  }
+
+
+}

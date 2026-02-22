@@ -1,0 +1,193 @@
+.containerCardFilterCheckSchedule {
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 12px;
+    width: 100%;
+}
+
+.cardFilter {
+    width: 100%;
+    border-radius: 12px;
+    gap: 15px;
+    display: flex;
+
+    min-width: 750px;
+}
+
+.selectStatus {
+    width: 70%;
+    color: #333;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 14px;
+    border: 1px solid #ccc;
+}
+
+.divButtonFilter {
+    display: flex;
+    justify-content: flex-end;
+    width: 30%;
+}
+
+.searchBarDiv {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+.buttonFilter {
+    width: 100% !important;
+}
+
+.btnCheckSchedule {
+    padding: 9px !important;
+    max-width: unset !important;
+}
+
+.calendarWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verticalDivider {
+    width: 0.125rem;
+    height: 100%;
+    border: 1px solid #d1d5db;
+}
+
+.calendarIcon {
+    cursor: pointer;
+}
+
+.calendarDropdown {
+    position: absolute;
+    top: 2.5rem;
+    z-index: 50;
+    width: 18rem;
+    max-width: 48rem;
+}
+
+
+@media (max-width: 1360px) {
+    .cardFilter {
+        min-width: unset !important;
+    }
+}
+
+@media (max-width: 1280px) {}
+
+@media (max-width: 1024px) {
+
+    .containerCardFilterCheckSchedule {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        gap: 1.25rem !important;
+        background-color: transparent !important;
+        padding: 0 !important;
+    }
+
+    .containerCardFilterCheckSchedule input {
+        border-radius: 8px !important;
+        border: none !important;
+    }
+
+    .cardFilter {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        max-width: unset !important;
+        min-width: unset !important;
+    }
+
+    .cardFilterMobile {
+        display: flex;
+        gap: 15px;
+        width: 100%;
+    }
+
+    .divButtonFilter {
+        width: 100% !important;
+    }
+
+    .buttonFilterMobile {
+        background-color: #fff;
+        color: black;
+        width: 50%;
+        border: 1px solid #ccc;
+        padding: 12px;
+        max-width: 35%;
+        gap: 1.25rem !important;
+    }
+
+    .calendarIconContainer {
+        background-color: #fff;
+        height: 100%;
+        padding-left: 6px;
+        padding-right: 6px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+    .calendarDropdown {
+        position: absolute;
+        top: 3rem;
+        right: 0;
+        z-index: 50;
+        width: 18rem;
+        max-width: 48rem;
+    }
+
+    .dropdownTipoAula {
+        right: 0;
+    }
+
+    .dropdownStatus {
+        left: 0 !important;
+    }
+}
+
+
+
+@media (max-width: 600px) {
+    .buttonFilterMobile {
+        gap: 8px !important;
+    }
+}
+
+@media (max-width: 468px) {
+    .cardFilterMobile {
+        width: 100%;
+        gap: 8px !important;
+    }
+
+    .cardFilterMobile span{
+        font-size: 14px !important;
+    }
+
+
+}
+
+@media (max-width: 375px) {
+    .cardFilterMobile {
+        flex-wrap: wrap !important;
+    }
+
+    .calendarWrapper,
+    .calendarIconContainer {
+        width: 100% !important;
+        padding: 8px 0;
+    }
+}

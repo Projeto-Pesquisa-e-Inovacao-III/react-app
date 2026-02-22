@@ -1,0 +1,39 @@
+.triple-row-input {
+    display: flex;
+    gap: 1rem;
+
+    .input-block {
+        .wrapper_inp {
+            position: relative;
+        }
+
+        flex: 1;
+    }
+
+    .input-icon {
+        display: flex;
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted-foreground);
+        height: 1rem;
+        width: 1rem;
+
+        svg {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+
+    select {
+        color: #000000 !important;
+        background-color: #f3f3f3;
+
+        option {
+            color: black;
+        }
+    }
+
+}

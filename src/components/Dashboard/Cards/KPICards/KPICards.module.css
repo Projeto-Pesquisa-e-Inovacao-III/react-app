@@ -1,0 +1,57 @@
+.kpiCardDashboard {
+    flex: 1 1 calc(50% - 8px);
+}
+
+.iconKpiDashboard {
+    background-color: #acacac;
+    border-radius: 50%;
+    width: min-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.wrapperDetailsKpiDashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+}
+
+.kpiCardDashboard :global(.css-1j74uew-MuiPaper-root-MuiCard-root) {
+    height: 100%;
+    border-radius: 12px;
+}
+
+.kpiCardDashboard :global(.css-1lt5qva-MuiCardContent-root:last-child) {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.full :global(.css-1lt5qva-MuiCardContent-root:last-child) {
+    gap: 10px;
+    display: flex;
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.full :global(.MuiTypography-root.MuiTypography-h5.css-16xl4zq-MuiTypography-root) {
+    font-size: 1.2rem !important;
+}
+
+.kpiMobile {
+    margin-top: 16px;
+}
+
+@media (min-width: 1024px) {
+    .kpiItem {
+        flex: 1 1 calc(33.333% - 8px);
+    }
+}

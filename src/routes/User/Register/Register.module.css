@@ -1,0 +1,185 @@
+.register {
+    display: flex;
+    background-color: var(--bg-blue-darker);
+    font-family: "Poppins", sans-serif;
+}
+
+.register a {
+    color: var(--link-text);
+    text-decoration: none;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+.sectionLogoLogin {
+    flex: 1;
+    padding: 30px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-blue-darker);
+}
+
+.wrapperRegisterElementsMobile {
+    height: fit-content !important;
+    border-radius: 0 !important;
+}
+
+.wrapperRegisterElements {
+    min-height: 100vh;
+    height: auto;
+    width: 23px;
+    padding: 3rem 1.5rem;
+    flex: 2;
+    background-color: #fff;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.registerElements {
+    max-width: 650px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.borderDivision {
+    border: dashed 1px #ddd;
+    height: 1px;
+    margin: .5rem 0;
+}
+
+.welcomeMessage {
+    text-align: start;
+}
+
+.welcomeMessage h1 {
+    font-size: 3.5rem;
+    color: #161616;
+}
+
+.welcomeMessage p {
+    color: #161616;
+    max-width: 60%;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.welcomeMessageMobile {
+    text-align: center;
+    width: 100%;
+}
+
+.welcomeMessageMobile h1 {
+    font-size: 3rem;
+    color: #161616;
+}
+
+.welcomeMessageMobile p {
+    color: #161616;
+    max-width: 100%;
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.wrapperPasswordInput {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.wrapperPasswordInput .wrapperInp {
+    flex: 1;
+}
+
+.wrapperPasswordInput input {
+    width: 100% !important;
+}
+
+.registerElements form {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    text-align: left;
+}
+
+.wrapperInputsFromForm {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.DoubleInputsRow {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.registerElements form input[type="checkbox"] {
+    background-color: transparent;
+}
+
+.terms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: var(--muted-foreground);
+}
+
+.configRegister {
+    display: flex;
+    justify-content: space-between;
+}
+
+.configRegister span {
+    margin-left: 10px;
+}
+
+.selectGenderRegister {
+    flex: 1;
+}
+
+/* MUI overrides */
+.datePickerWrapper {
+    display: flex;
+    flex: 1;
+    min-width: 0 !important;
+}
+
+
+.datePickerWrapper :global(.MuiStack-root) {
+    padding-top: 0px !important;
+    display: flex;
+    flex: 1;
+}
+
+.datePickerWrapper :global(.MuiTextField-root),
+.datePickerWrapper :global(.MuiPickersTextField-root) {
+    min-width: 0 !important;
+    background-color: #f5f5f5;
+    width: 100%;
+    flex: 1;
+}
+
+.btnCad {
+  background-color: var(--bg-orange) !important;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 10px !important;
+
+
+}
