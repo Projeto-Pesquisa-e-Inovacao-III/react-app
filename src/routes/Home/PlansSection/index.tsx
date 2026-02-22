@@ -75,7 +75,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                                     description={pkg.periodo}
                                                     content={pkg.titulo}
                                                     price={`R$ ${pkg.preco}`}
-                                                    benefits={JSON.parse(pkg.descricao)}
+                                                    benefits={pkg.beneficios.map((b) => b.valor)}
                                                     isLoggedIn={isUserAuthenticated}
                                                 />
                                             </div>
@@ -99,7 +99,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                         description={pkg.periodo}
                                         content={pkg.titulo}
                                         price={`R$ ${pkg.preco}`}
-                                        benefits={JSON.parse(pkg.descricao)}
+                                        benefits={pkg.beneficios.map(b => b.valor)}
                                         isLoggedIn={isUserAuthenticated}
                                     />
                                 </div>
