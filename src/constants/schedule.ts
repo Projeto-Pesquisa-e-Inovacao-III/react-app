@@ -33,9 +33,19 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export async function findPersonalRequests(pageParam = 1, size = "10") {
-    return api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
+export async function findPersonalRequests(pageParam = 1, size = "10", initialDate?: string, finalDate?: string, status?: string, classType?: string) {
+    return api.get(`/agendamentos/solicitacoes`, {
+        params: {
+            ...(initialDate && { dataInic: initialDate }),
+            ...(finalDate && { dataFim: finalDate }),
+            ...(status && { status: status }),
+            ...(classType && { tipoAgendamento: classType }),
+            page: pageParam,
+            size
+        }
+    });
 }
+
 
 export function findUserRescheduleRequests() {
     return api.get(`/agendamentos/solicitacoes`);

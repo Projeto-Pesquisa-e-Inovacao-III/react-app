@@ -12,7 +12,7 @@ import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, Map, MapPin, RefreshCwIcon, UserRound } from "lucide-react";
@@ -66,25 +66,47 @@ export function CheckSchedule() {
         setOpenModal("error");
     }
 
+    const [page, setPage] = useState(0);
+
+
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
+        start: "",
+        end: "",
+    });
+
     const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
+    const [filterStatus, setFilterStatus] = useState<string>("");
+    const [filterTypeClass, setFilterTypeClass] = useState<string>("");
+
     const {
         data: infinitePaginationMobile,
         loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointmentsMobile"],
-        queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+        queryFn: () => findPersonalRequests(
+            page, 
+            linesPerPageValue,
+            selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+            selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined
+        ).then(res => res.data),
         enable: isMobile
     });
 
-    const [page, setPage] = useState(0);
-
     const { data: userRescheduleAppointments, isLoading: isLoadingAppointments } =
         useQuery<PaginatedResponse<CheckSchedule>>({
-            queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
-            queryFn: () =>
-                findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+            queryKey: ["userRescheduleAppointments", linesPerPageValue, page, selectedDateRange.end, filterStatus, filterTypeClass],
+            queryFn: async (): Promise<PaginatedResponse<CheckSchedule>> =>
+                findPersonalRequests(
+                    page,
+                    linesPerPageValue,
+                    selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+                    selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+                    filterStatus,
+                    filterTypeClass
+                ).then((res) => res.data),
             enabled: !isMobile
         });
+
 
     const appointmentsList = userRescheduleAppointments?.content ?? infinitePaginationMobile;
     const pagination = userRescheduleAppointments?.page;
@@ -106,10 +128,6 @@ export function CheckSchedule() {
         hasFilters,
         filterSearch,
         setFilterSearch,
-        filterStatus,
-        setFilterStatus,
-        filterTypeClass,
-        setFilterTypeClass,
         clearFilters
     } = useSearchFilter(appointmentsList, {
         searchStatus: item => item.status,
@@ -126,6 +144,9 @@ export function CheckSchedule() {
             setFilterSearch(format(date, "dd/MM/yyyy", { locale: ptBR }));
         }
     }, [searchParams, setFilterSearch]);
+
+
+
 
 
     async function handleInvalidateQueries() {
@@ -188,14 +209,6 @@ export function CheckSchedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
     })
-
-
-    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
-        start: "",
-        end: "",
-    });
-
-
 
 
 
