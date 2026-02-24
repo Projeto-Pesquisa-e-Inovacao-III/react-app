@@ -482,6 +482,7 @@ return (
                             tipoAula={packageInfo.type || "PRESENCIAL"}
                             descricao={packageInfo.benefits ?? ["Benefício 1", "Benefício 2", "Benefício 3"]}
                             isMobile={isMobile}
+                            classNameContainer={styles.packagePreviewCard}
                         />
                     </div>
                     <span className={styles.previewInfo}>

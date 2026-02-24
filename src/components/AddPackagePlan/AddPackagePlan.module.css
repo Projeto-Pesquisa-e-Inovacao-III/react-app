@@ -88,7 +88,7 @@
     min-height: 0;
 }
 
-.packagePreview :global(.packageCardContainer) {
+.packagePreviewCard {
     width: 30rem !important;
 }
 

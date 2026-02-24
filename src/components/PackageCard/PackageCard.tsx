@@ -23,6 +23,7 @@ type PackageCardProps = {
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";
     isPersonal?: boolean;
+    classNameContainer?: string;
 };
 
 
@@ -52,7 +53,8 @@ export function PackageCard(props: PackageCardProps) {
                 styles.packageCardContainer, { [styles.packageCardPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctional]: props.tipoAula === "FUNCIONAL" },
                 { [styles.packageCardExpanded]: isExpanded },
                 styles[`cardVariant${variant[0].toUpperCase() + variant.slice(1)}`],
-                { [styles.packageCardContainerMobile]: isMobile }
+                { [styles.packageCardContainerMobile]: isMobile },
+                props.classNameContainer
             )}
         >
             <div className={styles.cardContent}>
