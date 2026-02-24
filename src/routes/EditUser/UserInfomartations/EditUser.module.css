@@ -203,6 +203,13 @@
   grid-area: telefone;
 }
 
+.userImg {
+  border-radius: 50%;
+  object-fit: cover;
+  border: solid 2px #ccc;
+  width: 35vh;
+  height: 35vh;
+}
 
 /* Mobile */
 @media (max-width: 1024px) {
@@ -214,6 +221,14 @@
       "personal personal"
       "login login"
       "footer footer";
+  }
+
+  .userImg {
+    border-radius: 50%;
+    object-fit: cover;
+    border: solid 2px #ccc;
+    width: 24vh;
+    height: 24vh;
   }
 
   .personalInfoGrid {

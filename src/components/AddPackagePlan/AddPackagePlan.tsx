@@ -484,7 +484,7 @@ return (
                         />
                     </div>
                     <span className={styles.previewInfo}>
-                        <Info size={20} /> Os alunos veram exatamente este visual
+                        <Info size={20} /> Os alunos verão exatamente este visual
                     </span>
                 </div>
             )}

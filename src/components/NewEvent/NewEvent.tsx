@@ -513,10 +513,10 @@ export default function NewEvent(
                                 )}
 
                                 <InformationCard
-                                    icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                    icon={<UserAvatar foto={!personalList.isLoading && personalList.data[0]?.caminhoFoto} useUserImage={true} />}
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
-                                    subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                    subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                 />
                             </>
                         )}
@@ -616,10 +616,10 @@ export default function NewEvent(
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
-                                                icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                                icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
                                                 title="Personal Trainer"
                                                 subtitle={personalList.data?.[0]?.nome || ""}
-                                                subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                                subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                             />
                                         )}
                                         {!isReschedule && (
@@ -796,10 +796,10 @@ export default function NewEvent(
                                         Resumo do agendamento
                                     </h1>
                                     <InformationCard
-                                        icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
                                         title="Personal Trainer"
-                                        subtitle={personalList.data?.[0]?.nome || ""}
-                                        subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                        subtitle={!personalList.isLoading && personalList.data?.[0]?.nome || ""}
+                                        subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                     />
 
                                     <InformationCard

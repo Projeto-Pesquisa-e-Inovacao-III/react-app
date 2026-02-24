@@ -150,7 +150,13 @@ export default function EditUser() {
   useClickOutside({
     ref: imagePreviewModal,
     callback: () => {
+      if(openModal === "adjustAvatar") {
+        setPreviewImage("");
+        setPreviewImageFormData(new FormData());
+      }
+      
       setOpenModal(null);
+
     }
   });
 
@@ -559,12 +565,12 @@ export default function EditUser() {
                   type="button"
                   classname="w-full! transition "
                   title="Salvar Alterações"
-                  onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                  handleButtonClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
                 <SmallerButton
                   title="Descartar alterações"
                   type="button"
                   classname="w-full! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
-                  onClick={() => handleUndoChanges()}
+                  handleButtonClick={() => handleUndoChanges()}
                 />
               </div>
             </div>
@@ -582,7 +588,7 @@ export default function EditUser() {
                   Informações Pessoais
                 </Link>
 
-                <Link to="/edit-user/security" 
+                <Link to="/edit-user/security"
                   className={classNames(styles.link, styles.linkInactive)}
                 >
                   <Shield />
@@ -645,16 +651,14 @@ export default function EditUser() {
           <div className={`overlay z-auto!`}></div>
           <div
             ref={imagePreviewModal}
-            className="w-3/4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
+            className="w-full p-5 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
           >
             <div className={styles.profileSection + "max-w-full! max-h-full!"}>
               <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
                 {previewImage &&
                   <UserImg
+                    classname={styles.userImg}
                     Source={previewImage}
-                    classname="h-fit! border-2 border-gray-300"
-                    Height={500}
-                    Width={500}
                     Alt="foto"
                   />
                 }

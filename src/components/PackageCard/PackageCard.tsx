@@ -56,8 +56,8 @@ export function PackageCard(props: PackageCardProps) {
             )}
         >
             <div className={styles.cardContent}>
-                <div className='flex justify-between items-center'>
-                    <div className={classnames("flex items-center gap-3 not-lg:flex-col!")}>
+                <div className='flex justify-between items-center not-lg:w-full!'>
+                    <div className={classnames("flex items-center gap-3 not-lg:flex-col! not-lg:w-full not-lg:mb-2")}>
                         <p className={classnames("not-lg:w-full! text-center " + styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
                         <span className='bg-indigo text-white rounded-2xl w-full flex-1 font-bold py-1 px-3 text-center'>{props.quantidadeAula} agendamentos</span>
                     </div>
@@ -114,7 +114,7 @@ export function PackageCard(props: PackageCardProps) {
                         <Skeleton width={60} />
                     ) : (
                         <>
-                            <Calendar /> {`Válido por ${props.duracaoMes} meses`}
+                            <Calendar /> {`${Number(props.duracaoMes) > 1 ? "Válido por " + props.duracaoMes + " meses" : "Válido por 1 mês"}`}
                         </>
                     )}
                 </div>

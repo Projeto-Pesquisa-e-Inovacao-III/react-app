@@ -199,55 +199,31 @@
   grid-area: novaSenha;
 }
 
-
-.personalInfoGrid :global(#sobreNome) {
-  grid-area: sobreNome;
-}
-
-.personalInfoGrid :global(#cpf) {
-  grid-area: cpf;
-}
-
-.personalInfoGrid :global(#genero) {
-  grid-area: genero;
-}
-
-.personalInfoGrid :global(#telefone) {
-  grid-area: telefone;
-}
-
-
 /* Mobile */
 @media (max-width: 1024px) {
-  .editUserGrid {
-    grid-template-columns: 1fr 1fr;
+  .personalInfoGrid {
+    grid-template-columns: 1fr !important;
     grid-template-areas:
-      "header header"
-      "pages pages"
-      "personal personal"
-      "login login"
-      "footer footer";
+      "email"
+      "senhaAtual"
+      "novaSenha"
+      "footer"
+    ;
   }
 
-  .personalInfoGrid {
-    display: flex !important;
-    flex-direction: column !important;
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal"
+      "delete"
+      "footer";
   }
 
   .goBackContainer .goBackLogin {
     top: initial;
     left: initial;
     position: initial;
-  }
-
-  .atualizarFotoContainer {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .atualizarFotoContainer .button {
-    padding: 13px;
   }
 
   .footer {
