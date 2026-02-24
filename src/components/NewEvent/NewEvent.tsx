@@ -152,7 +152,6 @@ export default function NewEvent(
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
         await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
@@ -450,7 +449,10 @@ export default function NewEvent(
     }, [selectedType]);
 
     const availabilityHours = useQuery({
-        queryKey: ["availabilityHours"],
+        queryKey: ["availabilityHours", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            newEventDate],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
@@ -474,14 +476,13 @@ export default function NewEvent(
 
     }, [availabilityHours.data]);
 
-    useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
-    }, [chooseTimeOfDay, newEventDate, selectedType]);
-
     const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", { locale: ptBR });
 
     const availabilityHoursTomorrow = useQuery({
-        queryKey: ["availabilityHoursTomorrow"],
+        queryKey: ["availabilityHoursTomorrow", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            tomorrow],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
@@ -499,11 +500,11 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
-                                    title="Aluno"
-                                    subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
-                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
-                                />
+                                icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
+                                title="Aluno"
+                                subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
+                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
+                            />
                         ) : (
                             <>
                                 {step === 2 && (
