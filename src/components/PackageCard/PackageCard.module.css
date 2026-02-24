@@ -139,12 +139,17 @@
 .cardBenefitsList {
     list-style: none;
     padding: 0;
-    margin: 25px 0;
+    margin: 12px 0;
     margin-bottom: 0 !important;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
+}
+
+.benefitItem {
+    display: flex;
+    margin-top: 12px;
 }
 
 .cardBenefitsList .benefitItem {
@@ -192,8 +197,10 @@
     width: 100%;
     gap: 20px;
     background-color: #f8fafc;
-    padding: 30px;
+    padding: 12px;
     border-radius: 30px;
+    border-bottom-right-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
 }
 
 .cardBtn:hover {

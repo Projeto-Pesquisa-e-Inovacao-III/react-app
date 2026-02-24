@@ -92,6 +92,7 @@ function handleAddPackage() {
 
     if (packageInfo.benefits.includes("")) {
         alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
+        setLoading(false);
         return;
     }
 

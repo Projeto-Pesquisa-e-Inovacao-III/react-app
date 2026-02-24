@@ -24,6 +24,31 @@ type Props = {
 export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
+    console.log("InputWithIcon render", { type, placeholder, label, id, value, disabled, isLoading });
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (type === "number") {
+            const sanitized = e.target.value.replace(/\D/g, "");
+            e.target.value = sanitized;
+            if (onInputChange) onInputChange(sanitized);
+            return;
+        }
+        if (onInputChange) onInputChange(e.target.value);
+    };
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (type === "number") {
+            const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab"];
+        if (allowed.includes(e.key)) return;
+        if (e.ctrlKey || e.metaKey) return;
+
+        if (!/^\d$/.test(e.key)) {
+            e.preventDefault();
+        }
+        }
+    };
+
+
     return (
         <div className={`${styles.wrapperInp} ${customClassName || ""}`} id={id}>
             {label &&
@@ -40,11 +65,13 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             type={isPassword && showPassword ? "text" : type}
                             className={`${isPassword ? styles.passwordInput : undefined} ${classNameInput || ""}`}
                             placeholder={placeholder}
-                            onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
+                            onChange={handleChange}
+                            onKeyDown={handleKeyDown}
                             onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
                             onInput={(e) => mask ? mask(e) : undefined}
                             value={value}
                             disabled={disabled}
+                            min={type === "number" ? 0 : undefined}
                         />
                         {isPassword && (
                             <button

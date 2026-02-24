@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import styles from "./Input.module.css";
+import classNames from "classnames";
 type Props = {
     type: string;
     placeholder?: string;
@@ -32,7 +33,7 @@ export default function Input({ type, placeholder, label, id, name, onInputChang
                 id={`${id}-input`}
                 name={name}
                 type={isPassword && showPassword ? "text" : type}
-                className={`${isPassword ? styles.passwordInput : ""} ${classnameInput}`}
+                className={classNames({[styles.passwordInput]: isPassword}, {[styles.limitInput]: limit}, classnameInput)}
                 placeholder={placeholder}
                 onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                 onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}

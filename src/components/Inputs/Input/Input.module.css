@@ -34,6 +34,10 @@
   color: var(--muted-foreground);
 }
 
+.limitInput {
+  padding-right: 40px !important;
+}
+
 .wrapperInp {
   position: relative;
   display: flex;
@@ -71,4 +75,13 @@
   border: none;
   cursor: pointer;
   padding: 0;
+}
+
+
+@media (max-width: 600px) {
+  .limitInput {
+    padding-right: 60px !important;
+    text-overflow: ellipsis;
+  }
+
 }

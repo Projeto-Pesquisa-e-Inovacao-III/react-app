@@ -153,7 +153,7 @@
 }
 
 .emblaSlideUser {
-    flex: 0 0 24%;
+    flex: 0 0 30%;
 }
 
 
@@ -222,11 +222,7 @@
 
 @media (max-width: 1536px) {
     .emblaSlide {
-        flex: 0 0 70% !important;
-    }
-
-    .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 45% !important;
     }
 
     .emblaSlideAdd {
@@ -249,7 +245,7 @@
     }
 
     .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 40% !important;
     }
 
     .emblaSlideAdd {

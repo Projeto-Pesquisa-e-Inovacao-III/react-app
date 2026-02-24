@@ -332,45 +332,6 @@ export default function EditUser() {
       });
   }
 
-  function updatePassword() {
-    const current = password.currentPassword ?? "";
-    const newP = password.confirmPassword ?? "";
-
-    if (!current) {
-      setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
-      setOpenModal("error");
-      return;
-    }
-
-    if (!newP) {
-      setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
-      setOpenModal("error");
-      return;
-    }
-
-    const validation = validatePassword(newP);
-    if (validation !== "password válida!") {
-      setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
-      setOpenModal("error");
-      return;
-    }
-    changePassword(current, newP)
-      .then(() => {
-        setPassword({
-          currentPassword: "",
-          confirmPassword: ""
-        })
-        setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
-        setOpenModal("success");
-      })
-      .catch((error) => {
-        console.error("Erro ao atualizar senha:", error);
-        setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
-        setOpenModal("error");
-      });
-  }
-
-
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
   function handleUndoChanges() {
@@ -432,11 +393,11 @@ export default function EditUser() {
                     </div>
 
                     {userImage && (
-                      <div className={classNames("w-1/3! border-2 border-red-800 rounded-2xl!", { ["w-full!"]: isMobile })}>
+                      <div className={classNames("w-1/3!", { ["w-full!"]: isMobile })}>
                         <SmallerButton
                           title="Remover Foto"
                           type="button"
-                          classname="flex items-center h-12! gap-4 bg-red-200! text-black! rounded-2xl!"
+                          classname="flex items-center h-12! gap-4  border-2! border-red-800!  bg-red-200! text-black! rounded-2xl!"
                           handleButtonClick={() => {
                             setConfirmingDelete(false);
                             setOpenModal("timer");

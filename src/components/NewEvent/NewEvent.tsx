@@ -751,7 +751,7 @@ export default function NewEvent(
                                                     </div>
                                                 )}
 
-                                                {chooseTimeOfDay === "Noite" && (
+                                                {chooseTimeOfDay === "NOITE" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
