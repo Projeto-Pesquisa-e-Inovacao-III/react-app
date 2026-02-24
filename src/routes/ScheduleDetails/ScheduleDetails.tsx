@@ -158,6 +158,8 @@ export default function ScheduleDetails() {
     }
 
 
+    console.log("Dados do agendamento:", appointment.data);
+
 
 
     return (

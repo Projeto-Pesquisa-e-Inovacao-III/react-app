@@ -3,7 +3,7 @@ import Button from "../../../components/Button/Button.tsx";
 import { UserImg } from "../../../components/UserImg/UserImg.tsx";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
+import { IdCard, Phone, Shield, Trash, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword, getUserImage } from "../../../constants/user.ts";
@@ -150,11 +150,11 @@ export default function EditUser() {
   useClickOutside({
     ref: imagePreviewModal,
     callback: () => {
-      if(openModal === "adjustAvatar") {
+      if (openModal === "adjustAvatar") {
         setPreviewImage("");
         setPreviewImageFormData(new FormData());
       }
-      
+
       setOpenModal(null);
 
     }
@@ -279,6 +279,7 @@ export default function EditUser() {
       telefone: { numero: state.phone, ddd: "11", pais: "55" },
       sexo: state.gender,
       email: state.email,
+      dataNascimento: userInfo.data?.dataNascimento || undefined,
     }
 
     editPersonalProfile(options).then(async () => {
@@ -431,14 +432,12 @@ export default function EditUser() {
                     </div>
 
                     {userImage && (
-                      <div >
-                        <Button
-                          typeButton="other"
+                      <div className={classNames("w-1/3! border-2 border-red-800 rounded-2xl!", { ["w-full!"]: isMobile })}>
+                        <SmallerButton
                           title="Remover Foto"
                           type="button"
-                          classNameDiv=""
-                          classNameVariable="buttonRemoveImage "
-                          onClick={() => {
+                          classname="flex items-center h-12! gap-4 bg-red-200! text-black! rounded-2xl!"
+                          handleButtonClick={() => {
                             setConfirmingDelete(false);
                             setOpenModal("timer");
                           }}

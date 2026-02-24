@@ -7,4 +7,5 @@ export type PersonalDTO = {
         numero: string;
         pais: string;
     };
+    dataNascimento?: string;
 }
