@@ -15,7 +15,7 @@ type PackageCardProps = {
     tipoAula?: string | React.ReactNode;
     quantidadeAula?: number | React.ReactNode;
     descricao: string[] | React.ReactNode[];
-    beneficios?: string[] | React.ReactNode[];
+    beneficios?:  {valor: string;}[]| React.ReactNode[];
     onClick?: () => void;
     setHandleEdit?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     setHandleDelete?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
@@ -30,11 +30,11 @@ export function PackageCard(props: PackageCardProps) {
     const { isMobile = false, variant = "consultoria", isLoading = false } = props;
 
     function handleOpenEdit() {
-        props.setHandleEdit(true);
+        props.setHandleEdit?.(true);
     }
 
     function handleOpenDelete() {
-        props.setHandleDelete(true);
+        props.setHandleDelete?.(true);
     }
 
     console.log(props.descricao, props.tipoAula);

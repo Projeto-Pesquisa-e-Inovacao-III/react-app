@@ -7,8 +7,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import useClickOutside from "../../../hooks/useClickOutside";
 
 type UserType = {
-  userName: string;
-  type: "personal" | "student"
+  userName?: string;
+  type: "personal" | "aluno" | null
 }
 
 export default function UserHeaderDesktop({ userName, type }: UserType) {

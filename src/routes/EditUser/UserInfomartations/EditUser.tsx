@@ -514,12 +514,12 @@ export default function EditUser() {
                   type="button"
                   classname="w-full! transition "
                   title="Salvar Alterações"
-                  onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                  handleButtonClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
                 <SmallerButton
                   title="Descartar alterações"
                   type="button"
                   classname="w-full! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
-                  onClick={() => handleUndoChanges()}
+                  handleButtonClick={() => handleUndoChanges()}
                 />
               </div>
             </div>

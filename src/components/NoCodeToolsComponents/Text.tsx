@@ -22,7 +22,7 @@ const {
         <Tag ref={connect}
             contentEditable={selected}
             suppressContentEditableWarning
-            onBlur={(e) =>
+            onBlur={(e: React.FocusEvent<HTMLElement>) =>
                 setProp((props: any) => {
                     props.text = e.currentTarget.innerText;
                 })

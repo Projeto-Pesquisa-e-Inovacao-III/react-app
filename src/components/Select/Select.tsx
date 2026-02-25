@@ -80,7 +80,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
                 icon={<Search size={16} />}
                 placeholder='O que você procura?'
                 value={textSearch.text}
-                onInputChange={(value) => setTextSearch({ icon: textSearch.icon, text: value })}
+                onInputChange={(value: string) => setTextSearch({ icon: textSearch.icon, text: value })}
                 type='text'
                 customClassName={"p-3"}
               />

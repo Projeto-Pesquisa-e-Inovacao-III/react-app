@@ -19,7 +19,7 @@ import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
 import useModal from "../../hooks/useModal";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
 import UserAvatar from "../UserAvatar/UserAvatar";
@@ -67,7 +67,7 @@ export default function NewEvent(
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
-    const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+    const [selectedLocation] = useState<string>("CASA");
     const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
@@ -348,8 +348,8 @@ export default function NewEvent(
         handleCloseModalOnClickOverlay();
     }
 
-    function handleButtonClick(hour: string) {
-        setNewEventStartHour(hour);
+    function handleButtonClick(hour: string | boolean) {
+        if (typeof hour === "string") setNewEventStartHour(hour);
     }
 
     const type = useContext(TypeContext);
@@ -499,10 +499,10 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
+                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
                                     title="Aluno"
-                                    subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
-                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
+                                    subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
                                 />
                         ) : (
                             <>
@@ -613,7 +613,7 @@ export default function NewEvent(
                                 {isMobile && (
                                     <>
                                         {typeUser === "personal" ? (
-                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
                                                 icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}

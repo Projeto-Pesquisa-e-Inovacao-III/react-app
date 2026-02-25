@@ -42,7 +42,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
                             onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
                             onInput={(e) => mask ? mask(e) : undefined}
-                            value={value}
+                            value={value ?? undefined}
                             disabled={disabled}
                         />
                         {isPassword && (
