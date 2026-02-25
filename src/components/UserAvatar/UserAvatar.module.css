@@ -18,3 +18,11 @@
     height: 50px !important;
     background-color: #cccccc !important;
 }
+
+
+.username {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+}

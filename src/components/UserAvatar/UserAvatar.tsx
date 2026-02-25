@@ -34,7 +34,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
 
   return (
     <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
-      {useUsername && <p>{userName}</p>}
+      {useUsername && <p className={styles.username}>{userName}</p>}
 
       {userImage.data || foto ?
         <UserImg

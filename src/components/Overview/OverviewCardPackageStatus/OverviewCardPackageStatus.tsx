@@ -9,6 +9,25 @@ type Props = {
 }
 
 export default function OverviewCardPackageStatus({ actualPlan }: Props) {
+
+    function calculateProgress(dueDate: string): number {
+        const today = new Date();
+        const expiration = new Date(dueDate);
+
+        const initial = new Date(expiration);
+        initial.setFullYear(initial.getFullYear() - 1);
+
+        const totalDays = expiration.getTime() - initial.getTime();
+        const remainingDays = expiration.getTime() - today.getTime();
+
+        if (totalDays <= 0) return 0;
+
+        const progress = (remainingDays / totalDays) * 100;
+        return Math.min(100, Math.max(0, Math.round(100 - progress)));
+    }
+
+    const progress = actualPlan ? calculateProgress(actualPlan.dataExpiracao) : 0;
+
     return (
         <section className={styles.section}>
             <div className={styles.iconBackground}>
@@ -27,11 +46,11 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
 
                 <div className={styles.progressBox}>
                     <div className={styles.progressHeader}>
-                        <span className={styles.progressLabel}>Progresso restante</span>
-                        <span className={styles.progressValue}>80%</span>
+                        <span className={styles.progressLabel}>Progresso restante </span>
+                        <span className={styles.progressValue}>{progress}%</span>
                     </div>
                     <div className={styles.progressTrack}>
-                        <div className={styles.progressBar} />
+                        <div className={styles.progressBar} style={{ width: `${progress}%` }} />
                     </div>
                 </div>
 
