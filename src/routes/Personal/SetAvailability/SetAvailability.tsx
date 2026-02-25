@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./SetAvailability.module.css";
 import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CircleCheck, Clock, Loader } from "lucide-react";
+import { CircleCheck, CircleX, Clock, Loader } from "lucide-react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TimeCell from "../../../components/Inputs/TimeCell/TimeCell";
@@ -42,7 +42,7 @@ const DAYS_OF_WEEK_DISPLAY = [
 ];
 
 
-type Status = "idle" | "loading" | "success";
+type Status = "idle" | "loading" | "success" | "error";
 
 export default function SetAvailability() {
 
@@ -91,6 +91,18 @@ export default function SetAvailability() {
         }, 3000);
     }
 
+    function showErrorFeedback() {
+        if (feedbackTimeoutRef.current) {
+            clearTimeout(feedbackTimeoutRef.current);
+        }
+
+        setStatus("error");
+
+        feedbackTimeoutRef.current = setTimeout(() => {
+            setStatus("idle");
+        }, 3000);
+    }
+
     function updateSlot(
         dayIndex: number,
         slotIndex: number,
@@ -123,7 +135,7 @@ export default function SetAvailability() {
                 showSuccessFeedback();
             })
             .catch(() => {
-                setStatus("idle");
+                showErrorFeedback();
             });
     }
 
@@ -140,7 +152,7 @@ export default function SetAvailability() {
                 showSuccessFeedback();
             })
             .catch(() => {
-                setStatus("idle");
+                showErrorFeedback();
             });
     }
 
@@ -195,6 +207,12 @@ export default function SetAvailability() {
                 {status === "success" && (
                     <p className="text-white flex gap-2 items-center">
                         <CircleCheck color="#088F8F" /> Dados atualizados
+                    </p>
+                )}
+
+                {status === "error" && (
+                    <p className="text-white flex gap-2 items-center">
+                        <CircleX color="#8F0808" /> Erro ao atualizar
                     </p>
                 )}
 

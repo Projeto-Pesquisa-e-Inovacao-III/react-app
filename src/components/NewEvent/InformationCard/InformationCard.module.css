@@ -36,6 +36,12 @@
 .subtitle {
   font-weight: 600;
   color: #0f172a;
+    white-space: nowrap;
+    text-wrap: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+
 }
 
 .subtitle2 {
