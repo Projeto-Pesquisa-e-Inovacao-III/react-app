@@ -6,7 +6,7 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { ArrowLeft, Calendar, Clock, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarSync, Clock, History, Info, MapPin, RefreshCcw, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
@@ -499,11 +499,11 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
-                                    title="Aluno"
-                                    subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
-                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
-                                />
+                                icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
+                                title="Aluno"
+                                subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
+                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
+                            />
                         ) : (
                             <>
                                 {step === 2 && (
@@ -816,8 +816,39 @@ export default function NewEvent(
                                     />
                                 </div>
                             )}
+                            <div className="bg-gray-300/25 p-4 rounded-2xl border border-gray-300">
+                                <div className="flex justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <History />
+                                        <span className="uppercase font-medium tracking-tight ">
+                                            Usar endereço salvo
+                                        </span>
+                                    </div>
+                                    <span className="text-oxford-blue cursor-pointer">
+                                        Limpar seleção
+                                    </span>
+                                </div>
+                                <Select
+                                    id="address-select"
+                                    openSelectId={openSelectId}
+                                    setOpenSelectId={setOpenSelectId}
+                                    onSelectStatusChange={setSelectedType}
+                                    values={[
+                                        { label: "Presencial", value: "PRESENCIAL" },
+                                        { label: "Residencial", value: "RESIDENCIAL" },
+                                        { label: "Funcional", value: "FUNCIONAL" }
+                                    ]}
+                                    containerClassName="w-full!"
+                                    triggerClassName="p-3 w-full!"
+                                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
+                                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
+                                    selectPlaceholder="Selecione um endereço salvo..."
+                                    labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                    showSelectAll={false}
+                                    showSearchInput={false}
+                                />
+                            </div>
                             <div className={styles.title}>
-                                <MapPin />
                                 <span>Endereço do local</span>
                             </div>
                             <form

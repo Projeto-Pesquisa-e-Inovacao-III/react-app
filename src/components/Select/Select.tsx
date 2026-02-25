@@ -11,7 +11,9 @@ type Props = {
   onSelectStatusChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
   selectStatusValue?: string;
   values?: Array<{ icon?: React.ReactNode; label: string; value: string }>;
+
   selectPlaceholder?: string;
+  iconPlaceholder?: React.ReactNode;
 
   showSelectAll?: boolean;
   showSearchInput?: boolean;
@@ -27,7 +29,7 @@ type Props = {
   containerClassName?: string;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName, iconPlaceholder }: Props) {
   const isOpen = openSelectId === id;
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
@@ -64,8 +66,10 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
             onClick={() => setOpenSelectId(isOpen ? null : id)}
           >
             <span className={styles.iconPlaceholder}>
+              {iconPlaceholder && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
-              {fixedText ? fixedText : ""} {(selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
+              
+              {fixedText ? fixedText : ""} {(!selectStatusValue || selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
             </span>
             <ChevronDown
               className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
