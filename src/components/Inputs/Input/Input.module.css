@@ -77,11 +77,9 @@
   padding: 0;
 }
 
-
-@media (max-width: 600px) {
+@media (max-width: 1280px) {
   .limitInput {
     padding-right: 60px !important;
     text-overflow: ellipsis;
   }
-
 }

@@ -1,5 +1,6 @@
 import { ArrowRight, CalendarIcon } from "lucide-react"
 import styles from "./OverviewCardPackageStatus.module.css"
+import { useNavigate } from "react-router-dom";
 
 type Props = {
     actualPlan?: {
@@ -28,6 +29,8 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
 
     const progress = actualPlan ? calculateProgress(actualPlan.dataExpiracao) : 0;
 
+    const nav = useNavigate();
+
     return (
         <section className={styles.section}>
             <div className={styles.iconBackground}>
@@ -54,7 +57,7 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
                     </div>
                 </div>
 
-                <button className={styles.button}>
+                <button className={styles.button} onClick={() => nav("/plans-history")}>
                     Histórico de compras
                     <ArrowRight size={17} />
                 </button>

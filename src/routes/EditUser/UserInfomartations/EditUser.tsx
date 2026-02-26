@@ -135,11 +135,6 @@ export default function EditUser() {
     setTextModal
   } = useModal(null, { title: "", content: "" })
 
-  const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
-    currentPassword: "",
-    confirmPassword: "",
-  }
-  )
   const [userImage, setUserImage] = useState<string>("");
   const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
   const [previewImage, setPreviewImage] = useState<string>("");
@@ -221,7 +216,26 @@ export default function EditUser() {
 
 
 
-  function handleUpdateUserInfo() {
+  async function handleUpdateUserInfo() {
+
+    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+      insertUserImage(previewImageFormData).then(async () => {
+        setUserImage(previewImage);
+        setUserImageFormData(previewImageFormData);
+        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+        setOpenModal("success");
+        return
+
+      })
+        .catch((error) => {
+          console.error("Erro ao atualizar imagem do usuário:", error);
+          setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
+          setOpenModal("error");
+          return
+        });
+      return
+    }
+
     console.log(state.phone.substring(5).replace("-", ""))
     const options: UpdateUserDTO = {
       nome: state.firstName,
@@ -229,37 +243,17 @@ export default function EditUser() {
       sexo: state.gender,
       email: state.email,
     };
-    console.log("options", userImageFormData);
+    console.log("options", options);
+
     update(options)
       .then(async () => {
+        await queryClient.refetchQueries({
+          queryKey: ["userData"]
+        });
 
-        if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
-          insertUserImage(previewImageFormData)
-            .then(async () => {
-              if (previewImage) {
-                console.log("Imagem do usuário atualizada com sucesso!", previewImage);
-                setUserImage(previewImage);
-                setUserImageFormData(previewImageFormData);
-              }
-              console.log("Imagem do usuário atualizada com sucesso!");
-              setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-              setOpenModal("success");
-              await queryClient.refetchQueries({
-                queryKey: ["userData"]
-              });
-            })
-            .catch((error) => {
-              console.error("Erro ao atualizar imagem do usuário:", error);
-              setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
-              setOpenModal("error");
-            });
-          await queryClient.refetchQueries({
-            queryKey: ["userData"]
-          });
-        } else {
-          setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-          setOpenModal("success");
-        }
+        setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+        
+        setOpenModal("success");
       })
       .catch((error) => {
         console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
@@ -273,15 +267,37 @@ export default function EditUser() {
   }
 
   function handleUpdatePersonalInfo() {
+
+    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+      console.log("inserting image");
+      insertUserImage(previewImageFormData).then(async () => {
+        console.log("Imagem do usuário atualizada com sucesso!");
+        setUserImage(previewImage);
+        setUserImageFormData(previewImageFormData);
+        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+        setOpenModal("success");
+        return;
+      }).catch((error) => {
+        console.log("previewImageFormData", previewImageFormData);
+        console.error("Erro ao atualizar imagem do usuário:", error);
+        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+        setOpenModal("error");
+        return;
+      });
+      return;
+
+    }
     console.log(state.phone.substring(5).replace("-", ""))
     const options: PersonalDTO = {
       nome: state.firstName,
-      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      telefones: [{ numero: state.phone.substring(5).replace("-", ""), ddd: "11", pais: "55", id: 1 }],
       sexo: state.gender,
       email: state.email,
       dataNascimento: userInfo.data?.dataNascimento || undefined,
+      caminhoFoto: userInfo.data?.caminhoFoto || undefined,
     }
 
+    console.log("options", options);
     editPersonalProfile(options).then(async () => {
       setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setOpenModal("success");
@@ -294,27 +310,6 @@ export default function EditUser() {
       setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
       setOpenModal("error");
     });
-
-    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
-      console.log("inserting image");
-      insertUserImage(previewImageFormData).then(async () => {
-        console.log("Imagem do usuário atualizada com sucesso!");
-        setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
-        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
-        setOpenModal("success");
-        await queryClient.refetchQueries({
-          queryKey: ["userData"]
-        });
-      }).catch((error) => {
-        console.log("previewImageFormData", previewImageFormData);
-        console.error("Erro ao atualizar imagem do usuário:", error);
-        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
-        setOpenModal("error");
-        return;
-      });
-    }
-
 
     setOpenModal("success");
   }
@@ -340,11 +335,6 @@ export default function EditUser() {
         type: "hydrateForm",
         payload: userInfo.data,
       });
-      if (userInfo.data.caminhoFoto) {
-        setUserImage(userInfo.data.caminhoFoto);
-      } else {
-        setUserImage("");
-      }
     }
   }
 

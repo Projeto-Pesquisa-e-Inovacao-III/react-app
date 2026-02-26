@@ -328,7 +328,15 @@ return (
                                             showSelectAll={false}
                                         />
                                         <div className={styles.inputContainer}>
-                                            <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
+                                            <InputWithIcon 
+                                            id="price" 
+                                            classNameInput="bg-gray-100! rounded-xl border-none!" 
+                                            placeholder="" 
+                                            icon={<Banknote size={20} color='#093A5D' />} 
+                                            label="Preço (R$)" 
+                                            type="number" 
+                                            allowDecimals={true}
+                                            value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
                                         </div>
                                     </div>
                                 </div>
@@ -344,6 +352,7 @@ return (
                                             placeholder="0,00"
                                             icon={<Banknote size={20} color='#093A5D' />}
                                             label="Preço (R$)"
+                                            allowDecimals={true}
                                             type="number"
                                             value={packageInfo.price}
                                             onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })}
