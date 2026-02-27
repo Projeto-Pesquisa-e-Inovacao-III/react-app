@@ -6,7 +6,7 @@
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
-    
+
 }
 
 .packagesTitleContainer {
@@ -153,7 +153,7 @@
 }
 
 .emblaSlideUser {
-    flex: 0 0 24%;
+    flex: 0 0 30%;
 }
 
 
@@ -222,11 +222,7 @@
 
 @media (max-width: 1536px) {
     .emblaSlide {
-        flex: 0 0 70% !important;
-    }
-
-    .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 45% !important;
     }
 
     .emblaSlideAdd {
@@ -236,6 +232,11 @@
     .addCard {
         width: 30rem;
     }
+
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(2, 1fr);
+
+    }
 }
 
 @media (max-width: 1440px) {
@@ -244,7 +245,7 @@
     }
 
     .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 40% !important;
     }
 
     .emblaSlideAdd {
@@ -272,6 +273,9 @@
         width: 30rem;
     }
 
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 

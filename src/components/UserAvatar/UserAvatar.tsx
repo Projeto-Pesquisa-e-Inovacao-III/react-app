@@ -10,9 +10,10 @@ interface UserAvatarProps {
   userName?: string;
   useUserImage?: boolean;
   useUsername?: boolean;
+  imgClassName?: string;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName }: UserAvatarProps) {
 
   const userImage = useQuery({
     queryKey: ['userImage'],
@@ -28,9 +29,12 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
     },
     retry: false,
   })
+
+  console.log(foto, "foto")
+
   return (
     <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
-      {useUsername && <p>{userName}</p>}
+      {useUsername && <p className={styles.username}>{userName}</p>}
 
       {userImage.data || foto ?
         <UserImg
@@ -38,6 +42,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           Height={216}
           Width={216}
           Alt="foto"
+          classname={imgClassName}
         />
         :
         <User width={216} height={216} color='#000' />

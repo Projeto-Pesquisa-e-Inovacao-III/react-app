@@ -35,8 +35,6 @@ export function Overview() {
 
     const type = useContext(TypeContext);
 
-
-
     const actualPlanQuery = useQuery({
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
@@ -44,29 +42,14 @@ export function Overview() {
         enabled: type?.type === "aluno"
     });
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIAL"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalRESIDENCIAL"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONAL"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
 
+    console.log("Class balance data:", classBalanceQuery.data);
 
     function getBalance() {
 
@@ -120,21 +103,21 @@ export function Overview() {
             <div>
                 <BalanceItem
                     label="Presencial"
-                    current={aulaPresencial?.data ?? 0}
+                    current={classBalanceQuery.data?.saldoPresencial ?? 0}
                     total={TOTAL_PADRAO}
                     icon={<Users />}
                 />
 
                 <BalanceItem
                     label="Funcional"
-                    current={aulaFuncional?.data ?? 0}
+                    current={classBalanceQuery.data?.saldoFuncional ?? 0}
                     total={TOTAL_PADRAO}
                     icon={<HeartPulseIcon />}
                 />
 
                 <BalanceItem
                     label="Residencial"
-                    current={aulaResidencial?.data ?? 0}
+                    current={classBalanceQuery.data?.saldoResidencial ?? 0}
                     total={TOTAL_PADRAO}
                     icon={<HomeIcon />}
                 />
@@ -211,7 +194,7 @@ export function Overview() {
             return
         }
 
-        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
+        if ((classBalanceQuery.data?.saldoPresencial === 0 && classBalanceQuery.data?.saldoResidencial === 0 && classBalanceQuery.data?.saldoFuncional === 0)) {
             handleErrorModalInfo("Erro", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.")
             return
         }
@@ -227,9 +210,7 @@ export function Overview() {
         type?.type === "aluno" &&
         (
             actualPlanQuery.isPending ||
-            aulaPresencial.isPending ||
-            aulaResidencial.isPending ||
-            aulaFuncional.isPending
+            classBalanceQuery.isPending
         );
 
     const isLoadingCalendar =
@@ -355,7 +336,7 @@ export function Overview() {
                                     isMobile={isMobile}
                                     events={appointments.data?.data}
                                     isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false}
-                                    canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                                    canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}
                                 />
@@ -402,7 +383,7 @@ export function Overview() {
                                             </>
                                         ) : (
                                             <>
-                                    <h1 className="text-center">Nenhum pacote ativo</h1>
+                                                <h1 className="text-center">Nenhum pacote ativo</h1>
                                                 <div>
                                                     <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
                                                     <h2 className="text-center text-gray-500">Confira nossos pacotes e escolha o melhor para você!</h2>
@@ -502,7 +483,7 @@ export function Overview() {
                                     isMobile={isMobile}
                                 />
                                 <OverviewCardPackageStatus
-                                    actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"}
+                                    actualPlan={actualPlanQuery?.data?.data ?? "Não possui assinatura"}
                                 />
                             </div>
                         ) : (

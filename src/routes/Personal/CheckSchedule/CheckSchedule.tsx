@@ -23,6 +23,7 @@ import { statusProperties } from "./CardStatus/cardStatus";
 import type { DateRange } from "../../../components/Calendars/MiniCalendar/CalendarMini";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton";
 import Skeleton from "react-loading-skeleton";
+import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -84,7 +85,7 @@ export function CheckSchedule() {
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointmentsMobile"],
         queryFn: () => findPersonalRequests(
-            page, 
+            page,
             linesPerPageValue,
             selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
             selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined
@@ -538,11 +539,8 @@ export function CheckSchedule() {
                                                                 data-alt={`Client ${card.nome}`}
                                                             >
                                                                 {card.foto ? (
-                                                                    <img
-                                                                        src={card.foto}
-                                                                        alt={`Client ${card.nome}`}
-                                                                        className={styles.userImage}
-                                                                    />
+                                                                    <UserAvatar imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+
                                                                 ) : (
                                                                     <UserRound />
                                                                 )}
@@ -561,7 +559,7 @@ export function CheckSchedule() {
                                                         <div className="flex items-center justify-start">
                                                             <span className="w-fit">{card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
                                                                 {card.endereco.cep.bairro} - {card.endereco.cep.uf}</span>
-                                                            <MapPin className="cursor-pointer" size={30} onClick={() => handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`)} />
+                                                            <MapPin fill="#000" color="#fff" className="cursor-pointer" size={30} onClick={() => handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`)} />
                                                         </div>
                                                     </td>
 
@@ -573,6 +571,7 @@ export function CheckSchedule() {
                                                                     onClick={() =>
                                                                         handleModal(card.agendamentoId, "accept")
                                                                     }
+                                                                    title="Aceitar agendamento"
                                                                 >
                                                                     <CircleCheck className="text-green-500" />
                                                                 </button>
@@ -582,6 +581,7 @@ export function CheckSchedule() {
                                                                     onClick={() =>
                                                                         handleModal(card.agendamentoId, "decline")
                                                                     }
+                                                                    title="Rejeitar agendamento"
                                                                 >
                                                                     <CircleX className="text-red-500" />
                                                                 </button>
@@ -594,6 +594,7 @@ export function CheckSchedule() {
                                                                         );
                                                                         handleModal(card.agendamentoId, "reschedule");
                                                                     }}
+                                                                    title="Reagendar agendamento"
                                                                 >
                                                                     <CalendarClock className="text-blue-500" />
                                                                 </button>
