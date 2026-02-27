@@ -27,9 +27,11 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
+
+  clear?: boolean;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName, iconPlaceholder }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName, iconPlaceholder, clear }: Props) {
   const isOpen = openSelectId === id;
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
@@ -56,6 +58,14 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   });
 
+  console.log(selectValue.text)
+
+  useEffect(() => {
+    if(clear && clear === true) {
+      setSelectValue({ icon: undefined, text: "" });
+    }
+  }, [clear])
+
   return (
     <div className={containerClassName}>
       {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
@@ -69,7 +79,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
               {iconPlaceholder && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
               
-              {fixedText ? fixedText : ""} {(!selectStatusValue || selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
+              {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}
             </span>
             <ChevronDown
               className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}

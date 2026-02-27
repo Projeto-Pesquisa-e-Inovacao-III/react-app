@@ -5,13 +5,15 @@ import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
 import useClickOutside from "../../../hooks/useClickOutside";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 type UserType = {
   userName: string;
   type: "personal" | "student"
+  isLoading: boolean;
 }
 
-export default function UserHeaderDesktop({ userName, type }: UserType) {
+export default function UserHeaderDesktop({ userName, type, isLoading }: UserType) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
@@ -40,26 +42,39 @@ export default function UserHeaderDesktop({ userName, type }: UserType) {
       <header className={styles.userHeaderDesktop}>
         <nav className={styles.nav}>
           <Link to="/"><LogoHeaderDesktop /></Link>
-          {type === 'personal' ? (
-            <>
-              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
-              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
-              <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
-              <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
-              <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
-              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
-              <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
-            </>
-          ) : (
-            <>
-              <NavLink to="/home" className={navLinkClass}>Início</NavLink>
-              <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
-              <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
-              <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
-              <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
-            </>
-          )
-          }
+
+          {isLoading && (
+            <div className="flex">
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+            </div>
+          )}
+
+          {!isLoading && type && (
+            type === 'personal' ? (
+              <>
+                <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+                <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+                <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
+                <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
+                <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
+                <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+                <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
+              </>
+            ) : (
+              <>
+                <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+                <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+                <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+                <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
+                <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
+              </>
+            )
+          )}
         </nav>
 
         <div ref={userRef} className={styles.authLinks}>
@@ -68,7 +83,7 @@ export default function UserHeaderDesktop({ userName, type }: UserType) {
             onClick={() => setOpenHeaderModal(prev => !prev)}
             className={styles.userAvatarHeaderDesktop}
           >
-            <UserAvatar userName={userName} useUsername useUserImage />
+            <UserAvatar userName={userName} useUsername useUserImage isLoading={isLoading} />
           </div>
 
           {openHeaderModal && (

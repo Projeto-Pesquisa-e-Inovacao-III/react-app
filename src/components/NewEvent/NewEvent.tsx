@@ -489,6 +489,8 @@ export default function NewEvent(
 
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
+    const [defaultAddress, setDefaultAddress] = useState<string>("");
+
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
@@ -530,7 +532,7 @@ export default function NewEvent(
                                 />
 
                                 <InformationCard
-                                    icon={<MapPin fill="#000" color="#fff" />}
+                                    icon={<MapPin fill="#000" color="#e2e8f0" />}
                                     title="Tipo de aula"
                                     subtitle={selectedType}
                                 />
@@ -824,7 +826,7 @@ export default function NewEvent(
                                             Usar endereço salvo
                                         </span>
                                     </div>
-                                    <span className="text-oxford-blue cursor-pointer">
+                                    <span className="text-oxford-blue cursor-pointer" onClick={() => { setSelectedType(""); setDefaultAddress(""); }}>
                                         Limpar seleção
                                     </span>
                                 </div>
@@ -832,6 +834,7 @@ export default function NewEvent(
                                     id="address-select"
                                     openSelectId={openSelectId}
                                     setOpenSelectId={setOpenSelectId}
+                                    clear={selectedType !== "" ? false : true}
                                     onSelectStatusChange={setSelectedType}
                                     values={[
                                         { label: "Presencial", value: "PRESENCIAL" },

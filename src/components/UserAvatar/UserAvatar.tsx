@@ -4,15 +4,17 @@ import { BASE_URL } from '../../system';
 import { getUserImage } from '../../constants/user';
 import { useQuery } from '@tanstack/react-query';
 import styles from "./UserAvatar.module.css"
+import Skeleton from 'react-loading-skeleton';
 
 interface UserAvatarProps {
   foto?: string;
   userName?: string;
   useUserImage?: boolean;
   useUsername?: boolean;
+  isLoading?: boolean;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, isLoading = false }: UserAvatarProps) {
 
   const userImage = useQuery({
     queryKey: ['userImage'],
@@ -30,7 +32,8 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
   })
   return (
     <div className={styles.userAvatar + (useUsername ? " " + styles.withUsername : "")}>
-      {useUsername && <p>{userName}</p>}
+      {useUsername && !isLoading && <p>{userName}</p>}
+      {useUsername && isLoading && <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />}
 
       {userImage.data || foto ?
         <UserImg
