@@ -315,6 +315,8 @@ export function CheckSchedule() {
         window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
     }
 
+    const countPendingPersonalApproval = appointmentsList?.filter(appointment => appointment.status === "PENDENTE_PERSONAL_APROVACAO").length || 0;
+
     return (
         <>
             <div className={styles.containerCheckSchedule}
@@ -326,16 +328,16 @@ export function CheckSchedule() {
                         <div className={styles.gridContainer}>
                             <CheckScheduleKpis
                                 title="Total pendente"
-                                value={appointmentsList?.length || 0}
+                                value={countPendingPersonalApproval || 0}
                             />
                             <CheckScheduleKpis
                                 title="Vence hoje"
-                                value={appointmentsList?.length || 0}
+                                value={0}
                                 color="#F59E0B"
                             />
                             <CheckScheduleKpis
                                 title="Reagendados hoje"
-                                value={appointmentsList?.length || 0}
+                                value={0}
                                 color="#006faf"
                             />
                             <CheckScheduleKpis
