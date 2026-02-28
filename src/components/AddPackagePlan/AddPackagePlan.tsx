@@ -377,7 +377,7 @@ return (
                             {!isMobile && (
                                 <div className="flex gap-5 mb-2!">
                                     <div className={styles.inputContainer}>
-                                        <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093A5D' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value) => setPackageInfo({ ...packageInfo, quantity: value })} />
+                                        <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093A5D' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value) => setPackageInfo({ ...packageInfo, quantity: value })} limit={100} />
                                     </div>
                                     <div className={styles.inputContainer}>
                                         <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093A5D' />} label="Validade (meses)" type="number" value={packageInfo.deadline} onInputChange={(value) => setPackageInfo({ ...packageInfo, deadline: value })} />
