@@ -72,7 +72,6 @@
 
 }
 
-/* Mini calendário */
 .miniCalendar {
     position: fixed;
     z-index: 1003;
@@ -87,7 +86,6 @@
     max-height: 90%;
 }
 
-/* Botão X do calendário */
 .calendarExitIcon {
     position: absolute;
     top: 10px;

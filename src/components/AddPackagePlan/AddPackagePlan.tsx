@@ -92,6 +92,7 @@ function handleAddPackage() {
 
     if (packageInfo.benefits.includes("")) {
         alert("Por favor, preencha todos os benefícios antes de adicionar o pacote.");
+        setLoading(false);
         return;
     }
 
@@ -327,7 +328,15 @@ return (
                                             showSelectAll={false}
                                         />
                                         <div className={styles.inputContainer}>
-                                            <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
+                                            <InputWithIcon 
+                                            id="price" 
+                                            classNameInput="bg-gray-100! rounded-xl border-none!" 
+                                            placeholder="" 
+                                            icon={<Banknote size={20} color='#093A5D' />} 
+                                            label="Preço (R$)" 
+                                            type="number" 
+                                            allowDecimals={true}
+                                            value={packageInfo.price} onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })} />
                                         </div>
                                     </div>
                                 </div>
@@ -343,6 +352,7 @@ return (
                                             placeholder="0,00"
                                             icon={<Banknote size={20} color='#093A5D' />}
                                             label="Preço (R$)"
+                                            allowDecimals={true}
                                             type="number"
                                             value={packageInfo.price}
                                             onInputChange={(value) => setPackageInfo({ ...packageInfo, price: value })}
@@ -481,10 +491,11 @@ return (
                             tipoAula={packageInfo.type || "PRESENCIAL"}
                             descricao={packageInfo.benefits ?? ["Benefício 1", "Benefício 2", "Benefício 3"]}
                             isMobile={isMobile}
+                            classNameContainer={styles.packagePreviewCard}
                         />
                     </div>
                     <span className={styles.previewInfo}>
-                        <Info size={20} /> Os alunos veram exatamente este visual
+                        <Info size={20} /> Os alunos verão exatamente este visual
                     </span>
                 </div>
             )}

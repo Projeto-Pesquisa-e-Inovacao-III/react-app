@@ -37,7 +37,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
 
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
-
+  console.log(defaultValue, "defaultValue")
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
   useEffect(() => {
     if (defaultValue && onSelectStatusChange) {

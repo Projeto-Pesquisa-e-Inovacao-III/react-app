@@ -24,11 +24,9 @@
   padding: 0.5rem;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
-  /* slate-200 */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* link base */
 .link {
   display: flex;
   align-items: center;
@@ -199,55 +197,30 @@
   grid-area: novaSenha;
 }
 
-
-.personalInfoGrid :global(#sobreNome) {
-  grid-area: sobreNome;
-}
-
-.personalInfoGrid :global(#cpf) {
-  grid-area: cpf;
-}
-
-.personalInfoGrid :global(#genero) {
-  grid-area: genero;
-}
-
-.personalInfoGrid :global(#telefone) {
-  grid-area: telefone;
-}
-
-
-/* Mobile */
 @media (max-width: 1024px) {
-  .editUserGrid {
-    grid-template-columns: 1fr 1fr;
+  .personalInfoGrid {
+    grid-template-columns: 1fr !important;
     grid-template-areas:
-      "header header"
-      "pages pages"
-      "personal personal"
-      "login login"
-      "footer footer";
+      "email"
+      "senhaAtual"
+      "novaSenha"
+      "footer"
+    ;
   }
 
-  .personalInfoGrid {
-    display: flex !important;
-    flex-direction: column !important;
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal"
+      "delete"
+      "footer";
   }
 
   .goBackContainer .goBackLogin {
     top: initial;
     left: initial;
     position: initial;
-  }
-
-  .atualizarFotoContainer {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .atualizarFotoContainer .button {
-    padding: 13px;
   }
 
   .footer {
@@ -295,7 +268,6 @@
 }
 
 
-/* Grid Areas */
 .deleteAccountSection {
   grid-area: delete;
 }

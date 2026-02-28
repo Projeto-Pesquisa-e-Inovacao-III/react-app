@@ -23,6 +23,7 @@ type PackageCardProps = {
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";
     isPersonal?: boolean;
+    classNameContainer?: string;
 };
 
 
@@ -52,14 +53,15 @@ export function PackageCard(props: PackageCardProps) {
                 styles.packageCardContainer, { [styles.packageCardPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctional]: props.tipoAula === "FUNCIONAL" },
                 { [styles.packageCardExpanded]: isExpanded },
                 styles[`cardVariant${variant[0].toUpperCase() + variant.slice(1)}`],
-                { [styles.packageCardContainerMobile]: isMobile }
+                { [styles.packageCardContainerMobile]: isMobile },
+                props.classNameContainer
             )}
         >
             <div className={styles.cardContent}>
-                <div className='flex justify-between items-center'>
-                    <div className={classnames("flex items-center gap-3 not-lg:flex-col!")}>
+                <div className='flex justify-between items-center not-lg:w-full!'>
+                    <div className={classnames("flex items-center gap-3 not-lg:flex-col! not-lg:w-full not-lg:mb-2")}>
                         <p className={classnames("not-lg:w-full! text-center " + styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
-                        <span className='bg-indigo text-white rounded-2xl w-full flex-1 font-bold py-1 px-3 text-center'>{props.quantidadeAula} agendamentos</span>
+                        <span className={classnames({ [styles.packageCardPresentialText]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHomeText]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctionalText]: props.tipoAula === "FUNCIONAL" }, "bg-indigo text-white rounded-2xl w-full flex-1 font-bold py-1 px-3 text-center")}>{props.quantidadeAula > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
                     </div>
 
                     {!isMobile && (
@@ -114,63 +116,63 @@ export function PackageCard(props: PackageCardProps) {
                         <Skeleton width={60} />
                     ) : (
                         <>
-                            <Calendar /> {`Válido por ${props.duracaoMes} meses`}
+                            <Calendar /> {`${Number(props.duracaoMes) > 1 ? "Válido por " + props.duracaoMes + " meses" : "Válido por 1 mês"}`}
                         </>
                     )}
                 </div>
                 <span className={styles.cardPaymentInfo}>Pagamento único</span>
 
-                <ul
-                    className={classnames(styles.cardBenefitsList, {
-                        [styles.cardBenefitsListMobile]: isMobile,
-                    })}
-                >
-                    {isLoading ? (
-                        [...Array(4)].map((_, index) => (
-                            <li
-                                key={index}
-                                className={classnames(styles.benefitItem, {
-                                    [styles.benefitItemMobile]: isMobile,
-                                })}
-                            >
-                                <Skeleton circle width={14} height={14} style={{ marginRight: "8px" }} />
-                                <Skeleton width={isMobile ? "70%" : 200} />
-                            </li>
-                        ))
-                    ) : (
-                        <>
-                            <li
-                                className={classnames(styles.benefitItem, {
-                                    [styles.benefitItemMobile]: isMobile,
-                                })}
-                            >
-                                <div className={styles.benefitItemIcon}>
-                                    <svg
-                                        width="14"
-                                        height="13"
-                                        viewBox="0 0 14 13"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <path
-                                            d="M5.00006 8.66065L11.5334 0.939436C11.7778 0.650547 12.089 0.506104 12.4667 0.506104C12.8445 0.506104 13.1556 0.650547 13.4001 0.939436C13.6445 1.22833 13.7667 1.596 13.7667 2.04247C13.7667 2.48893 13.6445 2.85661 13.4001 3.1455L5.9334 11.9697C5.66673 12.2849 5.35562 12.4425 5.00006 12.4425C4.64451 12.4425 4.3334 12.2849 4.06673 11.9697L0.600065 7.87277C0.35562 7.58388 0.233398 7.2162 0.233398 6.76974C0.233398 6.32327 0.35562 5.9556 0.600065 5.66671C0.844509 5.37782 1.15562 5.23338 1.5334 5.23338C1.91118 5.23338 2.22229 5.37782 2.46673 5.66671L5.00006 8.66065Z"
-                                            fill="#22C55E"
-                                        />
-                                    </svg>
-                                </div>
-                                <span>{props.quantidadeAula} agendamentos</span>
-                            </li>
-                            {props.descricao && Array.isArray(props.descricao) && props.descricao.length > 0 && (
 
+                {isLoading ? (
+                    [...Array(4)].map((_, index) => (
+                        <li
+                            key={index}
+                            className={classnames(styles.benefitItem, {
+                                [styles.benefitItemMobile]: isMobile,
+                            })}
+                        >
+                            <Skeleton circle width={14} height={14} style={{ marginRight: "8px" }} />
+                            <Skeleton width={isMobile ? "70%" : 200} />
+                        </li>
+                    ))
+                ) : (
+                    <>
+                        <span
+                            className={classnames(styles.benefitItem, {
+                                [styles.benefitItemMobile]: isMobile,
+                            })}
+                        >
+                            <div className={styles.benefitItemIcon}>
+                                <svg
+                                    width="14"
+                                    height="13"
+                                    viewBox="0 0 14 13"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M5.00006 8.66065L11.5334 0.939436C11.7778 0.650547 12.089 0.506104 12.4667 0.506104C12.8445 0.506104 13.1556 0.650547 13.4001 0.939436C13.6445 1.22833 13.7667 1.596 13.7667 2.04247C13.7667 2.48893 13.6445 2.85661 13.4001 3.1455L5.9334 11.9697C5.66673 12.2849 5.35562 12.4425 5.00006 12.4425C4.64451 12.4425 4.3334 12.2849 4.06673 11.9697L0.600065 7.87277C0.35562 7.58388 0.233398 7.2162 0.233398 6.76974C0.233398 6.32327 0.35562 5.9556 0.600065 5.66671C0.844509 5.37782 1.15562 5.23338 1.5334 5.23338C1.91118 5.23338 2.22229 5.37782 2.46673 5.66671L5.00006 8.66065Z"
+                                        fill="#22C55E"
+                                    />
+                                </svg>
+                            </div>
+                            <span>{props.quantidadeAula > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
+                        </span>
+                        {props.descricao && Array.isArray(props.descricao) && props.descricao.length > 0 && (
+                            <ul
+                                className={classnames(styles.cardBenefitsList, {
+                                    [styles.cardBenefitsListMobile]: isMobile,
+                                })}
+                            >
                                 <BenefitsList
                                     benefits={props.descricao as string[]}
                                     isExpanded={isExpanded}
                                     onToggle={() => setIsExpanded(prev => !prev)}
                                 />
-                            )}
-                        </>
-                    )}
-                </ul>
+                            </ul>
+                        )}
+                    </>
+                )}
             </div>
 
             {isLoading ? (

@@ -152,7 +152,6 @@ export default function NewEvent(
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
         await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
@@ -450,7 +449,10 @@ export default function NewEvent(
     }, [selectedType]);
 
     const availabilityHours = useQuery({
-        queryKey: ["availabilityHours"],
+        queryKey: ["availabilityHours", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            newEventDate],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
@@ -474,14 +476,13 @@ export default function NewEvent(
 
     }, [availabilityHours.data]);
 
-    useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
-    }, [chooseTimeOfDay, newEventDate, selectedType]);
-
     const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", { locale: ptBR });
 
     const availabilityHoursTomorrow = useQuery({
-        queryKey: ["availabilityHoursTomorrow"],
+        queryKey: ["availabilityHoursTomorrow", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            tomorrow],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
@@ -515,10 +516,10 @@ export default function NewEvent(
                                 )}
 
                                 <InformationCard
-                                    icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                    icon={<UserAvatar foto={!personalList.isLoading && personalList.data[0]?.caminhoFoto} useUserImage={true} />}
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
-                                    subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                    subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                 />
                             </>
                         )}
@@ -618,10 +619,10 @@ export default function NewEvent(
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
-                                                icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                                icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
                                                 title="Personal Trainer"
                                                 subtitle={personalList.data?.[0]?.nome || ""}
-                                                subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                                subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                             />
                                         )}
                                         {!isReschedule && (
@@ -752,7 +753,7 @@ export default function NewEvent(
                                                     </div>
                                                 )}
 
-                                                {chooseTimeOfDay === "Noite" && (
+                                                {chooseTimeOfDay === "NOITE" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
@@ -798,10 +799,10 @@ export default function NewEvent(
                                         Resumo do agendamento
                                     </h1>
                                     <InformationCard
-                                        icon={<UserAvatar foto={personalList.data?.caminhoFoto} />}
+                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
                                         title="Personal Trainer"
-                                        subtitle={personalList.data?.[0]?.nome || ""}
-                                        subtitle2={personalList.data && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                        subtitle={!personalList.isLoading && personalList.data?.[0]?.nome || ""}
+                                        subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                                     />
 
                                     <InformationCard

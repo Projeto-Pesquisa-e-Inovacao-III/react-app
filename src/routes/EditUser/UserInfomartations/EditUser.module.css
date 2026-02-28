@@ -22,11 +22,9 @@
   padding: 0.5rem;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
-  /* slate-200 */
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* link base */
 .link {
   display: flex;
   align-items: center;
@@ -203,8 +201,14 @@
   grid-area: telefone;
 }
 
+.userImg {
+  border-radius: 50%;
+  object-fit: cover;
+  border: solid 2px #ccc;
+  width: 35vh;
+  height: 35vh;
+}
 
-/* Mobile */
 @media (max-width: 1024px) {
   .editUserGrid {
     grid-template-columns: 1fr 1fr;
@@ -214,6 +218,14 @@
       "personal personal"
       "login login"
       "footer footer";
+  }
+
+  .userImg {
+    border-radius: 50%;
+    object-fit: cover;
+    border: solid 2px #ccc;
+    width: 24vh;
+    height: 24vh;
   }
 
   .personalInfoGrid {
@@ -282,7 +294,6 @@
 }
 
 
-/* Grid Areas */
 .goBackContainer {
   grid-area: header;
 }

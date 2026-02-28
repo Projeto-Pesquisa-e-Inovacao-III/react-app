@@ -76,29 +76,13 @@ export default function Schedule() {
         enabled: isTypeReady && type?.type === "aluno"
     });
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIALSchedule"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            },
-
-            {
-                queryKey: ["totalRESIDENCIALSchedule"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONALSchedule"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
+
 
 
     function handleOpenNewEventModal() {
@@ -107,7 +91,7 @@ export default function Schedule() {
             return
         }
 
-        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
+        if ((classBalanceQuery?.data?.saldoPresencial === 0 && classBalanceQuery?.data?.saldoResidencial === 0 && classBalanceQuery?.data?.saldoFuncional === 0)) {
             handleErrorModalInfo("Aulas indisponíveis", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.");
             return
         }
@@ -239,7 +223,7 @@ export default function Schedule() {
                                 isMobile={isMobile}
                                 events={appointments.data?.data}
                                 isUserAuthorizedToInteract={actualPlanQuery?.data?.data ? true : false}
-                                canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                                canMakeAppointment={classBalanceQuery?.data?.saldoPresencial > 0 || classBalanceQuery?.data?.saldoResidencial > 0 || classBalanceQuery?.data?.saldoFuncional > 0}
                                 modalInfo={setModalInfo}
                                 modalType={setOpenModal}
                             />

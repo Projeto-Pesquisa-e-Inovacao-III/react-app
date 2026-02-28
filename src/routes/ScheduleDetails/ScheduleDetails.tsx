@@ -158,6 +158,8 @@ export default function ScheduleDetails() {
     }
 
 
+    console.log("Dados do agendamento:", appointment.data);
+
 
 
     return (
@@ -310,6 +312,18 @@ export default function ScheduleDetails() {
                     )}
 
                     {appointment.data?.status === "APROVADO" && (
+                        <div className={classNames(styles.buttonGroup)}>
+                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "reschedule");
+                            }} />
+                            <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "cancel");
+                            }} />
+                        </div>
+                    )}
+                            
+
+                    {type?.type === "aluno" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
                         <div className={classNames(styles.buttonGroup)}>
                             <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");

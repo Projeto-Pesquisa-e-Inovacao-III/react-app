@@ -161,11 +161,10 @@ export function Packages() {
         .filter(p => p.status === "ATIVO")
         .sort((a, b) => b.preco - a.preco)
 
-    const packagesToRender = 5
 
-    const shouldUseCarousel = isPersonal ? activePackages.length >= 4 : activePackages.length >= packagesToRender
+    const shouldUseCarousel = activePackages.length >= 4
 
-    const shouldUseCarouselAdicional = isPersonal ? activeAdicionais.length >= 4 : activePackages.length >= packagesToRender
+    const shouldUseCarouselAdicional = activeAdicionais.length >= 4
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { align: "start", loop: true, skipSnaps: false },
@@ -324,7 +323,7 @@ export function Packages() {
                             </h1>
 
                             <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">adicionais ativos</span>
+                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "adicionais ativos" : "adicional ativo"}</span>
                             </div>
                         </>
                     ) : (
