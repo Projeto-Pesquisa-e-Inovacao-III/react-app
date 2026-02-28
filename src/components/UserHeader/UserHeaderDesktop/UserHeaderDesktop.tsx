@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
 import useClickOutside from "../../../hooks/useClickOutside";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 
 type UserType = {
   userName: string;
@@ -57,57 +57,37 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
           )}
 
           {!isLoading && type && (
-            type === 'personal' ? (
-              <>
-                <NavLink to="/home" className={navLinkClass}>Início</NavLink>
-                <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
-                <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
-                <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
-                <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
-                <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
-                <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink to="/home" className={navLinkClass}>Início</NavLink>
-                <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
-                <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
-                <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
-                <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
-              </>
-            )
+            <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
+              {type === 'personal' ? (
+                <>
+                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
+                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
+                  <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
+                  <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
+                  <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
+                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
+                  <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Alunos</NavLink>
+
+                </>
+              ) : (
+                <>
+                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
+                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
+                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
+                  <NavLink to="/plans-history" className={navLinkClass} onClick={handleNavClick}>Histórico de compras</NavLink>
+                  <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
+                </>
+              )}
+
+
+              {menuOpen && (
+                <div className={styles.navOtherLinks}>
+                  <NavLink to="/edit-user" className={navLinkClass} onClick={handleNavClick}>Editar informações</NavLink>
+                  <NavLink to="/logout" className={navLinkClass} onClick={handleNavClick}>Sair</NavLink>
+                </div>
+              )}
+            </div>
           )}
-
-          <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
-            {type === 'personal' ? (
-              <>
-                <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
-                <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
-                <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
-                <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
-                <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
-                <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
-                <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Alunos</NavLink>
-
-              </>
-            ) : (
-              <>
-                <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
-                <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
-                <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
-                <NavLink to="/plans-history" className={navLinkClass} onClick={handleNavClick}>Histórico de compras</NavLink>
-                <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
-              </>
-            )}
-
-
-            {menuOpen && (
-              <div className={styles.navOtherLinks}>
-                <NavLink to="/edit-user" className={navLinkClass} onClick={handleNavClick}>Editar informações</NavLink>
-                <NavLink to="/logout" className={navLinkClass} onClick={handleNavClick}>Sair</NavLink>
-              </div>
-            )}
-          </div>
 
 
         </nav>
