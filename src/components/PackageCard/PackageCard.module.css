@@ -38,6 +38,20 @@
     border-top: 15px solid var(--carol);
 }
 
+.packageCardPresentialText {
+    background-color: var(--bg-blue);
+}
+
+.packageCardHomeText {
+    background-color: var(--bg-orange);
+}
+
+.packageCardFunctionalText {
+    background-color: var(--carol);
+}
+
+
+
 .cardTipoAulaPresential,
 .cardTipoAulaHome,
 .cardTipoAulaFunctional {
