@@ -58,34 +58,44 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   });
 
-  console.log(selectValue.text)
+  console.log(defaultValue, "defaultValue")
 
   useEffect(() => {
-    if(clear && clear === true) {
+    if (clear && clear === true) {
       setSelectValue({ icon: undefined, text: "" });
     }
   }, [clear])
 
+
+  useEffect(() => {
+    if (defaultValue && onSelectStatusChange) {
+      onSelectStatusChange(defaultValue);
+      const defaultOption = values?.find(option => option.value === defaultValue);
+      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
+    }
+  }, [defaultValue, values]);
+
   return (
     <div className={containerClassName}>
       {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
-      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{...(label && {marginTop: "8px"}), ...(isOpen && { border: "1px solid #c3c3c3" })}} >
+      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{ ...(label && { marginTop: "8px" }), ...(isOpen && { border: "1px solid #c3c3c3" }) }} >
         <div className={`${styles.triggerWrapper} ${triggerWrapperClassName || ""}`}>
-          <span
+          <div
             className={`${styles.trigger} ${triggerClassName || ""}`}
             onClick={() => setOpenSelectId(isOpen ? null : id)}
           >
             <span className={styles.iconPlaceholder}>
               {iconPlaceholder && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
-              
-              {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}
+              <span className={styles.textContent}>
+                {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}
+              </span>
             </span>
             <ChevronDown
               className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
               size={16}
             />
-          </span>
+          </div>
         </div>
         {isOpen && (
           <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>

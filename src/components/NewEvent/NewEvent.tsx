@@ -24,6 +24,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
+import { getUserAddresses } from "../../constants/address";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -50,6 +51,21 @@ type AddressState = {
     number: string;
     complement: string;
 };
+
+type AddressOption = {
+    numero: string,
+    id: string,
+    complemento: string,
+    unidade: string,
+    tipo: string,
+    cep: {
+        logradouro: string,
+        cep: string,
+        bairro: string,
+        localidade: string,
+        uf: string
+    }
+} | null;
 
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
@@ -131,7 +147,7 @@ export default function NewEvent(
     }, []);
 
     useEffect(() => {
-        if (addressData.postalCode.length === 8) {
+        if (addressData.postalCode.replace("-", "").length === 8) {
             axios.get(`https://viacep.com.br/ws/${addressData.postalCode}/json/`)
                 .then(response => {
                     setAddressData({
@@ -358,34 +374,17 @@ export default function NewEvent(
         setOpenModal(null);
     }
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-
-            },
-            {
-                queryKey: ["totalRESIDENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONALNewEvent"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
 
     function verifyClassAvailability() {
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
-        console.log("Aulas disponíveis - Presencial:", aulaPresencial.data, "Residencial:", aulaResidencial.data, "Funcional:", aulaFuncional.data);
-        if (selectedType === "PRESENCIAL" && (aulaPresencial.data === 0 && !aulaPresencial.isLoading)) {
+        console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
+        if (selectedType === "PRESENCIAL" && (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas presenciais disponíveis para agendar."
@@ -394,7 +393,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "RESIDENCIAL" && (aulaResidencial.data === 0 || aulaResidencial.data === undefined)) {
+        if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas residenciais disponíveis para agendar."
@@ -403,7 +402,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "FUNCIONAL" && (aulaFuncional.data === 0 || aulaFuncional.data === undefined)) {
+        if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas funcionais disponíveis para agendar."
@@ -490,7 +489,40 @@ export default function NewEvent(
 
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
-    const [defaultAddress, setDefaultAddress] = useState<string>("");
+    const [selectedAddress, setSelectedAddress] = useState<AddressOption>(null);
+
+    const addresses = useQuery({
+        queryKey: ["addresses"],
+        queryFn: () => getUserAddresses(),
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+    });
+
+    useEffect(() => {
+        const cep = selectedAddress?.cep?.cep;
+
+
+        if (cep) {
+            setAddressData({
+                postalCode: cep ? cep.slice(0, 5) + "-" + cep.slice(5) : "",
+                address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
+                city: selectedAddress?.cep?.localidade,
+                state: selectedAddress?.cep?.uf,
+                number: selectedAddress?.numero,
+                complement: selectedAddress?.complemento
+            });
+        }
+
+    }, [selectedAddress])
+
+    const [selectDefault, setSelectDefault] = useState<string>("");
+
+    useEffect(() => {
+        if (addresses.isSuccess) {
+            setSelectDefault(addresses.data?.at(-1)?.id ?? "");
+        }
+    }, [addresses.isSuccess]);
+
 
     return (
         <>
@@ -819,15 +851,30 @@ export default function NewEvent(
                                     />
                                 </div>
                             )}
-                            <div className="bg-gray-300/25 p-4 rounded-2xl border border-gray-300">
-                                <div className="flex justify-between mb-3">
+                            <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
+                                <div className="flex justify-between mb-2">
                                     <div className="flex items-center gap-2">
-                                        <History />
+                                        {!isMobile && (
+                                            <History />
+                                        )}
                                         <span className="uppercase font-medium tracking-tight ">
                                             Usar endereço salvo
                                         </span>
                                     </div>
-                                    <span className="text-oxford-blue cursor-pointer" onClick={() => { setSelectedType(""); setDefaultAddress(""); }}>
+                                    <span
+                                        className="not-xl:text-sm not-xl:pr-0 text-oxford-blue cursor-pointer transition hover:ring-2 hover:ring-gray-400 ring-2 ring-[##f3f4f6] p-2 rounded-2xl"
+                                        onClick={() => {
+                                            setSelectedAddress(null);
+                                            setSelectDefault("");
+                                            setAddressData({
+                                                postalCode: "",
+                                                address: "",
+                                                city: "",
+                                                state: "",
+                                                number: "",
+                                                complement: ""
+                                            });
+                                        }}>
                                         Limpar seleção
                                     </span>
                                 </div>
@@ -835,13 +882,18 @@ export default function NewEvent(
                                     id="address-select"
                                     openSelectId={openSelectId}
                                     setOpenSelectId={setOpenSelectId}
-                                    clear={selectedType !== "" ? false : true}
-                                    onSelectStatusChange={setSelectedType}
-                                    values={[
-                                        { label: "Presencial", value: "PRESENCIAL" },
-                                        { label: "Residencial", value: "RESIDENCIAL" },
-                                        { label: "Funcional", value: "FUNCIONAL" }
-                                    ]}
+                                    clear={!selectedAddress ? true : false}
+                                    onSelectStatusChange={(addressId: string) => {
+                                        const selected = addresses.data?.find((address: AddressOption) => address?.id === addressId);
+                                        setSelectedAddress(selected || null);
+                                    }}
+                                    values={
+                                        addresses.data?.map((address: AddressOption) => ({
+                                            label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
+                                            value: address?.id,
+                                        }))
+                                    }
+                                    defaultValue={selectDefault}
                                     containerClassName="w-full!"
                                     triggerClassName="p-3 w-full!"
                                     selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
@@ -873,8 +925,11 @@ export default function NewEvent(
                                                 type="text"
                                                 id="cep"
                                                 placeholder="00000-000"
-                                                onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
-                                                onInput={cepMask}
+                                                onChange={(e) => {
+                                                    const masked = cepMask(e.target.value);
+                                                    setAddressData({ ...addressData, postalCode: masked });
+                                                }}
+                                                value={addressData.postalCode || ""}
                                             />
                                         </div>
                                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>

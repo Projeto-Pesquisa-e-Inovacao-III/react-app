@@ -1,6 +1,7 @@
 .container {
   position: relative;
   width: 100%;
+  height: max-content;
 }
 
 .containerMobile {
@@ -85,6 +86,20 @@
   font-size: 16px;
   font-weight: 300;
 
+}
+
+.mainTitleMobile {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 500;
+  background-color: white;
+  position: sticky;
+  top: 0;
+  z-index: 3000;
+  border-bottom: 1px solid #ccc;
+  gap: 10px;
 }
 
 .stepOneContainer {
