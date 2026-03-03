@@ -504,7 +504,7 @@ export default function NewEvent(
 
         if (cep) {
             setAddressData({
-                postalCode: cep ? cep.slice(0, 5) + "-" + cep.slice(5) : "",
+                postalCode: cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
                 address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
                 city: selectedAddress?.cep?.localidade,
                 state: selectedAddress?.cep?.uf,
@@ -518,10 +518,13 @@ export default function NewEvent(
     const [selectDefault, setSelectDefault] = useState<string>("");
 
     useEffect(() => {
-        if (addresses.isSuccess) {
-            setSelectDefault(addresses.data?.at(-1)?.id ?? "");
+        if (addresses.isSuccess && addresses.data?.length) {
+            const last = addresses.data.at(-1);
+            console.log("Último endereço cadastrado:", last);
+            setSelectDefault(last?.id ?? "");
+            setSelectedAddress(last);
         }
-    }, [addresses.isSuccess]);
+    }, [addresses.data, addresses.isSuccess]);
 
 
     return (

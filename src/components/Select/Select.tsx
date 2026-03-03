@@ -58,22 +58,27 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   });
 
-  console.log(defaultValue, "defaultValue")
-
   useEffect(() => {
     if (clear && clear === true) {
       setSelectValue({ icon: undefined, text: "" });
+      if (onSelectStatusChange) {
+        onSelectStatusChange("");
+      }
+
+      setHoveredOption(null);
+      setTextSearch({ icon: undefined, text: "" });
+
     }
   }, [clear])
 
-
   useEffect(() => {
-    if (defaultValue && onSelectStatusChange) {
-      onSelectStatusChange(defaultValue);
+    if (defaultValue) {
       const defaultOption = values?.find(option => option.value === defaultValue);
       setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
+    } else {
+      setSelectValue({ icon: undefined, text: "" });
     }
-  }, [defaultValue, values]);
+  }, [defaultValue]);
 
   return (
     <div className={containerClassName}>
