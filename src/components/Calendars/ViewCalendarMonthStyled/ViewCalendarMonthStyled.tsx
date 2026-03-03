@@ -73,11 +73,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" || event.status === "APROVADO"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR"
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONCLUIDO"
+                              : event.status === "CONCLUIDO"  || event.status === "APROVADO"
                                 ? "green"
                                 : "gray",
                       }}
@@ -135,9 +135,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
             const tomorrowDate = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-            
-
-            if (!hasClassTomorrow && cellDate === tomorrowDate) return [styles.fcTodayCustom];
+            if (!availabilityHoursTomorrow.data && cellDate === tomorrowDate) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {
               return [styles.fcTodayCustom];

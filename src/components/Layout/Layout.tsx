@@ -87,12 +87,12 @@ export default function Layout() {
     return (
         <div>
             <>
-                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} />}
+                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} isLoading={isLoggedIn.isLoading}/>}
                 {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                     <LogoHeaderMobile />
                 </div>}
                 <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
-                {isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+                {isMobile && !exceptions.includes(location.pathname) && <Header type={type} isLoading={isLoggedIn.isLoading}/>}
             </>
         </div>
     )

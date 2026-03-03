@@ -28,8 +28,6 @@ import SecurityInformations from "./routes/EditUser/SecurityInformations/Securit
 // todo: 
 // safari support // deixa baixo
 
-//todo: warning maximum size of 5mb for user image
-
 type UserType = "aluno" | "personal";
 
 type TypeContextType = {
