@@ -6,6 +6,7 @@ import { isAuthenticated } from "../../../constants/user";
 import useEmblaCarousel from "embla-carousel-react";
 import { TypeContext } from "../../../App";
 import { Plus } from "lucide-react";
+import classNames from "classnames";
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
@@ -29,16 +30,17 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, []);
 
     const data = isPackagesSelected
-        ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE")
-        : packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL")
+        ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
+        : packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
 
-    const shouldUseCarousel = (data?.length ?? 0) >= 5
+    const shouldUseCarousel = data?.length > 4
 
-    const slidesToRender = shouldUseCarousel
-        ? [...data, ...data, ...data]
-        : data
+    const slidesToRender = data;
 
-    const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true })
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false },
+        []
+    );
 
     const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -92,7 +94,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)` } : {}}>
                             {data?.map((pkg: any) => (
                                 <div key={pkg.id}>
                                     <PlansCard

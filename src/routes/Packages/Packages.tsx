@@ -216,7 +216,7 @@ export function Packages() {
                     )}
                 </div>
 
-                <div className={classnames(styles.packagesListWrapperDesktop,
+                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isPersonal ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
                     { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
                     { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
@@ -247,7 +247,10 @@ export function Packages() {
                                     </div>
                                     <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
                                     {isPersonal && !isMobile && (
-                                        <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                        <div 
+                                        className={styles.addCard} 
+                                        onClick={() => setOpenModal("add")}>
+                                        
                                             <div className={styles.addIconWrapper}>
                                                 <Plus size={24} color="#a2afc1" />
                                             </div>
@@ -272,7 +275,11 @@ export function Packages() {
                                     />
                                 ))}
                                 {isPersonal && !isMobile && (
-                                    <div className={styles.addCard} onClick={() => setOpenModal("add")}>
+                                    <div 
+                                        style={!shouldUseCarousel ? {maxWidth: "inherit"} : {}} 
+                                        className={styles.addCard} 
+                                        onClick={() => setOpenModal("add")}>
+                                        
                                         <div className={styles.addIconWrapper}>
                                             <Plus size={24} color="#a2afc1" />
                                         </div>
