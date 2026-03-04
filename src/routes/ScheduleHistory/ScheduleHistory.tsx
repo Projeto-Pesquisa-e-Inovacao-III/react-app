@@ -11,17 +11,20 @@ import useSearchFilter from "../../hooks/useSearchFilter";
 import { useQuery } from "@tanstack/react-query";
 import { findPersonalRequests } from "../../constants/schedule";
 import type { ScheduleAfterInserted } from "../../models/schedule";
-import { format, parse } from "date-fns";
+import { endOfDay, format, parse, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useInfinitePagination } from "../../hooks/useInfinitePagination";
+import useMobile from "../../hooks/isMobile";
 
 export default function ScheduleHistory() {
+    const isMobile = useMobile();
 
     // postalCode does not exist at this endpoint
-    const listOfAppointments = useQuery({
-        queryKey: ['userAppointments'],
-        queryFn: () => findPersonalRequests(),
-        select: (res) => res.data,
-    })
+    // const listOfAppointments = useQuery({
+    //     queryKey: ['userAppointments'],
+    //     queryFn: () => findPersonalRequests(0),
+    //     select: (res) => res.data,
+    // })
 
     const [params] = useSearchParams()
 
@@ -37,6 +40,17 @@ export default function ScheduleHistory() {
     }
 
     const {
+        data: infinitePaginationAppointments,
+        loadMoreRef,
+        isLoading: filteredDataIsLoading,
+        hasNextPage,
+    } = useInfinitePagination<ScheduleAfterInserted>({
+        queryKey: ["infinitePaginationAppointments"],
+        queryFn: (page) => findPersonalRequests(page).then(res => res.data),
+    });
+
+
+    const {
         filterSearch,
         setFilterSearch,
         filterInitialDate,
@@ -46,11 +60,10 @@ export default function ScheduleHistory() {
         filteredData,
         hasFilters,
         clearFilters,
-    } = useSearchFilter(listOfAppointments.data?.content ?? [], {
+    } = useSearchFilter(infinitePaginationAppointments ?? [], {
         searchName: (item: ScheduleAfterInserted) => [item.tipoAula, item.status],
         dateFilter: (item: ScheduleAfterInserted) => typeof item.dataInicio === 'string' ? item.dataInicio : item.dataInicio.toISOString(),
     });
-
 
     const data = (filteredData as ScheduleAfterInserted[]).map((event) => ({
         id: event.agendamentoId,
@@ -140,7 +153,16 @@ export default function ScheduleHistory() {
                 )}
             </div>
 
-            <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} isLoading={listOfAppointments.isLoading}/>
+            <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} isLoading={filteredDataIsLoading} />
+            <div ref={loadMoreRef} style={{ height: 1 }} />
+            {!hasNextPage && (
+                <div className="flex justify-center items-center mt-10 my-5 gap-5">
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                    <span className="text-slate-500 w-1/2 text-center">Não há mais agendamentos para exibir</span>
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                </div>
+            )}
+
         </div>
     );
 }

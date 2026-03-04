@@ -9,6 +9,7 @@ export type RowItem = {
     title: string;
     subtitle: ReactNode;
     id: number;
+    tipoAula?: string;
 }
 
 type RowWithHeaderTitleProps = {
@@ -24,7 +25,9 @@ export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
     return (
         <>
             {dataToRender.map((plan, index: number) => (
-                <div key={props.isLoading ? `skeleton-${index}` : `${plan?.headerTitle}-${index}`} className={classNames(styles.rowCard)}>
+                <div 
+                key={props.isLoading ? `skeleton-${index}` : `${(plan as RowItem)?.headerTitle}-${index}`} 
+                className={classNames(styles.rowCard, {[styles.typeClassPresencial]: (plan as RowItem)?.title === 'PRESENCIAL'})}>
                     <div className={classNames(styles.rowHeader)}>
                         <p>
                             {props.isLoading ? (

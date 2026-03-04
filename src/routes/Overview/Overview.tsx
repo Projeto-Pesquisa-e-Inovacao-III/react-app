@@ -11,7 +11,7 @@ import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
-import { appoitmentsCount } from "../../constants/personal";
+import { appoitmentsCount, getPersonalHours } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
@@ -217,9 +217,6 @@ export function Overview() {
         isTypeLoading ||
         appointments.isPending ||
         isAlunoLoading;
-
-    console.log("Type:", type?.type);
-
 
     return (
         <>

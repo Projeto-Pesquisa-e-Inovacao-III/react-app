@@ -6,7 +6,7 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { ArrowLeft, Calendar, Clock, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarSync, Clock, History, Info, MapPin, RefreshCcw, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
@@ -24,6 +24,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
+import { getUserAddresses } from "../../constants/address";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -50,6 +51,21 @@ type AddressState = {
     number: string;
     complement: string;
 };
+
+type AddressOption = {
+    numero: string,
+    id: string,
+    complemento: string,
+    unidade: string,
+    tipo: string,
+    cep: {
+        logradouro: string,
+        cep: string,
+        bairro: string,
+        localidade: string,
+        uf: string
+    }
+} | null;
 
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
@@ -131,7 +147,7 @@ export default function NewEvent(
     }, []);
 
     useEffect(() => {
-        if (addressData.postalCode.length === 8) {
+        if (addressData.postalCode.replace("-", "").length === 8) {
             axios.get(`https://viacep.com.br/ws/${addressData.postalCode}/json/`)
                 .then(response => {
                     setAddressData({
@@ -358,34 +374,17 @@ export default function NewEvent(
         setOpenModal(null);
     }
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-
-            },
-            {
-                queryKey: ["totalRESIDENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONALNewEvent"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
 
     function verifyClassAvailability() {
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
-        console.log("Aulas disponíveis - Presencial:", aulaPresencial.data, "Residencial:", aulaResidencial.data, "Funcional:", aulaFuncional.data);
-        if (selectedType === "PRESENCIAL" && (aulaPresencial.data === 0 && !aulaPresencial.isLoading)) {
+        console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
+        if (selectedType === "PRESENCIAL" && (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas presenciais disponíveis para agendar."
@@ -394,7 +393,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "RESIDENCIAL" && (aulaResidencial.data === 0 || aulaResidencial.data === undefined)) {
+        if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas residenciais disponíveis para agendar."
@@ -403,7 +402,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "FUNCIONAL" && (aulaFuncional.data === 0 || aulaFuncional.data === undefined)) {
+        if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas funcionais disponíveis para agendar."
@@ -490,6 +489,44 @@ export default function NewEvent(
 
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
+    const [selectedAddress, setSelectedAddress] = useState<AddressOption>(null);
+
+    const addresses = useQuery({
+        queryKey: ["addresses"],
+        queryFn: () => getUserAddresses(),
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+    });
+
+    useEffect(() => {
+        const cep = selectedAddress?.cep?.cep;
+
+
+        if (cep) {
+            setAddressData({
+                postalCode: cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
+                address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
+                city: selectedAddress?.cep?.localidade,
+                state: selectedAddress?.cep?.uf,
+                number: selectedAddress?.numero,
+                complement: selectedAddress?.complemento
+            });
+        }
+
+    }, [selectedAddress])
+
+    const [selectDefault, setSelectDefault] = useState<string>("");
+
+    useEffect(() => {
+        if (addresses.isSuccess && addresses.data?.length) {
+            const last = addresses.data.at(-1);
+            console.log("Último endereço cadastrado:", last);
+            setSelectDefault(last?.id ?? "");
+            setSelectedAddress(last);
+        }
+    }, [addresses.data, addresses.isSuccess]);
+
+
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
@@ -514,7 +551,13 @@ export default function NewEvent(
                                 )}
 
                                 <InformationCard
-                                    icon={<UserAvatar foto={!personalList.isLoading && personalList.data[0]?.caminhoFoto} useUserImage={true} />}
+                                    icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
                                     subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -531,7 +574,7 @@ export default function NewEvent(
                                 />
 
                                 <InformationCard
-                                    icon={<MapPin fill="#000" color="#fff" />}
+                                    icon={<MapPin fill="#000" color="#e2e8f0" />}
                                     title="Tipo de aula"
                                     subtitle={selectedType}
                                 />
@@ -617,7 +660,14 @@ export default function NewEvent(
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
-                                                icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
+                                                icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
+
                                                 title="Personal Trainer"
                                                 subtitle={personalList.data?.[0]?.nome || ""}
                                                 subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -817,8 +867,60 @@ export default function NewEvent(
                                     />
                                 </div>
                             )}
+                            <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
+                                <div className="flex justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        {!isMobile && (
+                                            <History />
+                                        )}
+                                        <span className="uppercase font-medium tracking-tight ">
+                                            Usar endereço salvo
+                                        </span>
+                                    </div>
+                                    <span
+                                        className="not-xl:text-sm not-xl:pr-0 text-oxford-blue cursor-pointer transition hover:ring-2 hover:ring-gray-400 ring-2 ring-[##f3f4f6] p-2 rounded-2xl"
+                                        onClick={() => {
+                                            setSelectedAddress(null);
+                                            setSelectDefault("");
+                                            setAddressData({
+                                                postalCode: "",
+                                                address: "",
+                                                city: "",
+                                                state: "",
+                                                number: "",
+                                                complement: ""
+                                            });
+                                        }}>
+                                        Limpar seleção
+                                    </span>
+                                </div>
+                                <Select
+                                    id="address-select"
+                                    openSelectId={openSelectId}
+                                    setOpenSelectId={setOpenSelectId}
+                                    clear={!selectedAddress ? true : false}
+                                    onSelectStatusChange={(addressId: string) => {
+                                        const selected = addresses.data?.find((address: AddressOption) => address?.id === addressId);
+                                        setSelectedAddress(selected || null);
+                                    }}
+                                    values={
+                                        addresses.data?.map((address: AddressOption) => ({
+                                            label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
+                                            value: address?.id,
+                                        }))
+                                    }
+                                    defaultValue={selectDefault}
+                                    containerClassName="w-full!"
+                                    triggerClassName="p-3 w-full!"
+                                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
+                                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
+                                    selectPlaceholder="Selecione um endereço salvo..."
+                                    labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                    showSelectAll={false}
+                                    showSearchInput={false}
+                                />
+                            </div>
                             <div className={styles.title}>
-                                <MapPin />
                                 <span>Endereço do local</span>
                             </div>
                             <form
@@ -839,8 +941,11 @@ export default function NewEvent(
                                                 type="text"
                                                 id="cep"
                                                 placeholder="00000-000"
-                                                onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
-                                                onInput={cepMask}
+                                                onChange={(e) => {
+                                                    const masked = cepMask(e.target.value);
+                                                    setAddressData({ ...addressData, postalCode: masked });
+                                                }}
+                                                value={addressData.postalCode || ""}
                                             />
                                         </div>
                                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>

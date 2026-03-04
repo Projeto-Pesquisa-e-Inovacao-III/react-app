@@ -1,3 +1,7 @@
+.typeClassPresencial {
+    border-left: 8px solid var(--bg-blue) !important;
+}
+
 .rowCard {
     border: 1px solid #eee;
     background-color: #fff;
