@@ -22,7 +22,7 @@ type Props = {
 
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, hasClassTomorrow }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
