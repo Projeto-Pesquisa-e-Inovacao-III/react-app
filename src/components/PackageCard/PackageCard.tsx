@@ -38,8 +38,6 @@ export function PackageCard(props: PackageCardProps) {
         props.setHandleDelete(true);
     }
 
-    console.log(props.descricao, props.tipoAula);
-
     useEffect(() => {
         if (typeof props.descricao === 'string') {
             console.warn("PackageCard: 'descricao' prop should be an array of strings, but received a string.");

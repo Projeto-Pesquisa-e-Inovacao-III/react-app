@@ -32,3 +32,7 @@ export function getUserPlansHistory() {
 export function BoughtPlanDetails(id: number) {
     return api.get(`/produtos-contratados/detalhado/${id}`)
 }
+
+export function verifyNumberOfPackages() {
+    return api.get(`/produtos-exibicoes/check-limit`)
+}

@@ -9,10 +9,10 @@ import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
-import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
+import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import { CalendarX, LucideCircleX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
@@ -59,6 +59,7 @@ export function Packages() {
         setPackageId(null);
     }
 
+
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
     const [productsExhibitionsAdicional, setProductsExhibitionsAdicional] = useState<ProductExhibition[]>([]);
 
@@ -66,7 +67,6 @@ export function Packages() {
         queryKey: ['productsExhibitions'],
         queryFn: () => getProductsExhibitions(),
         select: (response) => {
-            console.log("Produtos de Exibição obtidos com sucesso!", response);
             return {
                 pacotes: response.data.filter((product: ProductExhibition) => product.tipoProduto === "PACOTE"),
                 adicionais: response.data.filter((product: ProductExhibition) => product.tipoProduto === "ADICIONAL")
@@ -81,6 +81,27 @@ export function Packages() {
         }
     }, [productsData]);
 
+
+    const verifyNumberOfPackagesFront = productsExhibitions.filter(p => p.status === "ATIVO").length + productsExhibitionsAdicional.filter(p => p.status === "ATIVO").length;
+
+    const numberOfPackages = useQuery({
+        queryKey: ['verifyNumberOfPackages'],
+        queryFn: () => verifyNumberOfPackages(),
+        select: (response) => {
+            return response.data;
+        },
+        enabled: isPersonal && verifyNumberOfPackagesFront === 10
+    });
+
+    function handleClickAddPackage(type: "add" | "addAdditional") {
+        console.log("Verificando limite de pacotes antes de abrir modal de adição...");
+        if (verifyNumberOfPackagesFront === 10 && numberOfPackages.data?.limit === numberOfPackages.data?.size) {
+            handleErrorModalInfos("Limite de Pacotes", "Você já atingiu o limite máximo de pacotes ativos.");
+            return;
+        }
+
+        setOpenModal(type);
+    }
 
     function handleErrorModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
@@ -123,15 +144,6 @@ export function Packages() {
             return productsExhibitionsAdicional.find(pkg => pkg.id === id);
         }
         return productsExhibitions.find(pkg => pkg.id === id);
-    }
-
-    //temp
-    function safeParseDescricao(descricao: string) {
-        try {
-            return JSON.parse(descricao);
-        } catch {
-            return descricao;
-        }
     }
 
     function renderPackageCardSkeleton() {
@@ -211,7 +223,12 @@ export function Packages() {
                     </div>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
+                            {verifyNumberOfPackagesFront === 10 ?
+                                <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
+                                : 
+                                (
+                                    <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => handleClickAddPackage("add")} />
+                                )}
                         </div>
                     )}
                 </div>
@@ -247,10 +264,10 @@ export function Packages() {
                                     </div>
                                     <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
                                     {isPersonal && !isMobile && (
-                                        <div 
-                                        className={styles.addCard} 
-                                        onClick={() => setOpenModal("add")}>
-                                        
+                                        <div
+                                            className={styles.addCard}
+                                            onClick={() => setOpenModal("add")}>
+
                                             <div className={styles.addIconWrapper}>
                                                 <Plus size={24} color="#a2afc1" />
                                             </div>
@@ -275,11 +292,11 @@ export function Packages() {
                                     />
                                 ))}
                                 {isPersonal && !isMobile && (
-                                    <div 
-                                        style={!shouldUseCarousel ? {maxWidth: "inherit"} : {}} 
-                                        className={styles.addCard} 
-                                        onClick={() => setOpenModal("add")}>
-                                        
+                                    <div
+                                        style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
+                                        className={styles.addCard}
+                                        onClick={() => handleClickAddPackage("add")}>
+
                                         <div className={styles.addIconWrapper}>
                                             <Plus size={24} color="#a2afc1" />
                                         </div>
@@ -342,7 +359,12 @@ export function Packages() {
                 </div>
                 {isPersonal && (
                     <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                        <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
+                        {verifyNumberOfPackagesFront === 10 ?
+                                <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
+                                : 
+                                (
+                                    <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => handleClickAddPackage("addAdditional")} />
+                                )}
                     </div>
                 )}
             </div>
@@ -403,7 +425,7 @@ export function Packages() {
                                     />
                                 ))}
                                 {isPersonal && !isMobile && (
-                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
+                                    <div className={styles.addCard} onClick={() => handleClickAddPackage("addAdditional")}>
                                         <div className={styles.addIconWrapper}>
                                             <Plus size={24} color="#a2afc1" />
                                         </div>
