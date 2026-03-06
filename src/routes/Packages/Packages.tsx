@@ -300,7 +300,7 @@ export function Packages() {
                             </h3>
 
                             <p className={styles.emptyPackageText}>
-                                Você ainda não cadastrou pacotes.
+                                {type?.type === "personal" ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
                             </p>
                         </div>
                     )}
@@ -425,7 +425,7 @@ export function Packages() {
                         </h3>
 
                         <p className={styles.emptyPackageText}>
-                            Você ainda não cadastrou pacotes adicionais.
+                            {type?.type === "personal" ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
                         </p>
                     </div>
                 )}
