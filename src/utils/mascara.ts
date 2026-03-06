@@ -13,15 +13,10 @@ export function cpfMask(input: React.FormEvent<HTMLInputElement>): void {
         .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
 }
 
-export function cepMask(input: React.FormEvent<HTMLInputElement>): void {
-    let value: string = input.currentTarget.value.replace(/\D/g, '');
-
-    if (value.length > 8) {
-        value = value.slice(0, 8);
-    }
-
-    input.currentTarget.value = value
-        .replace(/^(\d{5})(\d)/, '$1-$2')
+export function cepMask(value: string): string {
+    value = value.replace(/\D/g, '').slice(0, 8);
+    console.log(value, "value")
+    return value.replace(/^(\d{5})(\d)/, '$1-$2');
 }
 
 export function cellphoneMask(input: React.FormEvent<HTMLInputElement>): void {

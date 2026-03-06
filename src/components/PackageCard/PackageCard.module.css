@@ -7,7 +7,6 @@
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
-    max-width: 512px;
     height: 800px;
     overflow: hidden;
     transition: height 0.3s ease;
@@ -38,6 +37,20 @@
 .packageCardFunctional {
     border-top: 15px solid var(--carol);
 }
+
+.packageCardPresentialText {
+    background-color: var(--bg-blue);
+}
+
+.packageCardHomeText {
+    background-color: var(--bg-orange);
+}
+
+.packageCardFunctionalText {
+    background-color: var(--carol);
+}
+
+
 
 .cardTipoAulaPresential,
 .cardTipoAulaHome,
@@ -140,12 +153,18 @@
 .cardBenefitsList {
     list-style: none;
     padding: 0;
-    margin: 40px 0;
+    margin: 12px 0;
     margin-bottom: 0 !important;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    word-break: break-word;
+}
+
+.benefitItem {
+    display: flex;
+    margin-top: 12px;
 }
 
 .cardBenefitsList .benefitItem {
@@ -193,12 +212,22 @@
     width: 100%;
     gap: 20px;
     background-color: #f8fafc;
-    padding: 30px;
+    padding: 12px;
     border-radius: 30px;
+    border-bottom-right-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
 }
 
 .cardBtn:hover {
     background-color: var(--btn-hover-bg);
+}
+
+
+@media (max-width: 1280px) {
+    .packageCardContainer {
+        width: 100%;
+    }
+
 }
 
 @media (max-width: 1024px) {
@@ -207,6 +236,7 @@
     }
 
     .packageCardContainer {
+        width: 100%;
         max-width: unset;
     }
 

@@ -140,7 +140,9 @@ export default function EditUser() {
               placeholder="Digite seu email"
               icon={<Mail size={22} />}
               label="Email"
+              disabled={true}
               isLoading={userInfo.isLoading}
+              classNameInput="bg-gray-100! cursor-not-allowed!"
               value={email}
               onInputChange={(value: string) => setEmail(value)}
             ></InputWithIcon>

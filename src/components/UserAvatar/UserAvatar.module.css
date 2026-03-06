@@ -10,9 +10,19 @@
     padding: 0 0 0 15px;
     gap: 10px;
 }
-.userAvatar img, .userAvatar svg {
+
+.userAvatar img,
+.userAvatar svg {
     border-radius: 50%;
     width: 50px !important;
     height: 50px !important;
     background-color: #cccccc !important;
+}
+
+
+.username {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
 }

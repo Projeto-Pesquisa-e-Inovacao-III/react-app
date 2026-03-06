@@ -55,4 +55,5 @@
   z-index: 999;
   transition: opacity 0.3s ease;
   opacity: 1;
+  backdrop-filter: blur(10px);
 }

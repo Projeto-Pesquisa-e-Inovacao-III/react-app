@@ -12,7 +12,7 @@ import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
-import { format, parseISO } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, UserRound } from "lucide-react";
@@ -23,6 +23,7 @@ import { statusProperties } from "./CardStatus/cardStatus";
 import type { DateRange } from "../../../components/Calendars/MiniCalendar/CalendarMini";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton";
 import Skeleton from "react-loading-skeleton";
+import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -66,25 +67,47 @@ export function CheckSchedule() {
         setOpenModal("error");
     }
 
+    const [page, setPage] = useState(0);
+
+
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
+        start: "",
+        end: "",
+    });
+
     const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
+    const [filterStatus, setFilterStatus] = useState<string>("");
+    const [filterTypeClass, setFilterTypeClass] = useState<string>("");
+
     const {
         data: infinitePaginationMobile,
         loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointmentsMobile"],
-        queryFn: (page) => findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+        queryFn: () => findPersonalRequests(
+            page,
+            linesPerPageValue,
+            selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+            selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined
+        ).then(res => res.data),
         enable: isMobile
     });
 
-    const [page, setPage] = useState(0);
-
     const { data: userRescheduleAppointments, isLoading: isLoadingAppointments } =
         useQuery<PaginatedResponse<CheckSchedule>>({
-            queryKey: ["userRescheduleAppointments", linesPerPageValue, page],
-            queryFn: () =>
-                findPersonalRequests(page, linesPerPageValue).then(res => res.data),
+            queryKey: ["userRescheduleAppointments", linesPerPageValue, page, selectedDateRange.end, filterStatus, filterTypeClass],
+            queryFn: async (): Promise<PaginatedResponse<CheckSchedule>> =>
+                findPersonalRequests(
+                    page,
+                    linesPerPageValue,
+                    selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+                    selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+                    filterStatus,
+                    filterTypeClass
+                ).then((res) => res.data),
             enabled: !isMobile
         });
+
 
     const appointmentsList = userRescheduleAppointments?.content ?? infinitePaginationMobile;
     const pagination = userRescheduleAppointments?.page;
@@ -106,10 +129,6 @@ export function CheckSchedule() {
         hasFilters,
         filterSearch,
         setFilterSearch,
-        filterStatus,
-        setFilterStatus,
-        filterTypeClass,
-        setFilterTypeClass,
         clearFilters
     } = useSearchFilter(appointmentsList, {
         searchStatus: item => item.status,
@@ -126,6 +145,9 @@ export function CheckSchedule() {
             setFilterSearch(format(date, "dd/MM/yyyy", { locale: ptBR }));
         }
     }, [searchParams, setFilterSearch]);
+
+
+
 
 
     async function handleInvalidateQueries() {
@@ -188,14 +210,6 @@ export function CheckSchedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
     })
-
-
-    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({
-        start: "",
-        end: "",
-    });
-
-
 
 
 
@@ -301,6 +315,8 @@ export function CheckSchedule() {
         window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
     }
 
+    const countPendingPersonalApproval = appointmentsList?.filter(appointment => appointment.status === "PENDENTE_PERSONAL_APROVACAO").length || 0;
+
     return (
         <>
             <div className={styles.containerCheckSchedule}
@@ -312,16 +328,16 @@ export function CheckSchedule() {
                         <div className={styles.gridContainer}>
                             <CheckScheduleKpis
                                 title="Total pendente"
-                                value={appointmentsList?.length || 0}
+                                value={countPendingPersonalApproval || 0}
                             />
                             <CheckScheduleKpis
                                 title="Vence hoje"
-                                value={appointmentsList?.length || 0}
+                                value={0}
                                 color="#F59E0B"
                             />
                             <CheckScheduleKpis
                                 title="Reagendados hoje"
-                                value={appointmentsList?.length || 0}
+                                value={0}
                                 color="#006faf"
                             />
                             <CheckScheduleKpis
@@ -525,11 +541,8 @@ export function CheckSchedule() {
                                                                 data-alt={`Client ${card.nome}`}
                                                             >
                                                                 {card.foto ? (
-                                                                    <img
-                                                                        src={card.foto}
-                                                                        alt={`Client ${card.nome}`}
-                                                                        className={styles.userImage}
-                                                                    />
+                                                                    <UserAvatar imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+
                                                                 ) : (
                                                                     <UserRound />
                                                                 )}
@@ -548,7 +561,7 @@ export function CheckSchedule() {
                                                         <div className="flex items-center justify-start">
                                                             <span className="w-fit">{card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
                                                                 {card.endereco.cep.bairro} - {card.endereco.cep.uf}</span>
-                                                            <MapPin className="cursor-pointer" size={30} onClick={() => handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`)} />
+                                                            <MapPin fill="#000" color="#fff" className="cursor-pointer" size={30} onClick={() => handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`)} />
                                                         </div>
                                                     </td>
 
@@ -560,6 +573,7 @@ export function CheckSchedule() {
                                                                     onClick={() =>
                                                                         handleModal(card.agendamentoId, "accept")
                                                                     }
+                                                                    title="Aceitar agendamento"
                                                                 >
                                                                     <CircleCheck className="text-green-500" />
                                                                 </button>
@@ -569,6 +583,7 @@ export function CheckSchedule() {
                                                                     onClick={() =>
                                                                         handleModal(card.agendamentoId, "decline")
                                                                     }
+                                                                    title="Rejeitar agendamento"
                                                                 >
                                                                     <CircleX className="text-red-500" />
                                                                 </button>
@@ -581,6 +596,7 @@ export function CheckSchedule() {
                                                                         );
                                                                         handleModal(card.agendamentoId, "reschedule");
                                                                     }}
+                                                                    title="Reagendar agendamento"
                                                                 >
                                                                     <CalendarClock className="text-blue-500" />
                                                                 </button>

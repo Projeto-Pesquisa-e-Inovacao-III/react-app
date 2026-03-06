@@ -74,6 +74,14 @@
 .iconPlaceholder {
   display: flex;
   gap: 8px;
+  min-width: 0;
+}
+
+.textContent {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 
 @media (max-width: 1280px) {

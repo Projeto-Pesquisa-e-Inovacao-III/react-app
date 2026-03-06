@@ -11,7 +11,9 @@ type Props = {
   onSelectStatusChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
   selectStatusValue?: string;
   values?: Array<{ icon?: React.ReactNode; label: string; value: string }>;
+
   selectPlaceholder?: string;
+  iconPlaceholder?: React.ReactNode;
 
   showSelectAll?: boolean;
   showSearchInput?: boolean;
@@ -25,15 +27,17 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
+
+  clear?: boolean;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName, iconPlaceholder, clear }: Props) {
   const isOpen = openSelectId === id;
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
-
+  console.log(defaultValue, "defaultValue")
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
   useEffect(() => {
     if (defaultValue && onSelectStatusChange) {
@@ -54,24 +58,49 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   });
 
+  useEffect(() => {
+    if (clear && clear === true) {
+      setSelectValue({ icon: undefined, text: "" });
+      if (onSelectStatusChange) {
+        onSelectStatusChange("");
+      }
+
+      setHoveredOption(null);
+      setTextSearch({ icon: undefined, text: "" });
+
+    }
+  }, [clear])
+
+  useEffect(() => {
+    if (defaultValue) {
+      const defaultOption = values?.find(option => option.value === defaultValue);
+      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
+    } else {
+      setSelectValue({ icon: undefined, text: "" });
+    }
+  }, [defaultValue]);
+
   return (
     <div className={containerClassName}>
       {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
-      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{...(label && {marginTop: "8px"}), ...(isOpen && { border: "1px solid #c3c3c3" })}} >
+      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{ ...(label && { marginTop: "8px" }), ...(isOpen && { border: "1px solid #c3c3c3" }) }} >
         <div className={`${styles.triggerWrapper} ${triggerWrapperClassName || ""}`}>
-          <span
+          <div
             className={`${styles.trigger} ${triggerClassName || ""}`}
             onClick={() => setOpenSelectId(isOpen ? null : id)}
           >
             <span className={styles.iconPlaceholder}>
+              {iconPlaceholder && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
-              {fixedText ? fixedText : ""} {(selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
+              <span className={styles.textContent}>
+                {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}
+              </span>
             </span>
             <ChevronDown
               className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
               size={16}
             />
-          </span>
+          </div>
         </div>
         {isOpen && (
           <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>

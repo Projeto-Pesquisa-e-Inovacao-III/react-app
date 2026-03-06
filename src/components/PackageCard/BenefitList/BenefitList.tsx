@@ -2,7 +2,7 @@ import useMobile from '../../../hooks/isMobile';
 import classNames from 'classnames';
 import styles from './BenefitList.module.css';
 
-const renderBenefits = (isMobile: boolean) => isMobile ? 3 : 5;
+const renderBenefits = (isMobile: boolean) => isMobile ? 3 : 4;
 
 type BenefitsListProps = {
     benefits: string[],
