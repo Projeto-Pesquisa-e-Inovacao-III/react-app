@@ -135,7 +135,6 @@ export default function EditUser() {
   } = useModal(null, { title: "", content: "" })
 
   const [userImage, setUserImage] = useState<string>("");
-  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
@@ -174,7 +173,6 @@ export default function EditUser() {
     setUserImage("");
     const formData = new FormData();
     formData.append("imagem", "");
-    setUserImageFormData(formData);
     removerUserImage().then(() => {
       console.log("Imagem do usuário removida com sucesso!");
       setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
@@ -220,7 +218,6 @@ export default function EditUser() {
     if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
       insertUserImage(previewImageFormData).then(async () => {
         setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
         return
@@ -272,7 +269,6 @@ export default function EditUser() {
       insertUserImage(previewImageFormData).then(async () => {
         console.log("Imagem do usuário atualizada com sucesso!");
         setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
         return;
