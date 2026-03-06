@@ -22,7 +22,6 @@ import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
 import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
-import NoCodeTool from "./routes/Personal/NoCodeTool/NoCodeTool";
 import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
 
 // todo: 
@@ -51,7 +50,6 @@ const [type, setType] = useState<UserType | null>(null);
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
               {/* temp */}  
-              <Route path="/no-code-tool" element={<NoCodeTool />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />

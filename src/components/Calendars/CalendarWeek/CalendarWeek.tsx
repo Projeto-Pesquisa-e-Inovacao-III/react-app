@@ -25,7 +25,6 @@ type EventType = {
 
 export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: CalendarWeekProps) {
 
-    const [setOpenNewEvent] = useState<boolean>(false);
     // i could use just a react-query to get the events
     const [events, setEvents] = useState<EventType[]>([]);
 
@@ -115,9 +114,6 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
                             customButtons={{
                                 newEvent: {
                                     text: "novo evento",
-                                    click: function () {
-                                        setOpenNewEvent(true);
-                                    },
                                 },
                             }}
                             eventClick={(arg) => {

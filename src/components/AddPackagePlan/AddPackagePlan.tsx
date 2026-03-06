@@ -17,15 +17,15 @@ type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
     idOnCreate?: React.Dispatch<React.SetStateAction<number | null>>;
     title?: string;
-    values?: {
+    packageValues?: {
         id?: number;
         titulo: string;
         tipoAula: string;
         preco: string;
-        duracaoMes: string;
-        descricao: string[];
+        duracaoMes: number | string;
+        descricao: string;
         beneficios: { valor: string }[];
-        quantidadeAula: number;
+        quantidadeAula: number | null;
     };
     isEdit?: boolean;
     typePackage: "PACOTE" | "ADICIONAL";
@@ -33,15 +33,15 @@ type AddPackagePlanProps = {
     callSuccessModal: () => void;
 };
 
-export default function AddPackagePlan({ onClose, title, values, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
+export default function AddPackagePlan({ onClose, title, packageValues, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
     const isMobile = useMobile();
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number | null }>({
-        name: values?.titulo || "",
-        type: values?.tipoAula || "",
-        price: values?.preco || "",
-        deadline: values?.duracaoMes || "",
-        benefits: values?.beneficios ? values.beneficios.map(b => b.valor) : [],
-        quantity: values?.quantidadeAula || null
+        name: packageValues?.titulo || "",
+        type: packageValues?.tipoAula || "",
+        price: packageValues?.preco || "",
+        deadline: packageValues?.duracaoMes?.toString() || "",
+        benefits: packageValues?.beneficios ? packageValues.beneficios.map(b => b.valor) : [],
+        quantity: packageValues?.quantidadeAula || null
     });
 
     function handleAutoFill() {
@@ -126,13 +126,13 @@ function handleEditPackage() {
         duracaoMes: parseInt(packageInfo.deadline || "12")
     }
 
-    updateProductExhibition(values?.id, data).then((res) => {
+    updateProductExhibition(packageValues?.id, data).then((res) => {
         console.log("Pacote editado com sucesso!");
         console.log("Response:", res);
         callSuccessModal();
 
-        if (packageCreated && values?.id) {
-            packageCreated(prev => prev.filter(pkg => pkg.id !== values.id));
+        if (packageCreated && packageValues?.id) {
+            packageCreated(prev => prev.filter(pkg => pkg.id !== packageValues.id));
             packageCreated(prev => [...prev, res.data]);
         }
         onClose(true);

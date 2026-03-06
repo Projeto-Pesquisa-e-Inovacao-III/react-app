@@ -430,7 +430,7 @@ export function Packages() {
 
             {
                 openModal === "error" && (
-                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} closeThen={() => handleCloseModal()} />
                 )
             }
 
@@ -440,7 +440,7 @@ export function Packages() {
                     <AddPackagePlan title="Editar Pacote" onClose={(e) => {
                         setOpenModal(e ? "success" : null)
                         setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" packageValues={packageId ? productsExhibitionsFindById(packageId) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 )
             }
 
@@ -450,7 +450,7 @@ export function Packages() {
                         <AddPackagePlan title="Editar Adicional" onClose={(e) => {
                             setOpenModal(e ? "success" : null)
                             setPackageId(null)
-                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={packageId && productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
+                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" packageValues={packageId ? productsExhibitionsFindById(packageId, true) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
                     </>
                 )
             }

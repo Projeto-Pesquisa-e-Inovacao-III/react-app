@@ -29,13 +29,13 @@ export type UpdateUserDTO = {
     }];
 }
 
-export type UserDTOSprint2 = {
-    nome: string;
-    sobrenome: string;
-    email: string;
-    cpf: string;
-    telefone: string;
-    genero: string;
-    senha: string;
-    confirmarSenha: string;
-}
+// export type UserDTOSprint2 = {
+//     nome: string;
+//     sobrenome: string;
+//     email: string;
+//     cpf: string;
+//     telefone: string;
+//     genero: string;
+//     senha: string;
+//     confirmarSenha: string;
+// }

@@ -8,3 +8,9 @@ export type PersonalDTO = {
         pais: string;
     };
 }
+
+
+export type HorariosPersonal = {
+    "inicio": string
+    "fim": string
+}[];

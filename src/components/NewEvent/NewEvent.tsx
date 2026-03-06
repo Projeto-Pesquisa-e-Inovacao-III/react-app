@@ -24,6 +24,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
+import type { HorariosPersonal } from "../../models/personal";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -452,7 +453,7 @@ export default function NewEvent(
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours"],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
-        select: (res) => res.data,
+        select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
 
