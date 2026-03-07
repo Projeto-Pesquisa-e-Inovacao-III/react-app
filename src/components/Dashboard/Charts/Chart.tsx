@@ -18,12 +18,12 @@ type Props = {
     isLoading?: boolean;
 };
 
-export default function Chart({ data, type, title, titleY, titleX, legend, ooffsetY, isLoading }: Props) {
+export default function Chart({ data, type, title, titleY, legend, ooffsetY, isLoading }: Props) {
     //here you may choose the appropriate chart component based on the 'type' prop
     //the chart config is almost the same for both types. what changes is the actual chart component used (BarChart or LineChart) 
     const ChartComponent = type === 'line' ? LineChart : BarChart;
 
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const [width, setWidth] = useState<number>(0);
 
     useEffect(() => {

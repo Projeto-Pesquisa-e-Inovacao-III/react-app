@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 
 type TimeCellProps = {
     value?: string;
@@ -8,7 +8,7 @@ type TimeCellProps = {
 };
 
 export default function TimeCell({ value, onChange }: TimeCellProps) {
-    const timeoutRef = useRef<NodeJS.Timeout>();
+    const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
     const handleChange = (newValue: Dayjs | null) => {
         if (!newValue?.isValid()) return;

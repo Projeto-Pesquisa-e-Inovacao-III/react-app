@@ -12,7 +12,7 @@ import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarX, CircleX, LucideCircleX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import useClickOutside from "../../hooks/useClickOutside";
 
@@ -147,7 +147,6 @@ export function Packages() {
         return productsExhibitions.find(pkg => pkg.id === id);
     }
 
-
     function renderPackageCardSkeleton() {
         return (
             <>{[...Array(3)].map((_, index) => (
@@ -169,11 +168,11 @@ export function Packages() {
 
     const activePackages = productsExhibitions
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
     const activeAdicionais = productsExhibitionsAdicional
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
 
     const shouldUseCarousel = activePackages.length >= 4
@@ -253,7 +252,7 @@ export function Packages() {
                                                     <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
                                                         <PackageCard
                                                             {...pacote}
-                                                            descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                            descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
                                                             isPersonal={isPersonal}
@@ -287,7 +286,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
@@ -392,7 +391,7 @@ export function Packages() {
                                                 <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })}>
                                                     <PackageCard
                                                         {...pacote}
-                                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
                                                         isPersonal={isPersonal}
@@ -425,7 +424,7 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isPersonal={isPersonal}
@@ -491,7 +490,7 @@ export function Packages() {
 
             {
                 openModal === "error" && (
-                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} closeThen={handleCloseModal} />
+                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} closeThen={() => handleCloseModal()} />
                 )
             }
 
@@ -501,7 +500,7 @@ export function Packages() {
                     <AddPackagePlan title="Editar Pacote" onClose={(e) => {
                         setOpenModal(e ? "success" : null)
                         setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" packageValues={packageId ? productsExhibitionsFindById(packageId) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 )
             }
 
@@ -511,7 +510,7 @@ export function Packages() {
                         <AddPackagePlan title="Editar Adicional" onClose={(e) => {
                             setOpenModal(e ? "success" : null)
                             setPackageId(null)
-                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={packageId && productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
+                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" packageValues={packageId ? productsExhibitionsFindById(packageId, true) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
                     </>
                 )
             }

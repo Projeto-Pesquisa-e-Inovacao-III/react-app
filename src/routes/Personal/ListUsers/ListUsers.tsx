@@ -7,6 +7,9 @@ import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import type { ListStudents } from "../../../models/students";
+
+
 
 export default function ListUsers() {
     const isMobile = useMobile();
@@ -15,7 +18,7 @@ export default function ListUsers() {
         queryKey: ["students"],
         queryFn: async () => {
             const response = await listStudents();
-            return response.data;
+            return response.data as ListStudents;
         }
     });
 

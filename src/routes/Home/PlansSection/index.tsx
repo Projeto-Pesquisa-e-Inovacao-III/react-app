@@ -1,11 +1,9 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PlansCard from "../../../components/Home/PlansCard";
 import { useQuery } from "@tanstack/react-query";
 import { getPackages } from "../../../constants/home";
 import { isAuthenticated } from "../../../constants/user";
 import useEmblaCarousel from "embla-carousel-react";
-import { TypeContext } from "../../../App";
-import { Plus } from "lucide-react";
 import classNames from "classnames";
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
@@ -77,7 +75,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                                     description={pkg.periodo}
                                                     content={pkg.titulo}
                                                     price={`R$ ${pkg.preco}`}
-                                                    benefits={pkg.beneficios.map((b) => b.valor)}
+                                                    benefits={pkg.beneficios.map((b: any) => b.valor)}
                                                     isLoggedIn={isUserAuthenticated}
                                                 />
                                             </div>
@@ -101,7 +99,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                         description={pkg.periodo}
                                         content={pkg.titulo}
                                         price={`R$ ${pkg.preco}`}
-                                        benefits={pkg.beneficios.map(b => b.valor)}
+                                        benefits={pkg.beneficios.map((b: any) => b.valor)}
                                         isLoggedIn={isUserAuthenticated}
                                     />
                                 </div>

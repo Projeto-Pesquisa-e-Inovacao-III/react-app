@@ -2,7 +2,7 @@ import styles from "./InformationCard.module.css";
 type Props = {
     icon: React.ReactNode | React.ReactElement;
     title: string;
-    subtitle: string;
+    subtitle: string | undefined;
     subtitle2?: string;
 }
 

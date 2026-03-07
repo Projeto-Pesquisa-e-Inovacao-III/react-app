@@ -8,8 +8,8 @@ import useClickOutside from "../../../hooks/useClickOutside";
 import Skeleton from "react-loading-skeleton";
 
 type UserType = {
-  userName: string;
-  type: "personal" | "student"
+  userName?: string;
+  type: "personal" | "aluno" | null
   isLoading: boolean;
 }
 

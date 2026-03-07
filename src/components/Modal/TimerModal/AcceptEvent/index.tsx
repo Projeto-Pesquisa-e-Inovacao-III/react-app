@@ -13,7 +13,7 @@ type DeleteEventProps = {
     buttonTitle?: string;
 }
 
-export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, id, events, setEvents, callSuccessModal, buttonTitle }: DeleteEventProps) {
+export default function AcceptEvent({ isMobile, enableButton, handleCloseModal, callSuccessModal, buttonTitle }: DeleteEventProps) {
     const [loading, setLoading] = useState(false);
 
     function handleAcceptEvent() {
