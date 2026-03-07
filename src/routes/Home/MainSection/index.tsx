@@ -7,7 +7,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                 className={
                     isMobile
                         ? "flex flex-col justify-center p-5"
-                        : "flex flex-col justify-center p-5 h-dvh bg-[url('/Home/Gemini_Generated_Image_6nof0q6nof0q6nof~2.jpg')] bg-cover bg-center"
+                        : "flex flex-col justify-center p-5 h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center"
                 }
             >
                 {isMobile ? (
