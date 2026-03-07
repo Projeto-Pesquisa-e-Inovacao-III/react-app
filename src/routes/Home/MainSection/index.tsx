@@ -45,7 +45,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                         <h1 className="text-8xl w-[53.2%] font-poppins font-bold uppercase text-left text-white animate-hero-1">
                             Bem-vindo a csf Treinamentos
                         </h1>
-                        <p className="text-2xl w-[53.2%] text-left text-white animate-hero-2">
+                        <p className="text-2xl w-[53.2%] text-left font-montserrat text-white animate-hero-2">
                             A jornada para uma vida mais ativa e saudável começa aqui. Orientação
                             profissional adaptada à sua rotina e necessidade
                         </p>
