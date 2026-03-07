@@ -7,7 +7,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                 className={
                     isMobile
                         ? "flex flex-col justify-center p-5"
-                        : "flex flex-col justify-center p-5 h-dvh bg-[url('/Home/bgImageMainRight.png')] bg-cover bg-center"
+                        : "flex flex-col justify-center p-5 h-dvh bg-[url('/Home/Gemini_Generated_Image_6nof0q6nof0q6nof~2.jpg')] bg-cover bg-center"
                 }
             >
                 {isMobile ? (
@@ -22,7 +22,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                                 atendimento personalizado em academias, residências e também ao ar
                                 livre para pessoas <span className="text-gigant-orange font-semibold"> todas as idades</span>.
                             </p>
-                            
+
 
                             <img
                                 className="w-full"
@@ -36,12 +36,18 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                         </a>
                     </>
                 ) : (
-                    <div className="w-fit flex flex-col justify-center items-start gap-5 mt-64 ml-20 mr-20">
-                        <h1 className="text-5xl w-[53.2%] font-poppins font-bold uppercase text-center text-white">
+                    <div className="w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20">
+                        <h1 className="text-8xl w-[53.2%] font-poppins font-bold uppercase text-left text-white">
                             Bem-vindo a csf Treinamentos
                         </h1>
 
-                        <ButtonHome to="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F" title="Entre em contato"/>
+                        <p className="text-2xl w-[53.2%] font-bebas! text-left text-white">
+                            A jornada para uma vida mais ativa e saudável começa aqui. Orientação profissional adaptada à sua rotina e necessidade
+                        </p>
+
+                        <div className="w-2/4">
+                            <ButtonHome classname="mt-3! bg-[#F26430]! text-white! rounded-2xl! text-xl " to="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F" title="Entre em contato" />
+                        </div>
                     </div>
                 )}
             </section>
