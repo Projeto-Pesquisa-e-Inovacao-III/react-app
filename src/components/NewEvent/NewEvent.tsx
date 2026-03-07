@@ -33,7 +33,7 @@ type NewEventProps = {
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModalExtern: (() => void);
     errorModal: ((title: string, description: string) => void);
-    insertedEvents: any[];
+    insertedEvents: Schedule[];
     title?: string;
     buttonTitle?: string;
     isReschedule?: boolean;

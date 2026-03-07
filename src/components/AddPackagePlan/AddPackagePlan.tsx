@@ -80,8 +80,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
     const {
         openModal,
         setOpenModal,
-        textModal,
-        setTextModal
+        textModal
     } = useModal(null, { title: "", content: "" })
 
     function handleAddPackage() {
@@ -510,7 +509,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                 <ErrorModal
                     title={textModal.title}
                     content={textModal.content}
-                    closeThen={() => setOpenModal("add")}
+                    closeThen={() => setOpenModal(null)}
                 />
             )}
         </>

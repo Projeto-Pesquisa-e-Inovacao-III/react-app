@@ -2,7 +2,7 @@ import { PackageCard } from "../../components/PackageCard/PackageCard";
 import styles from "./Packages.module.css"
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import classnames from "classnames";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
@@ -14,7 +14,6 @@ import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
 import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
-import useClickOutside from "../../hooks/useClickOutside";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
 
@@ -83,7 +82,6 @@ export function Packages() {
     }, [productsData]);
 
 
-    const verifyNumberOfPackagesFront = productsExhibitions.filter(p => p.status === "ATIVO").length + productsExhibitionsAdicional.filter(p => p.status === "ATIVO").length;
 
     const numberOfPackages = useQuery({
         queryKey: ['verifyNumberOfPackages'],
@@ -91,12 +89,17 @@ export function Packages() {
         select: (response) => {
             return response.data;
         },
-        enabled: isPersonal && verifyNumberOfPackagesFront === 10
+        enabled: isPersonal
     });
 
-    function handleClickAddPackage(type: "add" | "addAdditional") {
-        
-        if (verifyNumberOfPackagesFront === 10 && numberOfPackages.data?.limit === numberOfPackages.data?.size) {
+    const verifyNumberOfPackagesFront = (productsExhibitions.filter(p => p.status === "ATIVO").length + productsExhibitionsAdicional.filter(p => p.status === "ATIVO").length) === numberOfPackages.data?.limit;
+
+
+    async function handleClickAddPackage(type: "add" | "addAdditional") {
+
+        const { data } = await numberOfPackages.refetch();
+
+        if (data.limit === data.size) {
             handleErrorModalInfos("Limite de Pacotes", "Você já atingiu o limite máximo de pacotes ativos.");
             return;
         }
@@ -224,7 +227,7 @@ export function Packages() {
                     </div>
                     {isPersonal && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            {verifyNumberOfPackagesFront === 10 ?
+                            {verifyNumberOfPackagesFront ?
                                 <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
                                 :
                                 (
@@ -268,14 +271,14 @@ export function Packages() {
                                     {isPersonal && !isMobile && (
                                         <div
                                             style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
-                                            className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })}
+                                            className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
                                             onClick={() => handleClickAddPackage("add")}>
 
-                                            <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                                                {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                                            <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                                {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                             </div>
-                                            {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                                            {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                                            {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                            {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                         </div>
                                     )}
                                 </div>
@@ -297,14 +300,14 @@ export function Packages() {
                                 {isPersonal && !isMobile && (
                                     <div
                                         style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
-                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
                                         onClick={() => handleClickAddPackage("add")}>
 
-                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                                            {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                            {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                                        {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                                        {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </>
@@ -327,13 +330,13 @@ export function Packages() {
                 </div>
             </div >
             {isPersonal && isMobile && (
-                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })} onClick={() => handleClickAddPackage("add")}>
-                    <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                        {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront })} onClick={() => handleClickAddPackage("add")}>
+                    <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                        {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                     </div>
 
-                    {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                    {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                    {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                    {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                 </div>
             )}
             <div
@@ -363,7 +366,7 @@ export function Packages() {
                 </div>
                 {isPersonal && (
                     <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                        {verifyNumberOfPackagesFront === 10 ?
+                        {verifyNumberOfPackagesFront ?
                             <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
                             :
                             (
@@ -407,14 +410,14 @@ export function Packages() {
                                 {isPersonal && !isMobile && (
                                     <div
                                         style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
-                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
                                         onClick={() => handleClickAddPackage("addAdditional")}>
 
-                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                                            {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                            {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                                        {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                                        {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </div>
@@ -436,26 +439,26 @@ export function Packages() {
 
                                     <div
                                         style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
-                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
                                         onClick={() => handleClickAddPackage("addAdditional")}>
 
-                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                                            {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                            {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                                        {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                                        {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </>
                         )}
                         {isPersonal && isMobile && (
-                            <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront === 10 })} onClick={() => handleClickAddPackage("addAdditional")}>
-                                <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront === 10 })}>
-                                    {verifyNumberOfPackagesFront === 10 ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                            <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront })} onClick={() => handleClickAddPackage("addAdditional")}>
+                                <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                    {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                 </div>
 
-                                {verifyNumberOfPackagesFront !== 10 ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
-                                {verifyNumberOfPackagesFront !== 10 ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                                {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                             </div>
                         )}
                     </>

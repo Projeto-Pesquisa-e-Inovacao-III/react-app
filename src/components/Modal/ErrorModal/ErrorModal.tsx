@@ -25,8 +25,8 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
     useClickOutside({
         ref: packagePageRef,
         callback: () => {
-                closeThen(false);
-u        }
+            closeThen(false);
+        }
     });
 
     return (

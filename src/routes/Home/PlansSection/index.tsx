@@ -6,6 +6,20 @@ import { isAuthenticated } from "../../../constants/user";
 import useEmblaCarousel from "embla-carousel-react";
 import classNames from "classnames";
 
+interface Benefit {
+    valor: string;
+}
+
+interface Package {
+    id: string;
+    tipoProduto: string;
+    status: string;
+    periodo: string;
+    titulo: string;
+    preco: number;
+    beneficios: Benefit[];
+}
+
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
 
@@ -28,8 +42,8 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, []);
 
     const data = isPackagesSelected
-        ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
-        : packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
+        ? packages.data?.filter((pkg: Package) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
+        : packages.data?.filter((pkg: Package) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
 
     const shouldUseCarousel = data?.length > 4
 
@@ -66,7 +80,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             <div className="flex-1 min-w-0 w-0">
                                 <div className="overflow-hidden" ref={emblaRef}>
                                     <div className="flex">
-                                        {slidesToRender?.map((pkg: any, i: number) => (
+                                        {slidesToRender?.map((pkg: Package, i: number) => (
                                             <div
                                                 key={`slide-${i}-${pkg.id}`}
                                                 className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] box-border px-3"
@@ -75,7 +89,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                                     description={pkg.periodo}
                                                     content={pkg.titulo}
                                                     price={`R$ ${pkg.preco}`}
-                                                    benefits={pkg.beneficios.map((b: any) => b.valor)}
+                                                    benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
                                                     isLoggedIn={isUserAuthenticated}
                                                 />
                                             </div>
@@ -93,13 +107,13 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                         </div>
                     ) : (
                         <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)` } : {}}>
-                            {data?.map((pkg: any) => (
+                            {data?.map((pkg: Package) => (
                                 <div key={pkg.id}>
                                     <PlansCard
                                         description={pkg.periodo}
                                         content={pkg.titulo}
                                         price={`R$ ${pkg.preco}`}
-                                        benefits={pkg.beneficios.map((b: any) => b.valor)}
+                                        benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
                                         isLoggedIn={isUserAuthenticated}
                                     />
                                 </div>
