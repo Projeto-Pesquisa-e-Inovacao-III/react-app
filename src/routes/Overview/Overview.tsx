@@ -9,12 +9,12 @@ import classNames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
-import { appoitmentsCount, getPersonalHours } from "../../constants/personal";
+import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ArrowRight, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ShoppingBag, ClipboardClock, CalendarX, Plus } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
@@ -25,8 +25,9 @@ import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPers
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import OverviewCardPackageStatus from "../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
 import Skeleton from "react-loading-skeleton";
+import type { appointmentsCards } from "../../models/overview";
 
-type ModalType = "success" | "error" | "newEvent";
+type ModalType = "success" | "error" | "newEvent" | "cancel" | "accept" | "reschedule" | "rescheduleRequest";
 
 export function Overview() {
     const isMobile = useMobile();
@@ -133,13 +134,17 @@ export function Overview() {
 
     })
 
+    
+
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
         queryFn: () => findUserAppointments(),
         retry: false,
-        select: (res) => res.data,
+        select: (res) => res.data as appointmentsCards,
         refetchOnWindowFocus: false,
     })
+
+    
 
     useEffect(() => {
         console.log("User appointments:", appointmentsCards.data);
@@ -423,7 +428,7 @@ export function Overview() {
                                                 photoUrl={card.caminhoFoto}
                                                 type={card.tipoAula}
                                                 date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
-                                                time={`${card.data.split("T")[1].substring(0, 5)} - ${card.datafim.split("T")[1].substring(0, 5)}`}
+                                                time={`${card.data.split("T")[1].substring(0, 5)} - ${card.dataFim.split("T")[1].substring(0, 5)}`}
                                                 address={card.endereco.bairro + ", " + card.endereco.cidade}
                                                 isMobile={isMobile}
                                             />

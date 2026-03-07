@@ -3,7 +3,7 @@ import SmallerButton from '../SmallerButton/SmallerButton';
 import classnames from 'classnames';
 import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Calendar, Dumbbell, Heart, HeartPulse, Home, Pencil, Trash, Trash2 } from 'lucide-react';
+import { Calendar, Dumbbell, HeartPulse, Home, Pencil, Trash2 } from 'lucide-react';
 import { BenefitsList } from './BenefitList/BenefitList';
 
 type PackageCardProps = {
@@ -15,10 +15,10 @@ type PackageCardProps = {
     tipoAula?: string | React.ReactNode;
     quantidadeAula?: number | React.ReactNode;
     descricao: string[] | React.ReactNode[];
-    beneficios?: string[] | React.ReactNode[];
-    onClick: () => void;
-    setHandleEdit: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
-    setHandleDelete: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    beneficios?:  {valor: string;}[]| React.ReactNode[];
+    onClick?: () => void;
+    setHandleEdit?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+    setHandleDelete?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     isMobile?: boolean;
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";
@@ -31,11 +31,11 @@ export function PackageCard(props: PackageCardProps) {
     const { isMobile = false, variant = "consultoria", isLoading = false } = props;
 
     function handleOpenEdit() {
-        props.setHandleEdit(true);
+        props.setHandleEdit?.(true);
     }
 
     function handleOpenDelete() {
-        props.setHandleDelete(true);
+        props.setHandleDelete?.(true);
     }
 
     console.log(props.descricao, props.tipoAula);
@@ -61,7 +61,7 @@ export function PackageCard(props: PackageCardProps) {
                 <div className='flex justify-between items-center not-lg:w-full!'>
                     <div className={classnames("flex items-center gap-3 not-lg:flex-col! not-lg:w-full not-lg:mb-2")}>
                         <p className={classnames("not-lg:w-full! text-center " + styles.cardTipoAula, { [styles.cardTipoAulaPresential]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.cardTipoAulaHome]: props.tipoAula === "RESIDENCIAL" }, { [styles.cardTipoAulaFunctional]: props.tipoAula === "FUNCIONAL" })}>{props.tipoAula?.toString().toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}</p>
-                        <span className={classnames({ [styles.packageCardPresentialText]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHomeText]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctionalText]: props.tipoAula === "FUNCIONAL" }, "bg-indigo text-white rounded-2xl w-full flex-1 font-bold py-1 px-3 text-center")}>{props.quantidadeAula > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
+                        <span className={classnames({ [styles.packageCardPresentialText]: props.tipoAula && props.tipoAula === "PRESENCIAL" }, { [styles.packageCardHomeText]: props.tipoAula === "RESIDENCIAL" }, { [styles.packageCardFunctionalText]: props.tipoAula === "FUNCIONAL" }, "bg-indigo text-white rounded-2xl w-full flex-1 font-bold py-1 px-3 text-center")}>{props.quantidadeAula && Number(props.quantidadeAula) > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
                     </div>
 
                     {!isMobile && (
@@ -156,7 +156,7 @@ export function PackageCard(props: PackageCardProps) {
                                     />
                                 </svg>
                             </div>
-                            <span>{props.quantidadeAula > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
+                            <span>{props.quantidadeAula && Number(props.quantidadeAula) > 1 ? `${props.quantidadeAula} agendamentos` : `${props.quantidadeAula} agendamento`}</span>
                         </span>
                         {props.descricao && Array.isArray(props.descricao) && props.descricao.length > 0 && (
                             <ul

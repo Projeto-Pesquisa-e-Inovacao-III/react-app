@@ -11,7 +11,7 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";

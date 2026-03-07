@@ -5,8 +5,10 @@ import styles from "./UsersTable.module.css";
 import classNames from "classnames";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import Skeleton from "react-loading-skeleton";
+import type { ListStudents } from "../../models/students";
 
-export default function UsersTable(props) {
+
+export default function UsersTable(props: { users: ListStudents; input: string; isLoading: boolean }) {
     const isMobile = useMobile();
 
     const nav = useNavigate();

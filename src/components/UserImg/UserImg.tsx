@@ -1,4 +1,3 @@
-import { Oval } from 'react-loader-spinner';
 import styles from './UserImg.module.css';
 
 type UserImgProps = {

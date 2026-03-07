@@ -3,10 +3,10 @@ import Button from "../../../components/Button/Button.tsx";
 import { UserImg } from "../../../components/UserImg/UserImg.tsx";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { IdCard, Phone, Shield, Trash, Upload, User } from "lucide-react";
+import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword, getUserImage } from "../../../constants/user.ts";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete} from "../../../constants/user.ts";
 import type { UpdateUserDTO } from "../../../models/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
@@ -16,7 +16,6 @@ import type { PersonalDTO } from "../../../models/personal.ts";
 import { editPersonalProfile } from "../../../constants/personal.ts";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
 import { Link, useNavigate } from "react-router-dom";
-import { validatePassword } from "../../../utils/validacao.ts";
 import useModal from "../../../hooks/useModal.tsx";
 import useClickOutside from "../../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -136,7 +135,6 @@ export default function EditUser() {
   } = useModal(null, { title: "", content: "" })
 
   const [userImage, setUserImage] = useState<string>("");
-  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
@@ -175,7 +173,6 @@ export default function EditUser() {
     setUserImage("");
     const formData = new FormData();
     formData.append("imagem", "");
-    setUserImageFormData(formData);
     removerUserImage().then(() => {
       console.log("Imagem do usuário removida com sucesso!");
       setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
@@ -221,7 +218,6 @@ export default function EditUser() {
     if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
       insertUserImage(previewImageFormData).then(async () => {
         setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
         return
@@ -273,7 +269,6 @@ export default function EditUser() {
       insertUserImage(previewImageFormData).then(async () => {
         console.log("Imagem do usuário atualizada com sucesso!");
         setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
         return;
