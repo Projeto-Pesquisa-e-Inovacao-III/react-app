@@ -8,16 +8,13 @@ import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
 import useSearchFilter from "../../hooks/useSearchFilter";
-import { useQuery } from "@tanstack/react-query";
 import { findPersonalRequests } from "../../constants/schedule";
 import type { ScheduleAfterInserted } from "../../models/schedule";
-import { endOfDay, format, parse, parseISO, startOfDay } from "date-fns";
+import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
-import useMobile from "../../hooks/isMobile";
 
 export default function ScheduleHistory() {
-    const isMobile = useMobile();
 
     // postalCode does not exist at this endpoint
     // const listOfAppointments = useQuery({

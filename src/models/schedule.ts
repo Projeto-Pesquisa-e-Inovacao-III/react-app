@@ -1,4 +1,5 @@
 export type Schedule = {
+    agendamentoId?: number,
     idAgendamento?: number,
     data: Date | string,
     descricao: string,
@@ -22,6 +23,12 @@ export type Schedule = {
 export type ScheduleAfterInserted = {
     idAgendamento?: number,
     agendamentoId: number,
+    aluno?: {
+        nome?: string;
+        idade?: number;
+        avatarUrl?: string;
+        // adicione outras propriedades se necessário
+    };
     data: string,
     dataInicio: Date | string,
     dataFim: Date | string,
@@ -90,8 +97,8 @@ export type ScheduleReschedule = {
             uf: string
         }
     },
-    personalId: number,
-    tipoAulaProdutoContratado: string
+    personalId?: number,
+    tipoAulaProdutoContratado?: string
 }
 
 export type AbsenceAppointment = {

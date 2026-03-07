@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styles from "./ErrorModal.module.css";
 import useMobile from '../../../hooks/isMobile';
 import SmallerButton from '../../SmallerButton/SmallerButton';
+import useClickOutside from '../../../hooks/useClickOutside';
 
 export default function ErrorModal({ closeThen, title, content }: { closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
@@ -17,10 +18,21 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
         console.log("Modal aberto");
     }, []);
 
+
+
+    const packagePageRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside({
+        ref: packagePageRef,
+        callback: () => {
+            closeThen(false);
+        }
+    });
+
     return (
         <>
             <div className={`overlay ${styles.overlayError}`}></div>
-            <div className={`${styles.modalEventCreated} ${isMobileDevice ? styles.modalEventCreatedMobile : ''}`}>
+            <div ref={packagePageRef} className={`${styles.modalEventCreated} ${isMobileDevice ? styles.modalEventCreatedMobile : ''}`}>
                 <h2>{title || "Evento criado com sucesso!"}</h2>
                 <p className={styles.contentModal}>{content || "Erro."}</p>
                 <svg width="68" height="66" viewBox="0 0 68 66" fill="none" xmlns="http://www.w3.org/2000/svg">

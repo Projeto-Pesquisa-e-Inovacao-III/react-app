@@ -1,4 +1,4 @@
-import { use, useContext, useEffect, useMemo, useState } from "react";
+import {useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton/SmallerButton";
@@ -6,11 +6,11 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { ArrowLeft, Calendar, CalendarSync, Clock, History, Info, MapPin, RefreshCcw, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { differenceInYears, format, parse, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -19,11 +19,12 @@ import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
 import useModal from "../../hooks/useModal";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../Select/Select";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
+import type { HorariosPersonal } from "../../models/personal";
 import { getUserAddresses } from "../../constants/address";
 
 type NewEventProps = {
@@ -32,7 +33,7 @@ type NewEventProps = {
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModalExtern: (() => void);
     errorModal: ((title: string, description: string) => void);
-    insertedEvents: any[];
+    insertedEvents: Schedule[];
     title?: string;
     buttonTitle?: string;
     isReschedule?: boolean;
@@ -83,7 +84,7 @@ export default function NewEvent(
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
-    const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+    const [selectedLocation] = useState<string>("CASA");
     const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
@@ -363,8 +364,8 @@ export default function NewEvent(
         handleCloseModalOnClickOverlay();
     }
 
-    function handleButtonClick(hour: string) {
-        setNewEventStartHour(hour);
+    function handleButtonClick(hour: string | boolean) {
+        if (typeof hour === "string") setNewEventStartHour(hour);
     }
 
     const type = useContext(TypeContext);
@@ -453,7 +454,7 @@ export default function NewEvent(
             personalList.data?.[0]?.id,
             newEventDate],
         queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : "", selectedType.toUpperCase()),
-        select: (res) => res.data,
+        select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
 
@@ -537,11 +538,11 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />}
-                                title="Aluno"
-                                subtitle={appoitmentData ? appoitmentData.aluno.nome : ""}
-                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`}
-                            />
+                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                    title="Aluno"
+                                    subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
+                                />
                         ) : (
                             <>
                                 {step === 2 && (
@@ -551,7 +552,13 @@ export default function NewEvent(
                                 )}
 
                                 <InformationCard
-                                    icon={<UserAvatar foto={!personalList.isLoading && personalList.data[0]?.caminhoFoto} useUserImage={true} />}
+                                    icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
                                     subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -651,10 +658,17 @@ export default function NewEvent(
                                 {isMobile && (
                                     <>
                                         {typeUser === "personal" ? (
-                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
-                                                icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
+                                                icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
+
                                                 title="Personal Trainer"
                                                 subtitle={personalList.data?.[0]?.nome || ""}
                                                 subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -711,9 +725,9 @@ export default function NewEvent(
                                                 </span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
+                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
                                                 {chooseTimeOfDay === "MANHÃ" && (

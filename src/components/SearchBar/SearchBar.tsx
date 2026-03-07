@@ -1,8 +1,14 @@
 import "./style.css";
-import { Search } from "lucide-react";
-import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
 
-export function SearchBar({search, setSearch}) {
+
+type searchBarProps = {
+    search: string;
+    setSearch: React.Dispatch<React.SetStateAction<string>>;
+}
+
+
+export function SearchBar({search, setSearch}: searchBarProps) {
+
     return (
         <div className="search-bar">
             <img src="/searchIcon.png" alt="Pesquisar" className="search-icon" />

@@ -1,11 +1,24 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import PlansCard from "../../../components/Home/PlansCard";
 import { useQuery } from "@tanstack/react-query";
 import { getPackages } from "../../../constants/home";
 import { isAuthenticated } from "../../../constants/user";
 import useEmblaCarousel from "embla-carousel-react";
-import { TypeContext } from "../../../App";
-import { Plus } from "lucide-react";
+import classNames from "classnames";
+
+interface Benefit {
+    valor: string;
+}
+
+interface Package {
+    id: string;
+    tipoProduto: string;
+    status: string;
+    periodo: string;
+    titulo: string;
+    preco: number;
+    beneficios: Benefit[];
+}
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
@@ -29,16 +42,17 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, []);
 
     const data = isPackagesSelected
-        ? packages.data?.filter((pkg: any) => pkg.tipoProduto === "PACOTE")
-        : packages.data?.filter((pkg: any) => pkg.tipoProduto === "ADICIONAL")
+        ? packages.data?.filter((pkg: Package) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
+        : packages.data?.filter((pkg: Package) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
 
-    const shouldUseCarousel = (data?.length ?? 0) >= 5
+    const shouldUseCarousel = data?.length > 4
 
-    const slidesToRender = shouldUseCarousel
-        ? [...data, ...data, ...data]
-        : data
+    const slidesToRender = data;
 
-    const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true })
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false },
+        []
+    );
 
     const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -66,7 +80,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             <div className="flex-1 min-w-0 w-0">
                                 <div className="overflow-hidden" ref={emblaRef}>
                                     <div className="flex">
-                                        {slidesToRender?.map((pkg: any, i: number) => (
+                                        {slidesToRender?.map((pkg: Package, i: number) => (
                                             <div
                                                 key={`slide-${i}-${pkg.id}`}
                                                 className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] box-border px-3"
@@ -75,7 +89,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                                     description={pkg.periodo}
                                                     content={pkg.titulo}
                                                     price={`R$ ${pkg.preco}`}
-                                                    benefits={pkg.beneficios.map((b) => b.valor)}
+                                                    benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
                                                     isLoggedIn={isUserAuthenticated}
                                                 />
                                             </div>
@@ -92,14 +106,14 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {data?.map((pkg: any) => (
+                        <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)` } : {}}>
+                            {data?.map((pkg: Package) => (
                                 <div key={pkg.id}>
                                     <PlansCard
                                         description={pkg.periodo}
                                         content={pkg.titulo}
                                         price={`R$ ${pkg.preco}`}
-                                        benefits={pkg.beneficios.map(b => b.valor)}
+                                        benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
                                         isLoggedIn={isUserAuthenticated}
                                     />
                                 </div>
