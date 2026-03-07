@@ -6,7 +6,7 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
@@ -33,7 +33,7 @@ type NewEventProps = {
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModalExtern: (() => void);
     errorModal: ((title: string, description: string) => void);
-    insertedEvents: any[];
+    insertedEvents: Schedule[];
     title?: string;
     buttonTitle?: string;
     isReschedule?: boolean;
@@ -552,7 +552,13 @@ export default function NewEvent(
                                 )}
 
                                 <InformationCard
-                                    icon={<UserAvatar foto={!personalList.isLoading && personalList.data[0]?.caminhoFoto} useUserImage={true} />}
+                                    icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
                                     subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -655,7 +661,14 @@ export default function NewEvent(
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard
-                                                icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
+                                                icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
+
                                                 title="Personal Trainer"
                                                 subtitle={personalList.data?.[0]?.nome || ""}
                                                 subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
