@@ -11,8 +11,8 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                 className={`font-poppins w-full flex ${isMobile ? 'flex-col items-center' : 'ml-20 mr-20'
                     }`}
             >
-                <div className={`${isMobile ? 'w-full mb-5' : ''}`}>
-                    <img className="w-full" src="/Home/imageAbout.png" alt="" />
+                <div className={`${isMobile ? 'w-full mb-5' : 'w-2/4 not-2xl:w-full'}`}>
+                    <img className="rounded-lg" src="/Home/about-2.png" alt="" />
                 </div>
 
                 <div
