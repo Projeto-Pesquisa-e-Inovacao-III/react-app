@@ -25,8 +25,8 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
     const [rescheduleReason, setRescheduleReason] = useState("")
     const [newEventStartHour, setNewEventStartHour] = useState<string>("")
 
-    function handleButtonClick(value: string) {
-        setNewEventStartHour(value)
+    function handleButtonClick(value: string | boolean) {
+        if (typeof value === "string") setNewEventStartHour(value)
     }
 
     function handleOpenCalendar() {

@@ -5,25 +5,24 @@ import Skeleton from "react-loading-skeleton";
 
 type Props = {
     type: string;
-    placeholder: string;
+    placeholder?: string;
     icon: React.ReactNode;
     label?: string;
     id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
-    value?: string;
+    value?: string | number | undefined | null;
     mask?: (input: React.FormEvent<HTMLInputElement>) => void
     disabled?: boolean;
-
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
-
+    
     allowDecimals?: boolean;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -86,9 +85,9 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""}`}
                             placeholder={placeholder}
                             onInput={(e) => mask ? mask(e) : undefined}
+                            value={value ?? undefined}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
-                            value={value}
                             disabled={disabled}
                         />
                         {isPassword && (

@@ -10,4 +10,11 @@ export type PersonalDTO = {
     }[];
     dataNascimento?: string;
     caminhoFoto?: string;
-}
+};
+
+
+export type HorariosPersonal = {
+    "inicio": string
+    "fim": string
+}[];
+    

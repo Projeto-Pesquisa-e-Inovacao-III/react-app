@@ -6,7 +6,7 @@ import UserAvatar from '../UserAvatar/UserAvatar';
 
 type Index = {
     agendamentoId: number;
-    status: 'APROVADO' | 'Confirmado' | 'Cancelado';
+    status: "APROVADO" | "PENDENTE_CLIENTE_APROVACAO" | "PENDENTE_PERSONAL_APROVACAO" | "CONCLUIDO" | "PENDENTE_PERSONAL_CONCLUIR" | "CANCELADO_CLIENTE" | "CANCELADO_PERSONAL" | "AUSENCIA_CLIENTE" | "AUSENCIA_PERSONAL";
     name: string;
     photoUrl: string;
     date: string;

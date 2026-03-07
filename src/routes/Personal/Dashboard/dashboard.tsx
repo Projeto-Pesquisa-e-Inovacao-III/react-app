@@ -4,9 +4,7 @@ import styles from "./Dashboard.module.css"
 import Chart from "../../../components/Dashboard/Charts/Chart";
 import classnames from "classnames";
 import useMobile from "../../../hooks/isMobile";
-import { useState } from "react";
 import { getConsultingSessions, getPlansSalesQuantity, getQuantityofActiveStudents, getQuantityofInactiveStudents, getSalesQuantity } from "../../../constants/dashboard";
-import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 export const description = "A bar chart"

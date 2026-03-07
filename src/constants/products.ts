@@ -13,7 +13,7 @@ export function desactivateProductExhibition(id: number) {
     return api.patch(`/produtos-exibicoes/desativar/${id}`)
 }
 
-export function updateProductExhibition(id: number, data: Partial<ProductExhibition>) {
+export function updateProductExhibition(id: number | undefined, data: Partial<ProductExhibition>) {
     return api.post(`/produtos-exibicoes/editar/${id}`, data);
 }
 
@@ -31,4 +31,8 @@ export function getUserPlansHistory() {
 
 export function BoughtPlanDetails(id: number) {
     return api.get(`/produtos-contratados/detalhado/${id}`)
+}
+
+export function verifyNumberOfPackages() {
+    return api.get(`/produtos-exibicoes/check-limit`)
 }

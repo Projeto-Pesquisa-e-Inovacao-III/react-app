@@ -27,6 +27,8 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
         return Math.min(100, Math.max(0, Math.round(100 - progress)));
     }
 
+    
+
     const progress = actualPlan ? calculateProgress(actualPlan.dataExpiracao) : 0;
 
     const nav = useNavigate();
