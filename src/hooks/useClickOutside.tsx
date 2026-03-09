@@ -5,6 +5,9 @@ type Props<T extends HTMLElement> = {
     callback: () => void;
 }
 
+// Hook para detectar cliques fora de um elemento específico
+// Uso: const ref = useRef(null); useClickOutside({ ref, callback: () => console.log("Clicou fora!") });
+
 export default function useClickOutside<T extends HTMLElement>({ ref, callback }: Props<T>) {
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
