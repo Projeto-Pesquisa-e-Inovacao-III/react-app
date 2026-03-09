@@ -1,108 +1,81 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-import styles from '../SetAvailability.module.css';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton from "react-loading-skeleton";
+import styles from "../SetAvailability.module.css";
 
 export default function AvailabilitySkeleton() {
-    const daysCount = 7;
+  const daysCount = 7;
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <Skeleton width={200} height={32} />
-            </div>
+  return (
+    <div className={styles.pageWrapper}>
 
-            <div className={styles.defaultsSection}>
-                <div className={styles.defaultsLabel}>
-                    <Skeleton circle width={24} height={24} />
-                    <Skeleton width={80} height={20} />
-                </div>
-                <div className={styles.defaultsControls}>
-                    <div className={styles.controlGroup}>
-                        <Skeleton width={200} height={20} />
-                        <Skeleton width={150} height={40} />
-                        <Skeleton width={300} height={16} />
-                    </div>
-                </div>
-            </div>
+      {/* ── Header ── */}
+      <div className={styles.header}>
+        <Skeleton width={320} height={32} />
+        <Skeleton width={260} height={16} style={{ marginTop: 6 }} />
+      </div>
 
-            {/* Skeleton para Desktop */}
-            <div className={styles.tableWrapper}>
-                <table className={styles.table}>
-                    <thead className={styles.tableHead}>
-                        <tr>
-                            <th className={styles.dayColumn}>
-                                <Skeleton  height={20} />
-                            </th>
-                            <th className={styles.timeColumn}>
-                                <Skeleton  height={20} />
-                            </th>
-                            <th className={styles.intervalColumn}>
-                                <Skeleton  height={20} />
-                            </th>
-                            <th className={styles.intervalColumn}>
-                                <Skeleton  height={20} />
-                            </th>
-                            <th className={styles.timeColumn}>
-                                <Skeleton  height={20} />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className={styles.tableBody}>
-                        {Array.from({ length: daysCount }).map((_, index) => (
-                            <tr key={index}>
-                                <td className={`${styles.tableCell} ${styles.dayCell}`}>
-                                    <Skeleton  height={24} />
-                                </td>
-                                <td className={styles.tableCell}>
-                                    <Skeleton  height={40} />
-                                </td>
-                                <td className={styles.tableCell}>
-                                    <Skeleton  height={40} />
-                                </td>
-                                <td className={styles.tableCell}>
-                                    <Skeleton  height={40} />
-                                </td>
-                                <td className={styles.tableCell}>
-                                    <Skeleton  height={40} />
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Skeleton para Mobile */}
-            <div className={styles.mobileView}>
-                {Array.from({ length: daysCount }).map((_, index) => (
-                    <div key={index} className={styles.dayCard}>
-                        <div className={styles.dayCardHeader}>
-                            <Skeleton width={120} height={24} />
-                        </div>
-
-                        <div className={styles.slotFields}>
-                            <div className={styles.fieldGroup}>
-                                <Skeleton width={60} height={16} />
-                                <Skeleton  height={40} />
-                            </div>
-
-                            <div className={styles.fieldGroup}>
-                                <Skeleton width={60} height={16} />
-                                <Skeleton  height={40} />
-                            </div>
-
-                            <div className={styles.fieldGroup}>
-                                <Skeleton width={120} height={16} />
-                                <Skeleton  height={40} />
-                            </div>
-
-                            <div className={styles.fieldGroup}>
-                                <Skeleton width={120} height={16} />
-                                <Skeleton  height={40} />
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
+      {/* ── Defaults bar ── */}
+      <div className={styles.defaultsSection}>
+        <div className={styles.defaultsLabel}>
+          <Skeleton circle width={16} height={16} />
+          <Skeleton width={70} height={18} />
         </div>
-    );
+
+        <div className={styles.divider} />
+
+        <div className={styles.defaultsControls}>
+          <div className={styles.controlGroup}>
+            <Skeleton width={190} height={18} />
+            <Skeleton width={90} height={36} borderRadius={8} />
+          </div>
+          <Skeleton circle width={16} height={16} />
+        </div>
+      </div>
+
+      {/* ── Day rows ── */}
+      <div className={styles.dayList}>
+        {Array.from({ length: daysCount }).map((_, index) => (
+          <div key={index} className={styles.dayRow}>
+
+            {/* Toggle + name */}
+            <div className={styles.dayLabel}>
+              <Skeleton width={52} height={28} borderRadius={14} />
+              <Skeleton width={110} height={18} />
+            </div>
+
+            {/* Manhã */}
+            <div className={styles.timeRange}>
+              <Skeleton width={44} height={12} />
+              <div className={styles.timeRangeInputs}>
+                <Skeleton circle width={16} height={16} />
+                <Skeleton width={72} height={34} borderRadius={8} />
+                <Skeleton width={8} height={14} />
+                <Skeleton width={72} height={34} borderRadius={8} />
+              </div>
+            </div>
+
+            <div className={styles.periodDivider} />
+
+            {/* Tarde */}
+            <div className={styles.timeRange}>
+              <Skeleton width={44} height={12} />
+              <div className={styles.timeRangeInputs}>
+                <Skeleton circle width={16} height={16} />
+                <Skeleton width={72} height={34} borderRadius={8} />
+                <Skeleton width={8} height={14} />
+                <Skeleton width={72} height={34} borderRadius={8} />
+              </div>
+            </div>
+
+          </div>
+        ))}
+      </div>
+
+      {/* ── Footer ── */}
+      <div className={styles.footer}>
+        <Skeleton width={80} height={36} borderRadius={8} />
+        <Skeleton width={140} height={40} borderRadius={8} />
+      </div>
+
+    </div>
+  );
 }
