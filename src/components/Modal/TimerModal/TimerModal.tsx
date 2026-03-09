@@ -47,8 +47,8 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
 
     return (
         <>
-            <div className="overlay"></div>
-            <div ref={modalRef} className={`modal-event-created${isMobile ? "-mobile" : ""} ${classNameDiv ? classNameDiv : ""}`}>
+            <div className="overlay backdrop-enter"></div>
+            <div ref={modalRef} className={`modal-event-created${isMobile ? "-mobile" : ""} ${classNameDiv ? classNameDiv : ""} modal-card`}>
                 <h2>{title || "Cancelar!"}</h2>
                 <p className={`content-modal ${classNameText ? classNameText : ""}`}>{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer

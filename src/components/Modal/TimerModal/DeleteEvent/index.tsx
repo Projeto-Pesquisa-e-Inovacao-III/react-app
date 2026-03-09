@@ -23,6 +23,7 @@ export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, 
         setEvents?.(events!.filter(event => event.id !== id));
         callSuccessModal?.(true);
     }
+    
 
     return (
         <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
