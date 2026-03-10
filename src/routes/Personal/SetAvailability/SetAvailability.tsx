@@ -10,7 +10,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilitySkeleton from "./AvailabilitySkeleton/AvailabilitySkeleton";
-import { Info, Settings } from "lucide-react";
+import { Info, Settings, CopyCheck, TriangleAlert } from "lucide-react";
+
 
 export interface TimeSlot {
     id?: string;
@@ -28,6 +29,7 @@ interface DaySchedule {
 
 type SaveStatus = "idle" | "loading" | "success" | "error";
 
+
 const DAYS_OF_WEEK = [
     "DOMINGO",
     "SEGUNDA",
@@ -41,20 +43,15 @@ const DAYS_OF_WEEK = [
 const DAYS_META: Record<string, string> = {
     DOMINGO: "Domingo",
     SEGUNDA: "Segunda-feira",
-    TERCA: "Terça-feira",
-    QUARTA: "Quarta-feira",
-    QUINTA: "Quinta-feira",
-    SEXTA: "Sexta-feira",
-    SABADO: "Sábado",
+    TERCA:   "Terça-feira",
+    QUARTA:  "Quarta-feira",
+    QUINTA:  "Quinta-feira",
+    SEXTA:   "Sexta-feira",
+    SABADO:  "Sábado",
 };
 
-function Toggle({
-    checked,
-    onChange,
-}: {
-    checked: boolean;
-    onChange: () => void;
-}) {
+
+function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
     return (
         <button
             type="button"
@@ -67,6 +64,7 @@ function Toggle({
         </button>
     );
 }
+
 
 function TimeRange({
     label,
@@ -87,7 +85,6 @@ function TimeRange({
         <div className={`${styles.timeRange} ${disabled ? styles.disabled : ""}`}>
             <span className={styles.timeRangeLabel}>{label}</span>
             <div className={styles.timeRangeInputs}>
-
                 <input
                     type="time"
                     value={startValue.slice(0, 5)}
@@ -95,9 +92,7 @@ function TimeRange({
                     onChange={(e) => onStartChange(e.target.value)}
                     className={styles.input}
                 />
-
                 <span className={styles.timeSeparator}>–</span>
-
                 <input
                     type="time"
                     value={endValue.slice(0, 5)}
@@ -110,13 +105,14 @@ function TimeRange({
     );
 }
 
+
 function SaveBadge({ status }: { status: SaveStatus }) {
     if (status === "idle") return null;
 
     const labels: Record<Exclude<SaveStatus, "idle">, string> = {
         loading: "Salvando…",
-        success: "✓ Alterações salvas",
-        error: "✕ Erro ao salvar",
+        success: "Alterações salvas!",
+        error:   "✕ Erro ao salvar",
     };
 
     return (
@@ -124,6 +120,74 @@ function SaveBadge({ status }: { status: SaveStatus }) {
             <span className={`${styles.statusDot} ${styles[status]}`} />
             {labels[status as Exclude<SaveStatus, "idle">]}
         </span>
+    );
+}
+
+
+function GlobalPanelContent({
+    globalManha,
+    globalTarde,
+    setGlobalManha,
+    setGlobalTarde,
+    applyToAll,
+}: {
+    globalManha: { start: string; end: string };
+    globalTarde: { start: string; end: string };
+    setGlobalManha: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
+    setGlobalTarde: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
+    applyToAll: () => void;
+}) {
+    return (
+        <>
+            <h3 className={styles.globalPanelTitle}>Padrão para todos os dias</h3>
+
+            <div className={styles.globalPanelField}>
+                <span className={styles.globalRangeTitle}>Manhã</span>
+                <div className={styles.globalRangeInputs}>
+                    <input
+                        type="time"
+                        value={globalManha.start}
+                        onChange={(e) => setGlobalManha((p) => ({ ...p, start: e.target.value }))}
+                        className={styles.input}
+                    />
+                    <span className={styles.timeSeparator}>–</span>
+                    <input
+                        type="time"
+                        value={globalManha.end}
+                        onChange={(e) => setGlobalManha((p) => ({ ...p, end: e.target.value }))}
+                        className={styles.input}
+                    />
+                </div>
+            </div>
+
+            <div className={styles.globalPanelField}>
+                <span className={styles.globalRangeTitle}>Tarde</span>
+                <div className={styles.globalRangeInputs}>
+                    <input
+                        type="time"
+                        value={globalTarde.start}
+                        onChange={(e) => setGlobalTarde((p) => ({ ...p, start: e.target.value }))}
+                        className={styles.input}
+                    />
+                    <span className={styles.timeSeparator}>–</span>
+                    <input
+                        type="time"
+                        value={globalTarde.end}
+                        onChange={(e) => setGlobalTarde((p) => ({ ...p, end: e.target.value }))}
+                        className={styles.input}
+                    />
+                </div>
+            </div>
+
+            <button
+                type="button"
+                className={styles.applyAllButton}
+                onClick={applyToAll}
+            >
+                <CopyCheck size={15} />
+                Aplicar a todos
+            </button>
+        </>
     );
 }
 
@@ -145,9 +209,12 @@ export default function SetAvailability() {
 
     const [schedule, setSchedule] = useState<DaySchedule[]>([]);
     const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+    const [hasUnsaved, setHasUnsaved] = useState(false);
     const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
     const dirtySlotIds = useRef<Set<string>>(new Set());
+
+    const [globalManha, setGlobalManha] = useState({ start: "08:00", end: "12:00" });
+    const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
 
     useEffect(() => {
         if (!getInitialCronogram.data) return;
@@ -169,6 +236,7 @@ export default function SetAvailability() {
     function showSuccess() {
         if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
         setSaveStatus("success");
+        setHasUnsaved(false);
         feedbackTimeoutRef.current = setTimeout(() => setSaveStatus("idle"), 3000);
     }
 
@@ -184,7 +252,9 @@ export default function SetAvailability() {
         };
     }, []);
 
+
     function toggleDay(dayIndex: number) {
+        setHasUnsaved(true);
         setSchedule((prev) => {
             const next = [...prev];
             next[dayIndex] = { ...next[dayIndex], enabled: !next[dayIndex].enabled };
@@ -198,6 +268,7 @@ export default function SetAvailability() {
         field: "horaInicio" | "horaFim",
         value: string
     ) {
+        setHasUnsaved(true);
         setSchedule((prev) => {
             const next = [...prev];
             const slot = next[dayIndex].slots[slotIndex];
@@ -212,12 +283,40 @@ export default function SetAvailability() {
         });
     }
 
+    function applyToAll() {
+        setHasUnsaved(true);
+        setSchedule((prev) =>
+            prev.map((daySchedule) => {
+                if (!daySchedule.enabled) return daySchedule;
+
+                const workIndex  = daySchedule.slots.findIndex((s) => s.tipo === "DISPONIVEL");
+                const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
+
+                if (workIndex === -1 || breakIndex === -1) return daySchedule;
+
+                const updatedSlots = daySchedule.slots.map((s, i) => {
+                    if (i === workIndex) {
+                        if (s.id) dirtySlotIds.current.add(String(s.id));
+                        return { ...s, horaInicio: globalManha.start, horaFim: globalTarde.end };
+                    }
+                    if (i === breakIndex) {
+                        if (s.id) dirtySlotIds.current.add(String(s.id));
+                        return { ...s, horaInicio: globalManha.end, horaFim: globalTarde.start };
+                    }
+                    return s;
+                });
+
+                return { ...daySchedule, slots: updatedSlots };
+            })
+        );
+    }
+
     function handleSave() {
         if (dirtySlotIds.current.size === 0) return;
 
         setSaveStatus("loading");
 
-        const promises: Promise<any>[] = [];
+        const promises: Promise<unknown>[] = [];
 
         schedule.forEach((daySchedule) => {
             daySchedule.slots.forEach((slot) => {
@@ -255,126 +354,163 @@ export default function SetAvailability() {
             .catch(showError);
     }
 
+    function handleCancel() {
+        setHasUnsaved(false);
+        setSaveStatus("idle");
+        dirtySlotIds.current.clear();
+        if (getInitialCronogram.data) {
+            const formatted: DaySchedule[] = DAYS_OF_WEEK.map((day) => {
+                const slots: TimeSlot[] = getInitialCronogram.data.filter(
+                    (slot: TimeSlot) => slot.diaSemana === day
+                );
+                return {
+                    day,
+                    enabled: slots.some((s) => s.tipo === "DISPONIVEL"),
+                    slots,
+                };
+            });
+            setSchedule(formatted);
+        }
+    }
+
+
     if (getInitialCronogram.isLoading || personalBuffer.isLoading) {
         return <AvailabilitySkeleton />;
     }
 
+    const globalPanelProps = {
+        globalManha,
+        globalTarde,
+        setGlobalManha,
+        setGlobalTarde,
+        applyToAll,
+    };
+
+
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className={styles.pageWrapper}>
+
                 <div className={styles.header}>
                     <h1 className={styles.title}>Definir horário de disponibilidade</h1>
                 </div>
-                <div className={styles.defaultsSection}>
-                    <div className={styles.defaultsLabel}>
-                        <Settings size={16} />
-                        <span>Padrões:</span>
-                    </div>
 
-                    <div className={styles.divider} />
-
-                    <div className={styles.defaultsControls}>
-                        <div className={styles.controlGroup}>
-                            <label className={styles.controlLabel}>
-                                Intervalo pós agendamentos
-                            </label>
-                            <select
-                                className={styles.select}
-                                value={personalBuffer.data ?? "0"}
-                                onChange={(e) => handleUpdateBuffer(e.target.value)}
-                            >
-                                <option value="15">15 min</option>
-                                <option value="20">20 min</option>
-                                <option value="30">30 min</option>
-                                <option value="45">45 min</option>
-                                <option value="60">1 hora</option>
-                            </select>
-                        </div>
-
-                        <div
-                            className={styles.infoTrigger}
-                            title="15 minutos são reservados antes do intervalo de entrada."
-                        >
-                            <Info size={16} />
-                            <span>Será reservado 15 minutos antes do intervalo de entrada.</span>
-                        </div>
+                <div className={styles.bufferBar}>
+                    <Settings size={15} className={styles.barIcon} />
+                    <span className={styles.controlLabel}>Intervalo pós agendamentos</span>
+                    <select
+                        className={styles.select}
+                        value={personalBuffer.data ?? "0"}
+                        onChange={(e) => handleUpdateBuffer(e.target.value)}
+                    >
+                        <option value="15">15 min</option>
+                        <option value="20">20 min</option>
+                        <option value="30">30 min</option>
+                        <option value="45">45 min</option>
+                        <option value="60">1 hora</option>
+                    </select>
+                    <div
+                        className={styles.infoTrigger}
+                        title="15 minutos são reservados antes do intervalo de entrada."
+                    >
+                        <Info size={14} />
+                        <span>15 min reservados antes do intervalo de entrada</span>
                     </div>
                 </div>
 
-                <div className={styles.dayList}>
-                    {schedule.map((daySchedule, dayIndex) => {
-                        const workIndex = daySchedule.slots.findIndex((s) => s.tipo === "DISPONIVEL");
-                        const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
-                        const workSlot = daySchedule.slots[workIndex];
-                        const breakSlot = daySchedule.slots[breakIndex];
-                        const disabled = !daySchedule.enabled;
+                <aside className={`${styles.globalPanel} ${styles.globalPanelMobile}`}>
+                    <GlobalPanelContent {...globalPanelProps} />
+                </aside>
 
-                        return (
-                            <div
-                                key={daySchedule.day}
-                                className={`${styles.dayRow} ${disabled ? styles.disabled : ""}`}
-                            >
-                                <div className={styles.dayLabel}>
-                                    <Toggle
-                                        checked={daySchedule.enabled}
-                                        onChange={() => toggleDay(dayIndex)}
-                                    />
-                                    <span className={`${styles.dayName} ${disabled ? styles.disabled : ""}`}>
-                                        {DAYS_META[daySchedule.day]}
-                                    </span>
+                <div className={styles.contentLayout}>
+
+                    <div className={styles.dayList}>
+                        {schedule.map((daySchedule, dayIndex) => {
+                            const workIndex  = daySchedule.slots.findIndex((s) => s.tipo === "DISPONIVEL");
+                            const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
+                            const workSlot   = daySchedule.slots[workIndex];
+                            const breakSlot  = daySchedule.slots[breakIndex];
+                            const disabled   = !daySchedule.enabled;
+
+                            return (
+                                <div
+                                    key={daySchedule.day}
+                                    className={`${styles.dayRow} ${disabled ? styles.disabled : ""}`}
+                                >
+                                    <div className={styles.dayLabel}>
+                                        <Toggle
+                                            checked={daySchedule.enabled}
+                                            onChange={() => toggleDay(dayIndex)}
+                                        />
+                                        <span className={`${styles.dayName} ${disabled ? styles.disabled : ""}`}>
+                                            {DAYS_META[daySchedule.day]}
+                                        </span>
+                                    </div>
+
+                                    {workSlot && breakSlot ? (
+                                        <>
+                                            <TimeRange
+                                                label="Manhã"
+                                                startValue={workSlot.horaInicio}
+                                                endValue={breakSlot.horaInicio}
+                                                disabled={disabled}
+                                                onStartChange={(v) =>
+                                                    updateLocalSlot(dayIndex, workIndex, "horaInicio", v)
+                                                }
+                                                onEndChange={(v) =>
+                                                    updateLocalSlot(dayIndex, breakIndex, "horaInicio", v)
+                                                }
+                                            />
+
+                                            <div className={`${styles.periodDivider} ${disabled ? styles.disabled : ""}`} />
+
+                                            <TimeRange
+                                                label="Tarde"
+                                                startValue={breakSlot.horaFim}
+                                                endValue={workSlot.horaFim}
+                                                disabled={disabled}
+                                                onStartChange={(v) =>
+                                                    updateLocalSlot(dayIndex, breakIndex, "horaFim", v)
+                                                }
+                                                onEndChange={(v) =>
+                                                    updateLocalSlot(dayIndex, workIndex, "horaFim", v)
+                                                }
+                                            />
+                                        </>
+                                    ) : (
+                                        <span className={styles.noSlots}>
+                                            Sem horários cadastrados
+                                        </span>
+                                    )}
                                 </div>
+                            );
+                        })}
+                    </div>
 
-                                {workSlot && breakSlot ? (
-                                    <>
-                                        <TimeRange
-                                            label="Manhã"
-                                            startValue={workSlot.horaInicio}
-                                            endValue={breakSlot.horaInicio}
-                                            disabled={disabled}
-                                            onStartChange={(v) =>
-                                                updateLocalSlot(dayIndex, workIndex, "horaInicio", v)
-                                            }
-                                            onEndChange={(v) =>
-                                                updateLocalSlot(dayIndex, breakIndex, "horaInicio", v)
-                                            }
-                                        />
+                    <aside className={`${styles.globalPanel} ${styles.globalPanelDesktop}`}>
+                        <GlobalPanelContent {...globalPanelProps} />
+                    </aside>
 
-                                        <div className={`${styles.periodDivider} ${disabled ? styles.disabled : ""}`} />
-
-                                        <TimeRange
-                                            label="Tarde"
-                                            startValue={breakSlot.horaFim}
-                                            endValue={workSlot.horaFim}
-                                            disabled={disabled}
-                                            onStartChange={(v) =>
-                                                updateLocalSlot(dayIndex, breakIndex, "horaFim", v)
-                                            }
-                                            onEndChange={(v) =>
-                                                updateLocalSlot(dayIndex, workIndex, "horaFim", v)
-                                            }
-                                        />
-                                    </>
-                                ) : (
-                                    <span className={styles.noSlots}>
-                                        Sem horários cadastrados
-                                    </span>
-                                )}
-                            </div>
-                        );
-                    })}
                 </div>
 
-                <div className={styles.footer}>
+                <div className={`${styles.footer} ${hasUnsaved && saveStatus === "idle" ? styles.dirty : ""}`}>
+
+                    {hasUnsaved && saveStatus === "idle" && (
+                        <span className={styles.unsavedHint}>
+                            <TriangleAlert size={14} />
+                            Alterações feitas! Não esqueça de salvar
+                        </span>
+                    )}
+
                     <SaveBadge status={saveStatus} />
 
                     <button
                         type="button"
                         className={styles.cancelButton}
-                        onClick={() => setSaveStatus("idle")}
+                        onClick={handleCancel}
                     >
                         Cancelar
                     </button>
-
                     <button
                         type="button"
                         className={`${styles.saveButton} ${saveStatus === "loading" ? styles.loading : ""}`}
