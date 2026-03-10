@@ -134,8 +134,6 @@ export function Overview() {
 
     })
 
-    
-
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
         queryFn: () => findUserAppointments(),
@@ -145,11 +143,6 @@ export function Overview() {
     })
 
     
-
-    useEffect(() => {
-        console.log("User appointments:", appointmentsCards.data);
-    }, [appointmentsCards.data]);
-
     const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
@@ -211,17 +204,9 @@ export function Overview() {
 
     const isTypeLoading = type?.type === undefined;
 
-    const isAlunoLoading =
-        type?.type === "aluno" &&
-        (
-            actualPlanQuery.isPending ||
-            classBalanceQuery.isPending
-        );
-
     const isLoadingCalendar =
         isTypeLoading ||
-        appointments.isPending ||
-        isAlunoLoading;
+        appointments.isPending
 
     return (
         <>
