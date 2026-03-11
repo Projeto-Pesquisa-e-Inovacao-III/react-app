@@ -1,6 +1,7 @@
 import { ArrowRight, CalendarIcon } from "lucide-react"
 import styles from "./OverviewCardPackageStatus.module.css"
 import { useNavigate } from "react-router-dom";
+import { differenceInDays, subYears } from "date-fns";
 
 type Props = {
     actualPlan?: {
@@ -10,28 +11,25 @@ type Props = {
 }
 
 export default function OverviewCardPackageStatus({ actualPlan }: Props) {
-
-    function calculateProgress(dueDate: string): number {
+    function calculateRemainingDays(dueDate: string): number {
         const today = new Date();
         const expiration = new Date(dueDate);
-
-        const initial = new Date(expiration);
-        initial.setFullYear(initial.getFullYear() - 1);
-
-        const totalDays = expiration.getTime() - initial.getTime();
-        const remainingDays = expiration.getTime() - today.getTime();
-
-        if (totalDays <= 0) return 0;
-
-        const progress = (remainingDays / totalDays) * 100;
-        return Math.min(100, Math.max(0, Math.round(100 - progress)));
+        return Math.max(0, differenceInDays(expiration, today));
     }
 
-    
+    function calculateProgress(dueDate: string): number {
+        const expiration = new Date(dueDate);
+        const initial = subYears(expiration, 1);
+        const totalDays = differenceInDays(expiration, initial);
+        const remainingDays = differenceInDays(expiration, new Date());
+        if (totalDays <= 0) return 0;
+        return Math.min(100, Math.max(0, Math.round((remainingDays / totalDays) * 100)));
+    }
 
+    const remainingDays = actualPlan ? calculateRemainingDays(actualPlan.dataExpiracao) : 0;
     const progress = actualPlan ? calculateProgress(actualPlan.dataExpiracao) : 0;
-
     const nav = useNavigate();
+
 
     return (
         <section className={styles.section}>
@@ -41,24 +39,22 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
                 </svg>
             </div>
 
-            <div className={styles.content}>
+             <div className={styles.content}>
                 <span className={styles.badge}>Plano Ativo</span>
                 <h3 className={styles.planName}>{actualPlan?.nome}</h3>
                 <p className={styles.expiryDate}>
                     <CalendarIcon size={17} />
                     Expira em {actualPlan?.dataExpiracao ? new Date(actualPlan.dataExpiracao).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" }) : "N/A"}
                 </p>
-
                 <div className={styles.progressBox}>
                     <div className={styles.progressHeader}>
-                        <span className={styles.progressLabel}>Progresso restante </span>
-                        <span className={styles.progressValue}>{progress}%</span>
+                        <span className={styles.progressLabel}>Dias restantes</span>
+                        <span className={styles.progressValue}>{remainingDays} dias</span>
                     </div>
                     <div className={styles.progressTrack}>
                         <div className={styles.progressBar} style={{ width: `${progress}%` }} />
                     </div>
                 </div>
-
                 <button className={styles.button} onClick={() => nav("/plans-history")}>
                     Histórico de compras
                     <ArrowRight size={17} />
