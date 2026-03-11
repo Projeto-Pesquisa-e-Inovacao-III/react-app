@@ -7,9 +7,21 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                 className={
                     isMobile
                         ? "flex flex-col justify-center p-5"
-                        : "flex flex-col justify-center p-5 h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center"
+                        : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center overflow-hidden"
                 }
             >
+                {/* Overlay azul diagonal — apenas desktop */}
+                {!isMobile && (
+                    <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            background: "linear-gradient(165deg, rgba(26, 97, 141, 1) 0%, rgba(6, 14, 25, 1) 69%)",
+                            clipPath: "polygon(0 0, 43.3% 0, 57% 45%, 41% 100%, 0 100%)",
+                            zIndex: 1,
+                        }}
+                    />
+                )}
+
                 {isMobile ? (
                     <>
                         <div>
@@ -41,8 +53,11 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                         </a>
                     </>
                 ) : (
-                    <div className="w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20">
-                        <h1 className="text-8xl w-[53.2%] font-poppins font-bold uppercase text-left text-white animate-hero-1">
+                    <div
+                        className="relative w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20"
+                        style={{ zIndex: 2 }}
+                    >
+                        <h1 className="text-8xl text-[5.5rem] w-[53.2%] font-poppins font-bold uppercase text-left text-white animate-hero-1">
                             Bem-vindo a csf Treinamentos
                         </h1>
                         <p className="text-2xl w-[53.2%] text-left font-montserrat text-white animate-hero-2">
