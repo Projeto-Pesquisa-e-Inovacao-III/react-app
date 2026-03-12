@@ -36,7 +36,7 @@ const titles = {
     "/set-availability": "Definir Horário | CSF Treinamentos",
 };
 
-const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool", "/anamnesis"];
 
 export default function Layout() {
     const isMobile = useMobile();

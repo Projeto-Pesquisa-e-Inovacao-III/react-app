@@ -27,7 +27,7 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
-
+  
   clear?: boolean;
 }
 
