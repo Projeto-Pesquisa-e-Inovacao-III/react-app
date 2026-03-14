@@ -1,8 +1,9 @@
 import Skeleton from "react-loading-skeleton";
 import styles from "../SetAvailability.module.css";
 
+const SKELETON_DAYS = ['skeleton-day-1', 'skeleton-day-2', 'skeleton-day-3', 'skeleton-day-4', 'skeleton-day-5', 'skeleton-day-6', 'skeleton-day-7'];
+
 export default function AvailabilitySkeleton() {
-  const daysCount = 7;
 
   return (
     <div className={styles.pageWrapper}>
@@ -65,8 +66,8 @@ export default function AvailabilitySkeleton() {
           </div>
 
           {/* Day rows */}
-          {Array.from({ length: daysCount }).map((_, index) => (
-            <div key={index} className={styles.dayRow}>
+          {SKELETON_DAYS.map((dayKey) => (
+            <div key={dayKey} className={styles.dayRow}>
 
               {/* Toggle */}
               <div className={styles.dayToggle}>
