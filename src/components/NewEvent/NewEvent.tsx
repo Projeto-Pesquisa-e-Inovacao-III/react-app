@@ -168,70 +168,44 @@ export default function NewEvent(
 
     const url = window.location.href;
 
-    const showError = (content: string, title = "Erro ao agendar") => {
-        setTextModal({ title, content });
-        setOpenModal("error");
-    };
-
-    const mapAddressState = (num: string, comp: string, cepStr: string, logra: string, loc: string, ufStr: string) => ({
-        number: num,
-        complement: comp,
-        postalCode: cepStr,
-        address: logra,
-        city: loc,
-        state: ufStr
-    });
-
-    const buildAddressPayload = () => ({
-        numero: addressData.number,
-        complemento: addressData.complement,
-        unidade: "",
-        tipo: selectedLocation,
-        cep: {
-            id: addressData.postalCode,
-            logradouro: addressData.address,
-            bairro: "",
-            localidade: addressData.city,
-            uf: addressData.state
-        }
-    });
-
-    const isValidAddress = () => {
-        if (addressData.address.includes("undefined")) {
-            showError("CEP inválido. Por favor, verifique o CEP informado.");
-            return false;
-        }
-
-        if (!addressData.postalCode || addressData.address === null) {
-            showError("Por favor, preencha um CEP válido.");
-            return false;
-        }
-
-        if (!addressData.number) {
-            showError("Por favor, preencha o número do endereço.");
-            return false;
-        }
-        return true;
-    };
-
-    const handleSuccessRouting = () => {
-        handleInvalidateQueries();
-        openModalExtern();
-        if (url.includes("/schedule")) {
-            if (newAppointmentCreated) newAppointmentCreated(true);
-            navigation("/schedule");
-        }
-    };
-
     async function handleInvalidateQueries() {
-        const queries = ["appointmentsAtCalendar", "userAppointments", "userRescheduleAppointments", "personalRequests", "appointmentDetails"];
-        await Promise.all(queries.map(q => queryClient.invalidateQueries({ queryKey: [q] })));
+        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+
     }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
-        setLoading(true);
+        setLoading(true)
 
-        if (!isValidAddress()) return;
+        if (addressData.address.includes("undefined")) {
+            setOpenModal("error");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "CEP inválido. Por favor, verifique o CEP informado."
+            });
+            return;
+        }
+
+        if (!addressData.postalCode || addressData.address === null) {
+            setOpenModal("error");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Por favor, preencha um CEP válido."
+            });
+            return;
+        }
+
+        if (!addressData.number) {
+            setOpenModal("error");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Por favor, preencha o número do endereço."
+            });
+            return;
+        }
 
 
 
@@ -240,7 +214,19 @@ export default function NewEvent(
         const payload: Schedule = {
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            novoEndereco: buildAddressPayload(),
+            novoEndereco: {
+                numero: addressData.number,
+                complemento: addressData.complement,
+                unidade: "",
+                tipo: selectedLocation,
+                cep: {
+                    id: addressData.postalCode,
+                    logradouro: addressData.address,
+                    bairro: "",
+                    localidade: addressData.city,
+                    uf: addressData.state
+                }
+            },
             personalId: personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
@@ -250,16 +236,32 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-                setLoading(false);
+                setLoading(false)
                 if (calculatedTitle && newEventDate) {
-                    handleSuccessRouting();
+                    handleInvalidateQueries()
+                    if (url.includes("/schedule")) {
+                        if (newAppointmentCreated) {
+                            newAppointmentCreated(true);
+                        }
+                        handleInvalidateQueries()
+
+                        openModalExtern();
+                        navigation("/schedule");
+                        return;
+                    }
+                    openModalExtern();
+                    return;
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
                 setLoading(false)
 
                 if (error.status === 400) {
-                    showError(error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento.");
+                    setTextModal({
+                        title: "Erro ao agendar",
+                        content: error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento."
+                    });
+                    setOpenModal("error");
                     return;
                 }
 
@@ -274,25 +276,25 @@ export default function NewEvent(
     useEffect(() => {
         if (appoitmentData && isReschedule) {
             console.log("Populando dados de endereço para reagendamento:", appoitmentData);
-            setAddressData(mapAddressState(
-                appoitmentData?.endereco.numero || "",
-                appoitmentData?.endereco.complemento || "",
-                appoitmentData?.endereco.cep.id || "",
-                appoitmentData?.endereco.cep.logradouro || "",
-                appoitmentData?.endereco.cep.localidade || "",
-                appoitmentData?.endereco.cep.uf || ""
-            ));
+            setAddressData({
+                number: appoitmentData?.endereco.numero,
+                complement: appoitmentData?.endereco.complemento,
+                postalCode: appoitmentData?.endereco.cep.id,
+                address: appoitmentData?.endereco.cep.logradouro,
+                city: appoitmentData?.endereco.cep.localidade,
+                state: appoitmentData?.endereco.cep.uf
+            });
         }
     }, [appoitmentData, isReschedule]);
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
-        if (e) e.preventDefault();
         console.log("Reagendando evento...");
-        setLoading(true);
+        setLoading(true)
+        e?.preventDefault();
+
 
         if (!newEventDate || !newEventStartHour) {
-            showError("Por favor, selecione uma data e horário para o evento.", "Erro no agendamento");
-            setLoading(false);
+            alert("Por favor, selecione uma data e horário para o evento.");
             return;
         }
 
@@ -302,7 +304,19 @@ export default function NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            endereco: buildAddressPayload(),
+            endereco: {
+                numero: addressData.number,
+                complemento: addressData.complement,
+                unidade: "",
+                tipo: selectedLocation,
+                cep: {
+                    id: addressData.postalCode,
+                    logradouro: addressData.address,
+                    bairro: "",
+                    localidade: addressData.city,
+                    uf: addressData.state
+                }
+            },
             personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
@@ -323,9 +337,17 @@ export default function NewEvent(
 
         });
 
-        if (!goToNextStep || (calculatedTitle && newEventDate)) {
-            handleInvalidateQueries();
+        if (!goToNextStep) {
+            handleInvalidateQueries()
             openModalExtern();
+            return;
+        }
+
+
+        if (calculatedTitle && newEventDate) {
+            handleInvalidateQueries()
+            openModalExtern();
+            return;
         }
 
     }
@@ -366,17 +388,29 @@ export default function NewEvent(
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
         console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
         if (selectedType === "PRESENCIAL" && (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading)) {
-            showError("Você não possui aulas presenciais disponíveis para agendar.");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Você não possui aulas presenciais disponíveis para agendar."
+            });
+            setOpenModal("error");
             return false;
         }
 
         if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
-            showError("Você não possui aulas residenciais disponíveis para agendar.");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Você não possui aulas residenciais disponíveis para agendar."
+            });
+            setOpenModal("error");
             return false;
         }
 
         if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
-            showError("Você não possui aulas funcionais disponíveis para agendar.");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Você não possui aulas funcionais disponíveis para agendar."
+            });
+            setOpenModal("error");
             return false;
         }
         return true;
@@ -392,7 +426,11 @@ export default function NewEvent(
         }
         // choose date and hour validation
         if (!newEventDate || !newEventStartHour) {
-            showError("Selecione uma data e horário para o evento.");
+            setTextModal({
+                title: "Erro ao agendar",
+                content: "Selecione uma data e horário para o evento."
+            });
+            setOpenModal("error");
             return;
         }
 
@@ -466,16 +504,16 @@ export default function NewEvent(
     useEffect(() => {
         const cep = selectedAddress?.cep?.cep;
 
+
         if (cep) {
-            const formattedCep = cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep;
-            setAddressData(mapAddressState(
-                selectedAddress?.numero || "",
-                selectedAddress?.complemento || "",
-                formattedCep,
-                `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
-                selectedAddress?.cep?.localidade || "",
-                selectedAddress?.cep?.uf || ""
-            ));
+            setAddressData({
+                postalCode: cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
+                address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
+                city: selectedAddress?.cep?.localidade,
+                state: selectedAddress?.cep?.uf,
+                number: selectedAddress?.numero,
+                complement: selectedAddress?.complemento
+            });
         }
 
     }, [selectedAddress])
