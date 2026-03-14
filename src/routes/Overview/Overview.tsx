@@ -83,6 +83,112 @@ async function loadAppointmentCounts(
     }
 }
 
+type MobileAlunoPanelProps = {
+    isPending: boolean;
+    hasPlan: boolean;
+    classBalanceData: ClassBalance | undefined;
+    actualPlan: { nome: string; dataExpiracao: string } | null;
+    isMobile: boolean;
+    onSchedule: () => void;
+    panelStyle: string;
+};
+
+function MobileAlunoPanel({ isPending, hasPlan, classBalanceData, actualPlan, isMobile, onSchedule, panelStyle }: Readonly<MobileAlunoPanelProps>) {
+    if (!isPending && hasPlan) {
+        return (
+            <div className={panelStyle}>
+                <OverviewCard
+                    title={"Agendamentos Restantes"}
+                    subtitle={<ClassBalancePanel data={classBalanceData} />}
+                    type={"usuario"}
+                    titletbn={"Agendamentos"}
+                    onClick={onSchedule}
+                    isMobile={isMobile}
+                />
+                <OverviewCardPackageStatus actualPlan={actualPlan} />
+            </div>
+        );
+    }
+    return <CardWithoutPlan />;
+}
+
+type AppointmentsSectionProps = {
+    isLoading: boolean;
+    isEmpty: boolean | undefined;
+    userType: string | null | undefined;
+    isMobile: boolean;
+    data: appointmentsCards | undefined;
+    onNewEvent: () => void;
+    onPackages: () => void;
+    hasActivePlan: boolean;
+    onNavigatePackages: () => void;
+};
+
+function AppointmentsSectionContent({
+    isLoading,
+    isEmpty,
+    userType,
+    isMobile,
+    data,
+    onNewEvent,
+    hasActivePlan,
+    onNavigatePackages,
+}: Readonly<AppointmentsSectionProps>) {
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center gap-4">
+                <div className="rounded-full bg-gray-200 p-5 w-fit">
+                    <Skeleton height={26} width={30} borderRadius={90} />
+                </div>
+                <Skeleton height={28} width={180} />
+                <div className="space-y-4">
+                    {[...Array(3)].map((_, i) => (
+                        <div key={`card-skeleton-${i}`} className="w-full">
+                            <Skeleton height={20} width={500} borderRadius={8} />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+    if (isEmpty) {
+        return (
+            <AppointmentsEmptyState
+                userType={userType}
+                hasActivePlan={hasActivePlan}
+                isMobile={isMobile}
+                onSchedule={onNewEvent}
+                onPackages={onNavigatePackages}
+            />
+        );
+    }
+    return (
+        <>
+            <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
+                <h1>Agendamentos</h1>
+                {userType === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
+                    onClick={onNewEvent}
+                />}
+            </div>
+            <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
+                {data?.map((card, index) => (
+                    <AppointmentCard
+                        key={index}
+                        agendamentoId={card.agendamentoId}
+                        status={card.agendamentoStatus}
+                        name={userType === "personal" ? card.alunoNome : card.personalNome}
+                        photoUrl={card.caminhoFoto}
+                        type={card.tipoAula}
+                        date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
+                        time={`${card.data.split("T")[1].substring(0, 5)} - ${card.dataFim.split("T")[1].substring(0, 5)}`}
+                        address={card.endereco.bairro + ", " + card.endereco.cidade}
+                        isMobile={isMobile}
+                    />
+                ))}
+            </div>
+        </>
+    );
+}
 
 export function Overview() {
     const isMobile = useMobile();
@@ -183,23 +289,15 @@ export function Overview() {
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
 
                         {isMobile && type?.type === "aluno" && (
-                            !actualPlanQuery?.isPending && actualPlanQuery?.data?.data ? (
-                                <div className={styles.schedulePageUserActionsMobile}>
-
-                                    <OverviewCard
-                                        title={"Agendamentos Restantes"}
-                                        subtitle={getBalance()}
-                                        type={"usuario"}
-                                        titletbn={"Agendamentos"}
-                                        onClick={() => nav("/schedule")}
-                                        isMobile={isMobile}
-                                    />
-                                    <OverviewCardPackageStatus actualPlan={actualPlanQuery?.data?.data.nome ?? "Não possui assinatura"} />
-
-                                </div>
-                            ) : (
-                                <CardWithoutPlan />
-                            )
+                            <MobileAlunoPanel
+                                isPending={!!actualPlanQuery?.isPending}
+                                hasPlan={!!actualPlanQuery?.data?.data}
+                                classBalanceData={classBalanceQuery.data}
+                                actualPlan={actualPlanQuery?.data?.data ?? null}
+                                isMobile={isMobile}
+                                onSchedule={() => nav("/schedule")}
+                                panelStyle={styles.schedulePageUserActionsMobile}
+                            />
                         )}
 
                         {isMobile && type?.type !== "aluno" && (
@@ -254,7 +352,7 @@ export function Overview() {
                                 <ViewCalendarMonthStyled
                                     isMobile={isMobile}
                                     events={appointments.data?.data}
-                                    isUserAuthorizedToInteract={type?.type === "aluno" && actualPlanQuery.data ? true : false}
+                                    isUserAuthorizedToInteract={type?.type === "aluno" && !!actualPlanQuery.data}
                                     canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}
@@ -262,55 +360,17 @@ export function Overview() {
                             )}
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
-                            {appointmentsCards.isLoading ? (
-                                <div className="flex flex-col items-center justify-center gap-4">
-                                    <div className="rounded-full bg-gray-200 p-5 w-fit">
-                                        <Skeleton height={26} width={30} borderRadius={90} />
-                                    </div>
-                                    <Skeleton height={28} width={180} />
-
-                                    <div className="space-y-4">
-                                        {[...Array(3)].map((_, i) => (
-                                            <div key={`card-skeleton-${i}`} className="w-full">
-                                                <Skeleton height={20} width={500} borderRadius={8} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : appointmentsCards.data?.length === 0 ? (
-                                <AppointmentsEmptyState
-                                    userType={type?.type}
-                                    hasActivePlan={!!actualPlanQuery?.data?.data}
-                                    isMobile={isMobile}
-                                    onSchedule={handleClickNewEvent}
-                                    onPackages={() => nav("/packages")}
-                                />
-                            ) : (
-                                <>
-                                    <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
-                                        <h1>Agendamentos</h1>
-                                        {type?.type === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
-                                            onClick={handleClickNewEvent}
-                                        />}
-                                    </div>
-                                    <div className={classNames(styles.appointmentCardsRow, { [styles.appointmentCardsRowMobile]: isMobile })}>
-                                        {appointmentsCards.data?.map((card, index) => (
-                                            <AppointmentCard
-                                                key={index}
-                                                agendamentoId={card.agendamentoId}
-                                                status={card.agendamentoStatus}
-                                                name={type?.type === "personal" ? card.alunoNome : card.personalNome}
-                                                photoUrl={card.caminhoFoto}
-                                                type={card.tipoAula}
-                                                date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
-                                                time={`${card.data.split("T")[1].substring(0, 5)} - ${card.dataFim.split("T")[1].substring(0, 5)}`}
-                                                address={card.endereco.bairro + ", " + card.endereco.cidade}
-                                                isMobile={isMobile}
-                                            />
-                                        ))}
-                                    </div>
-                                </>
-                            )}
+                        <AppointmentsSectionContent
+                            isLoading={appointmentsCards.isLoading}
+                            isEmpty={appointmentsCards.data?.length === 0}
+                            userType={type?.type}
+                            isMobile={isMobile}
+                            data={appointmentsCards.data}
+                            onNewEvent={handleClickNewEvent}
+                            hasActivePlan={!!actualPlanQuery?.data?.data}
+                            onPackages={() => nav("/packages")}
+                            onNavigatePackages={() => nav("/packages")}
+                        />
                         </div>
                     </div>
 
@@ -360,7 +420,7 @@ export function Overview() {
                                     isMobile={isMobile}
                                 />
                                 <OverviewCardPackageStatus
-                                    actualPlan={actualPlanQuery?.data?.data ?? "Não possui assinatura"}
+                                    actualPlan={actualPlanQuery?.data?.data}
                                 />
                             </div>
                         ) : (
