@@ -1,4 +1,4 @@
-import React from 'react'
+
 import TextWithoutPlan from '../TextWithoutPlan'
 import SmallerButton from '../../SmallerButton/SmallerButton'
 import { ShoppingBag } from 'lucide-react'

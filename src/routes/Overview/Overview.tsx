@@ -11,7 +11,7 @@ import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQuery } from "@tanstack/react-query";
 import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
-import { appoitmentsCount } from "../../constants/personal";
+import { appoitmentsCount, getAvailabilityHoursTomorrow } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, ClipboardClock } from 'lucide-react';
@@ -275,12 +275,20 @@ export function Overview() {
         setModalType("newEvent")
     }
 
+    const getAvailabilityHoursTomorrowQuery = useQuery({
+        queryKey: ["getAvailabilityHoursTomorrow"],
+        queryFn: () => getAvailabilityHoursTomorrow(),
+        refetchOnWindowFocus: false,
+    })
 
     const isTypeLoading = type?.type === undefined;
 
     const isLoadingCalendar =
         isTypeLoading ||
         appointments.isPending
+
+
+
 
     return (
         <>
@@ -356,6 +364,7 @@ export function Overview() {
                                     canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}
+                                    availabilityHoursTomorrow={getAvailabilityHoursTomorrowQuery.data?.data}
                                 />
                             )}
                         </div>

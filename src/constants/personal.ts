@@ -1,6 +1,8 @@
+import { format } from "date-fns";
 import type { PersonalDTO } from "../models/personal";
 import type { TimeSlot } from "../routes/Personal/SetAvailability/SetAvailability";
 import { api } from "../system";
+import { ptBR } from "date-fns/locale";
 
 export function listStudents() {
     return api.get(`/alunos`);
@@ -16,6 +18,11 @@ export function appoitmentsCount(payload?: { status: string; data?: string; }) {
 
 export function getPersonalHours(personalId: number, date: string, classType: string) {
     return api.get(`/personais/${personalId}/horarios-disponiveis`, { params: {data: date, tipoAula: classType} });
+}
+
+export function getAvailabilityHoursTomorrow(personalId: number) {
+    const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+    return api.get(`/personais/${personalId}/horarios-disponiveis`, { params: {data: tomorrow, tipoAula: "PRESENCIAL"} });
 }
 
 export async function getPersonalCronogram() {
