@@ -19,6 +19,7 @@ import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
+import { getAvailabilityHoursTomorrow } from "../../constants/personal";
 
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
@@ -201,6 +202,13 @@ export default function Schedule() {
         });
     }
 
+    const availabilityHoursTomorrowQuery = useQuery({
+        queryKey: ["availabilityHoursTomorrow"],
+        queryFn: () => getAvailabilityHoursTomorrow(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
+    })
+
     return (
         <>
             {!isTypeReady ? (
@@ -226,7 +234,8 @@ export default function Schedule() {
                                 canMakeAppointment={classBalanceQuery?.data?.saldoPresencial > 0 || classBalanceQuery?.data?.saldoResidencial > 0 || classBalanceQuery?.data?.saldoFuncional > 0}
                                 modalInfo={setModalInfo}
                                 modalType={setOpenModal}
-                            />
+                                availabilityHoursTomorrow={availabilityHoursTomorrowQuery?.data?.data}
+/>
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
                             <div className={styles.adjustButtonWSchedule}>

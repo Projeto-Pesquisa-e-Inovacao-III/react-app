@@ -343,7 +343,10 @@ export default function SetAvailability() {
                 dirtySlotIds.current.clear();
                 showSuccess();
             })
-            .catch(showError);
+            .catch(() => {
+                handleCancel();
+                showError();
+            });
     }
 
     function handleUpdateBuffer(value: string) {

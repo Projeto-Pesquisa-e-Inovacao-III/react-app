@@ -6,11 +6,7 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { format, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
-import { useQuery } from "@tanstack/react-query";
-import { getPersonalHours } from "../../../constants/personal";
 import { ptBR } from "date-fns/locale";
-import { getPersonalList } from "../../../constants/schedule";
-
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
@@ -18,32 +14,15 @@ type Props = {
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
   modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
-  hasClassTomorrow?: boolean;
-
+  availabilityHoursTomorrow?: boolean;
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType }: Props) {
+const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
-
-  const personal = useQuery({
-    queryKey: ["personalList"],
-    queryFn: getPersonalList,
-    select: (res) => res.data[0].id,
-  });
-
-
-  const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
-  console.log("tomorrow", tomorrow);
-
-  const availabilityHoursTomorrow = useQuery({
-    queryKey: ["availabilityHours"],
-    queryFn: () => getPersonalHours(personal.data, tomorrow ? tomorrow : ""),
-    select: (res) => res.data,
-  });
-
-
 
   return (
     <div className={styles.containerCalendar}>
@@ -121,7 +100,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return;
             }
 
-            if (clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
+            if (clickedDate === tomorrow && !availabilityHoursTomorrow) return;
 
             if (canMakeAppointment && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
@@ -133,9 +112,8 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
-            const tomorrowDate = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-            if (!availabilityHoursTomorrow.data && cellDate === tomorrowDate) return [styles.fcTodayCustom];
+            if (!availabilityHoursTomorrow && cellDate === tomorrow) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {
               return [styles.fcTodayCustom];
