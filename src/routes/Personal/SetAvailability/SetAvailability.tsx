@@ -51,16 +51,16 @@ const DAYS_META: Record<string, string> = {
 };
 
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
+function Toggle({ checked, onChange }: Readonly<{ checked: boolean; onChange: () => void }>) {
     return (
         <button
             type="button"
             role="switch"
             aria-checked={checked}
             onClick={onChange}
-            className={`${styles.toggle} ${!checked ? styles.off : ""}`}
+            className={`${styles.toggle} ${checked ? "" : styles.off}`}
         >
-            <span className={`${styles.toggleThumb} ${!checked ? styles.off : ""}`} />
+            <span className={`${styles.toggleThumb} ${checked ? "" : styles.off}`} />
         </button>
     );
 }
@@ -72,13 +72,13 @@ function TimeRange({
     onStartChange,
     onEndChange,
     disabled,
-}: {
+}: Readonly<{
     startValue: string;
     endValue: string;
     onStartChange: (v: string) => void;
     onEndChange: (v: string) => void;
     disabled: boolean;
-}) {
+}>) {
     return (
         <div className={`${styles.timeRange} ${disabled ? styles.disabled : ""}`}>
             <div className={styles.timeRangeInputs}>
@@ -103,7 +103,7 @@ function TimeRange({
 }
 
 
-function SaveBadge({ status }: { status: SaveStatus }) {
+function SaveBadge({ status }: Readonly<{ status: SaveStatus }>) {
     if (status === "idle") return null;
 
     const labels: Record<Exclude<SaveStatus, "idle">, string> = {
@@ -115,7 +115,7 @@ function SaveBadge({ status }: { status: SaveStatus }) {
     return (
         <span className={`${styles.statusBadge} ${styles[status]}`}>
             <span className={`${styles.statusDot} ${styles[status]}`} />
-            {labels[status as Exclude<SaveStatus, "idle">]}
+            {labels[status]}
         </span>
     );
 }
@@ -127,13 +127,13 @@ function GlobalPanelContent({
     setGlobalManha,
     setGlobalTarde,
     applyToAll,
-}: {
+}: Readonly<{
     globalManha: { start: string; end: string };
     globalTarde: { start: string; end: string };
     setGlobalManha: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
     setGlobalTarde: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
     applyToAll: () => void;
-}) {
+}>) {
     return (
         <>
             <h3 className={styles.globalPanelTitle}>Padrão para todos os dias</h3>

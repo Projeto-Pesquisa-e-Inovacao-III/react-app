@@ -2,14 +2,13 @@ import ButtonHome from "../../../components/Home/ButtonHome/ButtonHome";
 
 export default function HomeSection({ isMobile }: { isMobile: boolean }) {
     return (
-        <>
-            <section
-                className={
-                    isMobile
-                        ? "flex flex-col justify-center p-5"
-                        : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center overflow-hidden"
-                }
-            >
+        <section
+            className={
+                isMobile
+                    ? "flex flex-col justify-center p-5"
+                    : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center overflow-hidden"
+            }
+        >
                 {/* Overlay azul diagonal — apenas desktop */}
                 {!isMobile && (
                     <div
@@ -73,7 +72,6 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                         </div>
                     </div>
                 )}
-            </section>
-        </>
+        </section>
     );
 }
