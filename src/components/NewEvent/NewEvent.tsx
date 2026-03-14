@@ -173,6 +173,20 @@ export default function NewEvent(
         setOpenModal("error");
     };
 
+    const buildAddressPayload = () => ({
+        numero: addressData.number,
+        complemento: addressData.complement,
+        unidade: "",
+        tipo: selectedLocation,
+        cep: {
+            id: addressData.postalCode,
+            logradouro: addressData.address,
+            bairro: "",
+            localidade: addressData.city,
+            uf: addressData.state
+        }
+    });
+
     async function handleInvalidateQueries() {
         const queries = ["appointmentsAtCalendar", "userAppointments", "userRescheduleAppointments", "personalRequests", "appointmentDetails"];
         await Promise.all(queries.map(q => queryClient.invalidateQueries({ queryKey: [q] })));
@@ -203,19 +217,7 @@ export default function NewEvent(
         const payload: Schedule = {
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            novoEndereco: {
-                numero: addressData.number,
-                complemento: addressData.complement,
-                unidade: "",
-                tipo: selectedLocation,
-                cep: {
-                    id: addressData.postalCode,
-                    logradouro: addressData.address,
-                    bairro: "",
-                    localidade: addressData.city,
-                    uf: addressData.state
-                }
-            },
+            novoEndereco: buildAddressPayload(),
             personalId: personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
@@ -289,19 +291,7 @@ export default function NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            endereco: {
-                numero: addressData.number,
-                complemento: addressData.complement,
-                unidade: "",
-                tipo: selectedLocation,
-                cep: {
-                    id: addressData.postalCode,
-                    logradouro: addressData.address,
-                    bairro: "",
-                    localidade: addressData.city,
-                    uf: addressData.state
-                }
-            },
+            endereco: buildAddressPayload(),
             personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
