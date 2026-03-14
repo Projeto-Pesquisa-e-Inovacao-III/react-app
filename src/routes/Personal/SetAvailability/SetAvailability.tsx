@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./SetAvailability.module.css";
-import { getPersonalBuffer, getPersonalCronogram, updateBuffer, updatePersonalCronogram } from "../../../constants/personal";
+import {
+    getPersonalBuffer,
+    getPersonalCronogram,
+    updateBuffer,
+    updatePersonalCronogram,
+} from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { CircleCheck, CircleX, Clock, Loader } from "lucide-react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import TimeCell from "../../../components/Inputs/TimeCell/TimeCell";
 import AvailabilitySkeleton from "./AvailabilitySkeleton/AvailabilitySkeleton";
+import { Info, Settings, CopyCheck, TriangleAlert } from "lucide-react";
+
 
 export interface TimeSlot {
     id?: string;
@@ -18,8 +23,12 @@ export interface TimeSlot {
 
 interface DaySchedule {
     day: string;
+    enabled: boolean;
     slots: TimeSlot[];
 }
+
+type SaveStatus = "idle" | "loading" | "success" | "error";
+
 
 const DAYS_OF_WEEK = [
     "DOMINGO",
@@ -31,157 +40,369 @@ const DAYS_OF_WEEK = [
     "SABADO",
 ];
 
-const DAYS_OF_WEEK_DISPLAY = [
-    "Domingo",
-    "Segunda-feira",
-    "Terça-feira",
-    "Quarta-feira",
-    "Quinta-feira",
-    "Sexta-feira",
-    "Sábado",
-];
+const DAYS_META: Record<string, string> = {
+    DOMINGO: "Domingo",
+    SEGUNDA: "Segunda-feira",
+    TERCA: "Terça-feira",
+    QUARTA: "Quarta-feira",
+    QUINTA: "Quinta-feira",
+    SEXTA: "Sexta-feira",
+    SABADO: "Sábado",
+};
 
 
-type Status = "idle" | "loading" | "success" | "error";
+function Toggle({ checked, onChange }: Readonly<{ checked: boolean; onChange: () => void }>) {
+    return (
+        <button
+            type="button"
+            role="switch"
+            aria-checked={checked}
+            onClick={onChange}
+            className={`${styles.toggle} ${checked ? "" : styles.off}`}
+        >
+            <span className={`${styles.toggleThumb} ${checked ? "" : styles.off}`} />
+        </button>
+    );
+}
+
+
+function TimeRange({
+    startValue,
+    endValue,
+    onStartChange,
+    onEndChange,
+    disabled,
+}: Readonly<{
+    startValue: string;
+    endValue: string;
+    onStartChange: (v: string) => void;
+    onEndChange: (v: string) => void;
+    disabled: boolean;
+}>) {
+    return (
+        <div className={`${styles.timeRange} ${disabled ? styles.disabled : ""}`}>
+            <div className={styles.timeRangeInputs}>
+                <input
+                    type="time"
+                    value={startValue.slice(0, 5)}
+                    disabled={disabled}
+                    onChange={(e) => onStartChange(e.target.value)}
+                    className={styles.input}
+                />
+                <span className={styles.timeSeparator}>–</span>
+                <input
+                    type="time"
+                    value={endValue.slice(0, 5)}
+                    disabled={disabled}
+                    onChange={(e) => onEndChange(e.target.value)}
+                    className={styles.input}
+                />
+            </div>
+        </div>
+    );
+}
+
+
+function SaveBadge({ status }: Readonly<{ status: SaveStatus }>) {
+    if (status === "idle") return null;
+
+    const labels: Record<Exclude<SaveStatus, "idle">, string> = {
+        loading: "Salvando…",
+        success: "Alterações salvas!",
+        error: "✕ Erro ao salvar",
+    };
+
+    return (
+        <span className={`${styles.statusBadge} ${styles[status]}`}>
+            <span className={`${styles.statusDot} ${styles[status]}`} />
+            {labels[status]}
+        </span>
+    );
+}
+
+
+function GlobalPanelContent({
+    globalManha,
+    globalTarde,
+    setGlobalManha,
+    setGlobalTarde,
+    applyToAll,
+}: Readonly<{
+    globalManha: { start: string; end: string };
+    globalTarde: { start: string; end: string };
+    setGlobalManha: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
+    setGlobalTarde: React.Dispatch<React.SetStateAction<{ start: string; end: string }>>;
+    applyToAll: () => void;
+}>) {
+    return (
+        <>
+            <h3 className={styles.globalPanelTitle}>Padrão para todos os dias</h3>
+
+            <div className={styles.globalPanelContainer}>
+                <div className={styles.globalPanelField}>
+                    <span className={styles.globalRangeTitle}>Horário inicial</span>
+                    <div className={styles.globalRangeInputs}>
+                        <input
+                            type="time"
+                            value={globalManha.start}
+                            onChange={(e) => setGlobalManha((p) => ({ ...p, start: e.target.value }))}
+                            className={styles.input}
+                        />
+                        <span className={styles.timeSeparator}>–</span>
+                        <input
+                            type="time"
+                            value={globalManha.end}
+                            onChange={(e) => setGlobalManha((p) => ({ ...p, end: e.target.value }))}
+                            className={styles.input}
+                        />
+                    </div>
+                </div>
+
+                <div className={styles.globalPanelField}>
+                    <span className={styles.globalRangeTitle}>Horário final</span>
+                    <div className={styles.globalRangeInputs}>
+                        <input
+                            type="time"
+                            value={globalTarde.start}
+                            onChange={(e) => setGlobalTarde((p) => ({ ...p, start: e.target.value }))}
+                            className={styles.input}
+                        />
+                        <span className={styles.timeSeparator}>–</span>
+                        <input
+                            type="time"
+                            value={globalTarde.end}
+                            onChange={(e) => setGlobalTarde((p) => ({ ...p, end: e.target.value }))}
+                            className={styles.input}
+                        />
+                    </div>
+                </div>
+
+                <button
+                    type="button"
+                    className={styles.applyAllButton}
+                    onClick={applyToAll}
+                >
+                    <CopyCheck size={15} />
+                    Aplicar a todos
+                </button>
+            </div>
+        </>
+    );
+}
+
 
 export default function SetAvailability() {
-
     const getInitialCronogram = useQuery({
-        queryKey: ['personalCronogram'],
+        queryKey: ["personalCronogram"],
         queryFn: getPersonalCronogram,
         select: (res) => res.data,
     });
 
     const personalBuffer = useQuery({
-        queryKey: ['personalBuffer'],
+        queryKey: ["personalBuffer"],
         queryFn: getPersonalBuffer,
         select: (res) => res.data.bufferMinutos,
     });
 
-
-    console.log("Personal Buffer: ", personalBuffer.data);
+    const queryClient = useQueryClient();
 
     const [schedule, setSchedule] = useState<DaySchedule[]>([]);
+    const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+    const [hasUnsaved, setHasUnsaved] = useState(false);
+    const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const dirtySlotIds = useRef<Set<string>>(new Set());
+
+    const [globalManha, setGlobalManha] = useState({ start: "08:00", end: "12:00" });
+    const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
 
     useEffect(() => {
         if (!getInitialCronogram.data) return;
 
-        const formatted = DAYS_OF_WEEK.map((day) => ({
-            day,
-            slots: getInitialCronogram.data.filter(
+        const formatted: DaySchedule[] = DAYS_OF_WEEK.map((day) => {
+            const slots: TimeSlot[] = getInitialCronogram.data.filter(
                 (slot: TimeSlot) => slot.diaSemana === day
-            ),
-        }));
+            );
+            return {
+                day,
+                enabled: slots.some((s) => s.tipo === "DISPONIVEL"),
+                slots,
+            };
+        });
 
         setSchedule(formatted);
     }, [getInitialCronogram.data]);
 
-    const [status, setStatus] = useState<Status>("idle");
-    const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-    function showSuccessFeedback() {
-        if (feedbackTimeoutRef.current) {
-            clearTimeout(feedbackTimeoutRef.current);
-        }
-
-        setStatus("success");
-
-        feedbackTimeoutRef.current = setTimeout(() => {
-            setStatus("idle");
-        }, 3000);
+    function showSuccess() {
+        if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+        setSaveStatus("success");
+        setHasUnsaved(false);
+        feedbackTimeoutRef.current = setTimeout(() => setSaveStatus("idle"), 3000);
     }
 
-    function showErrorFeedback() {
-        if (feedbackTimeoutRef.current) {
-            clearTimeout(feedbackTimeoutRef.current);
-        }
-
-        setStatus("error");
-
-        feedbackTimeoutRef.current = setTimeout(() => {
-            setStatus("idle");
-        }, 3000);
-    }
-
-    function updateSlot(
-        dayIndex: number,
-        slotIndex: number,
-        field: keyof TimeSlot,
-        value: string,
-        id: string
-    ) {
-        console.log("Updating slot:", { dayIndex, slotIndex, field, value, id });
-        setStatus("loading");
-        const newSchedule = [...schedule];
-        newSchedule[dayIndex].slots[slotIndex] = {
-            ...newSchedule[dayIndex].slots[slotIndex],
-            [field]: value,
-        };
-
-        setSchedule(newSchedule);
-
-        const updatedSlot = newSchedule[dayIndex].slots[slotIndex];
-
-        updatePersonalCronogram(
-            {
-                diaSemana: updatedSlot.diaSemana,
-                horaInicio: updatedSlot.horaInicio,
-                horaFim: updatedSlot.horaFim,
-                tipo: updatedSlot.tipo,
-            },
-            id
-        )
-            .then(() => {
-                showSuccessFeedback();
-            })
-            .catch(() => {
-                showErrorFeedback();
-            });
-    }
-
-
-
-    const queryClient = useQueryClient();
-
-    function handleUpdateBuffer(value: string) {
-        setStatus("loading");
-
-        updateBuffer(value)
-            .then(() => {
-                queryClient.invalidateQueries({ queryKey: ["personalBuffer"] });
-                showSuccessFeedback();
-            })
-            .catch(() => {
-                showErrorFeedback();
-            });
+    function showError() {
+        if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
+        setSaveStatus("error");
+        feedbackTimeoutRef.current = setTimeout(() => setSaveStatus("idle"), 3000);
     }
 
     useEffect(() => {
         return () => {
-            if (feedbackTimeoutRef.current) {
-                clearTimeout(feedbackTimeoutRef.current);
-            }
+            if (feedbackTimeoutRef.current) clearTimeout(feedbackTimeoutRef.current);
         };
     }, []);
+
+
+    function toggleDay(dayIndex: number) {
+        setHasUnsaved(true);
+        setSchedule((prev) => {
+            const next = [...prev];
+            next[dayIndex] = { ...next[dayIndex], enabled: !next[dayIndex].enabled };
+            return next;
+        });
+    }
+
+    function updateLocalSlot(
+        dayIndex: number,
+        slotIndex: number,
+        field: "horaInicio" | "horaFim",
+        value: string
+    ) {
+        setHasUnsaved(true);
+        setSchedule((prev) => {
+            const next = [...prev];
+            const slot = next[dayIndex].slots[slotIndex];
+            if (slot.id) dirtySlotIds.current.add(String(slot.id));
+            next[dayIndex] = {
+                ...next[dayIndex],
+                slots: next[dayIndex].slots.map((s, i) =>
+                    i === slotIndex ? { ...s, [field]: value } : s
+                ),
+            };
+            return next;
+        });
+    }
+
+    function applyGlobalToSlot(s: TimeSlot, i: number, workIndex: number, breakIndex: number): TimeSlot {
+        if (i === workIndex) {
+            if (s.id) dirtySlotIds.current.add(String(s.id));
+            return { ...s, horaInicio: globalManha.start, horaFim: globalTarde.end };
+        }
+        if (i === breakIndex) {
+            if (s.id) dirtySlotIds.current.add(String(s.id));
+            return { ...s, horaInicio: globalManha.end, horaFim: globalTarde.start };
+        }
+        return s;
+    }
+
+    function applyGlobalToDay(daySchedule: DaySchedule): DaySchedule {
+        if (!daySchedule.enabled) return daySchedule;
+
+        const workIndex = daySchedule.slots.findIndex((s) => s.tipo === "DISPONIVEL");
+        const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
+
+        if (workIndex === -1 || breakIndex === -1) return daySchedule;
+
+        return {
+            ...daySchedule,
+            slots: daySchedule.slots.map((s, i) => applyGlobalToSlot(s, i, workIndex, breakIndex)),
+        };
+    }
+
+    function applyToAll() {
+        setHasUnsaved(true);
+        setSchedule((prev) => prev.map(applyGlobalToDay));
+    }
+
+    function handleSave() {
+        if (dirtySlotIds.current.size === 0) return;
+
+        setSaveStatus("loading");
+
+        const promises: Promise<unknown>[] = [];
+
+        schedule.forEach((daySchedule) => {
+            daySchedule.slots.forEach((slot) => {
+                if (!slot.id) return;
+                if (!dirtySlotIds.current.has(String(slot.id))) return;
+                promises.push(
+                    updatePersonalCronogram(
+                        {
+                            diaSemana: slot.diaSemana,
+                            horaInicio: slot.horaInicio,
+                            horaFim: slot.horaFim,
+                            tipo: slot.tipo,
+                        },
+                        slot.id
+                    )
+                );
+            });
+        });
+
+        Promise.all(promises)
+            .then(() => {
+                dirtySlotIds.current.clear();
+                showSuccess();
+            })
+            .catch(showError);
+    }
+
+    function handleUpdateBuffer(value: string) {
+        setSaveStatus("loading");
+        updateBuffer(value)
+            .then(() => {
+                queryClient.invalidateQueries({ queryKey: ["personalBuffer"] });
+                showSuccess();
+            })
+            .catch(showError);
+    }
+
+    function handleCancel() {
+        setHasUnsaved(false);
+        setSaveStatus("idle");
+        dirtySlotIds.current.clear();
+        if (getInitialCronogram.data) {
+            const formatted: DaySchedule[] = DAYS_OF_WEEK.map((day) => {
+                const slots: TimeSlot[] = getInitialCronogram.data.filter(
+                    (slot: TimeSlot) => slot.diaSemana === day
+                );
+                return {
+                    day,
+                    enabled: slots.some((s) => s.tipo === "DISPONIVEL"),
+                    slots,
+                };
+            });
+            setSchedule(formatted);
+        }
+    }
+
 
     if (getInitialCronogram.isLoading || personalBuffer.isLoading) {
         return <AvailabilitySkeleton />;
     }
 
-    return (
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <h1 className={styles.title}>Definir horário</h1>
-            </div>
+    const globalPanelProps = {
+        globalManha,
+        globalTarde,
+        setGlobalManha,
+        setGlobalTarde,
+        applyToAll,
+    };
 
-            <div className={styles.defaultsSection}>
-                <div className={styles.defaultsLabel}>
-                    <span className={styles.clockIcon}><Clock /></span>
-                    <span>Padrões:</span>
+
+    return (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <div className={styles.pageWrapper}>
+
+                <div className={styles.header}>
+                    <h1 className={styles.title}>Definir horário de disponibilidade</h1>
                 </div>
-                <div className={styles.defaultsControls}>
-                    <div className={styles.controlGroup}>
-                        <label className={styles.controlLabel} >Intervalo pós agendamentos:</label>
+
+                <div className={styles.bufferBar}>
+                    <div className={styles.bufferBarContent}>
+                        <div className={styles.infoTrigger}>
+                            <Settings size={15} className={styles.barIcon} />
+                            <span className={styles.controlLabel}>Intervalo pós agendamentos</span>
+                        </div>
                         <select
                             className={styles.select}
                             value={personalBuffer.data ?? "0"}
@@ -193,198 +414,128 @@ export default function SetAvailability() {
                             <option value="45">45 min</option>
                             <option value="60">1 hora</option>
                         </select>
-
-                        <p className="text-gray-300 text-sm">Será reservado 15 minutos antes do intervalo de entrada.</p>
-
+                    </div>
+                    <div
+                        className={styles.infoTrigger}
+                        title="15 minutos são reservados antes do intervalo de entrada."
+                    >
+                        <Info size={14} />
+                        <span>15 min reservados antes do intervalo de entrada</span>
                     </div>
                 </div>
-                {status === "loading" && (
-                    <p className="text-white flex gap-2 items-center">
-                        <Loader /> Atualizando dados...
-                    </p>
-                )}
 
-                {status === "success" && (
-                    <p className="text-white flex gap-2 items-center">
-                        <CircleCheck color="#088F8F" /> Dados atualizados
-                    </p>
-                )}
+                <aside className={`${styles.globalPanel} ${styles.globalPanelMobile}`}>
+                    <GlobalPanelContent {...globalPanelProps} />
+                </aside>
 
-                {status === "error" && (
-                    <p className="text-white flex gap-2 items-center">
-                        <CircleX color="#8F0808" /> Erro ao atualizar
-                    </p>
-                )}
+                <div className={styles.contentLayout}>
 
-            </div>
-
-            <div className={styles.tableWrapper}>
-                <table className={styles.table}>
-                    <thead className={styles.tableHead}>
-                        <tr>
-                            <th className={styles.dayColumn}>Dia da semana</th>
-                            <th className={styles.timeColumn}>De</th>
-                            <th className={styles.intervalColumn}>Intervalo Entrada</th>
-                            <th className={styles.intervalColumn}>Intervalo Saída</th>
-                            <th className={styles.timeColumn}>Até</th>
-                        </tr>
-                    </thead>
-                    <tbody className={styles.tableBody}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            {schedule.map((daySchedule, dayIndex) => {
-                                const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
-                                const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
-
-                                const workSlot = daySchedule.slots[workIndex] || {};
-                                const breakSlot = daySchedule.slots[breakIndex] || {};
-                                if (workIndex === -1 || breakIndex === -1) return null;
-
-                                return (
-                                    <tr key={dayIndex}>
-                                        <td className={`${styles.tableCell} ${styles.dayCell}`}>
-                                            <div className={styles.dayCellContent}>
-                                                <span>{DAYS_OF_WEEK_DISPLAY[dayIndex]}</span>
-                                            </div>
-                                        </td>
-
-                                        <td className={styles.tableCell}>
-                                            <TimeCell
-                                                value={workSlot.horaInicio}
-                                                onChange={(time) =>
-                                                    updateSlot(dayIndex, workIndex, "horaInicio", time, workSlot.id!)
-                                                }
-                                            />
-                                        </td>
-
-                                        <td className={styles.tableCell}>
-                                            <TimeCell
-                                                value={breakSlot.horaInicio}
-                                                onChange={(time) =>
-                                                    updateSlot(dayIndex, breakIndex, "horaInicio", time, breakSlot.id!)
-                                                }
-                                            />
-                                        </td>
-
-                                        <td className={styles.tableCell}>
-                                            <TimeCell
-                                                value={breakSlot.horaFim}
-                                                onChange={(time) =>
-                                                    updateSlot(dayIndex, breakIndex, "horaFim", time, breakSlot.id!)
-                                                }
-                                            />
-                                        </td>
-
-                                        <td className={styles.tableCell}>
-                                            <TimeCell
-                                                value={workSlot.horaFim}
-                                                onChange={(time) =>
-                                                    updateSlot(dayIndex, workIndex, "horaFim", time, workSlot.id!)
-                                                }
-                                            />
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </LocalizationProvider>
-                    </tbody>
-                </table>
-            </div>
-
-            <div className={styles.mobileView}>
-                {schedule.map((daySchedule, dayIndex) => {
-                    const workIndex = daySchedule.slots.findIndex(s => s.tipo === "DISPONIVEL");
-                    const breakIndex = daySchedule.slots.findIndex(s => s.tipo === "RESTRITO");
-
-                    const workSlot = daySchedule.slots[workIndex] || {};
-                    const breakSlot = daySchedule.slots[breakIndex] || {};
-
-                    return (
-                        <div key={dayIndex} className={styles.dayCard}>
-                            <div className={styles.dayCardHeader}>
-                                <h3 className={styles.dayCardTitle}>
-                                    {DAYS_OF_WEEK_DISPLAY[dayIndex]}
-                                </h3>
-                            </div>
-
-                            <div className={styles.slotFields}>
-                                {/* Horário de trabalho */}
-                                <div className={styles.fieldGroup}>
-                                    <label className={styles.fieldLabel}>De</label>
-                                    <input
-                                        type="time"
-                                        value={workSlot.horaInicio || ""}
-                                        onChange={(e) =>
-                                            updateSlot(
-                                                dayIndex,
-                                                workIndex,
-                                                "horaInicio",
-                                                e.target.value,
-                                                workSlot.id!
-                                            )
-                                        }
-                                        className={styles.input}
-                                    />
-                                </div>
-
-                                <div className={styles.fieldGroup}>
-                                    <label className={styles.fieldLabel}>Até</label>
-                                    <input
-                                        type="time"
-                                        value={workSlot.horaFim || ""}
-                                        onChange={(e) =>
-                                            updateSlot(
-                                                dayIndex,
-                                                workIndex,
-                                                "horaFim",
-                                                e.target.value,
-                                                workSlot.id!
-                                            )
-                                        }
-                                        className={styles.input}
-                                    />
-                                </div>
-
-                                {/* Intervalo */}
-                                <div className={styles.fieldGroup}>
-                                    <label className={styles.fieldLabel}>Intervalo Entrada</label>
-                                    <input
-                                        type="time"
-                                        value={breakSlot.horaInicio || ""}
-                                        onChange={(e) =>
-                                            updateSlot(
-                                                dayIndex,
-                                                breakIndex,
-                                                "horaInicio",
-                                                e.target.value,
-                                                breakSlot.id!
-                                            )
-                                        }
-                                        className={styles.input}
-                                    />
-                                </div>
-
-                                <div className={styles.fieldGroup}>
-                                    <label className={styles.fieldLabel}>Intervalo Saída</label>
-                                    <input
-                                        type="time"
-                                        value={breakSlot.horaFim || ""}
-                                        onChange={(e) =>
-                                            updateSlot(
-                                                dayIndex,
-                                                breakIndex,
-                                                "horaFim",
-                                                e.target.value,
-                                                breakSlot.id!
-                                            )
-                                        }
-                                        className={styles.input}
-                                    />
-                                </div>
-                            </div>
+                    <div className={styles.dayList}>
+                        <div className={styles.dayListHeader}>
+                            <span>Habilitado</span>
+                            <span>Dia</span>
+                            <span>Horário Inicial</span>
+                            <span>Horário Final</span>
                         </div>
-                    );
-                })}
+                        {schedule.map((daySchedule, dayIndex) => {
+                            const workIndex = daySchedule.slots.findIndex((s) => s.tipo === "DISPONIVEL");
+                            const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
+                            const workSlot = daySchedule.slots[workIndex];
+                            const breakSlot = daySchedule.slots[breakIndex];
+                            const disabled = !daySchedule.enabled;
+
+                            return (
+                                <div
+                                    key={daySchedule.day}
+                                    className={`${styles.dayRow} ${disabled ? styles.disabled : ""}`}
+                                >
+                                    <div className={styles.dayToggle}>
+                                        <Toggle
+                                            checked={daySchedule.enabled}
+                                            onChange={() => toggleDay(dayIndex)}
+                                        />
+                                    </div>
+
+                                    <div className={styles.dayLabel}>
+
+                                        <span className={`${styles.dayName} ${disabled ? styles.disabled : ""}`}>
+                                            {DAYS_META[daySchedule.day]}
+                                        </span>
+                                    </div>
+
+                                    {workSlot && breakSlot ? (
+                                        <>
+                                            <TimeRange
+                                                startValue={workSlot.horaInicio}
+                                                endValue={breakSlot.horaInicio}
+                                                disabled={disabled}
+                                                onStartChange={(v) =>
+                                                    updateLocalSlot(dayIndex, workIndex, "horaInicio", v)
+                                                }
+                                                onEndChange={(v) =>
+                                                    updateLocalSlot(dayIndex, breakIndex, "horaInicio", v)
+                                                }
+                                            />
+
+                                            <div className={`${styles.periodDivider} ${disabled ? styles.disabled : ""}`} />
+
+                                            <TimeRange
+                                                startValue={breakSlot.horaFim}
+                                                endValue={workSlot.horaFim}
+                                                disabled={disabled}
+                                                onStartChange={(v) =>
+                                                    updateLocalSlot(dayIndex, breakIndex, "horaFim", v)
+                                                }
+                                                onEndChange={(v) =>
+                                                    updateLocalSlot(dayIndex, workIndex, "horaFim", v)
+                                                }
+                                            />
+                                        </>
+                                    ) : (
+                                        <span className={styles.noSlots}>
+                                            Sem horários cadastrados
+                                        </span>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    <aside className={`${styles.globalPanel} ${styles.globalPanelDesktop}`}>
+                        <GlobalPanelContent {...globalPanelProps} />
+                    </aside>
+
+                </div>
+
+                <div className={`${styles.footer} ${hasUnsaved && saveStatus === "idle" ? styles.dirty : ""}`}>
+
+                    {hasUnsaved && saveStatus === "idle" && (
+                        <span className={styles.unsavedHint}>
+                            <TriangleAlert size={14} />
+                            Alterações feitas! Não esqueça de salvar
+                        </span>
+                    )}
+
+                    <SaveBadge status={saveStatus} />
+
+                    <button
+                        type="button"
+                        className={styles.cancelButton}
+                        onClick={handleCancel}
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="button"
+                        className={`${styles.saveButton} ${saveStatus === "loading" ? styles.loading : ""}`}
+                        onClick={handleSave}
+                        disabled={saveStatus === "loading"}
+                    >
+                        Salvar Alterações
+                    </button>
+                </div>
+
             </div>
-        </div>
+        </LocalizationProvider>
     );
 }
