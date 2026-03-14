@@ -168,42 +168,31 @@ export default function NewEvent(
 
     const url = window.location.href;
 
-    async function handleInvalidateQueries() {
-        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-        await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+    const showError = (content: string, title = "Erro ao agendar") => {
+        setTextModal({ title, content });
+        setOpenModal("error");
+    };
 
+    async function handleInvalidateQueries() {
+        const queries = ["appointmentsAtCalendar", "userAppointments", "userRescheduleAppointments", "personalRequests", "appointmentDetails"];
+        await Promise.all(queries.map(q => queryClient.invalidateQueries({ queryKey: [q] })));
     }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
         setLoading(true)
 
         if (addressData.address.includes("undefined")) {
-            setOpenModal("error");
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "CEP inválido. Por favor, verifique o CEP informado."
-            });
+            showError("CEP inválido. Por favor, verifique o CEP informado.");
             return;
         }
 
         if (!addressData.postalCode || addressData.address === null) {
-            setOpenModal("error");
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Por favor, preencha um CEP válido."
-            });
+            showError("Por favor, preencha um CEP válido.");
             return;
         }
 
         if (!addressData.number) {
-            setOpenModal("error");
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Por favor, preencha o número do endereço."
-            });
+            showError("Por favor, preencha o número do endereço.");
             return;
         }
 
@@ -257,11 +246,7 @@ export default function NewEvent(
                 setLoading(false)
 
                 if (error.status === 400) {
-                    setTextModal({
-                        title: "Erro ao agendar",
-                        content: error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento."
-                    });
-                    setOpenModal("error");
+                    showError(error.response.data.Exception || "Ocorreu um erro ao tentar agendar o evento.");
                     return;
                 }
 
@@ -388,29 +373,17 @@ export default function NewEvent(
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
         console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
         if (selectedType === "PRESENCIAL" && (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading)) {
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Você não possui aulas presenciais disponíveis para agendar."
-            });
-            setOpenModal("error");
+            showError("Você não possui aulas presenciais disponíveis para agendar.");
             return false;
         }
 
         if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Você não possui aulas residenciais disponíveis para agendar."
-            });
-            setOpenModal("error");
+            showError("Você não possui aulas residenciais disponíveis para agendar.");
             return false;
         }
 
         if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Você não possui aulas funcionais disponíveis para agendar."
-            });
-            setOpenModal("error");
+            showError("Você não possui aulas funcionais disponíveis para agendar.");
             return false;
         }
         return true;
@@ -426,11 +399,7 @@ export default function NewEvent(
         }
         // choose date and hour validation
         if (!newEventDate || !newEventStartHour) {
-            setTextModal({
-                title: "Erro ao agendar",
-                content: "Selecione uma data e horário para o evento."
-            });
-            setOpenModal("error");
+            showError("Selecione uma data e horário para o evento.");
             return;
         }
 

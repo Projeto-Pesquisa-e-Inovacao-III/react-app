@@ -20,8 +20,6 @@ import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 import { getAvailabilityHoursTomorrow } from "../../constants/personal";
-import { getUserAddresses } from "../../constants/address";
-import { findUserData } from "../../constants/user";
 
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
