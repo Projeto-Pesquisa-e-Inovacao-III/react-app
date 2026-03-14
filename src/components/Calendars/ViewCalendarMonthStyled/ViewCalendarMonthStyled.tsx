@@ -14,7 +14,10 @@ type Props = {
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
   modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
-  availabilityHoursTomorrow?: boolean;
+  availabilityHoursTomorrow?: {
+    inicio: string;
+    fim: string;
+  }[];
 }
 
 const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
@@ -100,7 +103,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return;
             }
 
-            if (clickedDate === tomorrow && !availabilityHoursTomorrow) return;
+            if (clickedDate === tomorrow && (!availabilityHoursTomorrow || availabilityHoursTomorrow.length === 0)) return;
 
             if (canMakeAppointment && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
@@ -112,8 +115,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
+            console.log("availabilityHoursTomorrow", availabilityHoursTomorrow)
 
-            if (!availabilityHoursTomorrow && cellDate === tomorrow) return [styles.fcTodayCustom];
+            if (cellDate === tomorrow && availabilityHoursTomorrow && availabilityHoursTomorrow.length === 0) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {
               return [styles.fcTodayCustom];
