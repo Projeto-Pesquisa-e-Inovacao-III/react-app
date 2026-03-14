@@ -14,20 +14,75 @@ import { appointmentAtCalendar, findUserAppointments } from "../../constants/sch
 import { appoitmentsCount } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, PlusIcon, ClipboardClock, CalendarX, Plus } from 'lucide-react';
+import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, ClipboardClock } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
 import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPersonal/OverviewCardPersonal";
-import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import OverviewCardPackageStatus from "../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
 import Skeleton from "react-loading-skeleton";
 import type { appointmentsCards } from "../../models/overview";
 import CardWithoutPlan from "../../components/Overview/CardWithoutPlan/CardWithoutPlan";
+import AppointmentsEmptyState from "../../components/Overview/AppointmentsEmptyState/AppointmentsEmptyState";
 
 type ModalType = "success" | "error" | "newEvent" | "cancel" | "accept" | "reschedule" | "rescheduleRequest";
+
+const TOTAL_PADRAO = 20;
+
+type BalanceItemProps = { label: string; current: number; total: number; icon?: React.ReactNode };
+
+function BalanceItem({ label, current, total, icon }: Readonly<BalanceItemProps>) {
+    const percentage = Math.min(100, Math.max(0, (current / total) * 100));
+    return (
+        <div className="mb-4">
+            <div className="flex justify-between mb-1.5 text-base">
+                <span className="font-semibold text-slate-700 flex gap-2">{icon}{label}</span>
+                <span className="font-bold text-slate-800">
+                    <span className="text-xl">{current}</span> / <span className="text-sm text-slate-500 font-medium">{total}</span>
+                </span>
+            </div>
+            <LinearProgress
+                variant="determinate"
+                value={percentage}
+                sx={{ height: 8, borderRadius: 8, "& .MuiLinearProgress-bar": { backgroundColor: "#093a5d" } }}
+            />
+        </div>
+    );
+}
+
+type ClassBalance = { saldoPresencial: number; saldoFuncional: number; saldoResidencial: number };
+
+function ClassBalancePanel({ data }: Readonly<{ data: ClassBalance | undefined }>) {
+    return (
+        <div>
+            <BalanceItem label="Presencial" current={data?.saldoPresencial ?? 0} total={TOTAL_PADRAO} icon={<Users />} />
+            <BalanceItem label="Funcional"  current={data?.saldoFuncional  ?? 0} total={TOTAL_PADRAO} icon={<HeartPulseIcon />} />
+            <BalanceItem label="Residencial" current={data?.saldoResidencial ?? 0} total={TOTAL_PADRAO} icon={<HomeIcon />} />
+        </div>
+    );
+}
+
+async function loadAppointmentCounts(
+    setToday: (v: number) => void,
+    setPending: (v: number) => void,
+    todayDate: string,
+) {
+    try {
+        const res = await appoitmentsCount({ status: "APROVADO", data: todayDate });
+        setToday(res.data);
+    } catch (error) {
+        console.error("Error fetching personal appointments today count:", error);
+    }
+    try {
+        const res = await appoitmentsCount({ status: "PENDENTE_PERSONAL_APROVACAO" });
+        setPending(res.data);
+    } catch (error) {
+        console.error("Error fetching personal appointments pending count:", error);
+    }
+}
+
 
 export function Overview() {
     const isMobile = useMobile();
@@ -53,77 +108,7 @@ export function Overview() {
     console.log("Class balance data:", classBalanceQuery.data);
 
     function getBalance() {
-
-        type BalanceItemProps = {
-            label: string;
-            current: number;
-            total: number;
-            icon?: React.ReactNode;
-        };
-
-        const BalanceItem = ({ label, current, total, icon }: BalanceItemProps) => {
-            const percentage = Math.min(100, Math.max(0, (current / total) * 100));
-
-            // const getColor = () => {
-            //     if (percentage < 40) return "#ef4444"; // vermelho
-            //     if (percentage < 70) return "#f59e0b"; // amarelo
-            //     return "#093a5d"; // verde
-            // };
-
-
-            return (
-                <div className="mb-4">
-                    <div className="flex justify-between mb-1.5 text-base">
-                        <span className="font-semibold text-slate-700 flex gap-2">
-                            {icon}{label}
-                        </span>
-                        <span className="font-bold text-slate-800">
-                            <span className="text-xl">{current}</span> / <span className="text-sm text-slate-500 font-medium">{total}</span>
-                        </span>
-                    </div>
-
-
-                    <LinearProgress
-                        variant="determinate"
-                        value={percentage}
-                        sx={{
-                            height: 8,
-                            borderRadius: 8,
-                            "& .MuiLinearProgress-bar": {
-                                backgroundColor: "#093a5d",
-                            },
-                        }}
-                    />
-                </div>
-            );
-        };
-
-        const TOTAL_PADRAO = 20;
-
-        return (
-            <div>
-                <BalanceItem
-                    label="Presencial"
-                    current={classBalanceQuery.data?.saldoPresencial ?? 0}
-                    total={TOTAL_PADRAO}
-                    icon={<Users />}
-                />
-
-                <BalanceItem
-                    label="Funcional"
-                    current={classBalanceQuery.data?.saldoFuncional ?? 0}
-                    total={TOTAL_PADRAO}
-                    icon={<HeartPulseIcon />}
-                />
-
-                <BalanceItem
-                    label="Residencial"
-                    current={classBalanceQuery.data?.saldoResidencial ?? 0}
-                    total={TOTAL_PADRAO}
-                    icon={<HomeIcon />}
-                />
-            </div>
-        );
+        return <ClassBalancePanel data={classBalanceQuery.data} />;
     }
 
     const appointments = useQuery({
@@ -146,27 +131,10 @@ export function Overview() {
     const [countAppointmentsToday, setCountAppointmentsToday] = useState<number | null>(null);
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
-    function fetchAppointmentsCountToday() {
-        if (type?.type !== "personal") return;
-
-        const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
-        appoitmentsCount({ status: "APROVADO", data: today }).then((response) => {
-            setCountAppointmentsToday(response.data);
-        }).catch((error) => {
-            console.error("Error fetching personal appointments today count:", error);
-            return 0;
-        });
-
-        appoitmentsCount({ status: "PENDENTE_PERSONAL_APROVACAO" }).then((response) => {
-            setCountAppointmentsPending(response.data);
-        }).catch((error) => {
-            console.error("Error fetching personal appointments today count:", error);
-            return 0;
-        });
-    }
-
     useEffect(() => {
-        fetchAppointmentsCountToday();
+        if (type?.type !== "personal") return;
+        const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
+        loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
     }, [type]);
 
     const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
@@ -310,55 +278,13 @@ export function Overview() {
                                     </div>
                                 </div>
                             ) : appointmentsCards.data?.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center gap-4">
-                                    <div className="rounded-full bg-gray-200 p-5 w-fit">
-                                        <CalendarX className="" color="#0a3a5c" size={40} />
-                                    </div>
-
-                                    {type?.type === "aluno" && (
-                                        actualPlanQuery?.data?.data ? (
-                                            <>
-                                                <h1 className="text-center">Sem agendamentos para hoje</h1>
-                                                <div>
-                                                    <h2 className="text-center text-gray-500">Você ainda não agendou nenhuma aula para este período.</h2>
-                                                    <h2 className="text-center text-gray-500">Garanta seu horário agora mesmo!</h2>
-                                                </div>
-                                                {type?.type === "aluno" &&
-                                                    <SmallerButton
-                                                        type="button"
-                                                        title="Agendar Agora"
-                                                        icon={<PlusIcon />}
-                                                        classname={`${isMobile ? "w-full" : "w-1/4!"} py-2.5 px-0 flex items-center gap-2 text-base rounded-lg bg-blue-600 text-white hover:bg-blue-700`}
-                                                        handleButtonClick={handleClickNewEvent}
-                                                    />}
-                                            </>
-                                        ) : (
-                                            <>
-                                                <h1 className="text-center">Nenhum pacote ativo</h1>
-                                                <div>
-                                                    <h2 className="text-center text-gray-500">Para agendar aulas, você precisa ter um plano ativo.</h2>
-                                                    <h2 className="text-center text-gray-500">Confira nossos pacotes e escolha o melhor para você!</h2>
-                                                </div>
-                                                {type?.type === "aluno" &&
-                                                    <SmallerButton
-                                                        type="button"
-                                                        title="Comprar Pacote Agora"
-                                                        classname={`${isMobile ? "w-full" : "w-1/3!"} flex items-center gap-2 mt-2 text-lg font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700`}
-                                                        icon={<Plus />}
-                                                        handleButtonClick={() => nav("/packages")}
-                                                    />}
-                                            </>
-                                        )
-                                    )}
-
-                                    {type?.type === "personal" && (
-                                        <>
-                                            <div>
-                                                <h2 className="text-center text-gray-500">Você ainda não possui agendamentos pendentes.</h2>
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
+                                <AppointmentsEmptyState
+                                    userType={type?.type}
+                                    hasActivePlan={!!actualPlanQuery?.data?.data}
+                                    isMobile={isMobile}
+                                    onSchedule={handleClickNewEvent}
+                                    onPackages={() => nav("/packages")}
+                                />
                             ) : (
                                 <>
                                     <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">

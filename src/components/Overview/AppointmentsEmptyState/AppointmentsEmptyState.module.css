@@ -1,0 +1,70 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.iconWrapper {
+    border-radius: 9999px;
+    background-color: #e5e7eb;
+    padding: 1.25rem;
+    width: fit-content;
+}
+
+.title {
+    text-align: center;
+}
+
+.subtitleWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.subtitle {
+    text-align: center;
+    color: #6b7280;
+}
+
+.scheduleButton {
+    width: 25%;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+    padding-left: 0;
+    padding-right: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--bg-blue);
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.scheduleButton:hover {
+    background-color: var(--bg-blue-hover);
+}
+
+.packagesButton {
+    width: 33.333333%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    background-color: var(--bg-blue);
+    color: #ffffff;
+    transition: background-color 0.3s ease;
+}
+
+.packagesButton:hover {
+    background-color: var(--bg-blue-hover);
+}
+
+.fullWidth {
+    width: 100%;
+}

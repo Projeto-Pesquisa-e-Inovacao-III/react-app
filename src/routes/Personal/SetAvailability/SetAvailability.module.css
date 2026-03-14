@@ -3,6 +3,12 @@
   padding: 0 0 100px;
 }
 
+.bufferBarContent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .header {
   margin-bottom: 20px;
 }
@@ -13,17 +19,18 @@
   color: #333;
 }
 
-
-
 .bufferBar {
   display: flex;
   align-items: center;
+  flex-direction: row;
   gap: 10px;
   background: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 12px 20px;
   margin-bottom: 20px;
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.05);
+
 }
 
 .barIcon {
@@ -47,23 +54,18 @@
   cursor: default;
 }
 
-
-
 .contentLayout {
   display: flex;
   align-items: flex-start;
   gap: 20px;
 }
 
-
-
 .globalPanel {
   width: 20vw;
   flex-shrink: 0;
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -72,10 +74,22 @@
 }
 
 .globalPanelTitle {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
+  padding: 12px 20px;
+  background-color: var(--bg-blue);
+  color: #fff;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.globalPanelContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0 20px 20px;
 }
 
 .globalPanelField {
@@ -88,7 +102,7 @@
 .globalRangeTitle {
   font-size: 11px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #3f4349;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -174,13 +188,49 @@
   cursor: not-allowed;
 }
 
-
-
 .dayList {
   display: flex;
   flex-direction: column;
-  gap: 8px;
   width: 100%;
+}
+
+.dayListHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 1.5px solid #e2e8f0;
+  background-color: var(--bg-blue);
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.dayListHeader>span {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  justify-content: center;
+}
+
+.dayListHeader>span:nth-child(1) {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.dayListHeader>span:nth-child(2) {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.dayListHeader>span:nth-child(3),
+.dayListHeader>span:nth-child(4) {
+  flex: 1;
 }
 
 .dayRow {
@@ -209,7 +259,16 @@
   align-items: center;
   gap: 14px;
   padding: 0 24px;
-  width: 220px;
+  width: 250px;
+  flex-shrink: 0;
+  border-right: 1px solid #e2e8f0;
+}
+
+.dayToggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
   flex-shrink: 0;
   border-right: 1px solid #e2e8f0;
 }
@@ -393,9 +452,17 @@
   gap: 6px;
 }
 
-.statusBadge.loading { color: #3182ce; }
-.statusBadge.success { color: #276749; }
-.statusBadge.error   { color: #9b2c2c; }
+.statusBadge.loading {
+  color: #3182ce;
+}
+
+.statusBadge.success {
+  color: #276749;
+}
+
+.statusBadge.error {
+  color: #9b2c2c;
+}
 
 
 .unsavedHint {
@@ -409,13 +476,20 @@
   border: 1px solid #fde68a;
   border-radius: 8px;
   padding: 6px 12px;
-  
+
   animation: hintSlideIn 0.25s ease;
 }
 
 @keyframes hintSlideIn {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .statusDot {
@@ -431,12 +505,24 @@
   animation: savePulse 1s infinite;
 }
 
-.statusDot.success { background: #38a169; }
-.statusDot.error   { background: #e53e3e; }
+.statusDot.success {
+  background: #38a169;
+}
+
+.statusDot.error {
+  background: #e53e3e;
+}
 
 @keyframes savePulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.35; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
 }
 
 
@@ -447,6 +533,11 @@
 }
 
 @media (max-width: 1024px) {
+  .bufferBar {
+    justify-content: space-between;
+
+  }
+
   .pageWrapper {
     padding: 24px 20px 100px;
   }
@@ -484,12 +575,34 @@
 
   .footer {
     padding: 12px 20px;
+    bottom: 60px;
   }
+
 }
 
 @media (max-width: 640px) {
+
+  .bufferBar {
+    flex-direction: column;
+
+  }
+
+  .select {
+    width: 100%;
+    text-align: center;
+  }
+
+  .bufferBarContent {
+    flex-direction: column;
+    width: 100%;
+  }
+
   .pageWrapper {
     padding: 16px 16px 100px;
+  }
+
+  .dayListHeader {
+    display: none;
   }
 
   .dayRow {
@@ -522,9 +635,7 @@
   .footer {
     padding: 12px 16px;
     gap: 8px;
-  }
-
-  .footer {
+    bottom: 60px;
     flex-wrap: wrap;
   }
 
