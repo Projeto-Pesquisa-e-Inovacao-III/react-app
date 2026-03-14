@@ -19,7 +19,7 @@ type Props = {
   showSearchInput?: boolean;
   defaultValue?: string;
   fixedText?: string;
-  label?: string;
+  label?: React.ReactNode;
 
   labelClassName?: string;
   dropDownClassName?: string

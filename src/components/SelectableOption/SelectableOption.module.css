@@ -1,0 +1,55 @@
+.selectableOption {
+    width: 100%;
+    min-height: 74px;
+    padding: 18px 20px;
+    border: 1px solid #cdd5df;
+    border-radius: 16px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.selectableOptionSelected {
+    background-color: #d7dee9;
+    border-color: #0c4772;
+}
+
+.radioMark {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1.5px solid #b6c0ce;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    flex-shrink: 0;
+}
+
+.radioMarkSelected {
+    background-color: #0c4772;
+    border-color: #0c4772;
+}
+
+.radioDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background-color: #ffffff;
+    opacity: 0;
+}
+
+.radioMarkSelected .radioDot {
+    opacity: 1;
+}
+
+.optionLabel {
+    color: #334155;
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 500;
+    text-align: left;
+}
