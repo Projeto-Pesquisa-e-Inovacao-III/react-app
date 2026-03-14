@@ -173,6 +173,15 @@ export default function NewEvent(
         setOpenModal("error");
     };
 
+    const mapAddressState = (num: string, comp: string, cepStr: string, logra: string, loc: string, ufStr: string) => ({
+        number: num,
+        complement: comp,
+        postalCode: cepStr,
+        address: logra,
+        city: loc,
+        state: ufStr
+    });
+
     const buildAddressPayload = () => ({
         numero: addressData.number,
         complemento: addressData.complement,
@@ -187,28 +196,42 @@ export default function NewEvent(
         }
     });
 
+    const isValidAddress = () => {
+        if (addressData.address.includes("undefined")) {
+            showError("CEP inválido. Por favor, verifique o CEP informado.");
+            return false;
+        }
+
+        if (!addressData.postalCode || addressData.address === null) {
+            showError("Por favor, preencha um CEP válido.");
+            return false;
+        }
+
+        if (!addressData.number) {
+            showError("Por favor, preencha o número do endereço.");
+            return false;
+        }
+        return true;
+    };
+
+    const handleSuccessRouting = () => {
+        handleInvalidateQueries();
+        openModalExtern();
+        if (url.includes("/schedule")) {
+            if (newAppointmentCreated) newAppointmentCreated(true);
+            navigation("/schedule");
+        }
+    };
+
     async function handleInvalidateQueries() {
         const queries = ["appointmentsAtCalendar", "userAppointments", "userRescheduleAppointments", "personalRequests", "appointmentDetails"];
         await Promise.all(queries.map(q => queryClient.invalidateQueries({ queryKey: [q] })));
     }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
-        setLoading(true)
+        setLoading(true);
 
-        if (addressData.address.includes("undefined")) {
-            showError("CEP inválido. Por favor, verifique o CEP informado.");
-            return;
-        }
-
-        if (!addressData.postalCode || addressData.address === null) {
-            showError("Por favor, preencha um CEP válido.");
-            return;
-        }
-
-        if (!addressData.number) {
-            showError("Por favor, preencha o número do endereço.");
-            return;
-        }
+        if (!isValidAddress()) return;
 
 
 
@@ -227,21 +250,9 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-                setLoading(false)
+                setLoading(false);
                 if (calculatedTitle && newEventDate) {
-                    handleInvalidateQueries()
-                    if (url.includes("/schedule")) {
-                        if (newAppointmentCreated) {
-                            newAppointmentCreated(true);
-                        }
-                        handleInvalidateQueries()
-
-                        openModalExtern();
-                        navigation("/schedule");
-                        return;
-                    }
-                    openModalExtern();
-                    return;
+                    handleSuccessRouting();
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
@@ -263,25 +274,25 @@ export default function NewEvent(
     useEffect(() => {
         if (appoitmentData && isReschedule) {
             console.log("Populando dados de endereço para reagendamento:", appoitmentData);
-            setAddressData({
-                number: appoitmentData?.endereco.numero,
-                complement: appoitmentData?.endereco.complemento,
-                postalCode: appoitmentData?.endereco.cep.id,
-                address: appoitmentData?.endereco.cep.logradouro,
-                city: appoitmentData?.endereco.cep.localidade,
-                state: appoitmentData?.endereco.cep.uf
-            });
+            setAddressData(mapAddressState(
+                appoitmentData?.endereco.numero || "",
+                appoitmentData?.endereco.complemento || "",
+                appoitmentData?.endereco.cep.id || "",
+                appoitmentData?.endereco.cep.logradouro || "",
+                appoitmentData?.endereco.cep.localidade || "",
+                appoitmentData?.endereco.cep.uf || ""
+            ));
         }
     }, [appoitmentData, isReschedule]);
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
+        if (e) e.preventDefault();
         console.log("Reagendando evento...");
-        setLoading(true)
-        e?.preventDefault();
-
+        setLoading(true);
 
         if (!newEventDate || !newEventStartHour) {
-            alert("Por favor, selecione uma data e horário para o evento.");
+            showError("Por favor, selecione uma data e horário para o evento.", "Erro no agendamento");
+            setLoading(false);
             return;
         }
 
@@ -312,17 +323,9 @@ export default function NewEvent(
 
         });
 
-        if (!goToNextStep) {
-            handleInvalidateQueries()
+        if (!goToNextStep || (calculatedTitle && newEventDate)) {
+            handleInvalidateQueries();
             openModalExtern();
-            return;
-        }
-
-
-        if (calculatedTitle && newEventDate) {
-            handleInvalidateQueries()
-            openModalExtern();
-            return;
         }
 
     }
@@ -463,16 +466,16 @@ export default function NewEvent(
     useEffect(() => {
         const cep = selectedAddress?.cep?.cep;
 
-
         if (cep) {
-            setAddressData({
-                postalCode: cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
-                address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
-                city: selectedAddress?.cep?.localidade,
-                state: selectedAddress?.cep?.uf,
-                number: selectedAddress?.numero,
-                complement: selectedAddress?.complemento
-            });
+            const formattedCep = cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep;
+            setAddressData(mapAddressState(
+                selectedAddress?.numero || "",
+                selectedAddress?.complemento || "",
+                formattedCep,
+                `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
+                selectedAddress?.cep?.localidade || "",
+                selectedAddress?.cep?.uf || ""
+            ));
         }
 
     }, [selectedAddress])
