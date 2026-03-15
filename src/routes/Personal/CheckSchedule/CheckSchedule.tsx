@@ -327,22 +327,23 @@ export function CheckSchedule() {
                     {isLoadingAppointments ? renderKpisSkeleton() : (
                         <div className={styles.gridContainer}>
                             <CheckScheduleKpis
-                                title="Total pendente"
-                                value={countPendingPersonalApproval || 0}
+                                title="Novos agendamentos hoje"
+                                value={0}
                             />
                             <CheckScheduleKpis
-                                title="Vence hoje"
-                                value={0}
+                                title="Total pendente"
+                                value={countPendingPersonalApproval || 0}
                                 color="#F59E0B"
                             />
                             <CheckScheduleKpis
-                                title="Reagendados hoje"
+                                title="Respondidos"
                                 value={0}
-                                color="#006faf"
+                                color="#009664ff"
                             />
                             <CheckScheduleKpis
-                                title="Taxa de completude"
-                                value="85%"
+                                title="Cancelados no mês atual"
+                                value={0}
+                                color="#960000ff"
                             />
                         </div>
                     )}
