@@ -43,9 +43,18 @@ export default function Register() {
 
     const [register, setRegister] = useState(initialRegisterState);
 
-    const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
     const navigate = useNavigate();
     const errors = validation.validatePassword("");
+
+    const isFormValid =
+        register.name.trim() !== "" &&
+        validation.validateEmail(register.email).startsWith("Email válido") &&
+        register.customerDocument.length === 14 &&
+        register.phone.length === 15 &&
+        register.gender.trim() !== "" &&
+        register.birthDate !== "" &&
+        validation.validatePassword(register.password).startsWith("password válida") &&
+        register.password === register.confirmPassword;
 
     function navToLogin() {
         setOpenModal(null);
@@ -88,13 +97,6 @@ export default function Register() {
             sexo: register.gender,
             dataNascimento: register.birthDate
         };
-
-        if (register.password !== register.confirmPassword) {
-            setModalInfo({ title: "Erro de validação", content: "As senhas não coincidem." });
-            setOpenModal("error");
-            setShowPasswordValidation(true);
-            return;
-        }
 
         const nullOrBlank = validation.isNullOrBlank(userData);
 
@@ -172,13 +174,20 @@ export default function Register() {
                                     icon={<User />}
                                     value={register.name}
                                 />
-                                <InputWithIcon
-                                    type="text"
-                                    placeholder="Email"
-                                    onInputChange={(email: string) => handleChange('email', email)}
-                                    icon={<Mail />}
-                                    value={register.email}
-                                />
+                                <div>
+                                    <InputWithIcon
+                                        type="text"
+                                        placeholder="Email"
+                                        onInputChange={(email: string) => handleChange('email', email)}
+                                        icon={<Mail />}
+                                        value={register.email}
+                                        hasError={register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido")}
+                                        hasSuccess={register.email.length > 0 && validation.validateEmail(register.email).startsWith("Email válido")}
+                                    />
+                                    {register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido") && (
+                                        <span className={styles.inputErrorHint}>Email inválido. Tente algo como usuario@dominio.com</span>
+                                    )}
+                                </div>
 
                                 <div className={styles.DoubleInputsRow}>
                                     <div className={styles.datePickerWrapper}>
@@ -231,6 +240,8 @@ export default function Register() {
                                     icon={<Lock />}
                                     isPassword={true}
                                     value={register.password}
+                                    hasError={register.password.length > 0 && !validation.validatePassword(register.password).startsWith("password válida")}
+                                    hasSuccess={register.password.length > 0 && validation.validatePassword(register.password).startsWith("password válida")}
                                 />
                                 <InputWithIcon
                                     type="password"
@@ -239,6 +250,8 @@ export default function Register() {
                                     icon={<Lock />}
                                     isPassword={true}
                                     value={register.confirmPassword}
+                                    hasError={register.confirmPassword.length > 0 && register.confirmPassword !== register.password}
+                                    hasSuccess={register.confirmPassword.length > 0 && register.confirmPassword === register.password}
                                 />
                             </div>
 
@@ -247,14 +260,20 @@ export default function Register() {
                                 <label>Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
-                            {showPasswordValidation && (
+                            {register.password.length > 0 && (
                                 <div className={styles.passwordValidation}>
-                                    {errors.split('\n').map((msg, index) => (
+                                    {errors.split('\n').filter((msg) => msg.trim() !== "").map((msg, index) => (
                                         <p key={index} className={!validation.validatePassword(register.password).includes(msg) ? styles.strong : styles.weak}>{msg}</p>
                                     ))}
+                                    {register.confirmPassword.length > 0 && register.password !== register.confirmPassword && (
+                                        <p className={styles.weak}>As senhas não coincidem.</p>
+                                    )}
+                                    {register.confirmPassword.length > 0 && register.password === register.confirmPassword && (
+                                        <p className={styles.strong}>Senhas coincidem.</p>
+                                    )}
                                 </div>
                             )}
-                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} classNameVariable={styles.btnCad}/>
+                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} classNameVariable={styles.btnCad} disabled={!isFormValid} />
                         </form>
                         <span>
                             Já tem uma conta? <Link to="/login">Faça login</Link>

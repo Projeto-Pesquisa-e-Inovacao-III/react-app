@@ -18,11 +18,13 @@ type Props = {
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
+    hasError?: boolean;
+    hasSuccess?: boolean;
     
     allowDecimals?: boolean;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, hasError, hasSuccess }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -82,7 +84,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             id={`${id}-input`}
                             type={isPassword && showPassword ? "text" : (type === "number" ? "text" : type)}
                             inputMode={type === "number" ? "decimal" : undefined}
-                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""}`}
+                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""}`}
                             placeholder={placeholder}
                             onInput={(e) => mask ? mask(e) : undefined}
                             value={value ?? undefined}

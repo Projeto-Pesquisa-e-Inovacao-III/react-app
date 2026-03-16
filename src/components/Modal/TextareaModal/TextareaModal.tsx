@@ -11,8 +11,8 @@ type Props = {
 export default function TextareaModal(props: Props) {
     return (
         <>
-            <div className="overlay"></div>
-            <div className={styles.modal}>
+            <div className={`overlay ${styles.backdropEnter}`}></div>
+            <div className={`${styles.modal} ${styles.modalCard}`}>
                 <h2 className={styles.title}>{props.title}</h2>
 
                 {props.middleContent && (<div className={styles.middleContent}>

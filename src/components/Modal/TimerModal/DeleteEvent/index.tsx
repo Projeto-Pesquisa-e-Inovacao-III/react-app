@@ -1,4 +1,4 @@
-import "./style.css"
+import styles from "../TimerModal.module.css";
 import type { EventDTO } from "../../../../models/calendar";
 import SmallerButton from "../../../SmallerButton/SmallerButton";
 import { useState } from "react";
@@ -26,7 +26,7 @@ export default function DeleteEvent({ isMobile, enableButton, handleCloseModal, 
     
 
     return (
-        <div className={`buttons-group-modal${isMobile ? "-mobile" : ""}`}>
+        <div className={isMobile ? styles.buttonsGroupModalMobile : styles.buttonsGroupModal}>
             {/* <button disabled={!enableButton} className={`btn-sched ${!enableButton ? "btn-sched-disabled" : "btn-sched-red"}`} onClick={handleDeleteEvent}>
                 {buttonTitle || "Cancelar Evento"}
             </button> */}

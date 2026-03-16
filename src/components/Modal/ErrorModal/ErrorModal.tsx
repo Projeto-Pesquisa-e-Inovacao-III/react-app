@@ -31,8 +31,8 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
 
     return (
         <>
-            <div className={`overlay ${styles.overlayError}`}></div>
-            <div ref={packagePageRef} className={`${styles.modalEventCreated} ${isMobileDevice ? styles.modalEventCreatedMobile : ''}`}>
+            <div className={`overlay ${styles.overlayError} ${styles.backdropEnter}`}></div>
+            <div ref={packagePageRef} className={`${styles.modalEventCreated} ${isMobileDevice ? styles.modalEventCreatedMobile : ''} ${styles.modalCard}`}>
                 <h2>{title || "Evento criado com sucesso!"}</h2>
                 <p className={styles.contentModal}>{content || "Erro."}</p>
                 <svg width="68" height="66" viewBox="0 0 68 66" fill="none" xmlns="http://www.w3.org/2000/svg">
