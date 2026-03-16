@@ -12,13 +12,14 @@ import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
+import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, getPersonalList, refuseAppointment } from "../../constants/schedule";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
+import { getAvailabilityHoursTomorrow } from "../../constants/personal";
 
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
 
@@ -153,8 +154,6 @@ export default function Schedule() {
         queryFn: (page) => findPersonalRequests(page).then(res => res.data),
     });
 
-    console.log("userRescheduleAppointments", userRescheduleAppointments);
-
     const appointmentsUser: RescheduleAppointment[] =
         type?.type === "aluno"
             ? userRescheduleAppointments.filter(
@@ -201,6 +200,22 @@ export default function Schedule() {
         });
     }
 
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+    });
+
+    const availabilityHoursTomorrowQuery = useQuery({
+        queryKey: ["availabilityHoursTomorrow"],
+        queryFn: () => getAvailabilityHoursTomorrow(personalList.data[0].id),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
+    })
+
+    console.log("availabilityHoursTomorrowQuery", availabilityHoursTomorrowQuery)
+
     return (
         <>
             {!isTypeReady ? (
@@ -226,6 +241,7 @@ export default function Schedule() {
                                 canMakeAppointment={classBalanceQuery?.data?.saldoPresencial > 0 || classBalanceQuery?.data?.saldoResidencial > 0 || classBalanceQuery?.data?.saldoFuncional > 0}
                                 modalInfo={setModalInfo}
                                 modalType={setOpenModal}
+                                availabilityHoursTomorrow={availabilityHoursTomorrowQuery?.data?.data}
                             />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>

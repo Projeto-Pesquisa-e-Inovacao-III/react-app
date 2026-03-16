@@ -133,7 +133,9 @@ export default function NewEvent(
                 minute: '2-digit',
             });
 
-            const finalHour = date.setHours(date.getHours() + 1);
+            const finalHourDate = new Date(date);
+            const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+            const finalHour = finalHourDate.setMinutes(finalHourDate.getMinutes() + durationMinutes);
 
             return date.toLocaleString('pt-BR', {
                 day: '2-digit',
@@ -141,7 +143,7 @@ export default function NewEvent(
                 year: 'numeric',
             }).replace(" às ", "") + ` das ${initialHour} às ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
         }
-    }, [newEventDate, newEventStartHour]);
+    }, [newEventDate, newEventStartHour, selectedType]);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
@@ -453,7 +455,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
@@ -483,7 +485,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.[0]?.id,
             tomorrow],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow),
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });
@@ -762,8 +764,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+                                                                
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
@@ -787,8 +792,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+                                                                
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
@@ -812,8 +820,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+                                                                
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 

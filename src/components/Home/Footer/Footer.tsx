@@ -6,6 +6,8 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
         window.open(url, "_blank");
     }
 
+    const actualYear = new Date().getFullYear();
+
     return (
         <footer
             className={`w-full bg-oxford-blue text-white p-5 pl-10 pr-10 text-center ${isMobile ? "flex flex-col gap-6" : "flex justify-between items-center"
@@ -68,7 +70,7 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
                     </defs>
                 </svg>
                 <p className={`${isMobile ? "mt-3 text-sm" : "w-96 ml-10 text-lg"}`}>
-                    &copy; CSF Treinamentos 2025 todos os direitos reservados.
+                    &copy; CSF Treinamentos {actualYear} todos os direitos reservados.
                 </p>
             </div>}
 
@@ -142,7 +144,7 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
                         </defs>
                     </svg>
                     <p className={`mt-3 text-base`}>
-                        @CSF Treinamentos 2025 todos os direitos reservados.
+                        @CSF Treinamentos {actualYear} todos os direitos reservados.
                     </p>
                 </div>
             }

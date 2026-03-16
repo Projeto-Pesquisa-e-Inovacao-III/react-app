@@ -57,7 +57,7 @@ export default function Register() {
             name: "João Silva",
             email: "joao.silva@example.com",
             password: "123456789aA!",
-            customerDocument: "123.456.789-10",
+            customerDocument: "113.825.140-26",
             phone: "(11) 91234-5678",
             gender: "Masculino",
             confirmPassword: "123456789aA!",
