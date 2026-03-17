@@ -24,6 +24,7 @@ import type { DateRange } from "../../../components/Calendars/MiniCalendar/Calen
 import SmallerButton from "../../../components/SmallerButton/SmallerButton";
 import Skeleton from "react-loading-skeleton";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar";
+import { getScheduleData } from "../../../constants/personal";
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -211,7 +212,20 @@ export function CheckSchedule() {
         queryFn: () => appointmentAtCalendar(),
     })
 
+    type DataKpi = {
+        totalPendente: number,
+        totalRespondido: number,
+        totalCanceladoPorMesAtual: number,
+        totalAgendamentosHoje: number
+    }
 
+    const dataKpi = useQuery<DataKpi>({
+        queryKey: ["data"],
+        queryFn: () => getScheduleData().then(res => res.data),
+        refetchOnWindowFocus: false,
+    })
+
+    console.log(dataKpi.data)
 
     function renderTableSkeleton() {
         return (
@@ -328,7 +342,7 @@ export function CheckSchedule() {
                         <div className={styles.gridContainer}>
                             <CheckScheduleKpis
                                 title="Novos agendamentos hoje"
-                                value={0}
+                                value={dataKpi.data?.totalAgendamentosHoje || 0}
                             />
                             <CheckScheduleKpis
                                 title="Total pendente"
@@ -337,12 +351,12 @@ export function CheckSchedule() {
                             />
                             <CheckScheduleKpis
                                 title="Respondidos"
-                                value={0}
+                                value={dataKpi.data?.totalRespondido || 0}
                                 color="#009664ff"
                             />
                             <CheckScheduleKpis
                                 title="Cancelados no mês atual"
-                                value={0}
+                                value={dataKpi.data?.totalCanceladoPorMesAtual || 0}
                                 color="#960000ff"
                             />
                         </div>

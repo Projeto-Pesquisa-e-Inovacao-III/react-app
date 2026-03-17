@@ -40,3 +40,8 @@ export function updateBuffer(buffer: string) {
 export function getPersonalBuffer() {
     return api.get(`personais/me/buffer`);
 }
+
+export function getScheduleData() {
+    return api.get(`agendamentos/total-status`);
+}
+    

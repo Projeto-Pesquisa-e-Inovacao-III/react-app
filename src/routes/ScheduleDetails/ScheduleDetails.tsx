@@ -57,11 +57,11 @@ export default function ScheduleDetails() {
         setButtonsActionsCondition(today >= appt);
     }, [location.pathname, appointment.data?.dataInicio]);
 
-    const formattedDate = `${new Date(`${appointment.data?.dataInicio}`).toLocaleDateString('pt-BR', {
+    const formattedDate = appointment.data ? `${new Date(`${appointment.data.dataInicio}`).toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
-    })} das ${appointment.data?.dataInicio.split('T')[1].slice(0, 5)} às ${appointment.data?.dataFim.split('T')[1].slice(0, 5)}`;
+    })} das ${appointment.data.dataInicio?.split('T')[1]?.slice(0, 5) || '--:--'} às ${appointment.data.dataFim?.split('T')[1]?.slice(0, 5) || '--:--'}` : "";
 
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
@@ -363,7 +363,7 @@ export default function ScheduleDetails() {
                             buttonTitle="Reagendar"
                             isReschedule={true}
                             rescheduleId={appointmentId}
-                            clickedDate={appointment.data?.dataInicio.split("T")[0] || ""}
+                            clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
                             typeUser={type?.type || undefined}
                             appoitmentData={appointment.data}
                             goToNextStep={type?.type === "personal" ? false : true}
