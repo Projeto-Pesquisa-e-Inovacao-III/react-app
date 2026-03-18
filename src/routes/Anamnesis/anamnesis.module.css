@@ -1,5 +1,8 @@
 .sectionLogoLogin {
     flex: 1;
+    position: sticky;
+    top: 0;
+    height: 100vh;
     padding: 30px 60px;
     display: flex;
     justify-content: center;
@@ -9,6 +12,8 @@
 
 .containerAnamnesis {
     display: flex;
+    height: 100vh;
+    overflow: hidden;
     background-color: var(--bg-blue-darker);
     font-family: "Poppins", sans-serif;
 }
@@ -28,11 +33,12 @@
 }
 
 .wrapperRegisterElements {
-    min-height: 100vh;
-    height: auto;
+    height: 100vh;
     width: 100%;
     padding: 3rem 1.5rem;
     flex: 2;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background-color: #fff;
     text-align: center;
     display: flex;
@@ -129,12 +135,6 @@
     font-weight: 700;
     color: #0F172A;
     letter-spacing: 0.05em;
-}
-
-.lineProgressPercent {
-    font-size: 13px;
-    font-weight: 600;
-    color: #0F172A;
 }
 
 .lineProgressTrack {

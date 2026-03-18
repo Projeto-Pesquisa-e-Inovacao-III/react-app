@@ -3,5 +3,5 @@ import { api } from "../system";
 
 
 export function createAnamnesis(data: AnamnesisData) {
-   return api.post(`/anamnesis`, data)
+   return api.post(`/anamnese`, data)
 }
