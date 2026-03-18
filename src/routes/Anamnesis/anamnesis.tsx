@@ -7,10 +7,12 @@ import {
     ArrowRight,
     Cross,
     Dumbbell,
+    FileText,
     Ruler,
     Weight
 } from "lucide-react";
 import InputTags from "../../components/Inputs/InputTags/InputTags";
+import TextareaWithIcon from "../../components/Inputs/TextareaWithIcon/TextareaWithIcon";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { LogoWhiteBig } from "../../components/LogoWhiteBig/LogoWhiteBig";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
@@ -34,6 +36,39 @@ type AnamnesisForm = {
     height: string;
     weight: string;
 }
+
+const clampPercentage = (value: number): number => Math.min(100, Math.max(0, Math.round(value)));
+
+const calculateAnamnesisProgress = (
+    form: AnamnesisForm,
+    isOtherConditionSelected: boolean,
+    normalizedOtherConditionTagsCount: number
+): number => {
+    const progressFieldStates = {
+        height: form.height.trim().length > 0,
+        weight: form.weight.trim().length > 0,
+        objective: Boolean(form.objectiveValue),
+        healthConditions: form.selectedConditions.length > 0,
+        activityLevel: Boolean(form.selectedActivityLevel),
+        dailyRoutine: form.dailyRoutine.trim().length > 0,
+        objectiveObservation: form.objectiveValue === "OUTRO"
+            ? form.objectiveObservation.trim().length > 0
+            : null,
+        otherConditionTags: isOtherConditionSelected
+            ? normalizedOtherConditionTagsCount > 0
+            : null
+    };
+
+    const relevantFields = Object.values(progressFieldStates).filter((field): field is boolean => field !== null);
+    const totalFields = relevantFields.length;
+    const completedFields = relevantFields.filter(Boolean).length;
+
+    if (totalFields === 0) {
+        return 0;
+    }
+
+    return clampPercentage((completedFields / totalFields) * 100);
+};
 
 
 export default function Anamnesis() {
@@ -77,8 +112,6 @@ export default function Anamnesis() {
 
     const parseNumericValue = (value: string): number => Number(value.trim().replace(",", "."));
 
-    const isOtherConditionSelected = anamnesisForm.selectedConditions.includes("Outro");
-
     const normalizeTags = (tags: string[]) => {
         const trimmedTags = tags
             .map((tag) => tag.trim())
@@ -86,6 +119,14 @@ export default function Anamnesis() {
 
         return Array.from(new Set(trimmedTags));
     };
+
+    const isOtherConditionSelected = anamnesisForm.selectedConditions.includes("Outro");
+    const normalizedOtherConditionTags = normalizeTags(anamnesisForm.otherConditionTags);
+    const totalProgressPercentage = calculateAnamnesisProgress(
+        anamnesisForm,
+        isOtherConditionSelected,
+        normalizedOtherConditionTags.length
+    );
 
     const handleConditionToggle = (value: string) => {
         const isRemovingOtherCondition = value === "Outro" && anamnesisForm.selectedConditions.includes("Outro");
@@ -170,7 +211,6 @@ export default function Anamnesis() {
 
     const handleConclude = async () => {
         const activityLevel = anamnesisForm.selectedActivityLevel;
-        const normalizedOtherConditionTags = normalizeTags(anamnesisForm.otherConditionTags);
         const hasOtherConditionDetails = !isOtherConditionSelected || normalizedOtherConditionTags.length > 0;
         const normalizedRoutine = anamnesisForm.dailyRoutine.trim();
         const heightValue = parseNumericValue(anamnesisForm.height);
@@ -255,7 +295,7 @@ export default function Anamnesis() {
             }));
             setStep(1);
             return;
-        }
+        }211
 
         try {
             setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
@@ -305,9 +345,10 @@ export default function Anamnesis() {
                             <div className={styles.lineProgress}>
                                 <div className={styles.lineProgressHeader}>
                                     <span className={styles.lineProgressStep}>PASSO 1 DE 2</span>
+                                    <span className={styles.lineProgressPercentage}>{totalProgressPercentage}%</span>
                                 </div>
                                 <div className={styles.lineProgressTrack}>
-                                    <div className={styles.lineProgressFill} style={{ width: "33%" }} />
+                                    <div className={styles.lineProgressFill} style={{ width: `${totalProgressPercentage}%` }} />
                                 </div>
                             </div>
 
@@ -369,15 +410,15 @@ export default function Anamnesis() {
                             />
 
                             {anamnesisForm.objectiveValue === "OUTRO" && (
-                                <textarea
-                                    className={styles.observacoesTextarea}
-                                    name="observacoes"
+                                <TextareaWithIcon
                                     id="observacoes"
+                                    name="observacoes"
                                     placeholder="Adicione quaisquer observações relevantes..."
                                     maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
                                     value={anamnesisForm.objectiveObservation}
-                                    onChange={(event) => {
-                                        setAnamnesisForm((previousValues) => ({ ...previousValues, objectiveObservation: event.target.value }));
+                                    icon={<FileText />}
+                                    onInputChange={(value: string) => {
+                                        setAnamnesisForm((previousValues) => ({ ...previousValues, objectiveObservation: value }));
                                         setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
                                     }}
                                 />
@@ -393,6 +434,7 @@ export default function Anamnesis() {
                             icon={<ArrowRight />}
                             iconPosition="right"
                             type="submit"
+                            classname={styles.nextButton}
                         />
                     </form>
                         </>
@@ -403,10 +445,11 @@ export default function Anamnesis() {
                             <div className={styles.lineProgress}>
                                 <div className={styles.lineProgressHeader}>
                                     <span className={styles.lineProgressStep}>PASSO 2 DE 2</span>
+                                    <span className={styles.lineProgressPercentage}>{totalProgressPercentage}%</span>
                                 </div>
 
                                 <div className={styles.lineProgressTrack}>
-                                    <div className={styles.lineProgressFill} style={{ width: "66%" }} />
+                                    <div className={styles.lineProgressFill} style={{ width: `${totalProgressPercentage}%` }} />
                                 </div>
                             </div>
 
@@ -426,6 +469,7 @@ export default function Anamnesis() {
                                 })}>
                                     <Cross />
                                     <h1>Condições de Saúde</h1>
+                                    <p className={styles.optionalInlineText}>(Opcional)</p>
                                 </div>
 
                                 <div className={classNames(styles.conditionGroup, {
@@ -494,14 +538,14 @@ export default function Anamnesis() {
                                 [styles.observacoesGroupMobile]: isMobile
                             })}>
                                 <p>Descreva sua rotina diária atual (Opcional)</p>
-                                <textarea
-                                    className={styles.observacoesTextarea}
+                                <TextareaWithIcon
                                     name="observacoes"
-                                    id="observacoes"
+                                    id="observacoesRotina"
                                     placeholder="Adicione quaisquer observações relevantes..."
                                     maxLength={MAX_DAILY_ROUTINE_CHARACTERS}
                                     value={anamnesisForm.dailyRoutine}
-                                    onChange={(event) => setAnamnesisForm((previousValues) => ({ ...previousValues, dailyRoutine: event.target.value }))}
+                                    icon={<FileText />}
+                                    onInputChange={(value: string) => setAnamnesisForm((previousValues) => ({ ...previousValues, dailyRoutine: value }))}
                                 />
                             </div>
 

@@ -17,10 +17,16 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
-    display: flex;
-    align-items: flex-start;
-    padding: 8px 12px 8px 40px;
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    column-gap: 8px;
+    align-items: start;
+    padding: 8px 12px;
     position: relative;
+}
+
+.inputWrapperWithIcon {
+    padding-left: 40px;
 }
 
 .inputIcon {
@@ -36,6 +42,9 @@
     flex-wrap: wrap;
     gap: 8px;
     width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    align-items: center;
 }
 
 .tagItem {
@@ -50,11 +59,30 @@
     cursor: pointer;
     font-size: 14px;
     line-height: 20px;
+    max-width: 100%;
+}
+
+.tagText {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.removeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background-color: var(--bg-blue);
+    color: #fff;
+    flex-shrink: 0;
 }
 
 .inputText {
     flex: 1;
-    min-width: 180px;
+    min-width: 120px;
     border: none;
     outline: none;
     font-size: .95rem;
@@ -65,4 +93,32 @@
 
 .inputText::placeholder {
     color: #666;
+}
+
+.addButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    border: none;
+    background-color: var(--bg-blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+
+.addButton svg {
+    display: block;
+}
+
+.addButton:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
