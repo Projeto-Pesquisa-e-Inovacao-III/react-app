@@ -281,6 +281,7 @@ export function Overview() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
 
     const personalId = useQuery({
@@ -288,6 +289,7 @@ export function Overview() {
         queryFn: () => findUserData(),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: type?.type === "personal"
     });
 
 
