@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import styles from "./InputTags.module.css";
 
 type InputTagsProps = {
@@ -9,18 +9,16 @@ type InputTagsProps = {
     value?: string[];
     maxTags?: number;
     maxTagCharacters?: number;
-    delimiter?: string;
     onTagsChange?: (tags: string[]) => void;
 };
 
 export default function InputTags({
     label,
-    placeholder = "Digite e finalize com ;",
+    placeholder = "Digite e pressione Enter ou +",
     icon,
     value,
     maxTags = 5,
     maxTagCharacters = 40,
-    delimiter = ";",
     onTagsChange
 }: InputTagsProps) {
     const [internalTags, setInternalTags] = useState<string[]>([]);
@@ -38,49 +36,53 @@ export default function InputTags({
     };
 
     const handleInputChange = (value: string) => {
-        const limitedValue = value.slice(0, maxTagCharacters);
+        setInputValue(value.slice(0, maxTagCharacters));
+    };
 
-        if (!limitedValue.includes(delimiter)) {
-            setInputValue(limitedValue);
+    const handleAddTag = () => {
+        const normalizedTag = inputValue.trim();
+
+        if (normalizedTag.length === 0 || normalizedTag.length > maxTagCharacters) {
             return;
         }
 
-        const parts = limitedValue.split(delimiter);
-        const inputRemainder = parts.pop() ?? "";
-        const parsedTags = parts
-            .map((item) => item.trim())
-            .filter((item) => item.length > 0)
-            .filter((item) => item.length <= maxTagCharacters);
+        updateTags((previousTags) => {
+            if (previousTags.length >= maxTags) {
+                return previousTags;
+            }
 
-        if (parsedTags.length > 0) {
-            updateTags((previousTags) => {
-                const existingTags = new Set(previousTags);
-                const availableSlots = maxTags - previousTags.length;
+            if (previousTags.includes(normalizedTag)) {
+                return previousTags;
+            }
 
-                if (availableSlots <= 0) {
-                    return previousTags;
-                }
+            return [...previousTags, normalizedTag];
+        });
 
-                const newTags = parsedTags
-                    .filter((tag) => !existingTags.has(tag))
-                    .slice(0, availableSlots);
-
-                return [...previousTags, ...newTags];
-            });
-        }
-
-        setInputValue(inputRemainder.trimStart().slice(0, maxTagCharacters));
+        setInputValue("");
     };
 
     const handleRemoveTag = (tagToRemove: string) => {
         updateTags((previousTags) => previousTags.filter((tag) => tag !== tagToRemove));
     };
 
+    const handleRemoveLastTag = () => {
+        updateTags((previousTags) => previousTags.slice(0, -1));
+    };
+
     return (
         <div className={styles.wrapper}>
             <p className={styles.label}>{label}</p>
-            <div className={styles.inputWrapper}>
+            <div className={`${styles.inputWrapper} ${icon ? styles.inputWrapperWithIcon : ""}`}>
                 {icon ? <span className={styles.inputIcon}>{icon}</span> : null}
+                <button
+                    type="button"
+                    className={styles.addButton}
+                    onClick={handleAddTag}
+                    disabled={tags.length >= maxTags || inputValue.trim().length === 0}
+                    aria-label="Adicionar tag"
+                >
+                    <Plus size={10} strokeWidth={2.5} />
+                </button>
                 <div className={styles.content}>
                     {tags.map((tag) => (
                         <button
@@ -89,8 +91,10 @@ export default function InputTags({
                             className={styles.tagItem}
                             onClick={() => handleRemoveTag(tag)}
                         >
-                            <span>{tag}</span>
-                            <X size={14} />
+                            <span className={styles.tagText}>{tag}</span>
+                            <span className={styles.removeIcon}>
+                                <X size={10} />
+                            </span>
                         </button>
                     ))}
                     <input
@@ -100,6 +104,18 @@ export default function InputTags({
                         value={inputValue}
                         maxLength={maxTagCharacters}
                         onChange={(event) => handleInputChange(event.target.value)}
+                        onKeyDown={(event) => {
+                            if (event.key === "Enter") {
+                                event.preventDefault();
+                                handleAddTag();
+                                return;
+                            }
+
+                            if (event.key === "Backspace" && inputValue.trim().length === 0 && tags.length > 0) {
+                                event.preventDefault();
+                                handleRemoveLastTag();
+                            }
+                        }}
                         disabled={tags.length >= maxTags}
                     />
                 </div>

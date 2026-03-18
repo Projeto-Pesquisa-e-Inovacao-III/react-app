@@ -42,6 +42,21 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
+        try {
+          const userResponse = await userService.findUserData();
+          console.log("User data response:", userResponse);
+          const userData = userResponse.data as { aluno?: { ATIVO_ANAMNESE?: boolean } };
+          var ativoAnamnese = userData.aluno?.ATIVO_ANAMNESE;
+          
+          if (ativoAnamnese === false) {
+            nav("/anamnesis");
+            return;
+          }
+        } catch {
+          navToHome();
+          return;
+        }
+
         navToHome();
       }
     } catch (err) {
