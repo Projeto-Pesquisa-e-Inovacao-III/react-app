@@ -5,12 +5,8 @@ import { useNavigate } from "react-router-dom";
 import {
     ArrowLeft,
     ArrowRight,
-    BicepsFlexed,
     Cross,
     Dumbbell,
-    Flag,
-    HeartPulse,
-    House,
     Ruler,
     Weight
 } from "lucide-react";
@@ -19,121 +15,274 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import { LogoWhiteBig } from "../../components/LogoWhiteBig/LogoWhiteBig";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
 import { SelectableOption } from "../../components/SelectableOption/SelectableOption";
-import Select from "../../components/Select/Select";
 import useMobile from "../../hooks/isMobile";
 import { createAnamnesis } from "../../constants/anamnesis";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import type { AnamnesisData } from "../../models/anamnesis";
+import ObjectiveSelect from "../../components/ObjectiveSelect/ObjectiveSelect";
 import styles from "./anamnesis.module.css";
 
 
+type AnamnesisForm = {
+    objectiveValue: string | null;
+    objectiveObservation: string;
+    selectedConditions: string[];
+    selectedActivityLevel: AnamnesisData["nivelDeAtividade"] | null;
+    otherConditionTags: string[];
+    dailyRoutine: string;
+    height: string;
+    weight: string;
+}
 
 
 export default function Anamnesis() {
     type RequestModalType = "success" | "error" | null;
+    type RequestModalText = { title: string; content: string };
+    const MIN_HEIGHT_CM = 100;
+    const MAX_HEIGHT_CM = 250;
+    const MIN_WEIGHT_KG = 25;
+    const MAX_WEIGHT_KG = 350;
+    const MAX_DAILY_ROUTINE_CHARACTERS = 500;
+    const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
+    const MAX_HEIGHT_CHARACTERS = 3;
+    const MAX_WEIGHT_CHARACTERS = 6;
 
     const isMobile = useMobile();
     const navigate = useNavigate();
-    const [openSelectId, setOpenSelectId] = useState<string | null>(null);
-    const [objectiveValue, setObjectiveValue] = useState<string | null>(null);
-    const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
-    const [selectedActivityLevel, setSelectedActivityLevel] = useState<AnamnesisData["nivelDeAtividade"] | null>(null);
-    const [otherConditionTags, setOtherConditionTags] = useState<string[]>([]);
-    const [dailyRoutine, setDailyRoutine] = useState<string>("");
-    const [height, setHeight] = useState<string>("");
-    const [weight, setWeight] = useState<string>("");
-    const [stepOneError, setStepOneError] = useState<string>("");
-    const [stepTwoError, setStepTwoError] = useState<string>("");
+    const [anamnesisForm, setAnamnesisForm] = useState<AnamnesisForm>({
+        objectiveValue: null,
+        objectiveObservation: "",
+        selectedConditions: [],
+        selectedActivityLevel: null,
+        otherConditionTags: [],
+        dailyRoutine: "",
+        height: "",
+        weight: ""
+    });
+
+    const [formErrors, setFormErrors] = useState<{ stepOne: string; stepTwo: string }>({
+        stepOne: "",
+        stepTwo: ""
+    });
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-    const [requestModalType, setRequestModalType] = useState<RequestModalType>(null);
-    const [requestModalText, setRequestModalText] = useState<{ title: string; content: string }>({
-        title: "",
-        content: ""
+    const [requestModal, setRequestModal] = useState<{ type: RequestModalType; text: RequestModalText }>({
+        type: null,
+        text: {
+            title: "",
+            content: ""
+        }
     });
     const [step, setStep] = useState<number>(1);
 
-    const isOtherConditionSelected = selectedConditions.includes("Outro");
+    const parseNumericValue = (value: string): number => Number(value.trim().replace(",", "."));
+
+    const isOtherConditionSelected = anamnesisForm.selectedConditions.includes("Outro");
+
+    const normalizeTags = (tags: string[]) => {
+        const trimmedTags = tags
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0);
+
+        return Array.from(new Set(trimmedTags));
+    };
 
     const handleConditionToggle = (value: string) => {
-        const isRemovingOtherCondition = value === "Outro" && selectedConditions.includes("Outro");
+        const isRemovingOtherCondition = value === "Outro" && anamnesisForm.selectedConditions.includes("Outro");
 
-        setSelectedConditions((previousValues) => (
-            previousValues.includes(value)
-                ? previousValues.filter((currentValue) => currentValue !== value)
-                : [...previousValues, value]
-        ));
+        setAnamnesisForm((previousValues) => {
+            const nextSelectedConditions = previousValues.selectedConditions.includes(value)
+                ? previousValues.selectedConditions.filter((currentValue) => currentValue !== value)
+                : [...previousValues.selectedConditions, value];
 
-        if (isRemovingOtherCondition) {
-            setOtherConditionTags([]);
-        }
+            return {
+                ...previousValues,
+                selectedConditions: nextSelectedConditions,
+                otherConditionTags: isRemovingOtherCondition ? [] : previousValues.otherConditionTags
+            };
+        });
 
-        setStepTwoError("");
+        setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
     };
 
     const handleStepOneSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        const hasHeight = height.trim().length > 0;
-        const hasWeight = weight.trim().length > 0;
-        const hasObjective = Boolean(objectiveValue);
+        const hasHeight = anamnesisForm.height.trim().length > 0;
+        const hasWeight = anamnesisForm.weight.trim().length > 0;
+        const hasObjective = Boolean(anamnesisForm.objectiveValue);
+        const normalizedObjectiveObservation = anamnesisForm.objectiveObservation.trim();
+        const hasOtherObjectiveDetails = anamnesisForm.objectiveValue !== "OUTRO" || normalizedObjectiveObservation.length > 0;
+        const heightValue = parseNumericValue(anamnesisForm.height);
+        const weightValue = parseNumericValue(anamnesisForm.weight);
 
         if (!hasHeight || !hasWeight || !hasObjective) {
-            setStepOneError("Preencha todos os campos obrigatórios para continuar.");
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Preencha todos os campos obrigatórios para continuar."
+            }));
             return;
         }
 
-        setStepOneError("");
+        if (!hasOtherObjectiveDetails) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Descreva seu objetivo para continuar."
+            }));
+            return;
+        }
+
+        if (Number.isNaN(heightValue) || Number.isNaN(weightValue)) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Altura e peso precisam ser números válidos."
+            }));
+            return;
+        }
+
+        if (heightValue <= 0 || weightValue <= 0) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Altura e peso não podem ser zero ou negativos."
+            }));
+            return;
+        }
+
+        if (heightValue < MIN_HEIGHT_CM || heightValue > MAX_HEIGHT_CM) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: `A altura deve estar entre ${MIN_HEIGHT_CM} e ${MAX_HEIGHT_CM} cm.`
+            }));
+            return;
+        }
+
+        if (weightValue < MIN_WEIGHT_KG || weightValue > MAX_WEIGHT_KG) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: `O peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.`
+            }));
+            return;
+        }
+
+        setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
         setStep(2);
     };
 
     const handleConclude = async () => {
-        const activityLevel = selectedActivityLevel;
-        const hasOtherConditionDetails = !isOtherConditionSelected || otherConditionTags.length > 0;
+        const activityLevel = anamnesisForm.selectedActivityLevel;
+        const normalizedOtherConditionTags = normalizeTags(anamnesisForm.otherConditionTags);
+        const hasOtherConditionDetails = !isOtherConditionSelected || normalizedOtherConditionTags.length > 0;
+        const normalizedRoutine = anamnesisForm.dailyRoutine.trim();
+        const heightValue = parseNumericValue(anamnesisForm.height);
+        const weightValue = parseNumericValue(anamnesisForm.weight);
 
-        if (!activityLevel || !hasOtherConditionDetails) {
-            setStepTwoError("Preencha os campos obrigatórios para concluir.");
+        if (normalizedRoutine.length > MAX_DAILY_ROUTINE_CHARACTERS) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepTwo: `A rotina diária deve ter no máximo ${MAX_DAILY_ROUTINE_CHARACTERS} caracteres.`
+            }));
             return;
         }
 
-        const condicoes = selectedConditions
-            .filter((condition) => condition !== "Outro")
-            .concat(isOtherConditionSelected ? (otherConditionTags.length > 0 ? otherConditionTags : ["Outro"]) : []);
+        if (!activityLevel || !hasOtherConditionDetails) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepTwo: "Preencha os campos obrigatórios para concluir."
+            }));
+            return;
+        }
+
+        const defaultConditions = anamnesisForm.selectedConditions.filter((condition) => condition !== "Outro");
+        const otherConditions = isOtherConditionSelected
+            ? (normalizedOtherConditionTags.length > 0 ? normalizedOtherConditionTags : ["Outro"])
+            : [];
+        const normalizedObjectiveObservation = anamnesisForm.objectiveObservation.trim();
+        const isOtherObjectiveSelected = anamnesisForm.objectiveValue === "OUTRO";
+
+        if (isOtherObjectiveSelected && normalizedObjectiveObservation.length === 0) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Descreva seu objetivo para continuar."
+            }));
+            setStep(1);
+            return;
+        }
 
         const payload = {
-            altura: Number(height),
-            peso: Number(weight),
-            objectivoPrincipal: objectiveValue ?? "",
-            rotina: dailyRoutine.trim(),
-            condicoes,
-            nivelDeAtividade: activityLevel
+            altura: heightValue,
+            peso: weightValue,
+            objectivoPrincipal: isOtherObjectiveSelected ? normalizedObjectiveObservation : (anamnesisForm.objectiveValue ?? ""),
+            rotina: normalizedRoutine.length > 0 ? normalizedRoutine : null,
+            condicoes: [
+                ...defaultConditions.map((situacao) => ({ situacao, TipoCondicao: "PADRAO" as const })),
+                ...otherConditions.map((situacao) => ({ situacao, TipoCondicao: "OUTRO" as const }))
+            ],
+            nivelDeAtividade: activityLevel,
+            observacaoSaude: normalizedObjectiveObservation.length > 0 ? normalizedObjectiveObservation : null
         };
 
         if (Number.isNaN(payload.altura) || Number.isNaN(payload.peso)) {
-            setStepOneError("Altura e peso precisam ser números válidos.");
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Altura e peso precisam ser números válidos."
+            }));
+            setStep(1);
+            return;
+        }
+
+        if (payload.altura <= 0 || payload.peso <= 0) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: "Altura e peso não podem ser zero ou negativos."
+            }));
+            setStep(1);
+            return;
+        }
+
+        if (payload.altura < MIN_HEIGHT_CM || payload.altura > MAX_HEIGHT_CM) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: `A altura deve estar entre ${MIN_HEIGHT_CM} e ${MAX_HEIGHT_CM} cm.`
+            }));
+            setStep(1);
+            return;
+        }
+
+        if (payload.peso < MIN_WEIGHT_KG || payload.peso > MAX_WEIGHT_KG) {
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepOne: `O peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.`
+            }));
             setStep(1);
             return;
         }
 
         try {
-            setStepTwoError("");
+            setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
             setIsSubmitting(true);
             const response = await createAnamnesis(payload);
 
             if (response.status === 201) {
-                setRequestModalText({
-                    title: "Anamnese concluída",
-                    content: "As informações foram salvas com sucesso."
+                setRequestModal({
+                    type: "success",
+                    text: {
+                        title: "Anamnese concluída",
+                        content: "As informações foram salvas com sucesso."
+                    }
                 });
-                setRequestModalType("success");
             }
         } catch {
-            setStepTwoError("Não foi possível concluir agora. Tente novamente.");
-            setRequestModalText({
-                title: "Erro ao salvar",
-                content: "Não foi possível concluir agora. Tente novamente."
+            setFormErrors((previousValues) => ({
+                ...previousValues,
+                stepTwo: "Não foi possível concluir agora. Tente novamente."
+            }));
+            setRequestModal({
+                type: "error",
+                text: {
+                    title: "Erro ao salvar",
+                    content: "Não foi possível concluir agora. Tente novamente."
+                }
             });
-            setRequestModalType("error");
         } finally {
             setIsSubmitting(false);
         }
@@ -180,66 +329,63 @@ export default function Anamnesis() {
                                 label={<>Altura (cm) <span className={styles.requiredAsterisk}>*</span></>}
                                 type="number"
                                 placeholder="Ex: 175"
+                                maxLength={MAX_HEIGHT_CHARACTERS}
                                 onInputChange={(value: string) => {
-                                    setHeight(value);
-                                    setStepOneError("");
+                                    setAnamnesisForm((previousValues) => ({ ...previousValues, height: value }));
+                                    setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
                                 }}
                                 icon={<Ruler />}
-                                value={height}
+                                value={anamnesisForm.height}
                             />
 
                             <InputWithIcon
                                 label={<>Peso (kg) <span className={styles.requiredAsterisk}>*</span></>}
                                 type="number"
                                 allowDecimals={true}
+                                maxDecimalPlaces={2}
+                                decimalSeparator=","
                                 placeholder="Ex: 70"
+                                maxLength={MAX_WEIGHT_CHARACTERS}
                                 onInputChange={(value: string) => {
-                                    setWeight(value);
-                                    setStepOneError("");
+                                    setAnamnesisForm((previousValues) => ({ ...previousValues, weight: value }));
+                                    setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
                                 }}
                                 icon={<Weight />}
-                                value={weight}
+                                value={anamnesisForm.weight}
                             />
                         </div>
 
                         <div className={styles.selectGroup}>
-                            <Select
-                                id="objetivo"
-                                label={<>Objetivo Principal <span className={styles.requiredAsterisk}>*</span></>}
-                                selectPlaceholder="Selecione um objetivo"
-                                openSelectId={openSelectId}
-                                setOpenSelectId={setOpenSelectId}
-                                iconPlaceholder={<Flag />}
-                                triggerClassName="h-13! w-full!"
-                                triggerWrapperClassName="h-13! w-full!"
-                                selectWrapperClassName="h-13! w-full!"
-                                containerClassName="w-full flex-1"
-                                showSelectAll={false}
-                                showSearchInput={false}
-                                onSelectStatusChange={(value: string) => {
-                                    setObjectiveValue(value);
-                                    setStepOneError("");
+                            <ObjectiveSelect
+                                value={anamnesisForm.objectiveValue}
+                                onChange={(value: string) => {
+                                    setAnamnesisForm((previousValues) => ({
+                                        ...previousValues,
+                                        objectiveValue: value,
+                                        objectiveObservation: value === "OUTRO" ? previousValues.objectiveObservation : ""
+                                    }));
+                                    setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
                                 }}
-                                values={[
-                                    { icon: <BicepsFlexed />, label: "Presencial", value: "PRESENCIAL" },
-                                    { icon: <House />, label: "Residencial", value: "RESIDENCIAL" },
-                                    { icon: <HeartPulse />, label: "Funcional", value: "FUNCIONAL" },
-                                    { icon: " ", label: "Outro", value: "OUTRO" }
-                                ]}
                             />
 
-                            {objectiveValue === "OUTRO" && (
+                            {anamnesisForm.objectiveValue === "OUTRO" && (
                                 <textarea
                                     className={styles.observacoesTextarea}
                                     name="observacoes"
                                     id="observacoes"
                                     placeholder="Adicione quaisquer observações relevantes..."
+                                    maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
+                                    value={anamnesisForm.objectiveObservation}
+                                    onChange={(event) => {
+                                        setAnamnesisForm((previousValues) => ({ ...previousValues, objectiveObservation: event.target.value }));
+                                        setFormErrors((previousValues) => ({ ...previousValues, stepOne: "" }));
+                                    }}
                                 />
                             )}
                         </div>
 
-                        {stepOneError && (
-                            <p className={styles.formErrorMessage}>{stepOneError}</p>
+                        {formErrors.stepOne && (
+                            <p className={styles.formErrorMessage}>{formErrors.stepOne}</p>
                         )}
 
                         <SmallerButton
@@ -285,11 +431,11 @@ export default function Anamnesis() {
                                 <div className={classNames(styles.conditionGroup, {
                                     [styles.conditionGroupMobile]: isMobile
                                 })}>
-                                    <SelectableOption value="Diabetes" selectionType="checkbox" selected={selectedConditions.includes("Diabetes")} onClick={handleConditionToggle}>Diabetes</SelectableOption>
-                                    <SelectableOption value="Hipertensão" selectionType="checkbox" selected={selectedConditions.includes("Hipertensão")} onClick={handleConditionToggle}>Hipertensão</SelectableOption>
-                                    <SelectableOption value="Dores Lombares" selectionType="checkbox" selected={selectedConditions.includes("Dores Lombares")} onClick={handleConditionToggle}>Dores Lombares</SelectableOption>
-                                    <SelectableOption value="Asma/respiratório" selectionType="checkbox" selected={selectedConditions.includes("Asma/respiratório")} onClick={handleConditionToggle}>Asma/respiratório</SelectableOption>
-                                    <SelectableOption value="Lesões Articulares" selectionType="checkbox" selected={selectedConditions.includes("Lesões Articulares")} onClick={handleConditionToggle}>Lesões Articulares</SelectableOption>
+                                    <SelectableOption value="Diabetes" selectionType="checkbox" selected={anamnesisForm.selectedConditions.includes("Diabetes")} onClick={handleConditionToggle}>Diabetes</SelectableOption>
+                                    <SelectableOption value="Hipertensão" selectionType="checkbox" selected={anamnesisForm.selectedConditions.includes("Hipertensão")} onClick={handleConditionToggle}>Hipertensão</SelectableOption>
+                                    <SelectableOption value="Dores Lombares" selectionType="checkbox" selected={anamnesisForm.selectedConditions.includes("Dores Lombares")} onClick={handleConditionToggle}>Dores Lombares</SelectableOption>
+                                    <SelectableOption value="Asma/respiratório" selectionType="checkbox" selected={anamnesisForm.selectedConditions.includes("Asma/respiratório")} onClick={handleConditionToggle}>Asma/respiratório</SelectableOption>
+                                    <SelectableOption value="Lesões Articulares" selectionType="checkbox" selected={anamnesisForm.selectedConditions.includes("Lesões Articulares")} onClick={handleConditionToggle}>Lesões Articulares</SelectableOption>
                                     <SelectableOption value="Outro" selectionType="checkbox" selected={isOtherConditionSelected} onClick={handleConditionToggle}>Outro</SelectableOption>
                                 </div>
                             </div>
@@ -303,10 +449,10 @@ export default function Anamnesis() {
                                 placeholder="Ex: Enxaqueca crônica;"
                                 maxTags={5}
                                 maxTagCharacters={40}
-                                value={otherConditionTags}
+                                value={anamnesisForm.otherConditionTags}
                                 onTagsChange={(tags) => {
-                                    setOtherConditionTags(tags);
-                                    setStepTwoError("");
+                                    setAnamnesisForm((previousValues) => ({ ...previousValues, otherConditionTags: normalizeTags(tags) }));
+                                    setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
                                 }}
                             />
                                 </div>
@@ -329,17 +475,17 @@ export default function Anamnesis() {
                                 </div>
 
                                 <div className={styles.levelGroup}>
-                                    <SelectableOption value="SEDENTARIO" subtitle="Não se exercita" selectionType="radio" selected={selectedActivityLevel === "SEDENTARIO"} onClick={(value) => {
-                                        setSelectedActivityLevel(value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
+                                    <SelectableOption value="SEDENTARIO" subtitle="Não se exercita" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "SEDENTARIO"} onClick={(value) => {
+                                        setAnamnesisForm((previousValues) => ({ ...previousValues, selectedActivityLevel: value as AnamnesisData["nivelDeAtividade"] }));
+                                        setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
                                     }}>Sedentário</SelectableOption>
-                                    <SelectableOption value="ATIVO" subtitle="Exercita-se 1-2 vezes por semana" selectionType="radio" selected={selectedActivityLevel === "ATIVO"} onClick={(value) => {
-                                        setSelectedActivityLevel(value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
+                                    <SelectableOption value="ATIVO" subtitle="Exercita-se 1-2 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "ATIVO"} onClick={(value) => {
+                                        setAnamnesisForm((previousValues) => ({ ...previousValues, selectedActivityLevel: value as AnamnesisData["nivelDeAtividade"] }));
+                                        setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
                                     }}>Ativo ocasionalmente</SelectableOption>
-                                    <SelectableOption value="MUITO_ATIVO" subtitle="Exercita-se 3-5 vezes por semana" selectionType="radio" selected={selectedActivityLevel === "MUITO_ATIVO"} onClick={(value) => {
-                                        setSelectedActivityLevel(value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
+                                    <SelectableOption value="MUITO_ATIVO" subtitle="Exercita-se 3-5 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "MUITO_ATIVO"} onClick={(value) => {
+                                        setAnamnesisForm((previousValues) => ({ ...previousValues, selectedActivityLevel: value as AnamnesisData["nivelDeAtividade"] }));
+                                        setFormErrors((previousValues) => ({ ...previousValues, stepTwo: "" }));
                                     }}>Ativo regularmente</SelectableOption>
                                 </div>
                             </div>
@@ -353,13 +499,14 @@ export default function Anamnesis() {
                                     name="observacoes"
                                     id="observacoes"
                                     placeholder="Adicione quaisquer observações relevantes..."
-                                    value={dailyRoutine}
-                                    onChange={(event) => setDailyRoutine(event.target.value)}
+                                    maxLength={MAX_DAILY_ROUTINE_CHARACTERS}
+                                    value={anamnesisForm.dailyRoutine}
+                                    onChange={(event) => setAnamnesisForm((previousValues) => ({ ...previousValues, dailyRoutine: event.target.value }))}
                                 />
                             </div>
 
-                            {stepTwoError && (
-                                <p className={styles.formErrorMessage}>{stepTwoError}</p>
+                            {formErrors.stepTwo && (
+                                <p className={styles.formErrorMessage}>{formErrors.stepTwo}</p>
                             )}
 
                             <div className={styles.buttonsGroup}>
@@ -392,23 +539,23 @@ export default function Anamnesis() {
                 </div>
             )}
 
-            {requestModalType === "success" && (
+            {requestModal.type === "success" && (
                 <SuccessModal
                     isMobile={isMobile}
                     closeThen={() => {
-                        setRequestModalType(null);
+                        setRequestModal((previousValues) => ({ ...previousValues, type: null }));
                         navigate("/home");
                     }}
-                    title={requestModalText.title}
-                    content={requestModalText.content}
+                    title={requestModal.text.title}
+                    content={requestModal.text.content}
                 />
             )}
 
-            {requestModalType === "error" && (
+            {requestModal.type === "error" && (
                 <ErrorModal
-                    closeThen={() => setRequestModalType(null)}
-                    title={requestModalText.title}
-                    content={requestModalText.content}
+                    closeThen={() => setRequestModal((previousValues) => ({ ...previousValues, type: null }))}
+                    title={requestModal.text.title}
+                    content={requestModal.text.content}
                 />
             )}
         </div>

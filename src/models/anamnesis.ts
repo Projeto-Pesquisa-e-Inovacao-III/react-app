@@ -1,8 +1,14 @@
+export type CondicaoDto = {
+    situacao: string;
+    TipoCondicao: "PADRAO" | "OUTRO" 
+};
+
 export type AnamnesisData = {
     altura: number;
     peso: number;
     objectivoPrincipal: string;
-    rotina: string;
-    condicoes: string[];
+    rotina: string | null;
+    condicoes: CondicaoDto[];
     nivelDeAtividade: "SEDENTARIO" | "ATIVO" | "MUITO_ATIVO";
+    observacaoSaude: string | null;
 }
