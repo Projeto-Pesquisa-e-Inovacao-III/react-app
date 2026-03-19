@@ -79,7 +79,7 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
                 id="pages"
                 className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} gap-5 sm:gap-3 md:gap-8 xl:gap-12 2xl:gap-16 text-lg mt-0 mb-0 ml-auto mr-auto w-fit `}
             >
-                <LinksCol title="Nossos serviços" firstPage={"/link"} firstPageName={"Sobre mim"} secondPage={"/link2"} secondPageName={"Pacotes e preços"} />
+                <LinksCol title="Nossos serviços" firstPage={"/#about-section"} firstPageName={"Sobre mim"} secondPage={"/link2"} secondPageName={"Pacotes e preços"} />
                 <LinksCol title="Suporte" firstPage={"/link"} firstPageName={"Perguntas Frequentes"} secondPage={"/link2"} secondPageName={"Contato"} />
                 {isMobile ? <div className="col-span-2 justify-self-center">
                     <LinksCol title="Legal" firstPage={"/link"} firstPageName={"Termos de uso"} />
