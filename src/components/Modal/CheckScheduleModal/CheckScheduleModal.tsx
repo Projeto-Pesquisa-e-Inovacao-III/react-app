@@ -66,19 +66,7 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
                 idAgendamento: appointmentId,
                 data: selectedDate && newEventStartHour && `${selectedDate}T${newEventStartHour}`,
                 descricao: rescheduleReason,
-                endereco: {
-                    numero: eventToReschedule?.data.endereco.numero || "",
-                    tipo: eventToReschedule?.data.endereco.tipo || "",
-                    unidade: eventToReschedule?.data.endereco.unidade || "",
-                    complemento: eventToReschedule?.data.endereco.complemento || "",
-                    cep: {
-                        id: eventToReschedule?.data.endereco.cep.id || "",
-                        logradouro: eventToReschedule?.data.endereco.cep.logradouro || "",
-                        bairro: eventToReschedule?.data.endereco.cep.bairro || "",
-                        localidade: eventToReschedule?.data.endereco.cep.localidade || "",
-                        uf: eventToReschedule?.data.endereco.cep.uf || ""
-                    }
-                },
+                endereco: null
             };
 
             rescheduleAppointment(payload).then(() => {

@@ -21,6 +21,18 @@ import { TypeContext } from '../../App';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
+const STATUS_CONFIG: Record<string, { text: string; color: string; class: string }> = {
+    CONCLUIDO: { text: "Concluído", color: "#0ea500", class: "statusDone" },
+    PENDENTE_PERSONAL_CONCLUIR: { text: "Pendente", color: "#FFA500", class: "statusPending" },
+    APROVADO: { text: "Marcado", color: "#FFA500", class: "statusPending" },
+    PENDENTE_PERSONAL_APROVACAO: { text: "Em análise", color: "#FFA500", class: "statusPending" },
+    PENDENTE_CLIENTE_APROVACAO: { text: "Aprovação pendente", color: "#FFA500", class: "statusPending" },
+    CANCELADO_PERSONAL: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
+    CANCELADO_CLIENTE: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
+    AUSENCIA_PERSONAL: { text: "Ausência", color: "#FF0000", class: "statusCancelled" },
+    AUSENCIA_CLIENTE: { text: "Ausência", color: "#FF0000", class: "statusCancelled" },
+};
+
 export default function ScheduleDetails() {
     const isMobile = useMobile();
     const queryClient = useQueryClient();
@@ -83,73 +95,70 @@ export default function ScheduleDetails() {
     }
 
 
+    const handleActionSuccess = async (title: string, content: string) => {
+        handleSuccessModal(title, content);
+        await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+        await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+    };
+
+    const handleActionError = (title: string, error: any, defaultMessage: string) => {
+        console.error(`${title}:`, error);
+        handleErrorModal(title, error?.response?.data?.Exception || defaultMessage);
+    };
+
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then(async (res) => {
-            console.log("Agendamento aceito:", res);
-            handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao concluir o agendamento:", error);
-        });
+        try {
+            await acceptUserAppointment(id);
+            await handleActionSuccess("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
+        } catch (error) {
+            console.error("Erro ao aceitar o agendamento:", error);
+        }
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao recusar o agendamento:", error);
-            handleErrorModal("Erro ao recusar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao recusar o agendamento.");
-        });
+        try {
+            await refuseAppointment(id);
+            await handleActionSuccess("Agendamento Recusado", "O agendamento foi recusado.");
+        } catch (error) {
+            handleActionError("Erro ao recusar o agendamento", error, "Ocorreu um erro ao recusar o agendamento.");
+        }
     }
 
     async function cancelAppointment(id: number) {
-        await refuseAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Cancelado", "O agendamento foi cancelado.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao cancelar o agendamento:", error);
-            handleErrorModal("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
-        });
+        try {
+            await refuseAppointment(id);
+            await handleActionSuccess("Agendamento Cancelado", "O agendamento foi cancelado.");
+        } catch (error) {
+            handleActionError("Erro ao cancelar o agendamento", error, "Ocorreu um erro ao cancelar o agendamento.");
+        }
     }
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? "" : data.description
+            descricaoCancelamento: data.description || ""
         };
 
-        console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal(payload).then(async () => {
-            handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        }).catch((error) => {
+        try {
+            await reportAbsencePersonal(payload);
+            await handleActionSuccess("Ausência Registrada", "A ausência foi registrada com sucesso.");
+        } catch (error) {
             console.error("Erro ao registrar a ausência:", error);
-        });
+        }
     }
 
-    function handleConcludeAppointment(id: number) {
-        concludeAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        }).catch((error) => {
+    async function handleConcludeAppointment(id: number) {
+        try {
+            await concludeAppointment(id);
+            await handleActionSuccess("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+        } catch (error) {
             console.error("Erro ao concluir o agendamento:", error);
-        });
+        }
     }
 
     async function handleSuccessReschedule() {
-        await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-        await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso");
+        await handleActionSuccess("Reagendado com sucesso", "Horário reagendado com sucesso");
     }
 
     function handleModal(id: number, type: modalTypes) {
@@ -169,48 +178,13 @@ export default function ScheduleDetails() {
                 <div className={styles.wrapperContent}>
                     <div className={styles.title}>
                         <h1>Detalhes do agendamento</h1>
-                        {appointment.data?.status === "CONCLUIDO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusDone}>Concluído</span>
+                        {appointment.data?.status && STATUS_CONFIG[appointment.data.status] && (
+                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: STATUS_CONFIG[appointment.data.status].color, padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
+                                <span className={styles[STATUS_CONFIG[appointment.data.status].class]}>
+                                    {STATUS_CONFIG[appointment.data.status].text}
+                                </span>
                             </div>
-                        }
-
-                        {appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
-                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Pendente</span>
-                            </div>)
-                        }
-
-                        {appointment.data?.status === "APROVADO" &&
-                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Marcado</span>
-                            </div>)
-                        }
-
-
-                        {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Em análise</span>
-                            </div>
-                        }
-
-                        {appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Aprovação pendente</span>
-                            </div>
-                        }
-
-                        {(appointment.data?.status === "CANCELADO_PERSONAL" || appointment.data?.status === "CANCELADO_CLIENTE") &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusCancelled}>Cancelado</span>
-                            </div>
-                        }
-
-                        {(appointment.data?.status === "AUSENCIA_PERSONAL" || appointment.data?.status === "AUSENCIA_CLIENTE") &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusCancelled}>Ausência</span>
-                            </div>
-                        }
+                        )}
                     </div>
                     <div className={classNames(styles.contentRow)}>
                         <div className={styles.content}>
@@ -222,17 +196,15 @@ export default function ScheduleDetails() {
                             </div>
                         </div>
                     </div>
-                    {!type || type?.type === null &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={<Skeleton width={150} height={20} />} subtitle={<Skeleton width={150} height={20} />} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
-
-                    {type?.type === "aluno" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal?.nome} subtitle={`Idade: ${appointment.data?.personal?.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
-
-                    {type?.type === "personal" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno?.nome} subtitle={`Idade: ${appointment.data?.aluno?.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno?.avatarUrl ? appointment.data?.aluno?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
+                    <CardInfo
+                        isMobile={isMobile}
+                        HeaderTitle={type?.type === "personal" ? "Aluno" : "Personal"}
+                        title={(!type || type?.type === null) ? <Skeleton width={150} height={20} /> : (type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome)}
+                        subtitle={(!type || type?.type === null) ? <Skeleton width={150} height={20} /> : `Idade: ${type?.type === "personal" ? appointment.data?.aluno?.idade : appointment.data?.personal?.idade} anos`}
+                        includeImg={true}
+                        imgUrl={(type?.type === "personal" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl) || undefined}
+                        isLoading={appointment.isLoading}
+                    />
 
                     <div className={styles.contentDetails}>
                         <h2 className={styles.subtitle}>Detalhes</h2>
@@ -321,7 +293,7 @@ export default function ScheduleDetails() {
                             }} />
                         </div>
                     )}
-                            
+
 
                     {type?.type === "aluno" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
                         <div className={classNames(styles.buttonGroup)}>
