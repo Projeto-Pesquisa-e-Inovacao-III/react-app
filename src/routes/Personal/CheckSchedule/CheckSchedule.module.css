@@ -43,11 +43,6 @@
     gap: 10px;
 }
 
-.containerCheckSchedule {
-    /* height: 100vh; */
-    /* overflow-y: auto; */
-}
-
 .container {
     border-radius: 0.5rem;
     border: 1px solid #e2e8f0;
@@ -74,7 +69,6 @@
     border-bottom: 1px solid #324d67;
 }
 
-.tbody {}
 
 .tbody tr+tr {
     border-top: 1px solid #324d67;
@@ -135,6 +129,11 @@
 .actionsCell {
     padding: 1rem 1.5rem;
     text-align: right;
+}
+
+.actionsWrapperApprove {
+    justify-content: flex-start !important;
+    gap: 5rem !important;
 }
 
 .actionsWrapper {

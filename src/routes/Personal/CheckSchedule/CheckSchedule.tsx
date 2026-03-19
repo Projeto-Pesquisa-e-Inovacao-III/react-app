@@ -12,10 +12,10 @@ import NewEvent from "../../../components/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { useSearchParams } from "react-router-dom";
-import { endOfDay, format, parseISO, startOfDay } from "date-fns";
+import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, UserRound } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, PersonStanding, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -25,8 +25,9 @@ import SmallerButton from "../../../components/SmallerButton/SmallerButton";
 import Skeleton from "react-loading-skeleton";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 import { getScheduleData } from "../../../constants/personal";
+import classNames from "classnames";
 
-type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
+type modalTypes = "reschedule" | "accept" | "concludeAppointment" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
 export function CheckSchedule() {
     const isMobile = useMobile();
@@ -198,7 +199,8 @@ export function CheckSchedule() {
     }
 
     async function handleConcludeAppointment(id: number) {
-        concludeAppointment(id).then(async () => {
+        await concludeAppointment(id).then(async (res) => {
+            console.log("Agendamento concluído:", res);
             await handleInvalidateQueries();
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
         }).catch((error) => {
@@ -618,6 +620,61 @@ export function CheckSchedule() {
                                                             </div>
                                                         </td>
                                                     )}
+                                                    {card.status && (card.status === "APROVADO") && (
+                                                        <td className={classNames(styles.actionsCell)}>
+                                                            <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "decline")
+                                                                    }
+                                                                    title="Cancelar agendamento"
+                                                                >
+                                                                    <CircleX className="text-red-500" />
+                                                                </button>
+
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() => {
+                                                                        setClickedDate(
+                                                                            card.dataInicio?.split("T")[0] || ""
+                                                                        );
+                                                                        handleModal(card.agendamentoId, "reschedule");
+                                                                    }}
+                                                                    title="Reagendar agendamento"
+                                                                >
+                                                                    <CalendarClock className="text-blue-500" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
+
+                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                        <td className={classNames(styles.actionsCell)}>
+                                                            <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "concludeAppointment")
+                                                                    }
+                                                                    title="Concluir agendamento"
+                                                                >
+                                                                    <User className="text-green-600" />
+                                                                </button>
+
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "registerAbsence")
+                                                                    }
+                                                                    title="Registrar ausência"
+                                                                >
+                                                                    <UserX className="text-red-500" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
+
                                                 </tr>
                                             ))}
 
@@ -714,6 +771,8 @@ export function CheckSchedule() {
                     </>
                 )
             }
+
+            {openModal === "concludeAppointment" && <TimerModal callSuccessModal={() => handleConcludeAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Concluir Agendamento" content="Tem certeza que deseja concluir o agendamento?" buttonTitle="Concluir agendamento" />}
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 

@@ -181,7 +181,7 @@ function AppointmentsSectionContent({
                         photoUrl={card.caminhoFoto}
                         type={card.tipoAula}
                         date={card.data ? format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
-                        time={`${card.data ? card.data.split("T")[1]?.substring(0, 5) || "" : ""} - ${card.dataFim ? card.dataFim.split("T")[1]?.substring(0, 5) || "" : ""}`}
+                        time={`${card.data ? card.data.split("T")[1]?.substring(0, 5) || "" : ""} - ${card.datafim ? card.datafim.split("T")[1]?.substring(0, 5) || "" : ""}`}
                         address={card.endereco ? card.endereco.bairro + ", " + card.endereco.cidade : ""}
                         isMobile={isMobile}
                     />
