@@ -3,7 +3,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function FAQSection({ isMobile = false }: { isMobile: boolean }) {
     return (
-        <section className="bg-indigo pt-10 pb-10 p-5">
+        <section id="faq" className="bg-indigo pt-10 pb-10 p-5">
             <div className={`text-black bg-white rounded-lg p-5 ${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-black text-2xl mb-5">Perguntas Frequentes</h2>
 
