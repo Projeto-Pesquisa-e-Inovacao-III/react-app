@@ -1,0 +1,88 @@
+.editUserGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  gap: 25px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas:
+    "header   header "
+    "pages personal"
+    "pages personal"
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
+}
+
+.editUserGrid h2 {
+  font-size: 36px;
+  font-weight: 400;
+}
+
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
+
+.personalInfoGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  grid-template-areas:
+    "personalDataTitle personalDataTitle personalDataTitle"
+    "height weight mainObjective";
+}
+
+.personalInfoGrid :global(.wrapper_inp) {
+  width: 100%;
+}
+
+.personalInfoGrid :global(#height) {
+  grid-area: height;
+}
+.personalInfoGrid :global(#weight) {
+  grid-area: weight;
+}
+.personalInfoGrid :global(#mainObjective) {
+  grid-area: mainObjective;
+}
+.personalInfoGrid :global(#personalDataTitle) {
+  grid-area: personalDataTitle;
+}
+
+@media (max-width: 1024px) {
+  .personalInfoGrid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "personalDataTitle"
+      "height"
+      "weight"
+      "mainObjective"
+    ;
+  }
+
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal";
+  }
+}
+
+.goBackContainer h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
+.goBackContainer {
+  grid-area: header;
+}
+
+.pagesSection {
+  grid-area: pages;
+}
+
+.personalInfo {
+  grid-area: personal;
+}
+

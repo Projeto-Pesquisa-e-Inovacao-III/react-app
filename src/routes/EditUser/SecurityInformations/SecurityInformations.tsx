@@ -14,6 +14,7 @@ import useModal from "../../../hooks/useModal.tsx";
 import { useQuery } from "@tanstack/react-query";
 import classNames from "classnames";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
+import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 
 type UserPhone = {
   id: number;
@@ -35,7 +36,7 @@ type UserDataResponse = {
   telefones: UserPhone[];
 };
 
-export default function EditUser() {
+export default function SecurityInformations() {
   const isMobile = useMobile();
   const navigator = useNavigate();
 
@@ -118,10 +119,10 @@ export default function EditUser() {
       });
   }
   useEffect(() => {
-  if (userInfo.data?.email) {
-    setEmail(userInfo.data.email);
-  }
-}, [userInfo.data]);
+    if (userInfo.data?.email) {
+      setEmail(userInfo.data.email);
+    }
+  }, [userInfo.data]);
 
   return (
     <>
@@ -216,24 +217,7 @@ export default function EditUser() {
 
         <div className={styles.pagesSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
-            <aside className={styles.aside}>
-              <nav className={styles.nav}>
-                <Link to="/edit-user"
-                  className={classNames(styles.link, styles.linkInactive)}
-                >
-                  <User />
-                  Informações Pessoais
-                </Link>
-
-                <Link
-                  to="/edit-user/security"
-                  className={classNames(styles.link, styles.linkActive)}
-                >
-                  <Shield />
-                  Segurança
-                </Link>
-              </nav>
-            </aside>
+            <AsideEditUser activeTab="security" />
           </WhiteContainer>
         </div>
       </div>

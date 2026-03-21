@@ -24,6 +24,7 @@ import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
 import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
 import Anamnesis from "./routes/Anamnesis/anamnesis";
+import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
 
 // todo: 
 // safari support // deixa baixo
@@ -64,6 +65,7 @@ const [type, setType] = useState<UserType | null>(null);
                 <Route path="/schedule" element={<ViewSchedule />} />
                 <Route path="/edit-user" element={<EditUser />} />
                 <Route path="/edit-user/security" element={<SecurityInformations />} />
+                <Route path="/edit-user/anamnesis" element={<AnamnesisInformations />} />
               </Route>
             </Route>
 
