@@ -28,8 +28,8 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
 
     return (
         <>
-            <div className="overlay" onClick={() => closeThen(false)}></div>
-            <div className={styles.modal}>
+            <div className={`overlay ${styles.backdropEnter}`} onClick={() => closeThen(false)}></div>
+            <div className={`${styles.modal} ${styles.modalCard}`}>
                 <h2 className={styles.title}>Registrar ausência</h2>
 
                 <Select

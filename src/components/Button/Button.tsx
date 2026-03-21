@@ -13,16 +13,17 @@ type Props = {
     classNameDiv?: string;
     onClick?: () => void;
     loading?: boolean;
+    disabled?: boolean;
 }
 
-export default function Button({ type, title, classNameVariable, classNameDiv, onClick, icon, typeButton, loading }: Props) {
+export default function Button({ type, title, classNameVariable, classNameDiv, onClick, icon, typeButton, loading, disabled }: Props) {
     return (
         <div className={classNames(styles.btnGeneric, classNameDiv)}>
             <button
                 className={classNames(styles[`${typeButton}`], classNameVariable)}
                 type={type}
                 onClick={onClick}
-                
+                disabled={loading || disabled}
             >
                 {icon && <span className={styles.icon}>{icon}</span>}
                 {loading ?

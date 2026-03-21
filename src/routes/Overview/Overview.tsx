@@ -10,7 +10,7 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findUserAppointments } from "../../constants/schedule";
+import { appointmentAtCalendar, findUserAppointments, getPersonalList } from "../../constants/schedule";
 import { appoitmentsCount, getAvailabilityHoursTomorrow } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -26,6 +26,7 @@ import Skeleton from "react-loading-skeleton";
 import type { appointmentsCards } from "../../models/overview";
 import CardWithoutPlan from "../../components/Overview/CardWithoutPlan/CardWithoutPlan";
 import AppointmentsEmptyState from "../../components/Overview/AppointmentsEmptyState/AppointmentsEmptyState";
+import { findUserData } from "../../constants/user";
 
 type ModalType = "success" | "error" | "newEvent" | "cancel" | "accept" | "reschedule" | "rescheduleRequest";
 
@@ -179,9 +180,9 @@ function AppointmentsSectionContent({
                         name={userType === "personal" ? card.alunoNome : card.personalNome}
                         photoUrl={card.caminhoFoto}
                         type={card.tipoAula}
-                        date={format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })}
-                        time={`${card.data.split("T")[1].substring(0, 5)} - ${card.dataFim.split("T")[1].substring(0, 5)}`}
-                        address={card.endereco.bairro + ", " + card.endereco.cidade}
+                        date={card.data ? format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
+                        time={`${card.data ? card.data.split("T")[1]?.substring(0, 5) || "" : ""} - ${card.datafim ? card.datafim.split("T")[1]?.substring(0, 5) || "" : ""}`}
+                        address={card.endereco ? card.endereco.bairro + ", " + card.endereco.cidade : ""}
                         isMobile={isMobile}
                     />
                 ))}
@@ -275,9 +276,26 @@ export function Overview() {
         setModalType("newEvent")
     }
 
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
+    });
+
+    const personalId = useQuery({
+        queryKey: ["personalId"],
+        queryFn: () => findUserData(),
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "personal"
+    });
+
+
     const getAvailabilityHoursTomorrowQuery = useQuery({
-        queryKey: ["getAvailabilityHoursTomorrow"],
-        queryFn: () => getAvailabilityHoursTomorrow(),
+        queryKey: ["availabilityHoursTomorrow"],
+        queryFn: () => getAvailabilityHoursTomorrow(type?.type === "personal" ? personalId.data?.id : personalList.data[0].id),
         refetchOnWindowFocus: false,
     })
 
@@ -286,9 +304,6 @@ export function Overview() {
     const isLoadingCalendar =
         isTypeLoading ||
         appointments.isPending
-
-
-
 
     return (
         <>

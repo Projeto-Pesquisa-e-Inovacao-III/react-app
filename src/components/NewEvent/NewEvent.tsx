@@ -289,6 +289,7 @@ export default function NewEvent(
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
+        console.log("addressData", addressData);
         setLoading(true)
         e?.preventDefault();
 
@@ -304,19 +305,7 @@ export default function NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            endereco: {
-                numero: addressData.number,
-                complemento: addressData.complement,
-                unidade: "",
-                tipo: selectedLocation,
-                cep: {
-                    id: addressData.postalCode,
-                    logradouro: addressData.address,
-                    bairro: "",
-                    localidade: addressData.city,
-                    uf: addressData.state
-                }
-            },
+            endereco: null,
             personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }

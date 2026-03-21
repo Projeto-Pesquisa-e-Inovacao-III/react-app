@@ -115,7 +115,6 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
-            console.log("availabilityHoursTomorrow", availabilityHoursTomorrow)
 
             if (cellDate === tomorrow && availabilityHoursTomorrow && availabilityHoursTomorrow.length === 0) return [styles.fcTodayCustom];
 

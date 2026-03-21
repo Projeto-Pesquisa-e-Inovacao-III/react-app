@@ -84,19 +84,7 @@ export type ScheduleReschedule = {
     idAgendamento?: number,
     data: string,
     descricao: string,
-    endereco: {
-        numero: string,
-        complemento: string,
-        unidade: string,
-        tipo: string,
-        cep: {
-            id: string,
-            logradouro: string,
-            bairro: string,
-            localidade: string,
-            uf: string
-        }
-    },
+    endereco: null,
     personalId?: number,
     tipoAulaProdutoContratado?: string
 }
@@ -104,5 +92,5 @@ export type ScheduleReschedule = {
 export type AbsenceAppointment = {
     idAgendamento: number,
     tipoUsuario: string,
-    descricaoCancelamento?: string,
+    descricaoCancelamento?: string | null,
 }

@@ -79,8 +79,8 @@ export default function Footer({ isMobile }: { isMobile: boolean }) {
                 id="pages"
                 className={`grid ${isMobile ? "grid-cols-2" : "grid-cols-3"} gap-5 sm:gap-3 md:gap-8 xl:gap-12 2xl:gap-16 text-lg mt-0 mb-0 ml-auto mr-auto w-fit `}
             >
-                <LinksCol title="Nossos serviços" firstPage={"/link"} firstPageName={"Sobre mim"} secondPage={"/link2"} secondPageName={"Pacotes e preços"} />
-                <LinksCol title="Suporte" firstPage={"/link"} firstPageName={"Perguntas Frequentes"} secondPage={"/link2"} secondPageName={"Contato"} />
+                <LinksCol title="Nossos serviços" firstPage={"/#about-section"} firstPageName={"Sobre mim"} secondPage={"/#plans-section"} secondPageName={"Pacotes e adicionais"} />
+                <LinksCol title="Suporte" firstPage={"/#faq"} firstPageName={"Perguntas Frequentes"} secondPage={"https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"} secondPageBlank={true} secondPageName={"Contato"} />
                 {isMobile ? <div className="col-span-2 justify-self-center">
                     <LinksCol title="Legal" firstPage={"/link"} firstPageName={"Termos de uso"} />
                 </div> : <LinksCol title="Legal" firstPage={"/link"} firstPageName={"Termos de uso"} />}

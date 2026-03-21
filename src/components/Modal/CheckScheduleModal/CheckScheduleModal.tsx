@@ -66,19 +66,7 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
                 idAgendamento: appointmentId,
                 data: selectedDate && newEventStartHour && `${selectedDate}T${newEventStartHour}`,
                 descricao: rescheduleReason,
-                endereco: {
-                    numero: eventToReschedule?.data.endereco.numero || "",
-                    tipo: eventToReschedule?.data.endereco.tipo || "",
-                    unidade: eventToReschedule?.data.endereco.unidade || "",
-                    complemento: eventToReschedule?.data.endereco.complemento || "",
-                    cep: {
-                        id: eventToReschedule?.data.endereco.cep.id || "",
-                        logradouro: eventToReschedule?.data.endereco.cep.logradouro || "",
-                        bairro: eventToReschedule?.data.endereco.cep.bairro || "",
-                        localidade: eventToReschedule?.data.endereco.cep.localidade || "",
-                        uf: eventToReschedule?.data.endereco.cep.uf || ""
-                    }
-                },
+                endereco: null
             };
 
             rescheduleAppointment(payload).then(() => {
@@ -92,8 +80,8 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
 
     return (
         <>
-            <div className="overlay"></div>
-            <div className={styles.modalCheckSchedule}>
+            <div className={`overlay ${styles.backdropEnter}`}></div>
+            <div className={`${styles.modalCheckSchedule} ${styles.modalCard}`}>
                 <div className={styles.titleX}>
                     <h2>Reagendar</h2>
                     <svg className={styles.exitIcon} width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleCloseModal}>

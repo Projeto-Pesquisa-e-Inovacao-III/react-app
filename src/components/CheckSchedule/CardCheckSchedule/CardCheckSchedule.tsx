@@ -103,7 +103,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
 
                         <div className={styles.textInTheRowCheckSchedule}>
                             <span>Data: <span className={styles.textInRowCheckSchedule}>{format(parseISO(cardData.dataInicio), "dd/MM/yyyy")}</span></span>
-                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.dataInicio?.split("T")[1].slice(0, 5)} - {cardData.dataFim?.split("T")[1].slice(0, 5)}</span></span>
+                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.dataInicio?.split("T")[1]?.slice(0, 5) || "--:--"} - {cardData.dataFim?.split("T")[1]?.slice(0, 5) || "--:--"}</span></span>
                         </div>
                         <div className={styles.textInTheRowCheckSchedule}>
                             <span>Nome: <span className={styles.textInRowCheckSchedule}>{cardData.nome}</span></span>
