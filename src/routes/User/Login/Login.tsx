@@ -43,10 +43,8 @@ export default function Login() {
 
       if (res.status === 200) {
         try {
-          const userResponse = await userService.findUserData();
-          console.log("User data response:", userResponse);
-          const userData = userResponse.data as { aluno?: { ATIVO_ANAMNESE?: boolean } };
-          var ativoAnamnese = userData.aluno?.ATIVO_ANAMNESE;
+          const isAuthenticated = await userService.isAuthenticated();
+          const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
           
           if (ativoAnamnese === false) {
             nav("/anamnesis");
