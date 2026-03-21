@@ -7,7 +7,7 @@ type Props = {
     type: string;
     placeholder?: string;
     icon: React.ReactNode;
-    label?: string;
+    label?: React.ReactNode;
     id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
@@ -18,11 +18,14 @@ type Props = {
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
-    
+
     allowDecimals?: boolean;
+    maxLength?: number;
+    maxDecimalPlaces?: number;
+    decimalSeparator?: "." | ",";
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, decimalSeparator = "." }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -34,11 +37,25 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                 if (parts.length > 2) {
                     value = parts[0] + "." + parts.slice(1).join("");
                 }
+
+                if (typeof maxDecimalPlaces === "number" && maxDecimalPlaces >= 0) {
+                    const [integerPart, decimalPart = ""] = value.split(".");
+
+                    if (value.includes(".")) {
+                        if (maxDecimalPlaces === 0) {
+                            value = integerPart;
+                        } else {
+                            value = `${integerPart}.${decimalPart.slice(0, maxDecimalPlaces)}`;
+                        }
+                    }
+                }
             } else {
                 value = value.replace(/\D/g, "");
             }
-            e.target.value = value;
-            onInputChange?.(value);
+
+            const displayedValue = decimalSeparator === "," ? value.replace(".", ",") : value;
+            e.target.value = displayedValue;
+            onInputChange?.(displayedValue);
             return;
         }
         onInputChange?.(e.target.value);
@@ -89,6 +106,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             disabled={disabled}
+                            maxLength={maxLength}
                         />
                         {isPassword && (
                             <button
