@@ -19,7 +19,7 @@ type Props = {
   showSearchInput?: boolean;
   defaultValue?: string;
   fixedText?: string;
-  label?: string;
+  label?: React.ReactNode;
 
   labelClassName?: string;
   dropDownClassName?: string
@@ -27,7 +27,7 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
-
+  
   clear?: boolean;
 }
 
@@ -37,7 +37,6 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
 
   const [hoveredOption, setHoveredOption] = useState<string | null>(null);
 
-  console.log(defaultValue, "defaultValue")
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
   useEffect(() => {
     if (defaultValue && onSelectStatusChange) {
@@ -90,7 +89,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
             onClick={() => setOpenSelectId(isOpen ? null : id)}
           >
             <span className={styles.iconPlaceholder}>
-              {iconPlaceholder && <span className={styles.iconOption}>{iconPlaceholder}</span>}
+              {iconPlaceholder && !selectValue.icon && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
               <span className={styles.textContent}>
                 {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}

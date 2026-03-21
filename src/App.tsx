@@ -23,6 +23,7 @@ import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
 import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
 import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
+import Anamnesis from "./routes/Anamnesis/anamnesis";
 
 // todo: 
 // safari support // deixa baixo
@@ -68,6 +69,7 @@ const [type, setType] = useState<UserType | null>(null);
 
             <Route element={<PrivateRoute allowedRoles={["aluno"]} />}>
               <Route element={<Layout />}>
+                <Route path="/anamnesis" element={<Anamnesis />} />
                 <Route path="/plans-history" element={<PlansHistory />} />
                 <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
                 <Route path="/schedule-history" element={<ScheduleHistory />} />
