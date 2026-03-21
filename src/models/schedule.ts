@@ -92,5 +92,5 @@ export type ScheduleReschedule = {
 export type AbsenceAppointment = {
     idAgendamento: number,
     tipoUsuario: string,
-    descricaoCancelamento?: string,
+    descricaoCancelamento?: string | null,
 }

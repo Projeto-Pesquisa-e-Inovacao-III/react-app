@@ -29,7 +29,7 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
           bgColor="bg-indigo"
           title="Um guia para a saúde em todas as idades"
           content="Da infância à melhor idade, a saúde é nossa prioridade em cada etapa! Com um olhar atento às necessidades de cada um, oferecemos orientação personalizada para crianças, jovens, adultos e idosos."
-          image="/Home/bg-1.png"
+          image="/Home/bg-1-2.jpg"
           isReverse={true}
           isMobile={isMobile}
         />

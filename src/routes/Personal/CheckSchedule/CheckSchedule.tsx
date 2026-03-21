@@ -15,7 +15,7 @@ import { useSearchParams } from "react-router-dom";
 import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, PersonStanding, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -188,7 +188,7 @@ export function CheckSchedule() {
         const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? "" : data.description
+            descricaoCancelamento: data.description === "" ? null : data.description
         };
         await reportAbsencePersonal(payload).then(async () => {
             await handleInvalidateQueries();
