@@ -1,18 +1,17 @@
 import styles from "./SecurityInformations.module.css";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { HeartCrack, Lock, Mail, Shield, User } from "lucide-react";
+import { HeartCrack, Lock, Mail, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import { findUserData, softDelete, changePassword } from "../../../constants/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../../utils/validacao.ts";
 import useModal from "../../../hooks/useModal.tsx";
 import { useQuery } from "@tanstack/react-query";
-import classNames from "classnames";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
 import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 
@@ -39,7 +38,7 @@ type UserDataResponse = {
 export default function SecurityInformations() {
   const isMobile = useMobile();
   const navigator = useNavigate();
-
+  
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({

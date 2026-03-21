@@ -1,10 +1,13 @@
 import classNames from 'classnames'
 import { HeartPulse, Shield, User } from 'lucide-react'
-import React from 'react'
 import { Link } from 'react-router-dom'
 import styles from './AsideEditUser.module.css'
+import { useContext } from 'react';
+import { TypeContext } from '../../App';
 
-export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesis" | "security" }) {
+export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesis" | "security"}) {
+    const type = useContext(TypeContext);
+    
     return (
         <aside className={styles.aside}>
             <nav className={styles.nav}>
@@ -15,13 +18,15 @@ export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesi
                     Informações Pessoais
                 </Link>
 
-                <Link to="/edit-user/anamnesis"
-                    className={classNames(styles.link, props.activeTab === "anamnesis" ? styles.linkActive : styles.linkInactive)}
-                >
-                    <HeartPulse />
-                    Anamnese / Saúde
-                </Link>
-                
+                {type?.type === "aluno" && (
+                    <Link to="/edit-user/anamnesis"
+                        className={classNames(styles.link, props.activeTab === "anamnesis" ? styles.linkActive : styles.linkInactive)}
+                    >
+                        <HeartPulse />
+                        Anamnese / Saúde
+                    </Link>
+                )}
+
                 <Link
                     to="/edit-user/security"
                     className={classNames(styles.link, props.activeTab === "security" ? styles.linkActive : styles.linkInactive)}
@@ -30,6 +35,6 @@ export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesi
                     Segurança
                 </Link>
             </nav>
-        </aside>
+        </aside >
     )
 }

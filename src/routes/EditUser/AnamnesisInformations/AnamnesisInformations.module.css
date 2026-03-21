@@ -14,6 +14,17 @@
   margin-bottom: 0 !important;
 }
 
+.personalDataTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.personalDataTitle h3 {
+  color: #6e6e6e;
+}
+
 .editUserGrid h2 {
   font-size: 36px;
   font-weight: 400;
@@ -23,28 +34,74 @@
   padding: 15px 20px;
 }
 
+.conditionsGroup {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
 .personalInfoGrid {
   display: grid !important;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: start;
   grid-template-areas:
+    "personalData     personalData     personalData"
+    "healthConditions healthConditions healthConditions"
+    "levelOfActivity  levelOfActivity  levelOfActivity"
+    "routine           routine           routine";
+}
+
+.personalInfoGrid :global(#personalData) {
+  grid-area: personalData;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
     "personalDataTitle personalDataTitle personalDataTitle"
-    "height weight mainObjective";
+    "height            weight            mainObjective";
+  gap: 10px;
+  align-items: start;
 }
 
 .personalInfoGrid :global(.wrapper_inp) {
   width: 100%;
 }
 
+.personalInfoGrid :global(#routine) {
+  grid-area: routine;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.personalInfoGrid :global(#healthConditions) {
+  grid-area: healthConditions;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfoGrid :global(#levelOfActivity) {
+  grid-area: levelOfActivity;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+
 .personalInfoGrid :global(#height) {
   grid-area: height;
 }
+
 .personalInfoGrid :global(#weight) {
   grid-area: weight;
 }
+
 .personalInfoGrid :global(#mainObjective) {
   grid-area: mainObjective;
 }
+
 .personalInfoGrid :global(#personalDataTitle) {
   grid-area: personalDataTitle;
 }
@@ -85,4 +142,3 @@
 .personalInfo {
   grid-area: personal;
 }
-

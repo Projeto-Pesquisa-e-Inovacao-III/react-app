@@ -11,19 +11,19 @@ import {
     Ruler,
     Weight
 } from "lucide-react";
-import InputTags from "../../components/Inputs/InputTags/InputTags";
-import TextareaWithIcon from "../../components/Inputs/TextareaWithIcon/TextareaWithIcon";
-import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
-import { LogoWhiteBig } from "../../components/LogoWhiteBig/LogoWhiteBig";
-import SmallerButton from "../../components/SmallerButton/SmallerButton";
-import { SelectableOption } from "../../components/SelectableOption/SelectableOption";
-import useMobile from "../../hooks/isMobile";
-import { createAnamnesis } from "../../constants/anamnesis";
-import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
-import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
-import type { AnamnesisData } from "../../models/anamnesis";
-import ObjectiveSelect from "../../components/ObjectiveSelect/ObjectiveSelect";
-import AnamnesisProgressLine from "../../components/AnamnesisProgressLine/AnamnesisProgressLine";
+import InputTags from "../../../components/Inputs/InputTags/InputTags";
+import TextareaWithIcon from "../../../components/Inputs/TextareaWithIcon/TextareaWithIcon";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
+import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
+import SmallerButton from "../../../components/SmallerButton/SmallerButton";
+import { SelectableOption } from "../../../components/SelectableOption/SelectableOption";
+import useMobile from "../../../hooks/isMobile";
+import { createAnamnesis } from "../../../constants/anamnesis";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
+import type { AnamnesisData } from "../../../models/anamnesis";
+import ObjectiveSelect from "../../../components/ObjectiveSelect/ObjectiveSelect";
+import AnamnesisProgressLine from "../../../components/AnamnesisProgressLine/AnamnesisProgressLine";
 import {
     parseNumericValue,
     validateHeightWeightValues,

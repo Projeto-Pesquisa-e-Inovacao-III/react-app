@@ -18,6 +18,8 @@
     resize: vertical;
     outline: none;
     font-family: "Poppins", sans-serif;
+    color: #334155 !important;
+    font-weight: 500;
 }
 
 .wrapperTextarea textarea::placeholder {
@@ -45,6 +47,13 @@
 
 .withIcon {
     padding-left: 40px !important;
+}
+
+.counter {
+    align-self: flex-end;
+    font-size: 12px;
+    color: #666;
+    line-height: 1;
 }
 
 @media (max-width: 1360px) {
