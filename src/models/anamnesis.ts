@@ -1,6 +1,6 @@
 export type CondicaoDto = {
     situacao: string;
-    TipoCondicao: "PADRAO" | "OUTRO" 
+    tipo: "PADRAO" | "OUTRO" 
 };
 
 export type AnamnesisData = {

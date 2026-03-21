@@ -2,20 +2,22 @@ import styles from "./AnamnesisInformations.module.css";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
 import { FileText, Flag, Ruler, Shield, Weight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
 import useModal from "../../../hooks/useModal.tsx";
 import { useQuery } from "@tanstack/react-query";
 import type { AnamnesisData, CondicaoDto } from "../../../models/anamnesis.ts";
-import { getAnamnesis } from "../../../constants/anamnesis.ts";
+import { getAnamnesis, updateAnamnesis } from "../../../constants/anamnesis.ts";
 import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 import Select from "../../../components/Select/Select.tsx";
 import { SelectableOption } from "../../../components/SelectableOption/SelectableOption.tsx";
 import InputTags from "../../../components/Inputs/InputTags/InputTags.tsx";
 import classNames from "classnames";
 import TextareaWithIcon from "../../../components/Inputs/TextareaWithIcon/TextareaWithIcon.tsx";
+import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
+import useClickOutside from "../../../hooks/useClickOutside.tsx";
 
 export default function AnamnesisInformations() {
   const isMobile = useMobile();
@@ -27,14 +29,17 @@ export default function AnamnesisInformations() {
     setTextModal
   } = useModal(null, { title: "", content: "" })
 
-  const anamnesisInfo = useQuery<AnamnesisData>({
-    queryKey: ["anamnesisInfo"],
-    queryFn: async () => {
-      const response = await getAnamnesis();
-      return response.data;
+  const ref = useRef(null);
+
+  useClickOutside({
+    ref,
+    callback: () => {
+      if (openModal) {
+        setOpenModal(null);
+      }
     }
   });
-  // {"altura":1.75,"peso":70.5,"objectivoPrincipal":"Ganho de massa muscular","rotina":"Trabalho das 9h às 18h, treino à noite","condicoes":[{"situacao":"Controlada com medicamento","tipo":"PADRAO"},{"situacao":"Sem tratamento","tipo":"PADRAO"}],"nivelDeAtividade":"SEDENTARIO","observacaoSaude":"Sinto dores no joelho direito ao agachar"}
+
   const [anamnesisData, setAnamnesisData] = useState<AnamnesisData>({
     altura: 0,
     peso: 0,
@@ -45,29 +50,30 @@ export default function AnamnesisInformations() {
     observacaoSaude: "",
   });
 
-  useEffect(() => {
-    if (anamnesisInfo.data) {
-      setAnamnesisData(anamnesisInfo.data);
-    }
-  }, [anamnesisInfo.data])
 
-  console.log(anamnesisInfo.data)
+  const anamnesisInfo = useQuery<AnamnesisData>({
+    queryKey: ["anamnesisInfo"],
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const response = await getAnamnesis();
+      setAnamnesisData(response.data);
+      return response.data;
+    }
+  });
 
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
-  const handleConditionToggle = (situacao: string) => {
+  function handleConditionToggle(situacao: string) {
     setAnamnesisData(prev => {
       const exists = prev.condicoes.some(c => c.situacao === situacao);
       return {
         ...prev,
         condicoes: exists
           ? prev.condicoes.filter(c => c.situacao !== situacao)
-          : [...prev.condicoes, { situacao, TipoCondicao: "PADRAO" }]
+          : [...prev.condicoes, { situacao, tipo: "PADRAO" }]
       };
     });
   };
-
-  const isOtherConditionSelected = anamnesisData.condicoes.some(c => c.situacao === "Outro");
 
   function updateFormField(field: keyof AnamnesisData, value: AnamnesisData[typeof field]) {
     setAnamnesisData((previousValues) => ({ ...previousValues, [field]: value }));
@@ -81,11 +87,81 @@ export default function AnamnesisInformations() {
     return Array.from(new Set(trimmedTags));
   }
 
-  const MAX_DAILY_ROUTINE_CHARACTERS = 500;
+  const isOtherConditionSelected = anamnesisData.condicoes.some(c => c.tipo === "OUTRO");
 
+  const MAX_DAILY_ROUTINE_CHARACTERS = 500;
+  const MIN_HEIGHT_CM = 100;
+  const MAX_HEIGHT_CM = 250;
+  const MIN_WEIGHT_KG = 25;
+  const MAX_WEIGHT_KG = 350;
+  const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
+  const MAX_HEIGHT_CHARACTERS = 3;
+  const MAX_WEIGHT_CHARACTERS = 6;
+
+  function handleModal(type: "success" | "error", title: string, content: string) {
+    setTextModal({ title, content });
+    setOpenModal(type);
+  }
+
+
+  interface ValidationErrors {
+    altura?: string;
+    peso?: string;
+  }
+
+  // Replace the handleUpdateAnamnesis function and add a validate function
+  function validate(): ValidationErrors {
+    const errors: ValidationErrors = {};
+
+    if (anamnesisData.altura) {
+      if (anamnesisData.altura < MIN_HEIGHT_CM || anamnesisData.altura > MAX_HEIGHT_CM) {
+        errors.altura = `Altura deve estar entre ${MIN_HEIGHT_CM} e ${MAX_HEIGHT_CM} cm.`;
+      }
+    }
+
+    if (anamnesisData.peso) {
+      if (anamnesisData.peso < MIN_WEIGHT_KG || anamnesisData.peso > MAX_WEIGHT_KG) {
+        errors.peso = `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.`;
+      }
+    }
+
+    return errors;
+  }
+
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
+
+  const [updateLoading, setUpdateLoading] = useState(false);
+  function handleUpdateAnamnesis() {
+    const errors = validate();
+    setValidationErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    setUpdateLoading(true);
+
+    updateAnamnesis(anamnesisData).then(() => {
+      setUpdateLoading(false);
+      handleModal("success", "Anamnese atualizada!", "Suas informações de anamnese foram atualizadas com sucesso.");
+    }).catch(() => {
+      setUpdateLoading(false);
+      handleModal("error", "Erro ao atualizar anamnese", "Ocorreu um erro ao tentar atualizar suas informações de anamnese. Por favor, tente novamente mais tarde.");
+    });
+  }
+
+  function handleUndoChanges() {
+    if (anamnesisInfo.data) {
+      setAnamnesisData(anamnesisInfo.data);
+    }
+  }
+
+
+  const valuesAtSelect = [
+    { label: "Ganho de massa muscular", value: "Ganho de massa muscular" },
+    { label: "Perda de peso", value: "Perda de peso" },
+    { label: "Manutenção da massa muscular", value: "Manutenção da massa muscular" },
+  ]
 
   return (
-    <>
+    <div ref={ref}>
       <div className={styles.editUserGrid}>
         {!isMobile &&
           <div className={styles.goBackContainer}>
@@ -93,48 +169,79 @@ export default function AnamnesisInformations() {
           </div>
         }
 
-        <div className={styles.personalInfo} >
+        <div className={styles.personalInfo} ref={ref}>
           <WhiteContainer title="Anamnese / Saúde" icon={<Shield size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
             <div id="personalData">
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Dados pessoais</h3>
               </div>
-              <InputWithIcon
-                id="height"
-                classNameInput="text-[#334155]! font-medium"
-                type="text"
-                placeholder="Ex: 175"
-                icon={<Ruler />}
-                disabled={false}
-                label="Altura (cm)"
-                isLoading={anamnesisInfo.isLoading}
-                value={anamnesisInfo.data?.altura || ""}
-                onInputChange={(value: string) => { setAnamnesisData({ ...anamnesisData, altura: Number(value) }) }}
-              ></InputWithIcon>
+              <div>
+                <InputWithIcon
+                  id="height"
+                  classNameInput="text-[#334155]! font-medium"
+                  type="number"
+                  placeholder="Ex: 175"
+                  icon={<Ruler />}
+                  disabled={false}
+                  maxLength={MAX_HEIGHT_CHARACTERS}
+                  label="Altura (cm)"
+                  isLoading={anamnesisInfo.isLoading}
+                  value={anamnesisData.altura || ""}
+                  allowDecimals={false}
+                  hasError={!!validationErrors.altura}
+                  onInputChange={(value: string) => {
+                    const num = Number(value);
+                    setAnamnesisData({ ...anamnesisData, altura: num });
+                    if (value && (num < MIN_HEIGHT_CM || num > MAX_HEIGHT_CM)) {
+                      setValidationErrors(prev => ({ ...prev, altura: `Altura deve estar entre ${MIN_HEIGHT_CM} e ${MAX_HEIGHT_CM} cm.` }));
+                    } else {
+                      setValidationErrors(prev => { const { altura, ...rest } = prev; return rest; });
+                    }
+                  }}
+                />
+                {validationErrors.altura && (
+                  <span className={styles.errorMessage}>{validationErrors.altura}</span>
+                )}
+              </div>
 
-              <InputWithIcon
-                id="weight"
-                classNameInput="text-[#334155]! font-medium"
-                type="text"
-                placeholder="Ex: 70"
-                icon={<Weight />}
-                label="Peso (kg)"
-                isLoading={anamnesisInfo.isLoading}
-                value={anamnesisInfo.data?.peso || ""}
-                onInputChange={(value: string) => { setAnamnesisData({ ...anamnesisData, peso: Number(value) }) }}
-              ></InputWithIcon>
+              <div>
+                <InputWithIcon
+                  id="weight"
+                  classNameInput="text-[#334155]! font-medium"
+                  type="number"
+                  allowDecimals={true}
+                  maxLength={MAX_WEIGHT_CHARACTERS}
+                  placeholder="Ex: 70"
+                  icon={<Weight />}
+                  label="Peso (kg)"
+                  isLoading={anamnesisInfo.isLoading}
+                  value={anamnesisData.peso || ""}
+                  hasError={!!validationErrors.peso}
+                  onInputChange={(value: string) => {
+                    const num = Number(value);
+                    setAnamnesisData({ ...anamnesisData, peso: num });
+                    if (value && (num < MIN_WEIGHT_KG || num > MAX_WEIGHT_KG)) {
+                      setValidationErrors(prev => ({ ...prev, peso: `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.` }));
+                    } else {
+                      setValidationErrors(prev => { const { peso, ...rest } = prev; return rest; });
+                    }
+                  }}
+                />
+                {validationErrors.peso && (
+                  <span className={styles.errorMessage}>{validationErrors.peso}</span>
+                )}
+              </div>
 
               <Select
                 id="mainObjective"
-                defaultValue={anamnesisInfo.data?.objectivoPrincipal || ""}
+                defaultValue={valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) ? anamnesisData.objectivoPrincipal : "OUTRO"}
                 label="Objetivo principal"
                 iconPlaceholder={<Flag size={18} />}
                 selectPlaceholder="Selecione seu objetivo"
                 values={[
-                  { label: "Ganho de massa muscular", value: "Ganho de massa muscular" },
-                  { label: "Perda de peso", value: "Perda de peso" },
-                  { label: "Manutenção da massa muscular", value: "Manutenção da massa muscular" },
+                  ...valuesAtSelect,
+                  { label: "Outro", value: "OUTRO" }
                 ]}
                 onSelectStatusChange={(value: string) => setAnamnesisData({ ...anamnesisData, objectivoPrincipal: value })}
                 openSelectId={openSelectId}
@@ -146,6 +253,27 @@ export default function AnamnesisInformations() {
                 selectWrapperClassName="bg-white! border border-gray-300! w-full! mt-1.5!"
                 containerClassName="bg-white!"
               />
+
+              {valuesAtSelect.some((v) => v.value !== anamnesisData.objectivoPrincipal) && (
+                <div className="flex flex-col" id="outro">
+                  <div className={styles.personalDataTitle}>
+                    <div className="w-2 h-2 rounded-full bg-gray-700"></div>
+                    <h3>Meu objetivo principal</h3>
+                  </div>
+
+                  <TextareaWithIcon
+                    id="objective"
+                    name="objective"
+                    placeholder="Descreva seu principal objetivo(ex: perder peso, ganhar massa muscular, melhorar resistência, reabilitação ou saúde geral)."
+                    maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
+                    icon={<FileText />}
+                    value={anamnesisData.objectivoPrincipal || ""}
+                    onInputChange={(value: string) => {
+                      updateFormField("objectivoPrincipal", value);
+                    }}
+                  />
+                </div>
+              )}
             </div>
 
             <div id="healthConditions">
@@ -172,17 +300,16 @@ export default function AnamnesisInformations() {
                     maxTags={5}
                     maxTagCharacters={40}
                     value={anamnesisData.condicoes
-                      .filter(c => c.TipoCondicao === "OUTRO")
+                      .filter(c => c.tipo === "OUTRO")
                       .map(c => c.situacao)
                     }
                     onTagsChange={(tags) => {
                       const normalizedTags = normalizeTags(tags);
                       setAnamnesisData(prev => {
-                        // Remove all previous OUTRO conditions, then add the new ones
-                        const withoutOutro = prev.condicoes.filter(c => c.TipoCondicao !== "OUTRO");
+                        const withoutOutro = prev.condicoes.filter(c => c.tipo !== "OUTRO");
                         const outroDtos: CondicaoDto[] = normalizedTags.map(tag => ({
                           situacao: tag,
-                          TipoCondicao: "OUTRO"
+                          tipo: "OUTRO"
                         }));
                         return { ...prev, condicoes: [...withoutOutro, ...outroDtos] };
                       });
@@ -221,11 +348,31 @@ export default function AnamnesisInformations() {
                 name="observacoes"
                 id="observacoesRotina"
                 placeholder="Adicione quaisquer observações relevantes..."
-                maxLength={MAX_DAILY_ROUTINE_CHARACTERS}
+                maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
                 value={anamnesisData.rotina}
                 icon={<FileText />}
                 onInputChange={(value: string) => updateFormField("rotina", value)}
               />
+            </div>
+
+
+            <div className={styles.footer}>
+              <div className={styles.dashLine}></div>
+              <div className={styles.divButtons}>
+                <SmallerButton
+                  type="button"
+                  classname="w-full! transition h-12!"
+                  title="Salvar Alterações"
+                  handleButtonClick={handleUpdateAnamnesis}
+                  loading={updateLoading}
+                />
+                <SmallerButton
+                  title="Descartar alterações"
+                  type="button"
+                  classname="w-full! h-12! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
+                  handleButtonClick={handleUndoChanges}
+                />
+              </div>
             </div>
 
           </WhiteContainer>
@@ -249,31 +396,6 @@ export default function AnamnesisInformations() {
         />
       )}
 
-      {/* {openModal === "timer" && (
-        <TimerModal
-          isMobile={isMobile}
-          isDelete={true}
-          closeThen={() => {
-            setOpenModal(null);
-            setConfirmingDelete(false);
-          }}
-          callSuccessModal={() => {
-            if (confirmingDelete) {
-              deleteUser();
-            }
-            setConfirmingDelete(false);
-            setOpenModal(null);
-          }}
-          title={confirmingDelete ? "Apagar perfil?" : "Remover imagem?"}
-          buttonTitle={confirmingDelete ? "Apagar" : "Remover"}
-          content={
-            confirmingDelete
-              ? "Tem certeza que deseja apagar seu perfil? Isso é irreversível."
-              : "Tem certeza que deseja remover sua imagem de perfil?"
-          }
-        />
-      )} */}
-
       {openModal === "error" && (
         <ErrorModal
           closeThen={() => setOpenModal(null)}
@@ -281,6 +403,6 @@ export default function AnamnesisInformations() {
           content={textModal.content}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, type JSX } from "react";
 import styles from "./SmallerButton.module.css";
 import { Oval } from "react-loader-spinner";
+import classNames from "classnames";
 type SmallerButtonProps = {
     type?: "button" | "submit";
     icon?: JSX.Element;
@@ -22,10 +23,10 @@ export default function SmallerButton({ type, icon, iconPosition, title, value, 
     }, [selected]);
     return (
         <button
-            className={`${styles.btnSched} ${classname ?? ""}`}
+            className={classNames(styles.btnSched, classname ?? "", { [styles.loading]: loading })}
             type={type}
             onClick={() => handleButtonClick?.(value ?? "")}
-            disabled={disabled}
+            disabled={disabled || loading}
         >
 
             {icon && iconPosition === "left" && <span className={styles.icon}>{icon}</span>}

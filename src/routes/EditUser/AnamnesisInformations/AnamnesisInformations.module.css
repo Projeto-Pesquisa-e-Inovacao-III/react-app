@@ -58,7 +58,8 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "personalDataTitle personalDataTitle personalDataTitle"
-    "height            weight            mainObjective";
+    "height            weight            mainObjective"
+    "outro             outro             outro";
   gap: 10px;
   align-items: start;
 }
@@ -89,6 +90,9 @@
   flex-direction: column;
 }
 
+.personalInfoGrid :global(#outro) {
+  grid-area: outro;
+}
 
 .personalInfoGrid :global(#height) {
   grid-area: height;
@@ -104,6 +108,24 @@
 
 .personalInfoGrid :global(#personalDataTitle) {
   grid-area: personalDataTitle;
+}
+
+
+.footer {
+  width: 500px;
+}
+
+.footer .divButtons {
+  gap: 35px;
+  display: flex;
+  flex-direction: row;
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #ef4444;
 }
 
 @media (max-width: 1024px) {

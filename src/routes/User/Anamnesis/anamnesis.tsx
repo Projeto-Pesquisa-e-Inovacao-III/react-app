@@ -186,8 +186,8 @@ export default function Anamnesis() {
             objectivoPrincipal: isOtherObjectiveSelected ? normalizedObjectiveObservation : (anamnesisForm.objectiveValue ?? ""),
             rotina: anamnesisForm.dailyRoutine.trim().length > 0 ? anamnesisForm.dailyRoutine.trim() : null,
             condicoes: [
-                ...defaultConditions.map((situacao) => ({ situacao, TipoCondicao: "PADRAO" as const })),
-                ...otherConditions.map((situacao) => ({ situacao, TipoCondicao: "OUTRO" as const }))
+                ...defaultConditions.map((situacao) => ({ situacao, tipo: "PADRAO" as const })),
+                ...otherConditions.map((situacao) => ({ situacao, tipo: "OUTRO" as const }))
             ],
             nivelDeAtividade: activityLevel,
             observacaoSaude: normalizedObjectiveObservation.length > 0 ? normalizedObjectiveObservation : null
