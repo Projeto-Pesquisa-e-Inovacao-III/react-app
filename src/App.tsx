@@ -64,13 +64,13 @@ function App() {
               <Route path="/schedule" element={<ViewSchedule />} />
               <Route path="/edit-user" element={<EditUser />} />
               <Route path="/edit-user/security" element={<SecurityInformations />} />
-              <Route path="/edit-user/anamnesis" element={<AnamnesisInformations />} />
             </Route>
           </Route>
 
           <Route element={<PrivateRoute allowedRoles={["aluno"]} />}>
             <Route element={<Layout />}>
               <Route path="/anamnesis" element={<Anamnesis />} />
+              <Route path="/edit-user/anamnesis" element={<AnamnesisInformations />} />
               <Route path="/plans-history" element={<PlansHistory />} />
               <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
               <Route path="/schedule-history" element={<ScheduleHistory />} />

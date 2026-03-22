@@ -1,7 +1,7 @@
 import styles from "./AnamnesisInformations.module.css";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { FileText, Flag, Ruler, Shield, Weight } from "lucide-react";
+import { FileText, Flag, HeartPulse, Ruler, Weight } from "lucide-react";
 import { useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
@@ -89,7 +89,7 @@ export default function AnamnesisInformations() {
 
   const isOtherConditionSelected = anamnesisData.condicoes.some(c => c.tipo === "OUTRO");
 
-  const MAX_DAILY_ROUTINE_CHARACTERS = 500;
+  // const MAX_DAILY_ROUTINE_CHARACTERS = 500;
   const MIN_HEIGHT_CM = 100;
   const MAX_HEIGHT_CM = 250;
   const MIN_WEIGHT_KG = 25;
@@ -170,7 +170,7 @@ export default function AnamnesisInformations() {
         }
 
         <div className={styles.personalInfo} ref={ref}>
-          <WhiteContainer title="Anamnese / Saúde" icon={<Shield size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
+          <WhiteContainer title="Anamnese / Saúde" icon={<HeartPulse size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
             <div id="personalData">
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
