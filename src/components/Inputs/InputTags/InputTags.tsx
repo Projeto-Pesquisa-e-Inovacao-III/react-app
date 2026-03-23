@@ -74,15 +74,6 @@ export default function InputTags({
             <p className={styles.label}>{label}</p>
             <div className={`${styles.inputWrapper} ${icon ? styles.inputWrapperWithIcon : ""}`}>
                 {icon ? <span className={styles.inputIcon}>{icon}</span> : null}
-                <button
-                    type="button"
-                    className={styles.addButton}
-                    onClick={handleAddTag}
-                    disabled={tags.length >= maxTags || inputValue.trim().length === 0}
-                    aria-label="Adicionar tag"
-                >
-                    <Plus size={10} strokeWidth={2.5} />
-                </button>
                 <div className={styles.content}>
                     {tags.map((tag) => (
                         <button
@@ -119,6 +110,15 @@ export default function InputTags({
                         disabled={tags.length >= maxTags}
                     />
                 </div>
+                <button
+                    type="button"
+                    className={styles.addButton}
+                    onClick={handleAddTag}
+                    disabled={tags.length >= maxTags || inputValue.trim().length === 0}
+                    aria-label="Adicionar tag"
+                >
+                    <Plus size={10} strokeWidth={2.5} />
+                </button>
             </div>
         </div>
     );

@@ -3,10 +3,10 @@ import Button from "../../../components/Button/Button.tsx";
 import { UserImg } from "../../../components/UserImg/UserImg.tsx";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
+import { IdCard, Phone, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete} from "../../../constants/user.ts";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete } from "../../../constants/user.ts";
 import type { UpdateUserDTO } from "../../../models/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
@@ -15,7 +15,7 @@ import { TypeContext } from "../../../App.tsx";
 import type { PersonalDTO } from "../../../models/personal.ts";
 import { editPersonalProfile } from "../../../constants/personal.ts";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useModal from "../../../hooks/useModal.tsx";
 import useClickOutside from "../../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -23,6 +23,7 @@ import classNames from "classnames";
 import Select from "../../../components/Select/Select.tsx";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
 import { BASE_URL } from "../../../system.ts";
+import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -248,7 +249,7 @@ export default function EditUser() {
         });
 
         setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-        
+
         setOpenModal("success");
       })
       .catch((error) => {
@@ -524,23 +525,7 @@ export default function EditUser() {
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
-            <aside className={styles.aside}>
-              <nav className={styles.nav}>
-                <Link to="/edit-user"
-                  className={classNames(styles.link, styles.linkActive)}
-                >
-                  <User />
-                  Informações Pessoais
-                </Link>
-
-                <Link to="/edit-user/security"
-                  className={classNames(styles.link, styles.linkInactive)}
-                >
-                  <Shield />
-                  Segurança
-                </Link>
-              </nav>
-            </aside>
+            <AsideEditUser activeTab="edituser" />
           </WhiteContainer>
         </div>
 

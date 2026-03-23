@@ -29,6 +29,8 @@ export default function TextareaWithIcon({
     name,
     rows = 4
 }: TextareaWithIconProps) {
+    const currentLength = (value ?? "").length;
+
     return (
         <div className={`${styles.wrapperTextarea} ${customClassName || ""}`} id={id}>
             {label && <label htmlFor={`${id}-textarea`}>{label}</label>}
@@ -48,6 +50,8 @@ export default function TextareaWithIcon({
                     rows={rows}
                 />
             </div>
+
+            {maxLength != null && <span className={styles.counter}>{currentLength}/{maxLength}</span>}
         </div>
     );
 }

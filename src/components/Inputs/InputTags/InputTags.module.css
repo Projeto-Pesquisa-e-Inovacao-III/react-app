@@ -18,11 +18,12 @@
     border-radius: 4px;
     background-color: #fff;
     display: grid;
-    grid-template-columns: 16px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 16px;
     column-gap: 8px;
     align-items: start;
-    padding: 8px 12px;
     position: relative;
+    padding-right: 12px;
+    padding-left: 12px;
 }
 
 .inputWrapperWithIcon {
@@ -60,6 +61,8 @@
     font-size: 14px;
     line-height: 20px;
     max-width: 100%;
+    animation: tagIn 0.2s ease-out;
+    transform-origin: center;
 }
 
 .tagText {
@@ -88,7 +91,8 @@
     font-size: .95rem;
     color: #0F172A;
     background-color: transparent;
-    padding: 4px 0;
+    padding: 12px;
+    padding-left: 0;
 }
 
 .inputText::placeholder {
@@ -121,4 +125,22 @@
 .addButton:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+}
+
+@keyframes tagIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tagItem {
+        animation: none;
+    }
 }
