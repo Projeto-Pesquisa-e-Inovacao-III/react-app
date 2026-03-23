@@ -5,6 +5,7 @@ import {
     getPersonalCronogram,
     updateBuffer,
     updatePersonalCronogram,
+    updateWorkDay,
 } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -256,6 +257,8 @@ export default function SetAvailability() {
         setHasUnsaved(true);
         setSchedule((prev) => {
             const next = [...prev];
+            console.log(next[dayIndex].day)
+            updateWorkDay(next[dayIndex].day)
             next[dayIndex] = { ...next[dayIndex], enabled: !next[dayIndex].enabled };
             return next;
         });
