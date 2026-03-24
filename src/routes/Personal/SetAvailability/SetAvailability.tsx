@@ -254,7 +254,6 @@ export default function SetAvailability() {
 
 
     function toggleDay(dayIndex: number) {
-        setHasUnsaved(true);
         setSchedule((prev) => {
             const next = [...prev];
             console.log(next[dayIndex].day)

@@ -57,6 +57,12 @@ export default function AnamnesisInformations() {
     queryFn: async () => {
       const response = await getAnamnesis();
       setAnamnesisData(response.data);
+
+      const isPredefined = valuesAtSelect.some((v) => v.value === response.data.objectivoPrincipal);
+      if (!isPredefined) {
+        setCustomObjective(response.data.objectivoPrincipal);
+      }
+
       return response.data;
     }
   });
@@ -160,6 +166,8 @@ export default function AnamnesisInformations() {
     { label: "Manutenção da massa muscular", value: "Manutenção da massa muscular" },
   ]
 
+  const [customObjective, setCustomObjective] = useState("");
+
   return (
     <div ref={ref}>
       <div className={styles.editUserGrid}>
@@ -243,7 +251,13 @@ export default function AnamnesisInformations() {
                   ...valuesAtSelect,
                   { label: "Outro", value: "OUTRO" }
                 ]}
-                onSelectStatusChange={(value: string) => setAnamnesisData({ ...anamnesisData, objectivoPrincipal: value })}
+                onSelectStatusChange={(value: string) => {
+                  if (value === "OUTRO") {
+                    setAnamnesisData({ ...anamnesisData, objectivoPrincipal: customObjective });
+                  } else {
+                    setAnamnesisData({ ...anamnesisData, objectivoPrincipal: value });
+                  }
+                }}
                 openSelectId={openSelectId}
                 setOpenSelectId={setOpenSelectId}
                 showSearchInput={false}
@@ -254,13 +268,12 @@ export default function AnamnesisInformations() {
                 containerClassName="bg-white!"
               />
 
-              {valuesAtSelect.some((v) => v.value !== anamnesisData.objectivoPrincipal) && (
+              {!valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) && (
                 <div className="flex flex-col" id="outro">
                   <div className={styles.personalDataTitle}>
                     <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                     <h3>Meu objetivo principal</h3>
                   </div>
-
                   <TextareaWithIcon
                     id="objective"
                     name="objective"
@@ -269,6 +282,7 @@ export default function AnamnesisInformations() {
                     icon={<FileText />}
                     value={anamnesisData.objectivoPrincipal || ""}
                     onInputChange={(value: string) => {
+                      setCustomObjective(value);
                       updateFormField("objectivoPrincipal", value);
                     }}
                   />

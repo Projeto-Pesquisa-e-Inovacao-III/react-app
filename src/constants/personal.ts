@@ -38,7 +38,7 @@ export function updateBuffer(buffer: string) {
 }
 
 export function updateWorkDay(day: string) {
-    return api.put(`/api/personais/change-activation/${day}`);
+    return api.get(`personais/change-activation/${day}`);
 }
 
 export function getPersonalBuffer() {

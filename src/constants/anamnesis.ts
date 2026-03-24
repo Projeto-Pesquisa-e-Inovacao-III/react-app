@@ -13,3 +13,7 @@ export function updateAnamnesis(data: AnamnesisData) {
 export function getAnamnesis() {
    return api.get(`/anamnese`);
 }
+
+export function getAnamnesisById(id: string) {
+   return api.get(`/anamnese/aluno/${id}`);
+}
