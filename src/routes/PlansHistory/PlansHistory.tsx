@@ -14,12 +14,12 @@ import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 type UserPlan = {
-  id: number;
-  dataCompra: string;
-  produtoExibicao: {
-    titulo: string;
-    subtitulo: string;
-  };
+    id: number;
+    dataCompra: string;
+    produtoExibicao: {
+        titulo: string;
+        subtitulo: string;
+    };
 };
 
 
@@ -85,34 +85,38 @@ export default function PlansHistory() {
 
             {filteredData && filteredData.length > 0 ? (
                 filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item) => (
-                    <RowWithHeaderTitle 
+                    <RowWithHeaderTitle
                         key={item.id}
                         data={[
                             {
-                                headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", {locale: ptBR}),
-                                title: item.produtoExibicao.titulo, 
+                                headerTitle: format(parseISO(item.dataCompra), "dd 'de' MMMM 'de' yyyy", { locale: ptBR }),
+                                title: item.produtoExibicao.titulo,
                                 subtitle: item.produtoExibicao.subtitulo,
                                 id: item.id
                             }
-                        ]} 
-                        includeDetailsButton={true} 
-                        buttonLabel="Ver Detalhes" 
-                        handleDetailsClick={() => handleDetailsClick(item.id)} 
+                        ]}
+                        includeDetailsButton={true}
+                        buttonLabel="Ver Detalhes"
+                        handleDetailsClick={() => handleDetailsClick(item.id)}
                         isLoading={userPlans.isLoading}
                     />
                 ))
             ) : userPlans.isLoading ? (
                 [...Array(1)].map((_, index) => (
-                    <RowWithHeaderTitle 
-                        key={`skeleton-${index}`} 
+                    <RowWithHeaderTitle
+                        key={`skeleton-${index}`}
                         data={[{ headerTitle: '', title: '', subtitle: '', id: index }]}
                         isLoading={true}
                     />
                 ))
             ) : (
-                <p>Não há pacotes disponíveis</p>
+                <div className="flex justify-center items-center mt-10 my-5 gap-5">
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                    <span className="text-slate-500 w-1/2 text-center">Não há mais planos para exibir</span>
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                </div>
             )}
-            
+
         </div>
     );
 }
