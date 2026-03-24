@@ -347,10 +347,7 @@ export function CheckSchedule() {
 
                     {isLoadingAppointments ? renderKpisSkeleton() : (
                         <div className={styles.gridContainer}>
-                            <CheckScheduleKpis
-                                title="Novos agendamentos hoje"
-                                value={dataKpi.data?.totalAgendamentosHoje || 0}
-                            />
+                            
                             <CheckScheduleKpis
                                 title="Total pendente"
                                 value={countPendingPersonalApproval || 0}
