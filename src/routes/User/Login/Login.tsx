@@ -29,6 +29,11 @@ export default function Login() {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
 
+  function handleAutoFill2() {
+    setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
+  }
+
+
   function navToHome() {
     nav("/home");
     return;
@@ -104,6 +109,9 @@ export default function Login() {
             <form onSubmit={handleSubmit}>
               <button className={styles.btnAutoFill} onClick={() => handleAutoFill("joao.silva@example.com", "123456789aA!")}>
                 AUTO PREENCHER
+              </button>
+              <button className={styles.btnAutoFill} onClick={handleAutoFill2}>
+                AUTO PREENCHER 2
               </button>
               <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />

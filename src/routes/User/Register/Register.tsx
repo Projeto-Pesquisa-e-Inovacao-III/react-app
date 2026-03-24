@@ -74,6 +74,20 @@ export default function Register() {
         });
     }
 
+    function handleAutoFill2() {
+        setRegister({
+            name: "Maria Oliveira",
+            email: "maria.oliveira@example.com",
+            password: "123456789aA!",
+            customerDocument: "156.425.430-59",
+            phone: "(19) 99570-8678",
+            gender: "Feminino",
+            confirmPassword: "123456789aA!",
+            birthDate: dayjs("2000-01-01").format("YYYY-MM-DD").toString()
+        });
+    }
+
+
     const handleChange = (field: string, value: string) => {
         setRegister(prev => ({ ...prev, [field]: value }));
     };
@@ -160,6 +174,7 @@ export default function Register() {
                             <h1>Inscreva-se</h1>
                             <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
                             <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
+                            <button className="border-2" onClick={handleAutoFill2}>Auto preenchimento 2</button>
                         </div>
                         <div className={styles.borderDivision}></div>
 
