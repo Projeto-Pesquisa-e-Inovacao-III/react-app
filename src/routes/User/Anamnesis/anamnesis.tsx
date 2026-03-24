@@ -11,19 +11,19 @@ import {
     Ruler,
     Weight
 } from "lucide-react";
-import InputTags from "../../components/Inputs/InputTags/InputTags";
-import TextareaWithIcon from "../../components/Inputs/TextareaWithIcon/TextareaWithIcon";
-import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
-import { LogoWhiteBig } from "../../components/LogoWhiteBig/LogoWhiteBig";
-import SmallerButton from "../../components/SmallerButton/SmallerButton";
-import { SelectableOption } from "../../components/SelectableOption/SelectableOption";
-import useMobile from "../../hooks/isMobile";
-import { createAnamnesis } from "../../constants/anamnesis";
-import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
-import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
-import type { AnamnesisData } from "../../models/anamnesis";
-import ObjectiveSelect from "../../components/ObjectiveSelect/ObjectiveSelect";
-import AnamnesisProgressLine from "../../components/AnamnesisProgressLine/AnamnesisProgressLine";
+import InputTags from "../../../components/Inputs/InputTags/InputTags";
+import TextareaWithIcon from "../../../components/Inputs/TextareaWithIcon/TextareaWithIcon";
+import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
+import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
+import SmallerButton from "../../../components/SmallerButton/SmallerButton";
+import { SelectableOption } from "../../../components/SelectableOption/SelectableOption";
+import useMobile from "../../../hooks/isMobile";
+import { createAnamnesis } from "../../../constants/anamnesis";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
+import type { AnamnesisData } from "../../../models/anamnesis";
+import ObjectiveSelect from "../../../components/ObjectiveSelect/ObjectiveSelect";
+import AnamnesisProgressLine from "../../../components/AnamnesisProgressLine/AnamnesisProgressLine";
 import {
     parseNumericValue,
     validateHeightWeightValues,
@@ -186,8 +186,8 @@ export default function Anamnesis() {
             objectivoPrincipal: isOtherObjectiveSelected ? normalizedObjectiveObservation : (anamnesisForm.objectiveValue ?? ""),
             rotina: anamnesisForm.dailyRoutine.trim().length > 0 ? anamnesisForm.dailyRoutine.trim() : null,
             condicoes: [
-                ...defaultConditions.map((situacao) => ({ situacao, TipoCondicao: "PADRAO" as const })),
-                ...otherConditions.map((situacao) => ({ situacao, TipoCondicao: "OUTRO" as const }))
+                ...defaultConditions.map((situacao) => ({ situacao, tipo: "PADRAO" as const })),
+                ...otherConditions.map((situacao) => ({ situacao, tipo: "OUTRO" as const }))
             ],
             nivelDeAtividade: activityLevel,
             observacaoSaude: normalizedObjectiveObservation.length > 0 ? normalizedObjectiveObservation : null

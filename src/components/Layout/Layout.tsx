@@ -34,6 +34,8 @@ const titles = {
     "/personal/check-schedule": "Solicitações | CSF Treinamentos",
     "/more-options": "Mais Opções | CSF Treinamentos",
     "/set-availability": "Definir Horário | CSF Treinamentos",
+    "/anamnesis": "Anamnese | CSF Treinamentos",
+    "/edit-user/anamnesis": "Editar Anamnese | CSF Treinamentos",
 };
 
 const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool", "/anamnesis"];
