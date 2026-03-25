@@ -159,11 +159,16 @@ export default function AnamnesisInformations() {
     }
   }
 
+    //   { icon: <Weight />, label: "Emagrecimento", value: "EMAGRECIMENTO" },
+    // { icon: <HeartPulse />, label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
+    // { icon: <Sparkles />, label: "Estética", value: "ESTETICA" },
+    // { icon: <BicepsFlexed />, label: "Ganho de massa", value: "GANHO_MASSA" },
 
   const valuesAtSelect = [
-    { label: "Ganho de massa muscular", value: "Ganho de massa muscular" },
-    { label: "Perda de peso", value: "Perda de peso" },
-    { label: "Manutenção da massa muscular", value: "Manutenção da massa muscular" },
+    { label: "Ganho de massa muscular", value: "GANHO_MASSA" },
+    { label: "Perda de peso", value: "EMAGRECIMENTO" },
+    { label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
+    { label: "Estética", value: "ESTETICA" }
   ]
 
   const [customObjective, setCustomObjective] = useState("");
@@ -242,8 +247,17 @@ export default function AnamnesisInformations() {
               </div>
 
               <Select
+                key={anamnesisInfo.isLoading
+                  ? "loading"
+                  : valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal)
+                    ? anamnesisData.objectivoPrincipal
+                    : "OUTRO"
+                }
                 id="mainObjective"
-                defaultValue={valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) ? anamnesisData.objectivoPrincipal : "OUTRO"}
+                defaultValue={valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal)
+                  ? anamnesisData.objectivoPrincipal
+                  : "OUTRO"
+                }
                 label="Objetivo principal"
                 iconPlaceholder={<Flag size={18} />}
                 selectPlaceholder="Selecione seu objetivo"
