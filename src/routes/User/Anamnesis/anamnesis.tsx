@@ -32,6 +32,7 @@ import {
     validateStepTwo
 } from "./validations";
 import styles from "./anamnesis.module.css";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 type AnamnesisForm = {
@@ -60,7 +61,7 @@ export default function Anamnesis() {
     const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
     const MAX_HEIGHT_CHARACTERS = 3;
     const MAX_WEIGHT_CHARACTERS = 6;
-
+    const queryClient = useQueryClient();
 
     const isMobile = useMobile();
     const navigate = useNavigate();
@@ -255,6 +256,7 @@ export default function Anamnesis() {
                         content: "As informações foram salvas com sucesso."
                     }
                 });
+
             }
         } catch {
             setStepTwoError("Não foi possível concluir agora. Tente novamente.");
@@ -297,81 +299,81 @@ export default function Anamnesis() {
                                 </p>
                             </div>
 
-                    <form onSubmit={handleStepOneSubmit} className={styles.formAnamnesis}>
-                        <div className={classNames(styles.inputGroup, {
-                            [styles.inputGroupMobile]: isMobile
-                        })}>
-                            <InputWithIcon
-                                label={<>Altura (cm) <span className={styles.requiredAsterisk}>*</span></>}
-                                type="number"
-                                placeholder="Ex: 175"
-                                maxLength={MAX_HEIGHT_CHARACTERS}
-                                onInputChange={(value: string) => {
-                                    updateFormField("height", value);
-                                    setStepOneError("");
-                                }}
-                                icon={<Ruler />}
-                                value={anamnesisForm.height}
-                            />
+                            <form onSubmit={handleStepOneSubmit} className={styles.formAnamnesis}>
+                                <div className={classNames(styles.inputGroup, {
+                                    [styles.inputGroupMobile]: isMobile
+                                })}>
+                                    <InputWithIcon
+                                        label={<>Altura (cm) <span className={styles.requiredAsterisk}>*</span></>}
+                                        type="number"
+                                        placeholder="Ex: 175"
+                                        maxLength={MAX_HEIGHT_CHARACTERS}
+                                        onInputChange={(value: string) => {
+                                            updateFormField("height", value);
+                                            setStepOneError("");
+                                        }}
+                                        icon={<Ruler />}
+                                        value={anamnesisForm.height}
+                                    />
 
-                            <InputWithIcon
-                                label={<>Peso (kg) <span className={styles.requiredAsterisk}>*</span></>}
-                                type="number"
-                                allowDecimals={true}
-                                maxDecimalPlaces={2}
-                                decimalSeparator=","
-                                placeholder="Ex: 70"
-                                maxLength={MAX_WEIGHT_CHARACTERS}
-                                onInputChange={(value: string) => {
-                                    updateFormField("weight", value);
-                                    setStepOneError("");
-                                }}
-                                icon={<Weight />}
-                                value={anamnesisForm.weight}
-                            />
-                        </div>
+                                    <InputWithIcon
+                                        label={<>Peso (kg) <span className={styles.requiredAsterisk}>*</span></>}
+                                        type="number"
+                                        allowDecimals={true}
+                                        maxDecimalPlaces={2}
+                                        decimalSeparator=","
+                                        placeholder="Ex: 70"
+                                        maxLength={MAX_WEIGHT_CHARACTERS}
+                                        onInputChange={(value: string) => {
+                                            updateFormField("weight", value);
+                                            setStepOneError("");
+                                        }}
+                                        icon={<Weight />}
+                                        value={anamnesisForm.weight}
+                                    />
+                                </div>
 
-                        <div className={styles.selectGroup}>
-                            <ObjectiveSelect
-                                value={anamnesisForm.objectiveValue}
-                                onChange={(value: string) => {
-                                    setAnamnesisForm((previousValues) => ({
-                                        ...previousValues,
-                                        objectiveValue: value,
-                                        objectiveObservation: value === "OUTRO" ? previousValues.objectiveObservation : ""
-                                    }));
-                                    setStepOneError("");
-                                }}
-                            />
+                                <div className={styles.selectGroup}>
+                                    <ObjectiveSelect
+                                        value={anamnesisForm.objectiveValue}
+                                        onChange={(value: string) => {
+                                            setAnamnesisForm((previousValues) => ({
+                                                ...previousValues,
+                                                objectiveValue: value,
+                                                objectiveObservation: value === "OUTRO" ? previousValues.objectiveObservation : ""
+                                            }));
+                                            setStepOneError("");
+                                        }}
+                                    />
 
-                            {anamnesisForm.objectiveValue === "OUTRO" && (
-                                <TextareaWithIcon
-                                    id="observacoes"
-                                    name="observacoes"
-                                    placeholder="Adicione quaisquer observações relevantes..."
-                                    maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
-                                    value={anamnesisForm.objectiveObservation}
-                                    icon={<FileText />}
-                                    onInputChange={(value: string) => {
-                                        updateFormField("objectiveObservation", value);
-                                        setStepOneError("");
-                                    }}
+                                    {anamnesisForm.objectiveValue === "OUTRO" && (
+                                        <TextareaWithIcon
+                                            id="observacoes"
+                                            name="observacoes"
+                                            placeholder="Adicione quaisquer observações relevantes..."
+                                            maxLength={MAX_OBJECTIVE_OBSERVATION_CHARACTERS}
+                                            value={anamnesisForm.objectiveObservation}
+                                            icon={<FileText />}
+                                            onInputChange={(value: string) => {
+                                                updateFormField("objectiveObservation", value);
+                                                setStepOneError("");
+                                            }}
+                                        />
+                                    )}
+                                </div>
+
+                                {formErrors.stepOne && (
+                                    <p className={styles.formErrorMessage}>{formErrors.stepOne}</p>
+                                )}
+
+                                <SmallerButton
+                                    title="Próximo passo"
+                                    icon={<ArrowRight />}
+                                    iconPosition="right"
+                                    type="submit"
+                                    classname={styles.nextButton}
                                 />
-                            )}
-                        </div>
-
-                        {formErrors.stepOne && (
-                            <p className={styles.formErrorMessage}>{formErrors.stepOne}</p>
-                        )}
-
-                        <SmallerButton
-                            title="Próximo passo"
-                            icon={<ArrowRight />}
-                            iconPosition="right"
-                            type="submit"
-                            classname={styles.nextButton}
-                        />
-                    </form>
+                            </form>
                         </>
                     )}
 
@@ -415,17 +417,17 @@ export default function Anamnesis() {
                                 <div className={classNames(styles.inputGroup, {
                                     [styles.inputGroupMobile]: isMobile
                                 })}>
-                            <InputTags
-                                label={<>Especifique sua condição (limite 5): <span className={styles.requiredAsterisk}>*</span></>}
-                                placeholder="Ex: Enxaqueca crônica;"
-                                maxTags={5}
-                                maxTagCharacters={40}
-                                value={anamnesisForm.otherConditionTags}
-                                onTagsChange={(tags) => {
-                                    updateFormField("otherConditionTags", normalizeTags(tags));
-                                    setStepTwoError("");
-                                }}
-                            />
+                                    <InputTags
+                                        label={<>Especifique sua condição (limite 5): <span className={styles.requiredAsterisk}>*</span></>}
+                                        placeholder="Ex: Enxaqueca crônica;"
+                                        maxTags={5}
+                                        maxTagCharacters={40}
+                                        value={anamnesisForm.otherConditionTags}
+                                        onTagsChange={(tags) => {
+                                            updateFormField("otherConditionTags", normalizeTags(tags));
+                                            setStepTwoError("");
+                                        }}
+                                    />
                                 </div>
                             )}
 
@@ -515,6 +517,7 @@ export default function Anamnesis() {
                     isMobile={isMobile}
                     closeThen={() => {
                         setRequestModal((previousValues) => ({ ...previousValues, type: null }));
+                        queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
                         navigate("/home");
                     }}
                     title={requestModal.text.title}
