@@ -13,10 +13,11 @@ interface UserAvatarProps {
   useUserImage?: boolean;
   useUsername?: boolean;
   imgClassName?: string;
+  svgClassName?: string;
   isLoading?: boolean;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, isLoading = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, svgClassName, isLoading = false }: UserAvatarProps) {
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
@@ -49,7 +50,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           classname={imgClassName}
         />
         :
-        <User width={216} height={216} color='#000' />
+        <User width={216} height={216} color='#000' className={svgClassName} />
       }
     </div>
   )
