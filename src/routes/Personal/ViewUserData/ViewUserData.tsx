@@ -26,9 +26,6 @@ export default function ViewUserData() {
         select: (res) => res.data,
     });
 
-    console.log(user.data)
-    console.log(anamnesis.data)
-
     const age = user.data?.dataNascimento
         ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date()))
         : "N/A";
@@ -44,16 +41,6 @@ export default function ViewUserData() {
         return map[nivel] ?? nivel;
     };
 
-    const getCondicaoLabel = (tipo: string) => {
-        const map: Record<string, string> = {
-            DIABETES: "Diabetes",
-            HIPERTENSAO: "Hipertensão",
-            DORES_LOMBARES: "Dores Lombares",
-            ASMA: "Asma/respiratório",
-            PADRAO: tipo,
-        };
-        return map[tipo] ?? tipo;
-    };
 
     const isSedentario = anamnesis.data?.nivelDeAtividade === "SEDENTARIO";
 
@@ -62,15 +49,12 @@ export default function ViewUserData() {
             <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
                 <div className={styles.content}>
 
-                    {/* Header */}
                     <div className={styles.pageHeader}>
                         <h1 className={styles.pageTitle}>Dados &amp; Anamnese</h1>
                     </div>
 
-                    {/* Main grid: 4 colunas, 2 linhas */}
                     <div className={styles.mainGrid}>
 
-                        {/* Perfil — col 1, rows 1-2 */}
                         <div className={styles.profileCard}>
                             <UserAvatar svgClassName="w-32! h-32!" imgClassName="w-32! h-32!" foto={user.data?.caminhoFoto} />
                             <div className={styles.userNameBlock}>
@@ -92,7 +76,6 @@ export default function ViewUserData() {
                             </div>
                         </div>
 
-                        {/* Altura — col 2, row 1 */}
                         <div className={styles.metricCard}>
                             <span className={styles.metricLabel}>ALTURA ATUAL</span>
                             {anamnesis.isLoading ? <Skeleton width={80} height={36} /> : (
@@ -103,7 +86,6 @@ export default function ViewUserData() {
                             )}
                         </div>
 
-                        {/* Peso — col 3, row 1 */}
                         <div className={styles.metricCard}>
                             <span className={styles.metricLabel}>PESO CORPORAL</span>
                             {anamnesis.isLoading ? <Skeleton width={80} height={36} /> : (
@@ -114,7 +96,6 @@ export default function ViewUserData() {
                             )}
                         </div>
 
-                        {/* Objetivo — col 4, row 1 */}
                         <div className={styles.metricCard}>
                             <span className={styles.metricLabel}>OBJETIVO PRINCIPAL</span>
                             {anamnesis.isLoading ? <Skeleton width={120} height={36} /> : (
@@ -122,7 +103,6 @@ export default function ViewUserData() {
                             )}
                         </div>
 
-                        {/* Condições de Saúde — cols 2-3, row 2 */}
                         <div className={styles.healthCard}>
                             <h2 className={styles.sectionTitle}>
                                 <span className={styles.sectionIconCircle}>+</span> Condições de Saúde
@@ -156,7 +136,6 @@ export default function ViewUserData() {
                             )}
                         </div>
 
-                        {/* Atividade Física — col 4, row 2 */}
                         <div className={styles.activityCard}>
                             <h2 className={styles.sectionTitle}>
                                 <span className={styles.sectionIconCircle}>&#9654;</span> Atividade Física
