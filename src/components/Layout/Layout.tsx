@@ -85,15 +85,15 @@ export default function Layout() {
         }
     }, [isLoggedIn.data]);
 
-    useEffect(() => {
-        if (isLoggedIn.isLoading || !isLoggedIn.data) return;
+    // useEffect(() => {
+    //     if (isLoggedIn.isLoading || !isLoggedIn.data) return;
 
-        const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
-        console.log("ativoAnamnese", !ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno");
-        if (!ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno") {
-            nav("/anamnesis");
-        }
-    }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
+    //     const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
+    //     console.log("ativoAnamnese", !ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno");
+    //     if (!ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno") {
+    //         nav("/anamnesis");
+    //     }
+    // }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
 
     return (
         <div>

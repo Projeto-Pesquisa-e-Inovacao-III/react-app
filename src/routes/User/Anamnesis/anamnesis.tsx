@@ -517,7 +517,6 @@ export default function Anamnesis() {
                     isMobile={isMobile}
                     closeThen={() => {
                         setRequestModal((previousValues) => ({ ...previousValues, type: null }));
-                        queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
                         navigate("/home");
                     }}
                     title={requestModal.text.title}
