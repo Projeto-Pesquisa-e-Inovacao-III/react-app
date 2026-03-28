@@ -17,9 +17,9 @@ import { ptBR } from "date-fns/locale";
 import { Users, HomeIcon, HeartPulseIcon, CalendarIcon, CalendarCheck, ClipboardClock } from 'lucide-react';
 import { LinearProgress } from "@mui/material";
 import Button from "../../components/Button/Button";
-import NewEvent from "../../components/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
+import PopupModal from "../../components/Modal/PopupModal/PopupModal";
 import { OverviewCardPersonal } from "../../components/Overview/OverviewCardPersonal/OverviewCardPersonal";
 import OverviewCardPackageStatus from "../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
 import Skeleton from "react-loading-skeleton";
@@ -27,8 +27,9 @@ import type { appointmentsCards } from "../../models/overview";
 import CardWithoutPlan from "../../components/Overview/CardWithoutPlan/CardWithoutPlan";
 import AppointmentsEmptyState from "../../components/Overview/AppointmentsEmptyState/AppointmentsEmptyState";
 import { findUserData } from "../../constants/user";
+import NewEvent from "../../components/Modal/NewEvent/NewEvent";
 
-type ModalType = "success" | "error" | "newEvent" | "cancel" | "accept" | "reschedule" | "rescheduleRequest";
+type ModalType = "success" | "error" | "newEvent" | "cancel" | "accept" | "reschedule" | "rescheduleRequest" | "popup";
 
 const TOTAL_PADRAO = 20;
 
@@ -305,6 +306,10 @@ export function Overview() {
         isTypeLoading ||
         appointments.isPending
 
+
+    const [clickedDate, setClickedDate] = useState<{ date: string }>({ date: "" });
+
+    console.log("Appointments at calendar:", clickedDate);
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -380,6 +385,7 @@ export function Overview() {
                                     modalInfo={setModalText}
                                     modalType={setModalType}
                                     availabilityHoursTomorrow={getAvailabilityHoursTomorrowQuery.data?.data}
+                                    clickDate={setClickedDate}
                                 />
                             )}
                         </div>
@@ -515,6 +521,16 @@ export function Overview() {
                     />
                 )
             }
+
+            {
+                modalType === "popup" && (
+                    <PopupModal
+                        closeThen={() => setModalType(null)}
+                        clickedDate={clickedDate?.date || ""}
+                    />
+                )
+            }
+
         </>
     );
 }

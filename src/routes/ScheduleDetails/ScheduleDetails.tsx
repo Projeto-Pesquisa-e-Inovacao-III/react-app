@@ -13,7 +13,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
-import NewEvent from '../../components/NewEvent/NewEvent';
+import NewEvent from '../../components/Modal/NewEvent/NewEvent';
 import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
 import type { AbsenceAppointment } from '../../models/schedule';
 import Skeleton from 'react-loading-skeleton';

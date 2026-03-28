@@ -1,19 +1,20 @@
 import type React from "react";
-import Button from "../Button/Button";
+import Button from "../../Button/Button";
 import styles from "./AddPackagePlan.module.css";
-import Input from "../Inputs/Input/Input";
+import Input from "../../Inputs/Input/Input";
 import { ArrowLeft, Banknote, Calendar, CalendarSync, CheckCircle2, Eye, EyeOff, HeartPulse, Home, Info, PlusCircle, Tag, Trash2, Users, X, XCircle } from "lucide-react";
 import { useRef, useState } from "react";
-import { newProductExhibition, updateProductExhibition } from "../../constants/products";
-import type { ProductExhibition } from "../../models/products";
+import { newProductExhibition, updateProductExhibition } from "../../../constants/products";
+import type { ProductExhibition } from "../../../models/products";
 import Skeleton from "react-loading-skeleton";
-import useClickOutside from "../../hooks/useClickOutside";
-import Select from "../Select/Select";
-import InputWithIcon from "../Inputs/InputWithIcon/InputWithIcon";
-import useMobile from "../../hooks/isMobile";
-import { PackageCard } from "../PackageCard/PackageCard";
-import useModal from "../../hooks/useModal";
-import ErrorModal from "../Modal/ErrorModal/ErrorModal";
+import useClickOutside from "../../../hooks/useClickOutside";
+import Select from "../../Select/Select";
+import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
+import useMobile from "../../../hooks/isMobile";
+import { PackageCard } from "../../PackageCard/PackageCard";
+import useModal from "../../../hooks/useModal";
+import ErrorModal from "../ErrorModal/ErrorModal";
+import classnames from "classnames";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -37,6 +38,15 @@ type AddPackagePlanProps = {
 
 export default function AddPackagePlan({ onClose, title, packageValues, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
     const isMobile = useMobile();
+    const [isClosing, setIsClosing] = useState(false);
+
+    function handleAnimatedClose() {
+        setIsClosing(true);
+        setTimeout(() => {
+            onClose(false);
+        }, 200);
+    }
+
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number | null }>({
         name: packageValues?.titulo || "",
         type: packageValues?.tipoAula || "",
@@ -166,7 +176,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         ref: packageCard,
         callback: () => {
             if (openModal) return;
-            onClose(false)
+            handleAnimatedClose()
         }
     });
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
@@ -176,8 +186,12 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
     return (
         <>
-            <div className={styles.modalOverlay}>
-                <div className={styles.modalContent} ref={packageCard}>
+            <div className={classnames(styles.modalOverlay, {
+                [styles.modalOverlayClosing]: isClosing,
+            })}>
+                <div className={classnames(styles.modalContent, {
+                    [styles.modalContentClosing]: isClosing,
+                })} ref={packageCard}>
 
 
                     {!isMobile && (
@@ -189,7 +203,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
                         {isMobile && (
                             <div className={styles.mobileHeader}>
-                                <button className={styles.mobileHeaderBack} type="button" onClick={() => onClose(false)}>
+                                <button className={styles.mobileHeaderBack} type="button" onClick={handleAnimatedClose}>
                                     <ArrowLeft size={22} color="#1e293b" />
                                 </button>
                                 <span className={styles.mobileHeaderTitle}>{title}</span>
@@ -240,7 +254,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
                                 <div className="flex items-center justify-between mb-4! w-full">
                                     <h1 className="mb-0!">{title}</h1>
-                                    <X size={30} color="#909fb5" cursor={"pointer"} onClick={() => onClose(false)} />
+                                    <X size={30} color="#909fb5" cursor={"pointer"} onClick={handleAnimatedClose} />
                                 </div>
                             )}
                             {!packageInfo ? (
@@ -471,13 +485,13 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     title={"Cancelar"}
                                     classNameDiv={styles.mobileBottomBtnWrapper}
                                     classNameVariable={styles.mobileBottomBtnCancell}
-                                    onClick={() => onClose(false)}
+                                    onClick={handleAnimatedClose}
                                 />
                             </div>
                         ) : (
                             <div className={styles.modalButtons}>
                                 <Button loading={loading} type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={`${styles.buttonsAction}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.addButton}`} onClick={isEdit ? handleEditPackage : handleAddPackage} />
-                                <Button type="button" title="Cancelar" classNameDiv={`${styles.buttonsAction} ${styles.addButtonAct}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.cancelButton}`} onClick={() => onClose(false)} />
+                                <Button type="button" title="Cancelar" classNameDiv={`${styles.buttonsAction} ${styles.addButtonAct}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.cancelButton}`} onClick={handleAnimatedClose} />
                             </div>
                         )}
                     </div>

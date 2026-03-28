@@ -573,3 +573,27 @@
   background-color: var(--bg-blue) !important;
   color: #fff !important;
 }
+
+.overlayClosing {
+  animation: overlayLeave 0.2s ease-in forwards !important;
+}
+
+.newEventFormClosing {
+  animation: formLeave 0.2s ease-in forwards !important;
+}
+
+@keyframes overlayLeave {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes formLeave {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 8px)) scale(0.97);
+  }
+}

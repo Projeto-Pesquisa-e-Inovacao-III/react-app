@@ -5,6 +5,7 @@ import DeleteEvent from './DeleteEvent';
 import type { EventDTO } from '../../../models/calendar';
 import AcceptEvent from './AcceptEvent';
 import useClickOutside from '../../../hooks/useClickOutside';
+import classnames from 'classnames';
 
 type TimerModalProps = {
     isMobile: boolean;
@@ -32,13 +33,21 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
 
     }, [])
 
+    const [isClosing, setIsClosing] = useState(false);
+
+    function handleAnimatedClose() {
+        setIsClosing(true);
+        setTimeout(() => {
+            closeThen(false);
+        }, 180);
+    }
+
     const modalRef = useRef<HTMLDivElement>(null);
 
       useClickOutside({
     ref: modalRef,
     callback: () => {
-      closeThen(false);
-
+      handleAnimatedClose();
     }
   });
 
@@ -47,8 +56,16 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
 
     return (
         <>
-            <div className={`overlay ${styles.backdropEnter}`}></div>
-            <div ref={modalRef} className={`${isMobile ? styles.modalEventCreatedMobile : styles.modalEventCreated} ${classNameDiv ? classNameDiv : ""} ${styles.modalCard}`}>
+            <div className={classnames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div ref={modalRef} className={classnames({
+                [styles.modalEventCreated]: !isMobile,
+                [styles.modalEventCreatedMobile]: isMobile,
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            }, classNameDiv)}>
                 <h2>{title || "Cancelar!"}</h2>
                 <p className={`${styles.contentModal} ${classNameText ? classNameText : ""}`}>{content || "Seu evento foi criado com sucesso."}</p>
                 <CountdownCircleTimer
@@ -71,7 +88,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                         id={id}
                         events={events}
                         setEvents={setEvents}
-                        handleCloseModal={closeThen}
+                        handleCloseModal={handleAnimatedClose}
                         callSuccessModal={callSuccessModal}
                         buttonTitle={buttonTitle}
                     />
@@ -82,7 +99,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                         id={id}
                         events={events}
                         setEvents={setEvents}
-                        handleCloseModal={closeThen}
+                        handleCloseModal={handleAnimatedClose}
                         callSuccessModal={callSuccessModal}
                         buttonTitle={buttonTitle}
                     />

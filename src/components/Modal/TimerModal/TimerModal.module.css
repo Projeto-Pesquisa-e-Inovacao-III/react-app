@@ -98,7 +98,16 @@
     animation: backdropEnter 0.25s ease-out forwards;
 }
 
+.closingBackdrop {
+    animation: backdropLeave 0.18s ease-in forwards !important;
+}
+
 @keyframes backdropEnter {
     from { opacity: 0; }
     to   { opacity: 1; }
+}
+
+@keyframes backdropLeave {
+    from { opacity: 1; }
+    to   { opacity: 0; }
 }

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
-import NewEvent from "../../components/NewEvent/NewEvent";
+import NewEvent from "../../components/Modal/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
@@ -21,7 +21,7 @@ import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 import { getAvailabilityHoursTomorrow } from "../../constants/personal";
 
-type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
+type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null;
 
 export type RescheduleAppointment = {
     agendamentoId: number;

@@ -13,16 +13,17 @@ type Props = {
   isUserAuthorizedToInteract?: boolean;
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
-  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
+  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null>>;
   availabilityHoursTomorrow?: {
     inicio: string;
     fim: string;
   }[];
+  clickDate?: React.Dispatch<React.SetStateAction<{ date: string; }>>;
 }
 
 const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
@@ -86,7 +87,12 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             }
 
             if (appointment && appointment.length > 1) {
-              nav(`/schedule-history/?date=${clickedDate}`);
+              clickDate?.({ date: clickedDate });
+              modalInfo?.({
+                title: "Múltiplos agendamentos",
+                description: "Este dia possui mais de um agendamento. Consulte o histórico para visualizar todos.",
+              });
+              modalType?.("popup");
               return
             }
 

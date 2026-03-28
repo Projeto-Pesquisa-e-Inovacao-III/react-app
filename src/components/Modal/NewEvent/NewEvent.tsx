@@ -1,31 +1,31 @@
 import {useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
-import SmallerButton from "../SmallerButton/SmallerButton";
+import CalendarMonthStyled from "../../Calendars/CalendarMonthStyled/CalendarMonthStyled";
+import SmallerButton from "../../SmallerButton/SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { cepMask } from "../../utils/mascara";
+import { cepMask } from "../../../utils/mascara";
 import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
-import CardInfo from "../CardInfo/CardInfo";
-import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
-import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
+import CardInfo from "../../CardInfo/CardInfo";
+import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
+import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import ErrorModal from "../Modal/ErrorModal/ErrorModal";
+import ErrorModal from "../ErrorModal/ErrorModal";
 import { differenceInYears, format, parse, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { getPersonalHours } from "../../constants/personal";
-import { getTotalByClassType } from "../../constants/overview";
-import { TypeContext } from "../../App";
-import { findUserData } from "../../constants/user";
-import useModal from "../../hooks/useModal";
+import { getPersonalHours } from "../../../constants/personal";
+import { getTotalByClassType } from "../../../constants/overview";
+import { TypeContext } from "../../../App";
+import { findUserData } from "../../../constants/user";
+import useModal from "../../../hooks/useModal";
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css'
-import Select from "../Select/Select";
-import UserAvatar from "../UserAvatar/UserAvatar";
-import InformationCard from "../Modal/NewEvent/InformationCard/InformationCard";
-import type { HorariosPersonal } from "../../models/personal";
-import { getUserAddresses } from "../../constants/address";
+import Select from "../../Select/Select";
+import UserAvatar from "../../UserAvatar/UserAvatar";
+import InformationCard from "./InformationCard/InformationCard";
+import type { HorariosPersonal } from "../../../models/personal";
+import { getUserAddresses } from "../../../constants/address";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -117,6 +117,7 @@ export default function NewEvent(
     });
 
     const [step, setStep] = useState<number>(1);
+    const [isClosing, setIsClosing] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
 
@@ -345,14 +346,17 @@ export default function NewEvent(
     const [searchParams] = useSearchParams();
 
     function handleClose() {
-        document.body.style.overflow = 'auto';
-        if (searchParams.has("date")) {
-            navigation("/schedule");
+        setIsClosing(true);
+        setTimeout(() => {
+            document.body.style.overflow = 'auto';
+            if (searchParams.has("date")) {
+                navigation("/schedule");
+                close(false);
+                return;
+            }
             close(false);
-            return;
-        }
-        close(false);
-        handleCloseModalOnClickOverlay();
+            handleCloseModalOnClickOverlay();
+        }, 200);
     }
 
     function handleButtonClick(hour: string | boolean) {
@@ -521,9 +525,9 @@ export default function NewEvent(
 
     return (
         <>
-            <div className={styles.overlay} onClick={handleClose}></div>
+            <div className={classnames(styles.overlay, { [styles.overlayClosing]: isClosing })} onClick={handleClose}></div>
 
-            <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
+            <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile, [styles.newEventFormClosing]: isClosing })}>
                 {!isMobile && (
                     <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
                         {typeUser === "personal" ? (

@@ -1,4 +1,6 @@
+import { useState } from "react"
 import styles from "./TextareaModal.module.css"
+import classnames from "classnames"
 
 type Props = {
     title?: string;
@@ -9,10 +11,25 @@ type Props = {
 }
 
 export default function TextareaModal(props: Props) {
+    const [isClosing, setIsClosing] = useState(false);
+
+    function handleAnimatedClose() {
+        setIsClosing(true);
+        setTimeout(() => {
+            props.closeThen(false);
+        }, 180);
+    }
+
     return (
         <>
-            <div className={`overlay ${styles.backdropEnter}`}></div>
-            <div className={`${styles.modal} ${styles.modalCard}`}>
+            <div className={classnames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div className={classnames(styles.modal, {
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <h2 className={styles.title}>{props.title}</h2>
 
                 {props.middleContent && (<div className={styles.middleContent}>
@@ -30,7 +47,7 @@ export default function TextareaModal(props: Props) {
                 </div>
 
                 <div className={styles.buttons}>
-                    <button onClick={() => props.closeThen(false)} className={styles.fechar}>
+                    <button onClick={handleAnimatedClose} className={styles.fechar}>
                         Fechar
                     </button>
                     <button onClick={() => { }} className={styles.enviar}>

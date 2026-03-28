@@ -32,7 +32,6 @@ import {
     validateStepTwo
 } from "./validations";
 import styles from "./anamnesis.module.css";
-import { useQueryClient } from "@tanstack/react-query";
 
 
 type AnamnesisForm = {
@@ -61,7 +60,6 @@ export default function Anamnesis() {
     const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
     const MAX_HEIGHT_CHARACTERS = 3;
     const MAX_WEIGHT_CHARACTERS = 6;
-    const queryClient = useQueryClient();
 
     const isMobile = useMobile();
     const navigate = useNavigate();

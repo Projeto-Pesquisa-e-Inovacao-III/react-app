@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { ScheduleReschedule } from "../../../models/schedule";
 import useMobile from "../../../hooks/isMobile";
 
+
 type CheckScheduleModalProps = {
     closeThen: React.Dispatch<React.SetStateAction<boolean>>;
     isMobile: boolean;
@@ -33,9 +34,14 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
         setOpenCalendar(true)
     }
 
+    const [isClosing, setIsClosing] = useState(false);
+
     function handleCloseModal() {
-        document.body.style.overflow = 'auto';
-        closeThen(false);
+        setIsClosing(true);
+        setTimeout(() => {
+            document.body.style.overflow = 'auto';
+            closeThen(false);
+        }, 180);
     }
 
     function handleCloseCalendar() {
@@ -50,6 +56,9 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     }, []);
 
     const eventToReschedule = useQuery({
@@ -80,8 +89,14 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
 
     return (
         <>
-            <div className={`overlay ${styles.backdropEnter}`}></div>
-            <div className={`${styles.modalCheckSchedule} ${styles.modalCard}`}>
+            <div className={classNames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div className={classNames(styles.modalCheckSchedule, {
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <div className={styles.titleX}>
                     <h2>Reagendar</h2>
                     <svg className={styles.exitIcon} width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleCloseModal}>
