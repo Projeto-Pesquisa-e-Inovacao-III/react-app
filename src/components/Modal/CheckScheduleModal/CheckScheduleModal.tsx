@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useModalClose from "../../../hooks/useModalClose";
 import styles from "./CheckScheduleModal.module.css";
 import Button from "../../Button/Button";
 import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
@@ -34,15 +35,9 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
         setOpenCalendar(true)
     }
 
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleCloseModal() {
-        setIsClosing(true);
-        setTimeout(() => {
-            document.body.style.overflow = 'auto';
-            closeThen(false);
-        }, 180);
-    }
+    const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
+        onClose: () => closeThen(false)
+    });
 
     function handleCloseCalendar() {
         setOpenCalendar(false)
@@ -53,13 +48,6 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
             setOpenCalendar(false)
         }
     }, [selectedDate])
-
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = 'auto';
-        };
-    }, []);
 
     const eventToReschedule = useQuery({
         queryKey: ["appointmentDetails"],

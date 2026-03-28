@@ -1,22 +1,16 @@
 import styles from "./SuccessModal.module.css";
 import SmallerButton from "../../SmallerButton/SmallerButton";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import classnames from "classnames";
+import useModalClose from "../../../hooks/useModalClose";
 
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleCloseModal() {
-        setIsClosing(true);
-        setTimeout(() => {
-            document.body.style.overflow = 'auto';
-            closeThen(false);
-        }, 180);
-    }
+    const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
+        onClose: () => closeThen(false)
+    });
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
         console.log("Modal aberto");
     }, []);
 

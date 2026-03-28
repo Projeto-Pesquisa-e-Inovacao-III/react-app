@@ -4,6 +4,7 @@ import styles from "./AddPackagePlan.module.css";
 import Input from "../../Inputs/Input/Input";
 import { ArrowLeft, Banknote, Calendar, CalendarSync, CheckCircle2, Eye, EyeOff, HeartPulse, Home, Info, PlusCircle, Tag, Trash2, Users, X, XCircle } from "lucide-react";
 import { useRef, useState } from "react";
+import useModalClose from "../../../hooks/useModalClose";
 import { newProductExhibition, updateProductExhibition } from "../../../constants/products";
 import type { ProductExhibition } from "../../../models/products";
 import Skeleton from "react-loading-skeleton";
@@ -38,14 +39,11 @@ type AddPackagePlanProps = {
 
 export default function AddPackagePlan({ onClose, title, packageValues, packageCreated, callSuccessModal, isEdit, typePackage }: AddPackagePlanProps) {
     const isMobile = useMobile();
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleAnimatedClose() {
-        setIsClosing(true);
-        setTimeout(() => {
-            onClose(false);
-        }, 200);
-    }
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => onClose(false),
+        duration: 200,
+        lockScroll: false
+    });
 
     const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number | null }>({
         name: packageValues?.titulo || "",

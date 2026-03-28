@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
+import useModalClose from '../../../hooks/useModalClose';
 import styles from "./ErrorModal.module.css";
 import useMobile from '../../../hooks/isMobile';
 import SmallerButton from '../../SmallerButton/SmallerButton';
@@ -8,18 +9,11 @@ import classnames from 'classnames';
 export default function ErrorModal({ closeThen, title, content }: { closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
     const isMobileDevice = useMobile();
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleCloseModal() {
-        setIsClosing(true);
-        setTimeout(() => {
-            document.body.style.overflow = 'auto';
-            closeThen(false);
-        }, 180);
-    }
+    const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
+        onClose: () => closeThen(false)
+    });
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
         console.log("Modal aberto");
     }, []);
 

@@ -26,6 +26,7 @@ import UserAvatar from "../../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
 import type { HorariosPersonal } from "../../../models/personal";
 import { getUserAddresses } from "../../../constants/address";
+import useModalClose from "../../../hooks/useModalClose";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -117,7 +118,6 @@ export default function NewEvent(
     });
 
     const [step, setStep] = useState<number>(1);
-    const [isClosing, setIsClosing] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
 
@@ -146,9 +146,7 @@ export default function NewEvent(
         }
     }, [newEventDate, newEventStartHour, selectedType]);
 
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-    }, []);
+
 
     useEffect(() => {
         if (addressData.postalCode.replace("-", "").length === 8) {
@@ -345,10 +343,8 @@ export default function NewEvent(
     const navigation = useNavigate();
     const [searchParams] = useSearchParams();
 
-    function handleClose() {
-        setIsClosing(true);
-        setTimeout(() => {
-            document.body.style.overflow = 'auto';
+    const { isClosing, handleAnimatedClose: handleClose } = useModalClose({
+        onClose: () => {
             if (searchParams.has("date")) {
                 navigation("/schedule");
                 close(false);
@@ -356,8 +352,9 @@ export default function NewEvent(
             }
             close(false);
             handleCloseModalOnClickOverlay();
-        }, 200);
-    }
+        },
+        duration: 200
+    });
 
     function handleButtonClick(hour: string | boolean) {
         if (typeof hour === "string") setNewEventStartHour(hour);

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import useModalClose from "../../../hooks/useModalClose";
 import styles from "./TextareaModal.module.css"
 import classnames from "classnames"
 
@@ -11,14 +11,9 @@ type Props = {
 }
 
 export default function TextareaModal(props: Props) {
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleAnimatedClose() {
-        setIsClosing(true);
-        setTimeout(() => {
-            props.closeThen(false);
-        }, 180);
-    }
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => props.closeThen(false)
+    });
 
     return (
         <>

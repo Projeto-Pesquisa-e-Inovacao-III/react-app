@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import useModalClose from "../../../hooks/useModalClose";
 import styles from "./PopupModal.module.css";
 import useClickOutside from "../../../hooks/useClickOutside";
 import SmallerButton from "../../SmallerButton/SmallerButton";
@@ -11,14 +12,11 @@ type PopupModalProps = {
 
 export default function PopupModal({ closeThen, clickedDate }: Readonly<PopupModalProps>) {
     const popupRef = useRef<HTMLDivElement>(null);
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleAnimatedClose() {
-        setIsClosing(true);
-        setTimeout(() => {
-            closeThen();
-        }, 200);
-    }
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => closeThen(),
+        duration: 200,
+        lockScroll: false
+    });
 
     useClickOutside({
         ref: popupRef,

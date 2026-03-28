@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import useModalClose from '../../../hooks/useModalClose';
 import Select from '../../Inputs/Select/Select'
 import classNames from 'classnames';
 import styles from './RegisterAbsenceModal.module.css'
@@ -15,14 +16,10 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
     const [changeSelectType, setChangeSelectType] = useState<string>("Aluno");
     const [justified, setJustified] = useState<boolean>(false);
     const [description, setDescription] = useState("");
-    const [isClosing, setIsClosing] = useState(false);
-
-    function handleAnimatedClose() {
-        setIsClosing(true);
-        setTimeout(() => {
-            closeThen(false);
-        }, 180);
-    }
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => closeThen(false),
+        lockScroll: false
+    });
 
     function handleSend() {
         const payload = {
