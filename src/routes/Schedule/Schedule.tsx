@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
-import NewEvent from "../../components/NewEvent/NewEvent";
+import NewEvent from "../../components/Modal/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
@@ -20,8 +20,9 @@ import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 import { getAvailabilityHoursTomorrow } from "../../constants/personal";
+import PopupModal from "../../components/Modal/PopupModal/PopupModal";
 
-type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
+type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null;
 
 export type RescheduleAppointment = {
     agendamentoId: number;
@@ -216,6 +217,8 @@ export default function Schedule() {
 
     console.log("availabilityHoursTomorrowQuery", availabilityHoursTomorrowQuery)
 
+    console.log(clickedDate)
+
     return (
         <>
             {!isTypeReady ? (
@@ -242,6 +245,9 @@ export default function Schedule() {
                                 modalInfo={setModalInfo}
                                 modalType={setOpenModal}
                                 availabilityHoursTomorrow={availabilityHoursTomorrowQuery?.data?.data}
+                                clickDate={(date) => {
+                                    setClickedDate(date);
+                                }}
                             />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
@@ -306,6 +312,16 @@ export default function Schedule() {
                     </div>
                 </div>
             )}
+
+            {
+                openModal === "popup" && (
+                    <PopupModal
+                        closeThen={() => setOpenModal(null)}
+                        date={clickedDate}
+                        onNewEvent={() => setOpenModal("newEvent")}
+                    />
+                )
+            }
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(selectedEventId!)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 

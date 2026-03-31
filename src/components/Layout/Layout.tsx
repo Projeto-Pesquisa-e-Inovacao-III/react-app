@@ -38,7 +38,9 @@ const titles = {
     "/edit-user/anamnesis": "Editar Anamnese | CSF Treinamentos",
 };
 
-const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool", "/anamnesis"];
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
+
+const exceptionsWithoutHeader = [...exceptions, "/anamnesis"];
 
 export default function Layout() {
     const isMobile = useMobile();
@@ -85,16 +87,25 @@ export default function Layout() {
         }
     }, [isLoggedIn.data]);
 
+    // useEffect(() => {
+    //     if (isLoggedIn.isLoading || !isLoggedIn.data) return;
+
+    //     const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
+    //     console.log("ativoAnamnese", !ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno");
+    //     if (!ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno") {
+    //         nav("/anamnesis");
+    //     }
+    // }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
 
     return (
         <div>
             <>
-                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} isLoading={isLoggedIn.isLoading}/>}
+                {!isMobile && (!exceptions.includes(location.pathname) && !exceptionsWithoutHeader.includes(location.pathname)) && <Header userName={isLoggedIn.data?.user.nome} type={type} isLoading={isLoggedIn.isLoading} />}
                 {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                     <LogoHeaderMobile />
                 </div>}
-                <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
-                {isMobile && !exceptions.includes(location.pathname) && <Header type={type} isLoading={isLoggedIn.isLoading}/>}
+                <main className={`${!hideLogoPaths && !exceptionsWithoutHeader.includes(location.pathname) ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
+                {isMobile && (!exceptions.includes(location.pathname) && !exceptionsWithoutHeader.includes(location.pathname)) && <Header type={type} isLoading={isLoggedIn.isLoading} />}
             </>
         </div>
     )

@@ -1,7 +1,11 @@
 import { useState } from "react";
 
-type modalTypes = "timer" | "success" | "error" | "adjustAvatar" | null;
-
+type modalTypes = "timer" | "success" | "error" | "adjustAvatar" | "popup" | "newEvent" | null;
+//export default function useModal(type: modalTypes, text: { title: string, content: string }) {
+// example of usage:
+/*
+const { openModal, setOpenModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
+*/
 export default function useModal(
     type: modalTypes,
     text: {

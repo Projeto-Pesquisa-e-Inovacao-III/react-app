@@ -24,7 +24,7 @@ export default function CardInfo(props: CardInfoProps) {
             <div className={classnames(styles.usersTableCard, { [styles.usersTableCardMobile]: props.isMobile })}>
                 <div className={classnames(styles.userDataFull, { [styles.userDataFullMobile]: props.isMobile })}>
                     {props.includeImg && (
-                        <UserAvatar foto={props.imgUrl} />
+                        <UserAvatar userName={props.title as string} foto={props.imgUrl} />
                     )}
                     <div className={styles.userData}>
                         <span>

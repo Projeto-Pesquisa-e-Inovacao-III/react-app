@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import useModalClose from '../../../hooks/useModalClose';
 import Select from '../../Inputs/Select/Select'
 import classNames from 'classnames';
 import styles from './RegisterAbsenceModal.module.css'
@@ -15,6 +16,10 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
     const [changeSelectType, setChangeSelectType] = useState<string>("Aluno");
     const [justified, setJustified] = useState<boolean>(false);
     const [description, setDescription] = useState("");
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => closeThen(false),
+        lockScroll: false
+    });
 
     function handleSend() {
         const payload = {
@@ -28,8 +33,14 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
 
     return (
         <>
-            <div className={`overlay ${styles.backdropEnter}`} onClick={() => closeThen(false)}></div>
-            <div className={`${styles.modal} ${styles.modalCard}`}>
+            <div className={classNames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })} onClick={handleAnimatedClose}></div>
+            <div className={classNames(styles.modal, {
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <h2 className={styles.title}>Registrar ausência</h2>
 
                 <Select
@@ -60,7 +71,7 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
 
                 <div className={styles.buttons}>
                     <Button typeButton='accept' title="Enviar" type="button" classNameVariable="btn-send" onClick={handleSend} />
-                    <Button typeButton='other' title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={() => closeThen(false)} />
+                    <Button typeButton='other' title="Cancelar" type="button" classNameVariable="btn-cancel" onClick={handleAnimatedClose} />
                 </div>
             </div>
         </>

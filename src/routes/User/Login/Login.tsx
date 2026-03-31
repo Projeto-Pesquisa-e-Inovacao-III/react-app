@@ -47,7 +47,6 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        
         try {
           const isAuthenticated = await userService.isAuthenticated();
           const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;

@@ -8,7 +8,7 @@ import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import NewEvent from "../../../components/NewEvent/NewEvent";
+import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { useNavigate, useSearchParams } from "react-router-dom";

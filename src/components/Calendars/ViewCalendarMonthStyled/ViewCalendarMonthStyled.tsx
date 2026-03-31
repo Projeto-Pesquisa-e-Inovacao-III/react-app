@@ -13,16 +13,17 @@ type Props = {
   isUserAuthorizedToInteract?: boolean;
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
-  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
+  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null>>;
   availabilityHoursTomorrow?: {
     inicio: string;
     fim: string;
   }[];
+  clickDate?: (date: string) => void;
 }
 
 const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
@@ -59,7 +60,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONCLUIDO"  || event.status === "APROVADO"
+                              : event.status === "CONCLUIDO" || event.status === "APROVADO"
                                 ? "green"
                                 : "gray",
                       }}
@@ -86,14 +87,21 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             }
 
             if (appointment && appointment.length > 1) {
-              nav(`/schedule-history/?date=${clickedDate}`);
+              clickDate?.(clickedDate);
+              modalInfo?.({
+                title: "Múltiplos agendamentos",
+                description: "Este dia possui mais de um agendamento. Consulte o histórico para visualizar todos.",
+              });
+              modalType?.("popup");
               return
             }
 
             const findAppointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
 
             if (findAppointment !== null) {
-              nav(`/schedule-details?id=${findAppointment.agendamentoId}`);
+              console.log(findAppointment)
+              clickDate?.(clickedDate);
+              modalType?.("popup");
               return
             }
 

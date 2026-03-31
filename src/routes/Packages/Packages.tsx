@@ -6,7 +6,7 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
-import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
+import AddPackagePlan from "../../components/Modal/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
