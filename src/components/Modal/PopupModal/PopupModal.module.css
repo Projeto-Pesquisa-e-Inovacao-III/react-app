@@ -17,10 +17,34 @@
     font-family: "Poppins", sans-serif;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    text-align: left;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #093a5d;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+
 .popupModal h2 {
     margin: 0;
     color: #093a5d;
-    font-size: 24px;
+    font-size: 32px;
     font-weight: 700;
 }
 
@@ -75,6 +99,7 @@
         opacity: 0;
         transform: translate(-50%, 24px);
     }
+
     to {
         opacity: 1;
         transform: translate(-50%, 0);
@@ -86,6 +111,7 @@
         opacity: 1;
         transform: translate(-50%, 0);
     }
+
     to {
         opacity: 0;
         transform: translate(-50%, 24px);
@@ -96,12 +122,77 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
 }
 
 @keyframes backdropLeave {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.cardList {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cardTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.cardType {
+    font-size: 12px;
+    font-weight: 500;
+    color: #093a5d;
+    background-color: #e0f2fe;
+    padding: 2px 8px;
+    border-radius: 16px;
+}
+
+.cardDetails {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+}
+
+.cardStatus {
+    font-size: 12px;
+    font-weight: 500;
+    color: #065f46;
+    background-color: #d1fae5;
+    padding: 2px 8px;
+    border-radius: 16px;
+    align-self: flex-start;
 }

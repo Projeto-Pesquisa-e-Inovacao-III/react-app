@@ -1,4 +1,3 @@
-import { User } from 'lucide-react'
 import { UserImg } from '../UserImg/UserImg'
 import { BASE_URL } from '../../system';
 import { getUserImage } from '../../constants/user';
@@ -13,11 +12,10 @@ interface UserAvatarProps {
   useUserImage?: boolean;
   useUsername?: boolean;
   imgClassName?: string;
-  svgClassName?: string;
   isLoading?: boolean;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, svgClassName, isLoading = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, isLoading = false }: UserAvatarProps) {
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
@@ -26,15 +24,20 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
       if (response.data) {
         return `${BASE_URL}/usuarios/me/imagem`;
       }
-
       return undefined;
     },
     enabled: useUserImage,
     retry: false,
   })
-  console.log('foto:', foto)
-  console.log('useUserImage:', useUserImage)
-  console.log('userImage.data:', userImage.data)
+
+  console.log(foto)
+  console.log(userImage.data)
+  
+  function getInitials(name: string) {
+    console.log("rodou")
+    return name.charAt(0).toUpperCase()
+  }
+
 
   return (
     <div className={classNames(styles.userAvatar, { [styles.withUsername]: useUsername })}>
@@ -50,7 +53,9 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           classname={imgClassName}
         />
         :
-        <User width={216} height={216} color='#000' className={svgClassName} />
+        <div className={classNames(styles.userWithoutAvatar, { [styles.withUsername]: useUsername })}>
+          {getInitials(userName || "")}
+        </div>
       }
     </div>
   )

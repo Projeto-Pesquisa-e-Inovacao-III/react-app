@@ -522,9 +522,18 @@ export default function NewEvent(
 
     return (
         <>
-            <div className={classnames(styles.overlay, { [styles.overlayClosing]: isClosing })} onClick={handleClose}></div>
+            <div className={classnames(styles.overlay, { 
+                [styles.overlayClosing]: isClosing,
+                [styles.overlayEnter]: !isClosing 
+            })} onClick={handleClose}></div>
 
-            <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile, [styles.newEventFormClosing]: isClosing })}>
+            <div className={classnames(styles.newEventForm, { 
+                [styles.newEventFormMobile]: isMobile, 
+                [styles.newEventFormClosing]: isClosing && !isMobile,
+                [styles.newEventFormMobileClosing]: isClosing && isMobile,
+                [styles.newEventFormEnter]: !isClosing && !isMobile,
+                [styles.newEventFormMobileEnter]: !isClosing && isMobile,
+            })}>
                 {!isMobile && (
                     <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
                         {typeUser === "personal" ? (

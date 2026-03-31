@@ -526,7 +526,7 @@ export function Overview() {
                 modalType === "popup" && (
                     <PopupModal
                         closeThen={() => setModalType(null)}
-                        clickedDate={clickedDate?.date || ""}
+                        date={clickedDate?.date || ""}
                     />
                 )
             }
