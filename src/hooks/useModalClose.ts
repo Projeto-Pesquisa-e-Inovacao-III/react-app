@@ -23,7 +23,7 @@ export default function useModalClose({
 
     useEffect(() => {
         if (!lockScroll) return;
-        
+
         document.body.style.overflow = "hidden";
         return () => {
             document.body.style.overflow = "auto";

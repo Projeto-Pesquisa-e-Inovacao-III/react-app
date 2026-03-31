@@ -22,12 +22,19 @@ type PopupModalProps = {
 export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<PopupModalProps>) {
     const isMobile = useMobile();
     const popupRef = useRef<HTMLDivElement>(null);
+    const closingAction = useRef<"close" | "newEvent">("close");
+
     const { isClosing, handleAnimatedClose } = useModalClose({
-        onClose: () => closeThen(),
+        onClose: () => {
+            if (closingAction.current === "newEvent" && onNewEvent) {
+                onNewEvent();
+            } else {
+                closeThen();
+            }
+        },
         duration: 200,
         lockScroll: false
     });
-
 
 
     useClickOutside({
@@ -107,7 +114,10 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                 )}
                 {/* <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleAnimatedClose} />
                  */}
-                <SmallerButton classname="h-12" type="button" title="Novo agendamento" handleButtonClick={() => { if (onNewEvent) onNewEvent() }} icon={<Calendar size={24} />} />
+                <SmallerButton classname="h-12" type="button" title="Novo agendamento" handleButtonClick={() => { 
+                    closingAction.current = "newEvent";
+                    handleAnimatedClose();
+                }} icon={<Calendar size={24} />} />
             </div>
         </>
     );

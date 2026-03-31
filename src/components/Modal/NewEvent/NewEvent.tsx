@@ -1,4 +1,4 @@
-import {useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../../SmallerButton/SmallerButton";
@@ -374,6 +374,38 @@ export default function NewEvent(
         enabled: type?.type === "aluno"
     });
 
+    const [scheduleTypes, setScheduleTypes] = useState<{
+        label: string;
+        value: string;
+        disabled: boolean;
+    }[]>([
+        { label: "Presencial", value: "PRESENCIAL", disabled: false },
+        { label: "Residencial", value: "RESIDENCIAL", disabled: false },
+        { label: "Funcional", value: "FUNCIONAL", disabled: false }
+    ]);
+
+    function handleDisableClassType(classType: string) {
+        setScheduleTypes(prev => prev.map(type => {
+            if (type.value === classType) {
+                return { ...type, disabled: true };
+            }
+            return type;
+        }));
+        return false;
+    }
+
+    useEffect(() => {
+        if (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading) {
+            handleDisableClassType("FUNCIONAL");
+        }
+        if (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading) {
+            handleDisableClassType("RESIDENCIAL");
+        }
+        if (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading) {
+            handleDisableClassType("PRESENCIAL");
+        }
+    }, [classBalanceQuery.data])
+
     function verifyClassAvailability() {
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
         console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
@@ -383,7 +415,8 @@ export default function NewEvent(
                 content: "Você não possui aulas presenciais disponíveis para agendar."
             });
             setOpenModal("error");
-            return false;
+            return handleDisableClassType("PRESENCIAL");
+
         }
 
         if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
@@ -392,7 +425,7 @@ export default function NewEvent(
                 content: "Você não possui aulas residenciais disponíveis para agendar."
             });
             setOpenModal("error");
-            return false;
+            return handleDisableClassType("RESIDENCIAL");
         }
 
         if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
@@ -401,10 +434,14 @@ export default function NewEvent(
                 content: "Você não possui aulas funcionais disponíveis para agendar."
             });
             setOpenModal("error");
-            return false;
+            return handleDisableClassType("FUNCIONAL");
         }
+
         return true;
     }
+
+
+
 
 
     function handleStepChange(stepNumber: number) {
@@ -522,13 +559,13 @@ export default function NewEvent(
 
     return (
         <>
-            <div className={classnames(styles.overlay, { 
+            <div className={classnames(styles.overlay, {
                 [styles.overlayClosing]: isClosing,
-                [styles.overlayEnter]: !isClosing 
+                [styles.overlayEnter]: !isClosing
             })} onClick={handleClose}></div>
 
-            <div className={classnames(styles.newEventForm, { 
-                [styles.newEventFormMobile]: isMobile, 
+            <div className={classnames(styles.newEventForm, {
+                [styles.newEventFormMobile]: isMobile,
                 [styles.newEventFormClosing]: isClosing && !isMobile,
                 [styles.newEventFormMobileClosing]: isClosing && isMobile,
                 [styles.newEventFormEnter]: !isClosing && !isMobile,
@@ -539,11 +576,11 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
-                                    title="Aluno"
-                                    subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
-                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
-                                />
+                                icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                title="Aluno"
+                                subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
+                            />
                         ) : (
                             <>
                                 {step === 2 && (
@@ -554,12 +591,9 @@ export default function NewEvent(
 
                                 <InformationCard
                                     icon={
-                                                    personalList.data?.[0]?.caminhoFoto ? (
-                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
-                                                    ) : (
-                                                        <UserRound />
-                                                    )
-                                                }
+                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} userName={personalList.data?.[0]?.nome} />
+
+                                    }
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
                                     subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -592,11 +626,7 @@ export default function NewEvent(
                                         openSelectId={openSelectId}
                                         setOpenSelectId={setOpenSelectId}
                                         onSelectStatusChange={setSelectedType}
-                                        values={[
-                                            { label: "Presencial", value: "PRESENCIAL" },
-                                            { label: "Residencial", value: "RESIDENCIAL" },
-                                            { label: "Funcional", value: "FUNCIONAL" }
-                                        ]}
+                                        values={scheduleTypes}
                                         containerClassName="w-full!"
                                         triggerClassName="p-3 w-full!"
                                         selectWrapperClassName="bg-white! rounded-xl! w-full!"
@@ -685,11 +715,7 @@ export default function NewEvent(
                                                         openSelectId={openSelectId}
                                                         setOpenSelectId={setOpenSelectId}
                                                         onSelectStatusChange={setSelectedType}
-                                                        values={[
-                                                            { label: "Presencial", value: "PRESENCIAL" },
-                                                            { label: "Residencial", value: "RESIDENCIAL" },
-                                                            { label: "Funcional", value: "FUNCIONAL" }
-                                                        ]}
+                                                        values={scheduleTypes}
                                                         containerClassName="w-full"
                                                         triggerClassName="p-3 w-full!"
                                                         selectWrapperClassName="rounded-xl!"
@@ -726,9 +752,9 @@ export default function NewEvent(
                                                 </span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
                                                 {chooseTimeOfDay === "MANHÃ" && (
@@ -765,7 +791,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
@@ -793,7 +819,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
@@ -821,7 +847,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
