@@ -41,6 +41,10 @@ export function updateWorkDay(day: string) {
     return api.get(`personais/change-activation/${day}`);
 }
 
+export function verifySchedules(day: string) {
+    return api.get(`agendamentos/dia-semana/${day}`);
+}
+
 export function getPersonalBuffer() {
     return api.get(`personais/me/buffer`);
 }

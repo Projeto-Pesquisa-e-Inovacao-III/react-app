@@ -70,8 +70,9 @@
   display: flex;
   align-items: center;
   padding: 28px;
+  color: #093a5d;
   font-size: 28px;
-  font-weight: 500;
+  font-weight: 700;
   background-color: white;
   position: sticky;
   top: 0;
@@ -377,7 +378,9 @@
 }
 
 .topNewEventMobile h1 {
+  color: #093a5d;
   font-size: 26px;
+  font-weight: 700;
   text-transform: uppercase;
   padding-bottom: 20px;
 }

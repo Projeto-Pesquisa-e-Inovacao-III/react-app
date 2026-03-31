@@ -19,7 +19,16 @@
     & .contentModal {
         text-align: center;
         width: fit-content;
-        font-size: 18px;
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    & h2 {
+        margin: 0;
+        color: #093a5d;
+        font-size: 24px;
+        font-weight: 700;
     }
 
     & .btnSched {
@@ -48,7 +57,16 @@
     & .contentModal {
         text-align: center;
         width: 100%;
-        font-size: 18px;
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    & h2 {
+        margin: 0;
+        color: #093a5d;
+        font-size: 24px;
+        font-weight: 700;
     }
 
     & .btnSched {

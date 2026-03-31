@@ -6,12 +6,16 @@ import {
     updateBuffer,
     updatePersonalCronogram,
     updateWorkDay,
+    verifySchedules,
 } from "../../../constants/personal";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AvailabilitySkeleton from "./AvailabilitySkeleton/AvailabilitySkeleton";
 import { Info, Settings, CopyCheck, TriangleAlert } from "lucide-react";
+import classNames from "classnames";
+import InfoPersonalSchedulesModal from "../../../components/Modal/InfoPersonalSchedulesModal/InfoPersonalSchedulesModal";
+
 
 
 export interface TimeSlot {
@@ -20,6 +24,7 @@ export interface TimeSlot {
     horaFim: string;
     diaSemana: string;
     tipo: "DISPONIVEL" | "RESTRITO";
+    ativo?: boolean;
 }
 
 interface DaySchedule {
@@ -57,11 +62,14 @@ function Toggle({ checked, onChange }: Readonly<{ checked: boolean; onChange: ()
         <button
             type="button"
             role="switch"
-            aria-checked={checked}
             onClick={onChange}
-            className={`${styles.toggle} ${checked ? "" : styles.off}`}
+            className={classNames(styles.toggle, {
+                [styles.off]: !checked,
+            })}
         >
-            <span className={`${styles.toggleThumb} ${checked ? "" : styles.off}`} />
+            <span className={classNames(styles.toggleThumb, {
+                [styles.off]: !checked,
+            })} />
         </button>
     );
 }
@@ -216,6 +224,9 @@ export default function SetAvailability() {
     const [globalManha, setGlobalManha] = useState({ start: "08:00", end: "12:00" });
     const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
 
+    const [schedulesToInfo, setSchedulesToInfo] = useState<any[] | null>(null);
+    const [dayIndexToToggle, setDayIndexToToggle] = useState<number | null>(null);
+
     useEffect(() => {
         if (!getInitialCronogram.data) return;
 
@@ -225,7 +236,7 @@ export default function SetAvailability() {
             );
             return {
                 day,
-                enabled: slots.some((s) => s.tipo === "DISPONIVEL"),
+                enabled: slots.some((s) => s.tipo === "DISPONIVEL" && s.ativo),
                 slots,
             };
         });
@@ -253,12 +264,43 @@ export default function SetAvailability() {
     }, []);
 
 
-    function toggleDay(dayIndex: number) {
+    async function verifyIfHasSchedules(day: string) {
+        const schedules = await verifySchedules(day).then(res => {
+            return res.data;
+        });
+
+        return schedules;
+    }
+
+    async function toggleDay(dayIndex: number) {
+        const currentEnabled = schedule[dayIndex].slots.some(s => s.tipo === "DISPONIVEL" && s.ativo);
+
+        if (currentEnabled) {
+            const dataSchedules = await verifyIfHasSchedules(schedule[dayIndex].day);
+            if (dataSchedules && dataSchedules.length > 0) {
+                setDayIndexToToggle(dayIndex);
+                setSchedulesToInfo(dataSchedules);
+                return;
+            }
+        }
+
+        confirmToggleDay(dayIndex);
+    }
+
+    function confirmToggleDay(dayIndex: number) {
+        updateWorkDay(schedule[dayIndex].day);
+
         setSchedule((prev) => {
             const next = [...prev];
-            console.log(next[dayIndex].day)
-            updateWorkDay(next[dayIndex].day)
-            next[dayIndex] = { ...next[dayIndex], enabled: !next[dayIndex].enabled };
+            const currentEnabled = next[dayIndex].slots.some(s => s.tipo === "DISPONIVEL" && s.ativo);
+
+            next[dayIndex] = {
+                ...next[dayIndex],
+                enabled: !currentEnabled,
+                slots: next[dayIndex].slots.map(s =>
+                    s.tipo === "DISPONIVEL" ? { ...s, ativo: !currentEnabled } : s
+                )
+            };
             return next;
         });
     }
@@ -372,7 +414,7 @@ export default function SetAvailability() {
                 );
                 return {
                     day,
-                    enabled: slots.some((s) => s.tipo === "DISPONIVEL"),
+                    enabled: slots.some((s) => s.tipo === "DISPONIVEL" && s.ativo),
                     slots,
                 };
             });
@@ -447,7 +489,7 @@ export default function SetAvailability() {
                             const breakIndex = daySchedule.slots.findIndex((s) => s.tipo === "RESTRITO");
                             const workSlot = daySchedule.slots[workIndex];
                             const breakSlot = daySchedule.slots[breakIndex];
-                            const disabled = !daySchedule.enabled;
+                            const disabled = workSlot ? !workSlot.ativo : true;
 
                             return (
                                 <div
@@ -456,8 +498,9 @@ export default function SetAvailability() {
                                 >
                                     <div className={styles.dayToggle}>
                                         <Toggle
-                                            checked={daySchedule.enabled}
+                                            checked={!disabled}
                                             onChange={() => toggleDay(dayIndex)}
+
                                         />
                                     </div>
 
@@ -541,6 +584,20 @@ export default function SetAvailability() {
                 </div>
 
             </div>
+            {schedulesToInfo && dayIndexToToggle !== null && (
+                <InfoPersonalSchedulesModal
+                    closeThen={() => {
+                        setSchedulesToInfo(null);
+                        setDayIndexToToggle(null);
+                    }}
+                    schedules={schedulesToInfo}
+                    onConfirm={() => {
+                        confirmToggleDay(dayIndexToToggle);
+                        setSchedulesToInfo(null);
+                        setDayIndexToToggle(null);
+                    }}
+                />
+            )}
         </LocalizationProvider>
     );
 }

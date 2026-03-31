@@ -17,11 +17,17 @@
     width: 40%;
 
     & .contentModal {
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
         white-space: pre-line;
     }
 
     & h2 {
+        margin: 0;
+        color: #093a5d;
         font-size: 24px;
+        font-weight: 700;
     }
 }
 
