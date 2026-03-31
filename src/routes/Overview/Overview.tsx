@@ -257,6 +257,8 @@ export function Overview() {
         setModalType(type);
     }
 
+    console.log(modalType)
+
     function handleSuccessModalInfo(title: string, description: string) {
         openModal("success");
         setModalText({ title, description });
@@ -307,7 +309,7 @@ export function Overview() {
         appointments.isPending
 
 
-    const [clickedDate, setClickedDate] = useState<{ date: string }>({ date: "" });
+    const [clickedDate, setClickedDate] = useState<string>("");
 
     console.log("Appointments at calendar:", clickedDate);
     return (
@@ -526,7 +528,8 @@ export function Overview() {
                 modalType === "popup" && (
                     <PopupModal
                         closeThen={() => setModalType(null)}
-                        date={clickedDate?.date || ""}
+                        date={clickedDate || ""}
+                        onNewEvent={handleClickNewEvent}
                     />
                 )
             }

@@ -33,7 +33,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   }, [createdEvents]);
 
   const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
-  
+
   useEffect(() => {
     if (databaseEvents && databaseEvents.length > 0) {
       setEvents(databaseEvents);
@@ -75,7 +75,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return [styles.selectedDay];
 
-  
+
 
             return [];
           }}
@@ -98,12 +98,11 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
-                            event.status === "APROVADO"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO"
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONCLUIDO"
+                              : event.status === "CONCLUIDO" || event.status === "APROVADO"
                                 ? "#4CAF50"
                                 : "gray",
                       }}

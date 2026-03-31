@@ -11,18 +11,15 @@ import { AppointmentCard } from "../../AppointmentCard/AppointmentCard";
 import { ptBR } from "date-fns/locale";
 import useMobile from "../../../hooks/isMobile";
 import { Calendar, X } from "lucide-react";
-import useModal from "../../../hooks/useModal";
-import ErrorModal from "../ErrorModal/ErrorModal";
-import SuccessModal from "../SuccessModal/SuccessModal";
-import NewEvent from "../NewEvent/NewEvent";
-
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 type PopupModalProps = {
     closeThen: () => void;
     date: string;
+    onNewEvent?: () => void;
 };
 
-//todo: instead of open new Event here, open the new event modal in the parent component.
-export default function PopupModal({ closeThen, date }: Readonly<PopupModalProps>) {
+export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<PopupModalProps>) {
     const isMobile = useMobile();
     const popupRef = useRef<HTMLDivElement>(null);
     const { isClosing, handleAnimatedClose } = useModalClose({
@@ -31,12 +28,7 @@ export default function PopupModal({ closeThen, date }: Readonly<PopupModalProps
         lockScroll: false
     });
 
-    const { 
-        openModal, 
-        setOpenModal, 
-        textModal, 
-        setTextModal 
-    } = useModal(null, { title: "", content: "" });
+
 
     useClickOutside({
         ref: popupRef,
@@ -44,31 +36,27 @@ export default function PopupModal({ closeThen, date }: Readonly<PopupModalProps
     });
 
     const schedules = useQuery({
-        queryKey: ["schedules"],
+        queryKey: ["schedules", date],
         queryFn: () => {
             const formattedDate = parseISO(date);
-            return findPersonalRequests(
-                0,
-                "10",
-                format(startOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss"),
-                format(endOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss")
-            );
+
+            const dataInic = format(startOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss");
+            const dataFim = format(endOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss");
+
+            console.log(dataInic, dataFim)
+
+            return findPersonalRequests(0, "10", dataInic, dataFim);
         },
-    })
+    });
+
     const agendamentos = schedules.data?.data?.content || [];
+
+    console.log(agendamentos)
 
     const formattedDate = format(parseISO(date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
     const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
-    function handleSuccessModalInfo(title: string, content: string) {
-        setOpenModal("success");
-        setTextModal({ title, content });
-    }
 
-    function handleErrorModalInfo(title: string, content: string) {
-        setOpenModal("error");
-        setTextModal({ title, content });
-    }
 
     return (
         <>
@@ -94,7 +82,11 @@ export default function PopupModal({ closeThen, date }: Readonly<PopupModalProps
                     </button>
                 </div>
                 {schedules.isLoading ? (
-                    <p>Carregando...</p>
+                    <div className={styles.cardList}>
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <Skeleton key={i} height={120} borderRadius={12} style={{ marginBottom: 12 }} />
+                        ))}
+                    </div>
                 ) : agendamentos.length > 0 && (
                     <div className={styles.cardList}>
                         {agendamentos.map((agendamento: any) => (
@@ -115,43 +107,8 @@ export default function PopupModal({ closeThen, date }: Readonly<PopupModalProps
                 )}
                 {/* <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleAnimatedClose} />
                  */}
-                <SmallerButton classname="h-12" type="button" title="Novo agendamento" handleButtonClick={() => { setOpenModal("newEvent") }} icon={<Calendar size={24} />} />
+                <SmallerButton classname="h-12" type="button" title="Novo agendamento" handleButtonClick={() => { if (onNewEvent) onNewEvent() }} icon={<Calendar size={24} />} />
             </div>
-
-
-            {openModal === "newEvent" && (
-                <NewEvent
-                    isMobile={isMobile}
-                    close={() => setOpenModal(null)}
-                    openModalExtern={() => handleSuccessModalInfo("Agendado com sucesso", "Horário agendado com sucesso")}
-                    errorModal={(title, description) => handleErrorModalInfo(title, description)}
-                    insertedEvents={null}
-                    title="Agendar horário"
-                    buttonTitle="Avançar"
-                />
-            )
-            }
-
-            {
-                openModal === "success" && (
-                    <SuccessModal
-                        isMobile={isMobile}
-                        closeThen={() => setOpenModal(null)}
-                        title={textModal.title}
-                        content={textModal.content}
-                    />
-                )
-            }
-
-            {
-                openModal === "error" && (
-                    <ErrorModal
-                        closeThen={() => setOpenModal(null)}
-                        title={textModal.title}
-                        content={textModal.content}
-                    />
-                )
-            }
         </>
     );
 }
