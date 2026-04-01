@@ -9,6 +9,7 @@ import { SearchIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { ListStudents } from "../../../models/students";
 import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
+import { useState } from "react";
 
 
 
@@ -18,16 +19,16 @@ export default function ListUsers() {
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, loadMoreRef, isLoading } = useInfinitePagination<ListStudents[number]>({
         queryKey: ["students"],
         queryFn: async (page) => {
-            const { data } = await listStudents(page);
-            console.log("API response:", data);
-            return data;
+            const response = await listStudents(page);
+            console.log("Full response:", response);       // what is the full shape?
+            console.log("response.data:", response.data);  // is data nested?
+            return response.data;
         }
     });
 
-    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(data ?? [], {
-        searchName: (item) => [item.nome],
-    });
+    console.log("data", data)
 
+    const [filterSearch, setFilterSearch] = useState<string>("");
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
@@ -42,9 +43,9 @@ export default function ListUsers() {
                     onInputChange={setFilterSearch}
                 />
             </div>
-            <UsersTable input={filterSearch} users={filteredData} isLoading={isLoading} />
 
-            {/* TBD: Make sure this element is at the end of the scrolling list! */}
+            <UsersTable input={filterSearch} users={data ?? []} isLoading={isLoading} />
+
             <div ref={loadMoreRef} style={{ height: "20px", display: "flex", justifyContent: "center" }}>
                 {isFetchingNextPage && <span>Carregando mais usuários...</span>}
             </div>

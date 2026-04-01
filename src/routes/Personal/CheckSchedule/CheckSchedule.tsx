@@ -564,12 +564,8 @@ export function CheckSchedule() {
                                                                     className={styles.userAvatar}
                                                                     data-alt={`Client ${card.nome}`}
                                                                 >
-                                                                    {card.foto ? (
-                                                                        <UserAvatar imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+                                                                    <UserAvatar withUsernameClassName="w-9! h-9!" userName={card.nome} imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
 
-                                                                    ) : (
-                                                                        <UserRound />
-                                                                    )}
                                                                 </div>
                                                                 <span className={styles.userName}>{card.nome}</span>
                                                             </div>

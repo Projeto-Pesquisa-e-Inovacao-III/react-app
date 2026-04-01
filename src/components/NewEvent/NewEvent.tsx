@@ -1,4 +1,4 @@
-import {useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../SmallerButton/SmallerButton";
@@ -92,6 +92,7 @@ export default function NewEvent(
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: typeUser === "aluno",
     });
 
 
@@ -529,11 +530,11 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                    icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
-                                    title="Aluno"
-                                    subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
-                                    subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
-                                />
+                                icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                title="Aluno"
+                                subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
+                            />
                         ) : (
                             <>
                                 {step === 2 && (
@@ -544,12 +545,12 @@ export default function NewEvent(
 
                                 <InformationCard
                                     icon={
-                                                    personalList.data?.[0]?.caminhoFoto ? (
-                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
-                                                    ) : (
-                                                        <UserRound />
-                                                    )
-                                                }
+                                        personalList.data?.[0]?.caminhoFoto ? (
+                                            <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} userName={personalList.data?.[0]?.nome} />
+                                        ) : (
+                                            <UserRound />
+                                        )
+                                    }
                                     title="Personal Trainer"
                                     subtitle={personalList.data?.[0]?.nome || ""}
                                     subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
@@ -654,7 +655,7 @@ export default function NewEvent(
                                             <InformationCard
                                                 icon={
                                                     personalList.data?.[0]?.caminhoFoto ? (
-                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} userName={personalList.data?.[0]?.nome} />
                                                     ) : (
                                                         <UserRound />
                                                     )
@@ -716,9 +717,9 @@ export default function NewEvent(
                                                 </span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
-                                                    {availabilityHours.data?.some((hourBlock: {inicio: string}) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
                                                 {chooseTimeOfDay === "MANHÃ" && (
@@ -755,7 +756,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
@@ -783,7 +784,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
@@ -811,7 +812,7 @@ export default function NewEvent(
 
                                                                 const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
                                                                 const totalMinutes = startMinute + durationMinutes;
-                                                                
+
                                                                 const endHour = startHour + Math.floor(totalMinutes / 60);
                                                                 const endMinute = totalMinutes % 60;
 
@@ -848,7 +849,7 @@ export default function NewEvent(
                                         Resumo do agendamento
                                     </h1>
                                     <InformationCard
-                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
+                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} userName={!personalList.isLoading && personalList.data?.[0]?.nome} useUserImage={true} />}
                                         title="Personal Trainer"
                                         subtitle={!personalList.isLoading && personalList.data?.[0]?.nome || ""}
                                         subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}

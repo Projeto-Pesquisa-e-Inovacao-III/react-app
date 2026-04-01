@@ -4,6 +4,7 @@ import { Check, RefreshCw, X, MapPin, Calendar, Clock } from "lucide-react";
 import styles from "./AppointmentCard.module.css";
 import { TypeContext } from "../../App";
 import { useContext } from "react";
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 const STATUS_CONFIG = {
   APROVADO: { label: "Marcado", variant: "confirmed" },
@@ -94,17 +95,11 @@ export function AppointmentCard(props: Props) {
           [styles.sessionCardLeftMobile]: isMobile,
         })}>
           <div className={styles.sessionCardUser}>
-            {hasValidPhoto ? (
-              <img
-                src={props.photoUrl}
-                alt={props.name}
-                className={styles.sessionCardAvatar}
-              />
-            ) : (
-              <div className={styles.sessionCardAvatar}>
-                {getInitials(props.name)}
-              </div>
-            )}
+            <UserAvatar
+            withUsernameClassName="w-10! h-10!"
+              userName={props.name}
+              foto={props.photoUrl}
+            />
 
             <div style={{ minWidth: 0 }}>
               <p className={styles.sessionCardName}>{props.name}</p>
