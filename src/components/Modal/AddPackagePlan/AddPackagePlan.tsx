@@ -3,7 +3,7 @@ import Button from "../../Button/Button";
 import styles from "./AddPackagePlan.module.css";
 import Input from "../../Inputs/Input/Input";
 import { ArrowLeft, Banknote, Calendar, CalendarSync, CheckCircle2, Eye, EyeOff, HeartPulse, Home, Info, PlusCircle, Tag, Trash2, Users, X, XCircle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import useModalClose from "../../../hooks/useModalClose";
 import { newProductExhibition, updateProductExhibition } from "../../../constants/products";
 import type { ProductExhibition } from "../../../models/products";
@@ -16,6 +16,7 @@ import { PackageCard } from "../../PackageCard/PackageCard";
 import useModal from "../../../hooks/useModal";
 import ErrorModal from "../ErrorModal/ErrorModal";
 import classnames from "classnames";
+import ConfirmCloseModal from "../ConfirmCloseModal/ConfirmCloseModal";
 
 type AddPackagePlanProps = {
     onClose: React.Dispatch<React.SetStateAction<boolean>>;
@@ -72,6 +73,44 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
             ],
             quantity: 10
         });
+    }
+
+    const [showConfirmClose, setShowConfirmClose] = useState(false);
+    const initialPackageInfo = useRef({
+        name: packageValues?.titulo || "",
+        type: packageValues?.tipoAula || "",
+        price: packageValues?.preco || "",
+        deadline: packageValues?.duracaoMes?.toString() || "",
+        benefits: packageValues?.beneficios ? packageValues.beneficios.map(b => b.valor) : [],
+        quantity: packageValues?.quantidadeAula || null
+    });
+
+    // 3. Função para detectar mudanças
+    function hasUnsavedChanges(): boolean {
+        const initial = initialPackageInfo.current;
+        return (
+            packageInfo.name !== initial.name ||
+            packageInfo.type !== initial.type ||
+            packageInfo.price !== initial.price ||
+            packageInfo.deadline !== initial.deadline ||
+            packageInfo.quantity !== initial.quantity ||
+            JSON.stringify(packageInfo.benefits) !== JSON.stringify(initial.benefits)
+        );
+    }
+
+    // 4. Função que intercepta o fechamento
+    function handleRequestClose() {
+        if (hasUnsavedChanges()) {
+            setShowConfirmClose(true);
+        } else {
+            handleAnimatedClose();
+        }
+    }
+
+    // 5. Confirmar descarte e fechar
+    function handleConfirmDiscard() {
+        setShowConfirmClose(false);
+        handleAnimatedClose();
     }
 
     function handleAddBenefit() {
@@ -140,17 +179,17 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
             duracaoMes: parseInt(packageInfo.deadline || "12")
         }
 
-    updateProductExhibition(packageValues?.id, data).then((res) => {
-        console.log("Pacote editado com sucesso!");
-        console.log("Response:", res);
-        callSuccessModal();
+        updateProductExhibition(packageValues?.id, data).then((res) => {
+            console.log("Pacote editado com sucesso!");
+            console.log("Response:", res);
+            callSuccessModal();
 
-        if (packageCreated && packageValues?.id) {
-            packageCreated(prev => prev.filter(pkg => pkg.id !== packageValues.id));
-            packageCreated(prev => [...prev, res.data]);
-        }
-        onClose(true);
-        setLoading(false);
+            if (packageCreated && packageValues?.id) {
+                packageCreated(prev => prev.filter(pkg => pkg.id !== packageValues.id));
+                packageCreated(prev => [...prev, res.data]);
+            }
+            onClose(true);
+            setLoading(false);
 
         }).catch((error) => {
             console.error("Erro ao editar pacote:", error);
@@ -174,13 +213,31 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         ref: packageCard,
         callback: () => {
             if (openModal) return;
-            handleAnimatedClose()
+            handleRequestClose();
         }
     });
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
 
     const [openPreviewMobile, setOpenPreviewMobile] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                handleRequestClose();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown, true); // capture: true = roda antes
+        return () => document.removeEventListener("keydown", handleKeyDown, true);
+    }, [packageInfo]);
+
+    const classTypeValues = useMemo(() => [
+        { icon: <Users size={20} fill="#093A5D" color='#093A5D' />, label: "Presencial", value: "PRESENCIAL" },
+        { icon: <Home size={20} color='#093A5D' />, label: "Residencial", value: "RESIDENCIAL" },
+        { icon: <HeartPulse size={20} color='#093A5D' />, label: "Funcional", value: "FUNCIONAL" }
+    ], []);
 
     return (
         <>
@@ -201,7 +258,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
                         {isMobile && (
                             <div className={styles.mobileHeader}>
-                                <button className={styles.mobileHeaderBack} type="button" onClick={handleAnimatedClose}>
+                                <button className={styles.mobileHeaderBack} type="button" onClick={handleRequestClose}>
                                     <ArrowLeft size={22} color="#1e293b" />
                                 </button>
                                 <span className={styles.mobileHeaderTitle}>{title}</span>
@@ -252,7 +309,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
                                 <div className="flex items-center justify-between mb-4! w-full">
                                     <h1 className="mb-0!">{title}</h1>
-                                    <X size={30} color="#909fb5" cursor={"pointer"} onClick={handleAnimatedClose} />
+                                    <X size={30} color="#909fb5" cursor={"pointer"} onClick={handleRequestClose} />
                                 </div>
                             )}
                             {!packageInfo ? (
@@ -308,140 +365,132 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     </div>
 
 
-                            {isMobile ? (
-                                <div className={styles.inputContainer}>
-                                    <span className={styles.mobileLabel}>Modalidade</span>
-                                    <Select
-                                        id="select-type-class"
-                                        onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
-                                        defaultValue={packageInfo.type || "PRESENCIAL"}
-                                        values={[
-                                            { icon: <Users size={20} fill="#093a5d" color='#093a5d' />, label: "Presencial", value: "PRESENCIAL" },
-                                            { icon: <Home size={20} color='#093a5d' />, label: "Residencial", value: "RESIDENCIAL" },
-                                            { icon: <HeartPulse size={20} color='#093a5d' />, label: "Funcional", value: "FUNCIONAL" }
-                                        ]}
-                                        triggerClassName={styles.mobileSelectTrigger}
-                                        triggerWrapperClassName={styles.mobileSelectTriggerWrapper}
-                                        selectWrapperClassName={styles.mobileSelectWrapper}
-                                        containerClassName={styles.mobileSelectContainer}
-                                        setOpenSelectId={setOpenSelectId}
-                                        openSelectId={openSelectId}
-                                        showSelectAll={false}
-                                    />
-                                </div>
-                            ) : (
-                                <div className={`${styles.inputContainer} ${styles.inputContainerFirst}`}>
-                                    <div className="flex gap-5">
-                                        <Select
-                                            id="select-type-class"
-                                            label="Modalidade"
-                                            onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
-                                            defaultValue="PRESENCIAL"
-                                            values={[
-                                                { icon: <Users size={20} fill="#093a5d" color='#093a5d' />, label: "Presencial", value: "PRESENCIAL" },
-                                                { icon: <Home size={20} color='#093a5d' />, label: "Residencial", value: "RESIDENCIAL" },
-                                                { icon: <HeartPulse size={20} color='#093a5d' />, label: "Funcional", value: "FUNCIONAL" }
-                                            ]}
-                                            triggerClassName="h-10! w-full!"
-                                            triggerWrapperClassName="h-10! w-full!"
-                                            selectWrapperClassName="h-10! w-full!"
-                                            containerClassName="w-full flex-1"
-                                            setOpenSelectId={setOpenSelectId}
-                                            openSelectId={openSelectId}
-                                            showSelectAll={false}
-                                        />
+                                    {isMobile ? (
                                         <div className={styles.inputContainer}>
-                                            <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093a5d' />} label="Preço (R$)" type="number" allowDecimals={true} value={packageInfo.price} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })} />
+                                            <span className={styles.mobileLabel}>Modalidade</span>
+                                            <Select
+                                                id="select-type-class"
+                                                onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
+                                                defaultValue={packageInfo.type || "PRESENCIAL"}
+                                                values={classTypeValues}
+                                                triggerClassName={styles.mobileSelectTrigger}
+                                                triggerWrapperClassName={styles.mobileSelectTriggerWrapper}
+                                                selectWrapperClassName={styles.mobileSelectWrapper}
+                                                containerClassName={styles.mobileSelectContainer}
+                                                setOpenSelectId={setOpenSelectId}
+                                                openSelectId={openSelectId}
+                                                showSelectAll={false}
+                                            />
                                         </div>
-                                    </div>
-                                </div>
-                            )}
+                                    ) : (
+                                        <div className={`${styles.inputContainer} ${styles.inputContainerFirst}`}>
+                                            <div className="flex gap-5">
+                                                <Select
+                                                    id="select-type-class"
+                                                    label="Modalidade"
+                                                    onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
+                                                    defaultValue="PRESENCIAL"
+                                                    values={classTypeValues}
+                                                    triggerClassName="h-10! w-full!"
+                                                    triggerWrapperClassName="h-10! w-full!"
+                                                    selectWrapperClassName="h-10! w-full!"
+                                                    containerClassName="w-full flex-1"
+                                                    setOpenSelectId={setOpenSelectId}
+                                                    openSelectId={openSelectId}
+                                                    showSelectAll={false}
+                                                />
+                                                <div className={styles.inputContainer}>
+                                                    <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" allowDecimals={true} value={packageInfo.price} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })} />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
 
 
-                            {isMobile && (
-                                <div className={styles.mobileRow}>
-                                    <div className={styles.mobileFieldHalf}>
-                                        <InputWithIcon
-                                            id="price"
-                                            classNameInput="bg-gray-100! rounded-xl border-none!"
-                                            placeholder="0,00"
-                                            icon={<Banknote size={20} color='#093a5d' />}
-                                            label="Preço (R$)"
-                                            allowDecimals={true}
-                                            type="number"
-                                            value={packageInfo.price}
-                                            onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })}
-                                        />
-                                    </div>
-                                    <div className={styles.mobileFieldHalf}>
-                                        <InputWithIcon
-                                            id="deadline-mobile"
-                                            classNameInput="bg-gray-100! rounded-xl border-none!"
-                                            placeholder="Ex: 3"
-                                            icon={<Calendar size={20} color='#093a5d' />}
-                                            label="Duração (Meses)"
-                                            type="number"
-                                            value={packageInfo.deadline}
-                                            onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })}
-                                        />
-                                    </div>
-                                </div>
-                            )}
+                                    {isMobile && (
+                                        <div className={styles.mobileRow}>
+                                            <div className={styles.mobileFieldHalf}>
+                                                <InputWithIcon
+                                                    id="price"
+                                                    classNameInput="bg-gray-100! rounded-xl border-none!"
+                                                    placeholder="0,00"
+                                                    icon={<Banknote size={20} color='#093a5d' />}
+                                                    label="Preço (R$)"
+                                                    allowDecimals={true}
+                                                    type="number"
+                                                    value={packageInfo.price}
+                                                    onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })}
+                                                />
+                                            </div>
+                                            <div className={styles.mobileFieldHalf}>
+                                                <InputWithIcon
+                                                    id="deadline-mobile"
+                                                    classNameInput="bg-gray-100! rounded-xl border-none!"
+                                                    placeholder="Ex: 3"
+                                                    icon={<Calendar size={20} color='#093a5d' />}
+                                                    label="Duração (Meses)"
+                                                    type="number"
+                                                    value={packageInfo.deadline}
+                                                    onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })}
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
 
 
-                            {!isMobile && (
-                                <div className="flex gap-5 mb-2!">
-                                    <div className={styles.inputContainer}>
-                                        <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!"  icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value)})}/>
-                                    </div>
-                                    <div className={styles.inputContainer}>
-                                        <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093a5d' />} label="Validade (meses)" type="number" value={packageInfo.deadline} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })} />
-                                    </div>
-                                </div>
-                            )}
+                                    {!isMobile && (
+                                        <div className="flex gap-5 mb-2!">
+                                            <div className={styles.inputContainer}>
+                                                <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value) })} />
+                                            </div>
+                                            <div className={styles.inputContainer}>
+                                                <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093a5d' />} label="Validade (meses)" type="number" value={packageInfo.deadline} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })} />
+                                            </div>
+                                        </div>
+                                    )}
 
 
-                            {isMobile && (
-                                <div className={styles.inputContainer}>
-                                    <InputWithIcon
-                                        id="quantity"
-                                        classNameInput="bg-gray-100! rounded-xl border-none!"
-                                        customClassName="mt-3!"
-                                        placeholder="Ex: 12"
-                                        icon={<CalendarSync size={20} color='#093a5d' />}
-                                        label="Aulas por Período"
-                                        type="number"
-                                        value={packageInfo.quantity}
-                                        onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value) })}
-                                    />
-                                </div>
-                            )}
+                                    {isMobile && (
+                                        <div className={styles.inputContainer}>
+                                            <InputWithIcon
+                                                id="quantity"
+                                                classNameInput="bg-gray-100! rounded-xl border-none!"
+                                                customClassName="mt-3!"
+                                                placeholder="Ex: 12"
+                                                icon={<CalendarSync size={20} color='#093a5d' />}
+                                                label="Aulas por Período"
+                                                type="number"
+                                                value={packageInfo.quantity}
+                                                onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value) })}
+                                            />
+                                        </div>
+                                    )}
 
                                     <div className={styles.mobileBenefitsHeader}>
                                         <span className={styles.labelBenefits}>Benefícios inclusos <span className="text-slate-500">({packageInfo.benefits.length}/8)</span></span>
 
                                     </div>
 
-                            {packageInfo.benefits.map((benefit, index) => (
-                                <div className={styles.inputContainerBenefit} key={index}>
-                                    {isMobile && <CheckCircle2 size={18} color="#16a34a" className="shrink-0" />}
-                                    <Input
-                                        id={`benefit-${index}`}
-                                        classnameInput="px-3"
-                                        classname={isMobile ? "bg-gray-100 w-full rounded-xl text-sm" : "bg-gray-100 w-full rounded-xl"}
-                                        type="text"
-                                        value={benefit}
-                                        onInputChange={(value: string) => handleBenefitChange(index, value)}
-                                        onClickIcon={() => handleRemoveBenefit(index)}
-                                        limit={50}
-                                    />
-                                    {isMobile ? (
-                                        <Trash2 color="#ca0909" cursor={"pointer"} size={22} onClick={() => handleRemoveBenefit(index)} />
-                                    ) : (
-                                        <Trash2 color="#ca0909" cursor={"pointer"} onClick={() => handleRemoveBenefit(index)} />
-                                    )}
-                                </div>
-                            ))}
+                                    {packageInfo.benefits.map((benefit, index) => (
+                                        <div className={styles.inputContainerBenefit} key={index}>
+                                            {isMobile && <CheckCircle2 size={18} color="#16a34a" className="shrink-0" />}
+                                            <Input
+                                                id={`benefit-${index}`}
+                                                classnameInput="px-3"
+                                                classname={isMobile ? "bg-gray-100 w-full rounded-xl text-sm" : "bg-gray-100 w-full rounded-xl"}
+                                                type="text"
+                                                value={benefit}
+                                                onInputChange={(value: string) => handleBenefitChange(index, value)}
+                                                onClickIcon={() => handleRemoveBenefit(index)}
+                                                limit={50}
+                                            />
+                                            {isMobile ? (
+                                                <Trash2 color="#ca0909" cursor={"pointer"} size={22} onClick={() => handleRemoveBenefit(index)} />
+                                            ) : (
+                                                <Trash2 color="#ca0909" cursor={"pointer"} onClick={() => handleRemoveBenefit(index)} />
+                                            )}
+                                        </div>
+                                    ))}
 
                                     <div className={styles.buttonContainer}>
                                         {packageInfo.benefits.length < 8 ? (
@@ -483,13 +532,13 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     title={"Cancelar"}
                                     classNameDiv={styles.mobileBottomBtnWrapper}
                                     classNameVariable={styles.mobileBottomBtnCancell}
-                                    onClick={handleAnimatedClose}
+                                    onClick={handleRequestClose}
                                 />
                             </div>
                         ) : (
                             <div className={styles.modalButtons}>
                                 <Button loading={loading} type="button" title={isEdit ? "Editar" : "Adicionar"} classNameDiv={`${styles.buttonsAction}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.addButton}`} onClick={isEdit ? handleEditPackage : handleAddPackage} />
-                                <Button type="button" title="Cancelar" classNameDiv={`${styles.buttonsAction} ${styles.addButtonAct}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.cancelButton}`} onClick={handleAnimatedClose} />
+                                <Button type="button" title="Cancelar" classNameDiv={`${styles.buttonsAction} ${styles.addButtonAct}`} classNameVariable={`${styles.buttonAddBenefit} ${styles.cancelButton}`} onClick={handleRequestClose} />
                             </div>
                         )}
                     </div>
@@ -522,6 +571,14 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                     title={textModal.title}
                     content={textModal.content}
                     closeThen={() => setOpenModal(null)}
+                />
+            )}
+
+            {showConfirmClose && (
+                <ConfirmCloseModal
+                    isOpen={showConfirmClose}
+                    onClose={() => setShowConfirmClose(false)}
+                    onConfirm={handleConfirmDiscard}
                 />
             )}
         </>
