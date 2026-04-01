@@ -303,7 +303,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             value={packageInfo.name}
                                             type="text"
                                             onInputChange={(name: string) => setPackageInfo({ ...packageInfo, name })}
-                                            icon={<Tag color='#093A5D' />}
+                                            icon={<Tag color='#093a5d' />}
                                         />
                                     </div>
 
@@ -316,9 +316,9 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                         onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
                                         defaultValue={packageInfo.type || "PRESENCIAL"}
                                         values={[
-                                            { icon: <Users size={20} fill="#093A5D" color='#093A5D' />, label: "Presencial", value: "PRESENCIAL" },
-                                            { icon: <Home size={20} color='#093A5D' />, label: "Residencial", value: "RESIDENCIAL" },
-                                            { icon: <HeartPulse size={20} color='#093A5D' />, label: "Funcional", value: "FUNCIONAL" }
+                                            { icon: <Users size={20} fill="#093a5d" color='#093a5d' />, label: "Presencial", value: "PRESENCIAL" },
+                                            { icon: <Home size={20} color='#093a5d' />, label: "Residencial", value: "RESIDENCIAL" },
+                                            { icon: <HeartPulse size={20} color='#093a5d' />, label: "Funcional", value: "FUNCIONAL" }
                                         ]}
                                         triggerClassName={styles.mobileSelectTrigger}
                                         triggerWrapperClassName={styles.mobileSelectTriggerWrapper}
@@ -338,9 +338,9 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
                                             defaultValue="PRESENCIAL"
                                             values={[
-                                                { icon: <Users size={20} fill="#093A5D" color='#093A5D' />, label: "Presencial", value: "PRESENCIAL" },
-                                                { icon: <Home size={20} color='#093A5D' />, label: "Residencial", value: "RESIDENCIAL" },
-                                                { icon: <HeartPulse size={20} color='#093A5D' />, label: "Funcional", value: "FUNCIONAL" }
+                                                { icon: <Users size={20} fill="#093a5d" color='#093a5d' />, label: "Presencial", value: "PRESENCIAL" },
+                                                { icon: <Home size={20} color='#093a5d' />, label: "Residencial", value: "RESIDENCIAL" },
+                                                { icon: <HeartPulse size={20} color='#093a5d' />, label: "Funcional", value: "FUNCIONAL" }
                                             ]}
                                             triggerClassName="h-10! w-full!"
                                             triggerWrapperClassName="h-10! w-full!"
@@ -351,7 +351,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             showSelectAll={false}
                                         />
                                         <div className={styles.inputContainer}>
-                                            <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" allowDecimals={true} value={packageInfo.price} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })} />
+                                            <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093a5d' />} label="Preço (R$)" type="number" allowDecimals={true} value={packageInfo.price} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })} />
                                         </div>
                                     </div>
                                 </div>
@@ -365,7 +365,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             id="price"
                                             classNameInput="bg-gray-100! rounded-xl border-none!"
                                             placeholder="0,00"
-                                            icon={<Banknote size={20} color='#093A5D' />}
+                                            icon={<Banknote size={20} color='#093a5d' />}
                                             label="Preço (R$)"
                                             allowDecimals={true}
                                             type="number"
@@ -378,7 +378,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             id="deadline-mobile"
                                             classNameInput="bg-gray-100! rounded-xl border-none!"
                                             placeholder="Ex: 3"
-                                            icon={<Calendar size={20} color='#093A5D' />}
+                                            icon={<Calendar size={20} color='#093a5d' />}
                                             label="Duração (Meses)"
                                             type="number"
                                             value={packageInfo.deadline}
@@ -392,10 +392,10 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                             {!isMobile && (
                                 <div className="flex gap-5 mb-2!">
                                     <div className={styles.inputContainer}>
-                                        <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!"  icon={<CalendarSync size={50} color='#093A5D' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value)})}/>
+                                        <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!"  icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" value={packageInfo.quantity} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value)})}/>
                                     </div>
                                     <div className={styles.inputContainer}>
-                                        <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093A5D' />} label="Validade (meses)" type="number" value={packageInfo.deadline} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })} />
+                                        <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093a5d' />} label="Validade (meses)" type="number" value={packageInfo.deadline} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })} />
                                     </div>
                                 </div>
                             )}
@@ -408,7 +408,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                         classNameInput="bg-gray-100! rounded-xl border-none!"
                                         customClassName="mt-3!"
                                         placeholder="Ex: 12"
-                                        icon={<CalendarSync size={20} color='#093A5D' />}
+                                        icon={<CalendarSync size={20} color='#093a5d' />}
                                         label="Aulas por Período"
                                         type="number"
                                         value={packageInfo.quantity}

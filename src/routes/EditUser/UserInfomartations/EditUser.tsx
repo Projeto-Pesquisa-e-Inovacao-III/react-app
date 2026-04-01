@@ -24,6 +24,7 @@ import Select from "../../../components/Select/Select.tsx";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
 import { BASE_URL } from "../../../system.ts";
 import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
+import UserAvatar from "../../../components/UserAvatar/UserAvatar.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -350,7 +351,7 @@ export default function EditUser() {
             <div className={styles.fotoArea} >
               <div className={classNames("flex gap-8 items-center", { ["flex flex-col text-center gap-8 items-center"]: isMobile })}>
                 <div className="bg-gray-300 flex items-center rounded-full ">
-                  {userImage ? (
+                  {/* {userImage ? (
                     <div className="w-max">
                       <UserImg
                         classname="border-2 border-gray-300"
@@ -362,7 +363,8 @@ export default function EditUser() {
                     </div>
                   ) : (
                     <User width={150} height={150} />
-                  )}
+                  )} */}
+                  <UserAvatar withUsernameClassName="w-32! h-32! text-3xl!" isLoading={userInfo.isLoading} foto={userImage} userName={state.firstName}/>
                 </div>
 
                 <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>

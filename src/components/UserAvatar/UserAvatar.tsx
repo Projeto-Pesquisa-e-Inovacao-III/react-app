@@ -12,10 +12,11 @@ interface UserAvatarProps {
   useUserImage?: boolean;
   useUsername?: boolean;
   imgClassName?: string;
+  withUsernameClassName?: string;
   isLoading?: boolean;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, isLoading = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, withUsernameClassName, isLoading = false }: UserAvatarProps) {
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
@@ -53,7 +54,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           classname={imgClassName}
         />
         :
-        <div className={classNames(styles.userWithoutAvatar, { [styles.withUsername]: useUsername })}>
+        <div className={classNames(styles.userWithoutAvatar, { [styles.withUsername]: useUsername }, withUsernameClassName)}>
           {getInitials(userName || "")}
         </div>
       }

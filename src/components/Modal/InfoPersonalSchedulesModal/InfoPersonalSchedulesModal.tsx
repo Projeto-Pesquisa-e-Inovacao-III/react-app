@@ -57,7 +57,7 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                 <CountdownCircleTimer
                     isPlaying
                     duration={1}
-                    colors="#093A5D"
+                    colors="#093a5d"
                     size={50}
                     strokeWidth={3}
                     onComplete={() => {

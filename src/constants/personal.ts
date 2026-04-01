@@ -4,8 +4,8 @@ import type { TimeSlot } from "../routes/Personal/SetAvailability/SetAvailabilit
 import { api } from "../system";
 import { ptBR } from "date-fns/locale";
 
-export function listStudents() {
-    return api.get(`/alunos`);
+export function listStudents(page: number = 0) {
+    return api.get(`/alunos`, { params: { page } });
 }
 
 export function editPersonalProfile(data: PersonalDTO) {

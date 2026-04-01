@@ -8,23 +8,23 @@ import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIco
 import { SearchIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { ListStudents } from "../../../models/students";
+import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
 
 
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
-    const users = useQuery({
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, loadMoreRef, isLoading } = useInfinitePagination<ListStudents[number]>({
         queryKey: ["students"],
-        queryFn: async () => {
-            const response = await listStudents();
-            return response.data as ListStudents;
+        queryFn: async (page) => {
+            const { data } = await listStudents(page);
+            console.log("API response:", data);
+            return data;
         }
     });
 
-    console.log(users.data);
-
-    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(users.data ?? [], {
+    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(data ?? [], {
         searchName: (item) => [item.nome],
     });
 
@@ -42,7 +42,12 @@ export default function ListUsers() {
                     onInputChange={setFilterSearch}
                 />
             </div>
-            <UsersTable input={filterSearch} users={filteredData} isLoading={users.isLoading} />
+            <UsersTable input={filterSearch} users={filteredData} isLoading={isLoading} />
+
+            {/* TBD: Make sure this element is at the end of the scrolling list! */}
+            <div ref={loadMoreRef} style={{ height: "20px", display: "flex", justifyContent: "center" }}>
+                {isFetchingNextPage && <span>Carregando mais usuários...</span>}
+            </div>
         </div>
     )
 }

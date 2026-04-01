@@ -26,7 +26,7 @@
 
     & h2 {
         margin: 0;
-        color: #093a5d;
+        color: var(--indigo);
         font-size: 24px;
         font-weight: 700;
     }
@@ -64,7 +64,7 @@
 
     & h2 {
         margin: 0;
-        color: #093a5d;
+        color: var(--indigo);
         font-size: 24px;
         font-weight: 700;
     }
@@ -91,11 +91,12 @@
 }
 
 @keyframes modalEnter {
-    from { 
+    from {
         opacity: 0;
         transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
     }
-    to { 
+
+    to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
@@ -106,6 +107,7 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+
     to {
         opacity: 0;
         transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
@@ -113,11 +115,21 @@
 }
 
 @keyframes backdropEnter {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes backdropLeave {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
 }

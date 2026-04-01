@@ -27,7 +27,7 @@
 
 .titleX h2 {
     margin: 0;
-    color: #093a5d;
+    color: var(--indigo);
     font-size: 24px;
     font-weight: 700;
 }
