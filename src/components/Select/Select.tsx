@@ -39,13 +39,6 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
   console.log(values)
 
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
-  useEffect(() => {
-    if (defaultValue && onSelectStatusChange) {
-      onSelectStatusChange(defaultValue);
-      const defaultOption = values?.find(option => option.value === defaultValue);
-      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
-    }
-  }, [defaultValue]);
 
   const selectRef = useRef<HTMLDivElement>(null);
 
