@@ -27,6 +27,7 @@ import InformationCard from "./InformationCard/InformationCard";
 import type { HorariosPersonal } from "../../../models/personal";
 import { getUserAddresses } from "../../../constants/address";
 import useModalClose from "../../../hooks/useModalClose";
+import ConfirmCloseModal from "../ConfirmCloseModal/ConfirmCloseModal";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -120,6 +121,59 @@ export default function NewEvent(
     const [step, setStep] = useState<number>(1);
 
     const queryClient = useQueryClient();
+
+    const [showConfirmClose, setShowConfirmClose] = useState(false);
+    
+    // Determine initial Address Data based on whether it's Reschedule
+    const initialAddressData = useMemo(() => {
+        if (appoitmentData && isReschedule && appoitmentData?.endereco) {
+            return {
+                postalCode: appoitmentData.endereco.cep?.id || "",
+                address: appoitmentData.endereco.cep?.logradouro || "",
+                city: appoitmentData.endereco.cep?.localidade || "",
+                state: appoitmentData.endereco.cep?.uf || "",
+                number: appoitmentData.endereco.numero || "",
+                complement: appoitmentData.endereco.complemento || ""
+            };
+        }
+        return { postalCode: "", address: "", city: "", state: "", number: "", complement: "" };
+    }, [appoitmentData, isReschedule]);
+
+    function hasUnsavedChanges() {
+        return (
+            newEventDate !== (clickedDate || "") ||
+            newEventStartHour !== undefined ||
+            selectedType !== "PRESENCIAL" ||
+            addressData.postalCode !== initialAddressData.postalCode ||
+            addressData.number !== initialAddressData.number ||
+            addressData.complement !== initialAddressData.complement
+        );
+    }
+
+    function handleRequestClose() {
+        if (hasUnsavedChanges()) {
+            setShowConfirmClose(true);
+        } else {
+            handleClose();
+        }
+    }
+
+    function handleConfirmDiscard() {
+        setShowConfirmClose(false);
+        handleClose();
+    }
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                handleRequestClose();
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown, true);
+        return () => document.removeEventListener("keydown", handleKeyDown, true);
+    }, [newEventDate, newEventStartHour, selectedType, addressData]);
 
     useEffect(() => {
         console.log("newEventStartHour atualizado:", newEventStartHour);
@@ -562,7 +616,7 @@ export default function NewEvent(
             <div className={classnames(styles.overlay, {
                 [styles.overlayClosing]: isClosing,
                 [styles.overlayEnter]: !isClosing
-            })} onClick={handleClose}></div>
+            })} onClick={handleRequestClose}></div>
 
             <div className={classnames(styles.newEventForm, {
                 [styles.newEventFormMobile]: isMobile,
@@ -665,7 +719,7 @@ export default function NewEvent(
 
                             <div className={styles.closeButtonHeader}>
                                 <svg
-                                    onClick={handleClose}
+                                    onClick={handleRequestClose}
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
                                     height="24"
@@ -1066,6 +1120,14 @@ export default function NewEvent(
                     closeThen={() => setOpenModal(null)}
                     title={textModal.title}
                     content={textModal.content}
+                />
+            )}
+
+            {showConfirmClose && (
+                <ConfirmCloseModal
+                    isOpen={showConfirmClose}
+                    onClose={() => setShowConfirmClose(false)}
+                    onConfirm={handleConfirmDiscard}
                 />
             )}
         </>
