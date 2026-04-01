@@ -39,6 +39,7 @@
 .title {
     font-weight: 600;
     color: var(--indigo, #1d4ed8);
+    font-size: 18px;
 }
 
 .contentModal {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import useModalClose from '../../../hooks/useModalClose';
 import styles from "./ConfirmCloseModal.module.css";
 import useMobile from '../../../hooks/isMobile';
