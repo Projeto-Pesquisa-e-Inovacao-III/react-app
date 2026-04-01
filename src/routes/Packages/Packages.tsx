@@ -8,6 +8,7 @@ import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import AddPackagePlan from "../../components/Modal/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
+import PagBankModal from "../../components/Modal/PagBankModal/PagBankModal";
 import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
@@ -15,7 +16,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -39,19 +40,20 @@ export function Packages() {
     const isPersonal = type?.type === "personal";
 
     function handleBuyClick(id: number) {
-        buyProductExhibition(id).then((response) => {
-            const href: string = response.data.href
-            window.location.href = href;
-            // setSuccessModalInfos({
-            //     title: "Compra Concluída",
-            //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-            // });
-            // TODO: return with data?
-            // setOpenModal("success");
-        }).catch((error) => {
-            console.error("Erro ao comprar o pacote:", error);
-            handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
-        });
+        setOpenModal("loadingPagBank");
+        // buyProductExhibition(id).then((response) => {
+        //     const href: string = response.data.href
+        //     window.location.href = href;
+        //     // setSuccessModalInfos({
+        //     //     title: "Compra Concluída",
+        //     //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
+        //     // });
+        //     // TODO: return with data?
+        //     // setOpenModal("success");
+        // }).catch((error) => {
+        //     console.error("Erro ao comprar o pacote:", error);
+        //     handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
+        // });
     };
 
     function handleCloseModal() {
@@ -562,6 +564,12 @@ export function Packages() {
             {
                 openModal === "success" && (
                     <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                )
+            }
+
+            {
+                openModal === "loadingPagBank" && (
+                    <PagBankModal isMobile={isMobile} />
                 )
             }
         </>
