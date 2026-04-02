@@ -17,8 +17,6 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
         nav("/users/view-user-data?id=" + id);
     }
 
-    console.log("props.users", props);
-
     return (
         <div className={classNames(styles.usersTableContainer, {
             [styles.usersTableContainerMobile]: isMobile

@@ -6,17 +6,15 @@ import { listStudents } from "../../../constants/personal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import type { ListStudents } from "../../../models/students";
 import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
-import { useState } from "react";
 
 
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
-    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, loadMoreRef, isLoading } = useInfinitePagination<ListStudents[number]>({
+    const { data, isFetchingNextPage, loadMoreRef, isLoading } = useInfinitePagination<ListStudents[number]>({
         queryKey: ["students"],
         queryFn: async (page) => {
             const response = await listStudents(page);
@@ -28,7 +26,13 @@ export default function ListUsers() {
 
     console.log("data", data)
 
-    const [filterSearch, setFilterSearch] = useState<string>("");
+
+        const {
+            filterSearch,
+            setFilterSearch
+        } = useSearchFilter(data ?? [], {
+            searchName: (item: ListStudents[number]) => [item.nome],
+        });
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>

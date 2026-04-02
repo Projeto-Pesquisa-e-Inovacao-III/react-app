@@ -23,15 +23,6 @@ const PENDING_STATUSES = [
   "PENDENTE_PERSONAL_CONCLUIR",
 ];
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-}
-
 type Props = {
   agendamentoId: number;
   status: keyof typeof STATUS_CONFIG;
@@ -65,8 +56,6 @@ export function AppointmentCard(props: Props) {
       fn?.();
     };
   }
-
-  const hasValidPhoto = props.photoUrl && props.photoUrl !== "string" && props.photoUrl !== "";
 
   return (
     <div

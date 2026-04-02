@@ -364,7 +364,7 @@ export default function EditUser() {
                   ) : (
                     <User width={150} height={150} />
                   )} */}
-                  <UserAvatar withUsernameClassName="w-32! h-32! text-3xl!" isLoading={userInfo.isLoading} foto={userImage} userName={state.firstName}/>
+                  <UserAvatar withUsernameClassName="w-32! h-32! text-3xl!" imgClassName="w-40! h-40!" isLoading={userInfo.isLoading} userName={state.firstName}/>
                 </div>
 
                 <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>

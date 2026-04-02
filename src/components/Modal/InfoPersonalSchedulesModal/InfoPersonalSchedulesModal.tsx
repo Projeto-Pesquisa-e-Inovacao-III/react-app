@@ -68,16 +68,18 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                 </CountdownCircleTimer>
 
                 <div className={styles.cardList}>
-                    {schedules.map((agendamento: any, index: number) => {
+                    {schedules.map((agendamento: any) => {
                         const formattedDate = agendamento.data 
                             ? format(parse(agendamento.data, "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })
                             : "";
 
                         return (
                             <SimpleAppointmentCard
-                                key={index}
+                                key={agendamento.id}
                                 name={agendamento.alunoName || ""}
                                 date={formattedDate}
+                                id={agendamento.id}
+                                pathImage={agendamento.pathImage}
                             />
                         );
                     })}
