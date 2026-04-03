@@ -41,19 +41,19 @@ export function Packages() {
 
     function handleBuyClick(id: number) {
         setOpenModal("loadingPagBank");
-        // buyProductExhibition(id).then((response) => {
-        //     const href: string = response.data.href
-        //     window.location.href = href;
-        //     // setSuccessModalInfos({
-        //     //     title: "Compra Concluída",
-        //     //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-        //     // });
-        //     // TODO: return with data?
-        //     // setOpenModal("success");
-        // }).catch((error) => {
-        //     console.error("Erro ao comprar o pacote:", error);
-        //     handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
-        // });
+        buyProductExhibition(id).then((response) => {
+            const href: string = response.data.href
+            window.location.href = href;
+            // setSuccessModalInfos({
+            //     title: "Compra Concluída",
+            //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
+            // });
+            // TODO: return with data?
+            // setOpenModal("success");
+        }).catch((error) => {
+            console.error("Erro ao comprar o pacote:", error);
+            // handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
+        });
     };
 
     function handleCloseModal() {
