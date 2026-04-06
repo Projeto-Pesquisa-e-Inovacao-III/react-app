@@ -266,7 +266,7 @@ export default function SetAvailability() {
 
     async function verifyIfHasSchedules(day: string) {
         const schedules = await verifySchedules(day).then(res => {
-            return res.data;
+            return res.data.content;
         });
 
         return schedules;
@@ -293,6 +293,8 @@ export default function SetAvailability() {
         setSchedule((prev) => {
             const next = [...prev];
             const currentEnabled = next[dayIndex].slots.some(s => s.tipo === "DISPONIVEL" && s.ativo);
+
+
 
             next[dayIndex] = {
                 ...next[dayIndex],
