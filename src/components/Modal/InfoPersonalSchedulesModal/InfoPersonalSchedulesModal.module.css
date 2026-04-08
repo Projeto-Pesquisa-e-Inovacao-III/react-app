@@ -59,6 +59,11 @@
     animation: backdropLeave 0.18s ease-in forwards !important;
 }
 
+.buttonDisabled {
+    background-color: #9ca3af !important;
+    cursor: auto;
+}
+
 @keyframes modalEnter {
     from { 
         opacity: 0; 

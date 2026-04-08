@@ -9,14 +9,24 @@ import useMobile from "../../../hooks/isMobile";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { ChevronLeft, ChevronRight } from "lucide-react";
+
+type PaginationInfo = {
+    number: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+};
 
 type InfoPersonalSchedulesModalProps = {
     closeThen: () => void;
     onConfirm: () => void;
     schedules: any[];
+    pagination?: PaginationInfo | null;
+    fetchPage?: (page: number) => Promise<void>;
 };
 
-export default function InfoPersonalSchedulesModal({ closeThen, schedules, onConfirm }: Readonly<InfoPersonalSchedulesModalProps>) {
+export default function InfoPersonalSchedulesModal({ closeThen, schedules, onConfirm, pagination, fetchPage }: Readonly<InfoPersonalSchedulesModalProps>) {
     const isMobile = useMobile();
     const modalRef = useRef<HTMLDivElement>(null);
     const [enableButton, setEnableButton] = useState(false);
@@ -32,8 +42,14 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
         callback: handleAnimatedClose,
     });
 
-    console.log(schedules)
+    const [page, setPage] = useState(pagination?.number ?? 0);
 
+    async function handlePaginationChange(newPage: number) {
+        setPage(newPage);
+        await fetchPage?.(newPage);
+    }
+
+    console.log(page)
     return (
         <>
             <div
@@ -69,7 +85,7 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
 
                 <div className={styles.cardList}>
                     {schedules.map((agendamento: any) => {
-                        const formattedDate = agendamento.data 
+                        const formattedDate = agendamento.data
                             ? format(parse(agendamento.data, "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })
                             : "";
 
@@ -83,18 +99,38 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                             />
                         );
                     })}
+                    {pagination && pagination.totalPages > 1 && (
+                        <div className="flex gap-3 justify-end">
+                            <SmallerButton
+                                icon={<ChevronLeft />}
+                                classname={`w-22! h-10! items-center ${page === 0 ? styles.buttonDisabled : ""}`}
+                                handleButtonClick={() => {
+                                    if (page > 0) handlePaginationChange(page - 1);
+                                }}
+                            />
+
+                            <SmallerButton
+                                icon={<ChevronRight />}
+                                classname={`w-22! h-10! items-center ${page === pagination.totalPages - 1 ? styles.buttonDisabled : ""}`}
+                                handleButtonClick={() => {
+                                    if (page < pagination.totalPages - 1) handlePaginationChange(page + 1);
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
 
+
                 <div className={isMobile ? styles.buttonsGroupModalMobile : styles.buttonsGroupModal}>
-                    <SmallerButton 
-                        type="button" 
-                        classname={enableButton ? "bg-red-900! h-12!" : "bg-gray-400! h-12 cursor-not-allowed!"} 
-                        title="Desativar" 
+                    <SmallerButton
+                        type="button"
+                        classname={enableButton ? "bg-red-900! h-12!" : "bg-gray-400! h-12 cursor-not-allowed!"}
+                        title="Desativar"
                         disabled={!enableButton}
                         handleButtonClick={() => {
                             onConfirm();
                             handleAnimatedClose();
-                        }} 
+                        }}
                     />
                     <SmallerButton classname="h-12" type="button" title="Cancelar" handleButtonClick={handleAnimatedClose} />
                 </div>

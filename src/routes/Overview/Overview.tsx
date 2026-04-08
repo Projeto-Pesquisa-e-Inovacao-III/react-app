@@ -226,9 +226,10 @@ export function Overview() {
         refetchOnWindowFocus: false,
     })
 
+
     const checkDays = useQuery({
         queryKey: ["disabledDays"],
-        queryFn: () => disabledPersonalDays(),
+        queryFn: () => disabledPersonalDays(personalId.data.id),
         retry: false,
         refetchOnWindowFocus: false,
     })
@@ -305,6 +306,7 @@ export function Overview() {
         enabled: type?.type === "aluno"
     });
 
+
     const personalId = useQuery({
         queryKey: ["personalId"],
         queryFn: () => findUserData(),
@@ -312,7 +314,6 @@ export function Overview() {
         refetchOnWindowFocus: false,
         enabled: type?.type === "personal"
     });
-
 
     const getAvailabilityHoursTomorrowQuery = useQuery({
         queryKey: ["availabilityHoursTomorrow"],
@@ -410,17 +411,17 @@ export function Overview() {
                             )}
                         </div>
                         <div className={classNames(styles.appointmentsSection, { [styles.appointmentsSectionMobile]: isMobile })}>
-                        <AppointmentsSectionContent
-                            isLoading={appointmentsCards.isLoading}
-                            isEmpty={appointmentsCards.data?.length === 0}
-                            userType={type?.type}
-                            isMobile={isMobile}
-                            data={appointmentsCards.data}
-                            onNewEvent={handleClickNewEvent}
-                            hasActivePlan={!!actualPlanQuery?.data?.data}
-                            onPackages={() => nav("/packages")}
-                            onNavigatePackages={() => nav("/packages")}
-                        />
+                            <AppointmentsSectionContent
+                                isLoading={appointmentsCards.isLoading}
+                                isEmpty={appointmentsCards.data?.length === 0}
+                                userType={type?.type}
+                                isMobile={isMobile}
+                                data={appointmentsCards.data}
+                                onNewEvent={handleClickNewEvent}
+                                hasActivePlan={!!actualPlanQuery?.data?.data}
+                                onPackages={() => nav("/packages")}
+                                onNavigatePackages={() => nav("/packages")}
+                            />
                         </div>
                     </div>
 

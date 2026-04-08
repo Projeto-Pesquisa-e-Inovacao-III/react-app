@@ -25,7 +25,7 @@ export default function CardWithoutPlan() {
                     </div>
                     <ul className={styles.featureList}>
                         <TextWithoutPlan text="Plano de treino personalizado" />
-                        <TextWithoutPlan text="Agendamentos de consultoria presencial" />
+                        <TextWithoutPlan text="Agendamentos de aulas com o personal" />
                         <TextWithoutPlan text="Consultoria online via Whatsapp" />
                         <TextWithoutPlan text="Contato direto com o personal" />
                     </ul>

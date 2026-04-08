@@ -6,7 +6,7 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../../utils/mascara";
-import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../../CardInfo/CardInfo";
 import { disabledPersonalDays, getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
@@ -101,7 +101,7 @@ export default function NewEvent(
 
     const checkDays = useQuery({
         queryKey: ["disabledDays"],
-        queryFn: () => disabledPersonalDays(personalList.id),
+        queryFn: () => disabledPersonalDays(personalList.data?.id),
         retry: false,
         refetchOnWindowFocus: false,
         enabled: !disabledDays

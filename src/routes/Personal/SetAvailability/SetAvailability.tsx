@@ -225,6 +225,8 @@ export default function SetAvailability() {
     const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
 
     const [schedulesToInfo, setSchedulesToInfo] = useState<any[] | null>(null);
+    const [schedulesToInfoPagination, setSchedulesToInfoPagination] = useState<any | null>(null);
+    const [schedulesToInfoDay, setSchedulesToInfoDay] = useState<string | null>(null);
     const [dayIndexToToggle, setDayIndexToToggle] = useState<number | null>(null);
 
     useEffect(() => {
@@ -264,22 +266,29 @@ export default function SetAvailability() {
     }, []);
 
 
-    async function verifyIfHasSchedules(day: string) {
-        const schedules = await verifySchedules(day).then(res => {
-            return res.data.content;
-        });
+    async function verifyIfHasSchedules(day: string, page: number = 0, size: number = 3) {
+        const res = await verifySchedules(day, page, size);
+        return { content: res.data.content, pagination: res.data.page };
+    }
 
-        return schedules;
+    async function fetchSchedulesPage(page: number) {
+        if (!schedulesToInfoDay) return;
+        const { content, pagination } = await verifyIfHasSchedules(schedulesToInfoDay, page, 3);
+        setSchedulesToInfo(content);
+        setSchedulesToInfoPagination(pagination);
     }
 
     async function toggleDay(dayIndex: number) {
         const currentEnabled = schedule[dayIndex].slots.some(s => s.tipo === "DISPONIVEL" && s.ativo);
 
         if (currentEnabled) {
-            const dataSchedules = await verifyIfHasSchedules(schedule[dayIndex].day);
-            if (dataSchedules && dataSchedules.length > 0) {
+            const day = schedule[dayIndex].day;
+            const { content, pagination } = await verifyIfHasSchedules(day);
+            if (content && content.length > 0) {
                 setDayIndexToToggle(dayIndex);
-                setSchedulesToInfo(dataSchedules);
+                setSchedulesToInfoDay(day);
+                setSchedulesToInfo(content);
+                setSchedulesToInfoPagination(pagination);
                 return;
             }
         }
@@ -590,12 +599,18 @@ export default function SetAvailability() {
                 <InfoPersonalSchedulesModal
                     closeThen={() => {
                         setSchedulesToInfo(null);
+                        setSchedulesToInfoPagination(null);
+                        setSchedulesToInfoDay(null);
                         setDayIndexToToggle(null);
                     }}
                     schedules={schedulesToInfo}
+                    pagination={schedulesToInfoPagination}
+                    fetchPage={fetchSchedulesPage}
                     onConfirm={() => {
                         confirmToggleDay(dayIndexToToggle);
                         setSchedulesToInfo(null);
+                        setSchedulesToInfoPagination(null);
+                        setSchedulesToInfoDay(null);
                         setDayIndexToToggle(null);
                     }}
                 />

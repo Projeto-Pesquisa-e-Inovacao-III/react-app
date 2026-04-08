@@ -27,7 +27,6 @@
   color: unset;
 }
 
-/* ── Badge de status ── */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -47,7 +46,6 @@
   flex-shrink: 0;
 }
 
-/* Variantes semânticas */
 .badge_pending   { background: #FAEEDA; color: #633806; }
 .badge_pending .badgeDot { background: #BA7517; }
 
@@ -60,7 +58,6 @@
 .badge_cancelled { background: #FCEBEB; color: #791F1F; }
 .badge_cancelled .badgeDot { background: #A32D2D; }
 
-/* ── Tipo de sessão (canto direito do header) ── */
 .sessionCardStatus {
   font-size: 11px;
   font-weight: 500;
@@ -70,7 +67,6 @@
   margin-left: auto;
 }
 
-/* ── Body (info row) ── */
 .sessionCardInfo {
   display: flex;
   align-items: center;
@@ -79,7 +75,6 @@
   gap: 0;
 }
 
-/* ── Lado esquerdo: avatar + nome + endereço ── */
 .sessionCardLeft {
   display: flex;
   flex-direction: column;
@@ -128,10 +123,10 @@
   margin-top: 3px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-wrap: wrap;
+  text-align: start;
 }
 
-/* ── Divider ── */
 .sessionCardDivider {
   width: 0.5px;
   height: 44px;
@@ -140,7 +135,6 @@
   flex-shrink: 0;
 }
 
-/* ── Lado direito: data + hora ── */
 .sessionCardRight {
   display: flex;
   flex-direction: column;
@@ -168,7 +162,6 @@
   color: #555;
 }
 
-/* ── Ícones inline (date/time/pin) ── */
 .metaIcon {
   width: 12px;
   height: 12px;
@@ -176,7 +169,6 @@
   flex-shrink: 0;
 }
 
-/* ── CTA strip de ações ── */
 .sessionCardActions {
   display: flex;
   border-top: 0.5px solid #e0e0e0;
@@ -210,10 +202,7 @@
 .actionCancel        { color: #791F1F; }
 .actionCancel:hover  { background: #FCEBEB; }
 
-/* ═══════════════════════════════════════════
-   MOBILE
-   ═══════════════════════════════════════════ */
-
+/*   MOBILE */
 .sessionCardMobile {
   max-width: unset;
 }
