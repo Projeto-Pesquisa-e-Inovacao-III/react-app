@@ -72,8 +72,6 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           dayCellClassNames={(arg) => {
             const dateStr = arg.date.toISOString().split("T")[0];
             const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            console.log(weekday)
-            console.log(disabledDays)
 
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
             if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate) || disabledDays?.includes(weekday)) return [styles.disabledDay];

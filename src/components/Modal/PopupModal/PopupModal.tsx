@@ -19,6 +19,8 @@ import TimerModal from "../TimerModal/TimerModal";
 import SuccessModal from "../SuccessModal/SuccessModal";
 import ErrorModal from "../ErrorModal/ErrorModal";
 import NewEvent from "../NewEvent/NewEvent";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../PaginatedList/PaginatedList";
 type PopupModalProps = {
     closeThen: () => void;
     date: string;
@@ -45,8 +47,10 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
     });
 
 
+    const { page, goToPage, animClass } = usePagination(0);
+
     const schedules = useQuery({
-        queryKey: ["schedules", date],
+        queryKey: ["schedules", date, page],
         queryFn: () => {
             const dateOnly = date.substring(0, 10);
             const formattedDate = parse(dateOnly, "yyyy-MM-dd", new Date());
@@ -54,13 +58,12 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
             const dataInic = format(startOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss");
             const dataFim = format(endOfDay(formattedDate), "yyyy-MM-dd'T'HH:mm:ss");
 
-            return findPersonalRequests(0, "10", dataInic, dataFim);
+            return findPersonalRequests(page, "3", dataInic, dataFim);
         },
     });
 
     const agendamentos = schedules.data?.data?.content || [];
-
-    console.log(agendamentos)
+    const pagination = schedules.data?.data?.page ?? null;
 
     const formattedDate = format(parseISO(date), "EEEE, dd 'de' MMMM 'de' yyyy", { locale: ptBR });
     const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
@@ -166,7 +169,13 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                         ))}
                     </div>
                 ) : agendamentos.length > 0 && (
-                    <div className={styles.cardList}>
+                    <PaginatedList
+                        page={page}
+                        animClass={animClass}
+                        pagination={pagination}
+                        onPageChange={goToPage}
+                        listClassName={styles.cardList}
+                    >
                         {agendamentos.map((agendamento: any) => (
                             <AppointmentCard
                                 key={agendamento.agendamentoId}
@@ -184,7 +193,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                                 isMobile={isMobile}
                             />
                         ))}
-                    </div>
+                    </PaginatedList>
                 )}
 
                 {type === "aluno" && (

@@ -9,7 +9,8 @@ import useMobile from "../../../hooks/isMobile";
 import { format, parse } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../PaginatedList/PaginatedList";
 
 type PaginationInfo = {
     number: number;
@@ -42,14 +43,14 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
         callback: handleAnimatedClose,
     });
 
-    const [page, setPage] = useState(pagination?.number ?? 0);
+    const { page, goToPage, animClass } = usePagination(pagination?.number ?? 0);
 
     async function handlePaginationChange(newPage: number) {
-        setPage(newPage);
+        goToPage(newPage);
         await fetchPage?.(newPage);
     }
 
-    console.log(page)
+
     return (
         <>
             <div
@@ -83,7 +84,14 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                     {({ remainingTime }) => remainingTime}
                 </CountdownCircleTimer>
 
-                <div className={styles.cardList}>
+                <PaginatedList
+                    page={page}
+                    animClass={animClass}
+                    pagination={pagination}
+                    onPageChange={handlePaginationChange}
+                    listClassName={styles.cardList}
+                    buttonDisabledClass={styles.buttonDisabled}
+                >
                     {schedules.map((agendamento: any) => {
                         const formattedDate = agendamento.data
                             ? format(parse(agendamento.data, "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR })
@@ -99,26 +107,7 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                             />
                         );
                     })}
-                    {pagination && pagination.totalPages > 1 && (
-                        <div className="flex gap-3 justify-end">
-                            <SmallerButton
-                                icon={<ChevronLeft />}
-                                classname={`w-22! h-10! items-center ${page === 0 ? styles.buttonDisabled : ""}`}
-                                handleButtonClick={() => {
-                                    if (page > 0) handlePaginationChange(page - 1);
-                                }}
-                            />
-
-                            <SmallerButton
-                                icon={<ChevronRight />}
-                                classname={`w-22! h-10! items-center ${page === pagination.totalPages - 1 ? styles.buttonDisabled : ""}`}
-                                handleButtonClick={() => {
-                                    if (page < pagination.totalPages - 1) handlePaginationChange(page + 1);
-                                }}
-                            />
-                        </div>
-                    )}
-                </div>
+                </PaginatedList>
 
 
                 <div className={isMobile ? styles.buttonsGroupModalMobile : styles.buttonsGroupModal}>

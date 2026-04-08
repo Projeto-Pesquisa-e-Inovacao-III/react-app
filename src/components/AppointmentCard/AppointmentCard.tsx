@@ -63,8 +63,6 @@ export function AppointmentCard(props: Props) {
     };
   }
 
-  console.log(typeContext?.type)
-
   return (
     <div
       className={classNames(styles.sessionCard, {

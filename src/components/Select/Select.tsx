@@ -36,8 +36,6 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
   const isOpen = openSelectId === id;
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
-  console.log(values)
-
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
 
   const selectRef = useRef<HTMLDivElement>(null);

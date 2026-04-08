@@ -30,12 +30,8 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
     enabled: useUserImage,
     retry: false,
   })
-
-  console.log(foto)
-  console.log(userImage.data)
   
   function getInitials(name: string) {
-    console.log("rodou")
     return name.charAt(0).toUpperCase()
   }
 
