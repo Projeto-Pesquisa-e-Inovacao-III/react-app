@@ -8,7 +8,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../../utils/mascara";
 import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
 import CardInfo from "../../CardInfo/CardInfo";
-import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
+import { disabledPersonalDays, getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../ErrorModal/ErrorModal";
@@ -44,6 +44,7 @@ type NewEventProps = {
     newAppointmentCreated?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     goToNextStep?: boolean;
     typeUser?: string;
+    disabledDays?: string[];
 };
 
 type AddressState = {
@@ -71,7 +72,7 @@ type AddressOption = {
 } | null;
 
 export default function NewEvent(
-    { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
+    { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser, disabledDays }: NewEventProps
 ) {
     const {
         openModal,
@@ -97,6 +98,26 @@ export default function NewEvent(
         refetchOnWindowFocus: false,
     });
 
+
+    const checkDays = useQuery({
+        queryKey: ["disabledDays"],
+        queryFn: () => disabledPersonalDays(personalList.id),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: !disabledDays
+    })
+
+    const [disabledDaysRequest, setDisabledDaysRequest] = useState<string[]>([])
+
+    useEffect(() => {
+        checkDays.data?.data.forEach((day: { diaSemana: string, ativo: boolean }) => {
+            if (!day.ativo) {
+                setDisabledDaysRequest((prev) => [...prev, day.diaSemana.toLowerCase()])
+            }
+        });
+    }, [checkDays.data])
+
+    console.log("Disabled days data:", disabledDaysRequest);
 
 
     const myId = useQuery({
@@ -124,7 +145,7 @@ export default function NewEvent(
     const queryClient = useQueryClient();
 
     const [showConfirmClose, setShowConfirmClose] = useState(false);
-    
+
     // Determine initial Address Data based on whether it's Reschedule
     const initialAddressData = useMemo(() => {
         if (appoitmentData && isReschedule && appoitmentData?.endereco) {
@@ -800,6 +821,7 @@ export default function NewEvent(
                                                 isMobile={isMobile}
                                                 hasClassTomorrow={availabilityHoursTomorrow?.data?.length > 0}
                                                 tomorrowDate={tomorrow}
+                                                disabledDays={disabledDays ?? disabledDaysRequest}
                                             />
                                         </div>
                                         {newEventDate && (

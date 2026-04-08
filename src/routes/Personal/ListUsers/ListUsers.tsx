@@ -18,8 +18,8 @@ export default function ListUsers() {
         queryKey: ["students"],
         queryFn: async (page) => {
             const response = await listStudents(page);
-            console.log("Full response:", response);       // what is the full shape?
-            console.log("response.data:", response.data);  // is data nested?
+            console.log("Full response:", response);
+            console.log("response.data:", response.data);
             return response.data;
         }
     });

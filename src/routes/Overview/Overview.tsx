@@ -10,7 +10,7 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, findUserAppointments, getPersonalList } from "../../constants/schedule";
+import { appointmentAtCalendar, disabledPersonalDays, findUserAppointments, getPersonalList } from "../../constants/schedule";
 import { appoitmentsCount, getAvailabilityHoursTomorrow } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -224,8 +224,26 @@ export function Overview() {
         queryFn: () => appointmentAtCalendar(),
         retry: false,
         refetchOnWindowFocus: false,
-
     })
+
+    const checkDays = useQuery({
+        queryKey: ["disabledDays"],
+        queryFn: () => disabledPersonalDays(),
+        retry: false,
+        refetchOnWindowFocus: false,
+    })
+
+    const [disabledDays, setDisabledDays] = useState<string[]>([])
+
+    useEffect(() => {
+        checkDays.data?.data.forEach((day: { diaSemana: string, ativo: boolean }) => {
+            if (!day.ativo) {
+                setDisabledDays((prev) => [...prev, day.diaSemana.toLowerCase()])
+            }
+        });
+    }, [checkDays.data])
+
+    console.log("Disabled days data:", disabledDays);
 
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
@@ -497,6 +515,7 @@ export function Overview() {
                         insertedEvents={appointments.data?.data}
                         title="Agendar horário"
                         buttonTitle="Avançar"
+                        disabledDays={disabledDays}
                     />
                 </>
             )
