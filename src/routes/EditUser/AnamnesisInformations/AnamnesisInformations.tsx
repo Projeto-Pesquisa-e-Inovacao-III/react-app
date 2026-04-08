@@ -115,7 +115,6 @@ export default function AnamnesisInformations() {
     peso?: string;
   }
 
-  // Replace the handleUpdateAnamnesis function and add a validate function
   function validate(): ValidationErrors {
     const errors: ValidationErrors = {};
 
@@ -277,9 +276,9 @@ export default function AnamnesisInformations() {
                 showSearchInput={false}
                 showSelectAll={false}
                 labelClassName="text-sm font-normal!"
-                triggerClassName="pt-3 pr-4 pl-4 pb-3 w-full! text-[0.95rem] text-[#334155] font-medium"
+                triggerClassName="pt-3 pr-4 pl-4 pb-3 w-full! text-[0.95rem] text-[#334155] font-medium h-12!"
                 selectWrapperClassName="bg-white! border border-gray-300! w-full! mt-1.5!"
-                containerClassName="bg-white!"
+                containerClassName="bg-white! w-full!"
               />
 
               {!valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) && (
