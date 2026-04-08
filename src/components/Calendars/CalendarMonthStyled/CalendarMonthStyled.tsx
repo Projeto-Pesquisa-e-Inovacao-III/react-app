@@ -21,11 +21,12 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
   const [newEventDate, setNewEventDate] = useState<string>("");
   const calendarRef = useRef<FullCalendar>(null);
-
+  console.log(createdEvents)
   const databaseEvents = useMemo(() => {
     return Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
+      const eventData = event.data || (event as any).dataInicio;
       return {
-        data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
+        data: eventData instanceof Date ? eventData.toISOString().split("T")[0] : eventData,
         agendamentoId: event.agendamentoId,
         status: (event as any).status,
       };
@@ -83,7 +84,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const cellDate = arg.date.toISOString().split("T")[0];
 
             const eventsOfDay = events?.filter(event =>
-              event.data.split("T")[0] === cellDate
+              event.data?.split("T")[0] === cellDate
             ) || [];
 
             return (

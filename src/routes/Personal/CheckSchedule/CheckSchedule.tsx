@@ -150,9 +150,6 @@ export function CheckSchedule() {
     }, [searchParams, setFilterSearch]);
 
 
-
-
-
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
         await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });

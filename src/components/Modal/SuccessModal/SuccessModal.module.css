@@ -84,6 +84,7 @@
 
 .backdropEnter {
     animation: backdropEnter 0.25s ease-out forwards;
+    z-index: 1001 !important;
 }
 
 .closingBackdrop {

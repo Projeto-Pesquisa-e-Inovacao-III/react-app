@@ -23,6 +23,11 @@ const PENDING_STATUSES = [
   "PENDENTE_PERSONAL_CONCLUIR",
 ];
 
+const PENDING = [
+  "PENDENTE_CLIENTE_APROVACAO",
+];
+
+
 type Props = {
   agendamentoId: number;
   status: keyof typeof STATUS_CONFIG;
@@ -44,7 +49,8 @@ export function AppointmentCard(props: Props) {
   const typeContext = useContext(TypeContext);
 
 
-  const isPending = PENDING_STATUSES.includes(props.status);
+  const isPendingPersonal = PENDING_STATUSES.includes(props.status);
+  const isPendingStudent = PENDING.includes(props.status);
 
   function handleNavigateToDetail() {
     nav(`/schedule-details?id=${props.agendamentoId}`);
@@ -56,6 +62,8 @@ export function AppointmentCard(props: Props) {
       fn?.();
     };
   }
+
+  console.log(typeContext?.type)
 
   return (
     <div
@@ -125,7 +133,7 @@ export function AppointmentCard(props: Props) {
 
       </div>
 
-      {isPending && typeContext && typeContext.type === "personal" && (
+      {(isPendingPersonal && typeContext?.type === "personal" || isPendingStudent && typeContext?.type === "aluno") && (
         <div className={styles.sessionCardActions}>
           <button
             className={classNames(styles.actionBtn, styles.actionConfirm)}
