@@ -7,37 +7,30 @@ import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
 import type { ListStudents } from "../../../models/students";
-import { useInfinitePagination } from "../../../hooks/useInfinitePagination";
-
-
+import { useQuery } from "@tanstack/react-query";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../../components/PaginatedList/PaginatedList";
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
-    const { data, isFetchingNextPage, loadMoreRef, isLoading } = useInfinitePagination<ListStudents[number]>({
-        queryKey: ["students"],
-        queryFn: async (page) => {
-            const response = await listStudents(page);
-            console.log("Full response:", response);
-            console.log("response.data:", response.data);
-            return response.data;
-        }
+    const { page, goToPage, animClass } = usePagination(0);
+
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["students", page],
+        queryFn: () => listStudents(page, 10),
     });
 
-    console.log("data", data)
+    const students: ListStudents = response?.data?.content ?? [];
+    const pagination = response?.data?.page ?? null;
 
-
-        const {
-            filterSearch,
-            setFilterSearch
-        } = useSearchFilter(data ?? [], {
-            searchName: (item: ListStudents[number]) => [item.nome],
-        });
+    const { filterSearch, setFilterSearch } = useSearchFilter(students, {
+        searchName: (item: ListStudents[number]) => [item.nome],
+    });
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
             <h1>Usuários</h1>
-            {/* <p>Lista de usuários assinantes.</p> */}
             <div className={classNames(styles.listUsersSearchBar, { [styles.listUsersSearchBarMobile]: isMobile })}>
                 <InputWithIcon
                     type="text"
@@ -48,11 +41,15 @@ export default function ListUsers() {
                 />
             </div>
 
-            <UsersTable input={filterSearch} users={data ?? []} isLoading={isLoading} />
-
-            <div ref={loadMoreRef} style={{ height: "20px", display: "flex", justifyContent: "center" }}>
-                {isFetchingNextPage && <span>Carregando mais usuários...</span>}
-            </div>
+            <PaginatedList
+                key={page}
+                page={page}
+                animClass={animClass}
+                pagination={pagination}
+                onPageChange={goToPage}
+            >
+                <UsersTable input={filterSearch} users={students} isLoading={isLoading} />
+            </PaginatedList>
         </div>
     )
 }

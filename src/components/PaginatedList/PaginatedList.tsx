@@ -33,7 +33,7 @@ export default function PaginatedList({
     const isLast = pagination ? page === pagination.totalPages - 1 : true;
 
     return (
-        <div key={page} className={`${listClassName} ${animClass}`.trim()}>
+        <div className={`${listClassName} ${animClass}`.trim()}>
             {children}
 
             {pagination && pagination.totalPages > 1 && (

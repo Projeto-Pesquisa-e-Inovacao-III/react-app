@@ -170,6 +170,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                     </div>
                 ) : agendamentos.length > 0 && (
                     <PaginatedList
+                        key={page}
                         page={page}
                         animClass={animClass}
                         pagination={pagination}

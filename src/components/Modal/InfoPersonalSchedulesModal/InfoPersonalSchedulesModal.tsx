@@ -85,6 +85,7 @@ export default function InfoPersonalSchedulesModal({ closeThen, schedules, onCon
                 </CountdownCircleTimer>
 
                 <PaginatedList
+                    key={page}
                     page={page}
                     animClass={animClass}
                     pagination={pagination}
