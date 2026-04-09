@@ -304,14 +304,31 @@
 .formHeader {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
+.formHeaderIcon {
+  margin-top: 2px;
+}
+
+.headerTextGroup {
+  display: flex;
+  flex-direction: column;
+}
+
 .formHeader h3 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--bg-blue, #093a5d);
+  margin: 0;
+}
+
+.requiredHelper {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 400;
+  margin-top: 2px;
 }
 
 .formGrid {
@@ -506,6 +523,7 @@
   padding: 10px 20px;
   cursor: pointer;
   transition: opacity 0.2s;
+  text-wrap: nowrap;
 }
 
 .btnSave:disabled {

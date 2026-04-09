@@ -313,9 +313,11 @@ export default function AddressManagement() {
               <div className={classNames(styles.formArea, { [styles.formAreaClosing]: isClosingForm })}>
                 <div className={styles.formCard}>
                   <div className={styles.formHeader}>
-                    <MapPin size={20} color="#093a5d" />
-                    <h3>{editingAddress ? "Editar Detalhes" : "Novo Endereço"}</h3>
-                    <span className={styles.requiredHelper}>Todos os campos são obrigatórios</span>
+                    <MapPin size={24} color="#093a5d" className={styles.formHeaderIcon} />
+                    <div className={styles.headerTextGroup}>
+                      <h3>{editingAddress ? "Editar Detalhes" : "Novo Endereço"}</h3>
+                      <span className={styles.requiredHelper}>Todos os campos são obrigatórios</span>
+                    </div>
                   </div>
 
                   <div className={styles.formGrid}>
@@ -396,10 +398,20 @@ export default function AddressManagement() {
                   </div>
 
                   <div className={styles.formCardFooter}>
-                    <button type="button" className={styles.btnDiscard} onClick={handleCancelForm}>Descartar</button>
-                    <button type="button" className={styles.btnSave} onClick={handleSave} disabled={saveLoading}>
-                      {saveLoading ? "Salvando..." : (editingAddress ? "Salvar Alterações" : "Salvar Endereço")}
-                    </button>
+                    <SmallerButton
+                      type="button"
+                      classname={styles.btnDiscard}
+                      handleButtonClick={handleCancelForm}
+                      title="Descartar"
+                    />
+                    <SmallerButton
+                      type="button"
+                      classname={styles.btnSave}
+                      handleButtonClick={handleSave}
+                      disabled={saveLoading}
+                      loading={saveLoading}
+                      title={editingAddress ? "Salvar Alterações" : "Salvar Endereço"}
+                    />
                   </div>
                 </div>
               </div>
