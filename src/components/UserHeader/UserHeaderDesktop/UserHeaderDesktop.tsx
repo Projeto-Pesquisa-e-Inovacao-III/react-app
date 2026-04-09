@@ -1,10 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
+import { User, Calendar, LogOut, MapPin, ChevronDown } from "lucide-react";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import styles from "./UserHeaderDesktop.module.css"
 import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
 import useClickOutside from "../../../hooks/useClickOutside";
+import useModalClose from "../../../hooks/useModalClose";
 import Skeleton from "react-loading-skeleton";
 
 type UserType = {
@@ -17,6 +19,12 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
+  const { isClosing, handleAnimatedClose } = useModalClose({
+    duration: 200,
+    lockScroll: false,
+    onClose: () => setOpenHeaderModal(false),
+  });
+
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -28,8 +36,8 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
   useClickOutside({
     ref: userRef,
     callback: () => {
-      if (openHeaderModal) {
-        setOpenHeaderModal(false);
+      if (openHeaderModal && !isClosing) {
+        handleAnimatedClose();
       }
     }
   });
@@ -95,10 +103,27 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
         <div ref={userRef} className={styles.authLinks}>
 
           <div
-            onClick={() => setOpenHeaderModal(prev => !prev)}
+            onClick={() => {
+              if (openHeaderModal && !isClosing) {
+                handleAnimatedClose();
+              } else if (!openHeaderModal) {
+                setOpenHeaderModal(true);
+              }
+            }}
             className={styles.userAvatarHeaderDesktop}
           >
-            <UserAvatar userName={userName} useUsername useUserImage isLoading={isLoading} />
+            <UserAvatar 
+              userName={userName} 
+              useUsername 
+              useUserImage 
+              isLoading={isLoading} 
+              rightIcon={
+                <ChevronDown 
+                  className={`${styles.avatarChevron} ${openHeaderModal && !isClosing ? styles.rotated : ''}`} 
+                  size={20} 
+                />
+              }
+            />
           </div>
           <button
             className={styles.burgerButton}
@@ -111,14 +136,25 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
           </button>
 
           {openHeaderModal && (
-            <div className={styles.headerModalDesktop}>
+            <div className={`${styles.headerModalDesktop} ${isClosing ? styles.closing : ''}`}>
               <div className={styles.headerModalContentDesktop}>
-                <Link onClick={() => setOpenHeaderModal(false)} to="/edit-user">Editar perfil</Link>
+                <Link onClick={handleAnimatedClose} to="/edit-user">
+                  <User size={18} /> Editar perfil
+                </Link>
                 {type === "personal" &&
-                  <Link onClick={() => setOpenHeaderModal(false)} to="/set-availability">
-                    Ajustar disponibilidade
-                  </Link>}
-                <Link onClick={() => setOpenHeaderModal(false)} to="/logout">Sair</Link>
+                  <Link onClick={handleAnimatedClose} to="/set-availability">
+                    <Calendar size={18} /> Ajustar disponibilidade
+                  </Link>
+                }
+                {type === "aluno" &&
+                  <Link onClick={handleAnimatedClose} to="/edit-user/addresses">
+                    <MapPin size={18} /> Endereços
+                  </Link>
+                }
+                <div className={styles.divider} />
+                <Link className={styles.logoutLink} onClick={handleAnimatedClose} to="/logout">
+                  <LogOut size={18} /> Sair
+                </Link>
               </div>
             </div>
           )}

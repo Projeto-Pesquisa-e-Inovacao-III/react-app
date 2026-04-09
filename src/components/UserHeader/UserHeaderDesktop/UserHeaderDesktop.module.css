@@ -119,40 +119,97 @@
     top: 70px;
     right: 100px;
     background-color: white;
-    color: black;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 200px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05);
+    width: 260px;
     z-index: 1000;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transform-origin: top right;
+    animation: modalEnter 0.2s ease-out forwards;
+}
+
+.headerModalDesktop.closing {
+    animation: modalLeave 0.2s ease-in forwards;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes modalLeave {
+    from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95) translateY(-10px);
+    }
 }
 
 .headerModalContentDesktop {
     display: flex;
     flex-direction: column;
+    padding: 8px;
 }
 
 .headerModalContentDesktop a {
-    padding: 20px 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
     text-decoration: none;
-    color: black;
-    transition: background-color 0.3s ease;
+    color: #334155;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 .headerModalContentDesktop a:hover {
-    background-color: #f0f0f0;
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.divider {
+    height: 1px;
+    background-color: #e2e8f0;
+    margin: 8px 0;
+}
+
+.logoutLink {
+    color: #ef4444 !important;
+}
+
+.logoutLink:hover {
+    background-color: #fef2f2 !important;
+    color: #dc2626 !important;
 }
 
 .userAvatarHeaderDesktop {
-    border-radius: 50%;
+    border-radius: 50px;
     cursor: pointer;
     height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
 }
 
-.userAvatarHeaderDesktop svg {
-    color: black;
+.avatarChevron {
+    color: white;
+    transition: transform 0.3s ease;
+}
+
+.avatarChevron.rotated {
+    transform: rotate(180deg);
 }
 
 .userAvatarHeaderDesktop img {
