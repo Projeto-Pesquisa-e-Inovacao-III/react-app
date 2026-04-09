@@ -1,0 +1,603 @@
+.editUserGrid {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas:
+    "header   header"
+    "pages    personal"
+    "pages    personal";
+}
+
+.goBackContainer {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pageTitle {
+  font-size: 30px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.pagesSection {
+  grid-area: pages;
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
+}
+
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
+
+
+.personalInfo {
+  grid-area: personal;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.contentHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-bottom: 20px;
+}
+
+.sectionSubtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.btnAddGlobal {
+  background-color: var(--bg-blue, #093a5d) !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  font-weight: 500 !important;
+  width: auto !important;
+  height: auto !important;
+}
+
+
+.mainArea {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.cardsArea {
+  flex: 1 1 0%;
+  min-width: 0;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideInWidth {
+  0% {
+    max-width: 0;
+    flex-basis: 0%;
+    opacity: 0;
+    padding-left: 0;
+  }
+
+  100% {
+    max-width: 450px;
+    flex-basis: 40%;
+    opacity: 1;
+    padding-left: 20px;
+  }
+}
+
+@keyframes slideOutWidth {
+  0% {
+    max-width: 450px;
+    flex-basis: 40%;
+    opacity: 1;
+    padding-left: 20px;
+  }
+
+  100% {
+    max-width: 0;
+    flex-basis: 0%;
+    opacity: 0;
+    padding-left: 0;
+  }
+}
+
+.formArea {
+  flex: 0 0 40%;
+  max-width: 450px;
+  overflow: hidden;
+  animation: slideInWidth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.formAreaClosing {
+  animation: slideOutWidth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+@keyframes emptyFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: white;
+  border-radius: 20px;
+  padding: 60px 30px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  animation: emptyFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.emptyIconWrapper {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.emptyIcon {
+  position: relative;
+}
+
+.emptyContainer h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--bg-blue, #093a5d);
+  margin-bottom: 12px;
+}
+
+.emptyContainer p {
+  color: #64748b;
+  font-size: 0.95rem;
+  max-width: 320px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.btnEmptyAdd {
+  background-color: var(--bg-blue, #093a5d) !important;
+  color: white !important;
+  border-radius: 12px !important;
+  padding: 14px 24px !important;
+  font-weight: 500 !important;
+  width: auto !important;
+  height: auto !important;
+  margin-bottom: 16px;
+}
+
+.emptyFooterText {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+
+.cardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.addressCard {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+
+.addressCardBorder {
+  border-left: 5px solid var(--bg-blue, #093a5d);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.cardTitleLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--bg-blue, #093a5d);
+}
+
+.cardTitleLine strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.badgePadrao {
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.05em;
+}
+
+.cardActions {
+  display: flex;
+  gap: 12px;
+}
+
+.cardActions button {
+  color: #64748b;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 4px;
+}
+
+.cardActions button:hover {
+  color: #111827;
+}
+
+.btnTrash:hover {
+  color: #ef4444 !important;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.boldText {
+  color: #334155;
+  font-weight: 500;
+}
+
+
+
+.formCard {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  min-width: 320px;
+}
+
+.formHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.formHeader h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--bg-blue, #093a5d);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 16px;
+  column-gap: 12px;
+  margin-bottom: 24px;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 4px;
+}
+
+.fieldApelido {
+  grid-column: span 1;
+}
+
+.fieldCep {
+  grid-column: span 2;
+}
+
+.fieldLogradouro {
+  grid-column: span 2;
+}
+
+.fieldNumero {
+  grid-column: span 1;
+}
+
+.fieldComplemento {
+  grid-column: span 1;
+}
+
+.fieldBairro {
+  grid-column: span 2;
+}
+
+.fieldCidade {
+  grid-column: span 1;
+}
+
+.fieldEstado {
+  grid-column: span 1;
+}
+
+.cepFlex {
+  display: flex;
+  gap: 8px;
+}
+
+.btnSearchCep {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-blue, #093a5d);
+  color: white;
+  border-radius: 8px;
+  flex: 0 0 44px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  height: 48px;
+}
+
+
+.grayInput {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+.padraoContainer {
+  background-color: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.padraoText {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.padraoText div {
+  display: flex;
+  flex-direction: column;
+}
+
+.padraoText strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.padraoText span {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.switch input:checked+.slider {
+  background-color: var(--bg-blue, #093a5d);
+}
+
+.switch input:checked+.slider:before {
+  transform: translateX(20px);
+}
+
+.formCardFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btnDiscard {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.btnDiscard:hover {
+  color: #334155;
+  text-decoration: underline;
+}
+
+.btnSave {
+  background-color: var(--bg-blue, #093a5d);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnSave:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+
+@media (max-width: 1024px) {
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal";
+    padding-bottom: 110px;
+  }
+
+  .contentHeaderRow {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .titleArea {
+    align-items: center;
+    text-align: center;
+  }
+
+  .sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bg-blue, #093a5d);
+  }
+
+  .sectionSubtitle {
+    color: #4b5563;
+  }
+
+  .btnAddGlobal {
+    width: 100% !important;
+  }
+
+  .mainArea {
+    flex-direction: column;
+  }
+
+  .cardsArea {
+    flex: none;
+    width: 100%;
+  }
+
+  .formArea {
+    flex: none;
+    width: 100%;
+    max-width: none;
+    animation: none;
+    padding-left: 0;
+  }
+
+  .formAreaClosing {
+    animation: none;
+  }
+
+  .formCard {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .formGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .fieldApelido,
+  .fieldCep,
+  .fieldNumero,
+  .fieldComplemento,
+  .fieldCidade,
+  .fieldEstado,
+  .fieldLogradouro,
+  .fieldBairro {
+    grid-column: span 1;
+  }
+
+  .formCardFooter {
+    flex-direction: column-reverse;
+  }
+
+  .btnDiscard,
+  .btnSave {
+    width: 100%;
+    padding: 14px;
+  }
+}

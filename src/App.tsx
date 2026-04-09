@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Login from "./routes/User/Login/Login";
 import Home from "./routes/Home/Home";
@@ -25,6 +25,7 @@ import { PrivateRoute } from "./components/Layout/PrivateRoute";
 import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
 import Anamnesis from "./routes/User/Anamnesis/anamnesis";
 import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
+import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
 
 // todo: 
 // safari support // deixa baixo
@@ -48,6 +49,7 @@ function App() {
 
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
+            <Route path="*" element={<Navigate to="/home" replace />} />
             {/* temp */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -74,6 +76,7 @@ function App() {
               <Route path="/plans-history" element={<PlansHistory />} />
               <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
               <Route path="/schedule-history" element={<ScheduleHistory />} />
+              <Route path="/edit-user/addresses" element={<AddressManagement />} />
             </Route>
           </Route>
 
