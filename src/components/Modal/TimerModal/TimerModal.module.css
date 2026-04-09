@@ -17,11 +17,17 @@
     width: 40%;
 
     & .contentModal {
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
         white-space: pre-line;
     }
 
     & h2 {
+        margin: 0;
+        color: var(--indigo);
         font-size: 24px;
+        font-weight: 700;
     }
 }
 
@@ -96,6 +102,7 @@
 
 .backdropEnter {
     animation: backdropEnter 0.25s ease-out forwards;
+    z-index: 1000 !important;
 }
 
 .closingBackdrop {

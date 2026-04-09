@@ -3,15 +3,12 @@ import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import classNames from "classnames";
 
 import styles from "./PlansHistory.module.css";
-import SmallerButton from "../../components/SmallerButton/SmallerButton";
-import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
 import { useNavigate } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
-import useSearchFilter from "../../hooks/useSearchFilter";
-import { useQuery } from "@tanstack/react-query";
 import { getUserPlansHistory } from "../../constants/products";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 
 type UserPlan = {
     id: number;
@@ -31,7 +28,15 @@ export default function PlansHistory() {
     }
 
 
-    const userPlans = useQuery<UserPlan[]>({
+    // const userPlans = useQuery<UserPlan[]>({
+    //     queryKey: ['user-plans'],
+    //     queryFn: async () => {
+    //         const response = await getUserPlansHistory();
+    //         return response.data;
+    //     },
+    // });
+
+    const { data, isLoading } = useInfinitePagination<UserPlan>({
         queryKey: ['user-plans'],
         queryFn: async () => {
             const response = await getUserPlansHistory();
@@ -39,21 +44,7 @@ export default function PlansHistory() {
         },
     });
 
-    const {
-        filterSearch,
-        setFilterSearch,
-        filterInitialDate,
-        setFilterInitialDate,
-        filterFinalDate,
-        setFilterFinalDate,
-        filteredData,
-        hasFilters,
-        clearFilters,
-    } = useSearchFilter(userPlans.data ?? [], {
-        searchName: (item) => [item.produtoExibicao.titulo],
-        dateFilter: (item) => item.dataCompra,
-    });
-
+    console.log(data)
 
     return (
         <div className={classNames(styles.container)}>
@@ -68,23 +59,23 @@ export default function PlansHistory() {
                         type="text"
                         placeholder="Buscar..."
                         icon={<SearchIcon />}
-                        value={filterSearch}
-                        onInputChange={setFilterSearch}
+                        // value={filterSearch}
+                        // onInputChange={setFilterSearch}
                     />
                 </div>
                 <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} />
-                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} />
+                    {/* <InputCalendar />
+                    <InputCalendar /> */}
                 </div>
-                {hasFilters && (
+                {/* {hasFilters && (
                     <div className={classNames(styles.searchButton)}>
                         <SmallerButton title="Limpar filtros" handleButtonClick={clearFilters} />
                     </div>
-                )}
+                )} */}
             </div>
 
-            {filteredData && filteredData.length > 0 ? (
-                filteredData.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item) => (
+            {data && data.length > 0 ? (
+                data.sort((a, b) => a.dataCompra.localeCompare(b.dataCompra)).map((item) => (
                     <RowWithHeaderTitle
                         key={item.id}
                         data={[
@@ -98,10 +89,10 @@ export default function PlansHistory() {
                         includeDetailsButton={true}
                         buttonLabel="Ver Detalhes"
                         handleDetailsClick={() => handleDetailsClick(item.id)}
-                        isLoading={userPlans.isLoading}
+                        isLoading={isLoading}
                     />
                 ))
-            ) : userPlans.isLoading ? (
+            ) : isLoading ? (
                 [...Array(1)].map((_, index) => (
                     <RowWithHeaderTitle
                         key={`skeleton-${index}`}

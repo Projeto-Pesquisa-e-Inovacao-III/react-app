@@ -19,7 +19,16 @@
     & .contentModal {
         text-align: center;
         width: fit-content;
-        font-size: 18px;
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    & h2 {
+        margin: 0;
+        color: var(--indigo);
+        font-size: 24px;
+        font-weight: 700;
     }
 
     & .btnSched {
@@ -48,7 +57,16 @@
     & .contentModal {
         text-align: center;
         width: 100%;
-        font-size: 18px;
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    & h2 {
+        margin: 0;
+        color: var(--indigo);
+        font-size: 24px;
+        font-weight: 700;
     }
 
     & .btnSched {
@@ -66,6 +84,7 @@
 
 .backdropEnter {
     animation: backdropEnter 0.25s ease-out forwards;
+    z-index: 1001 !important;
 }
 
 .closingBackdrop {
@@ -73,11 +92,12 @@
 }
 
 @keyframes modalEnter {
-    from { 
+    from {
         opacity: 0;
         transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
     }
-    to { 
+
+    to {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
@@ -88,6 +108,7 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+
     to {
         opacity: 0;
         transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
@@ -95,11 +116,21 @@
 }
 
 @keyframes backdropEnter {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes backdropLeave {
-    from { opacity: 1; }
-    to   { opacity: 0; }
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
 }

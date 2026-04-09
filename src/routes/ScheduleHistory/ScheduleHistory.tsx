@@ -42,7 +42,7 @@ export default function ScheduleHistory() {
         isLoading: filteredDataIsLoading,
         hasNextPage,
     } = useInfinitePagination<ScheduleAfterInserted>({
-        queryKey: ["infinitePaginationAppointments"],
+        queryKey: ["infinitePaginationAppointments", parseDate],
         queryFn: (page) => findPersonalRequests(page).then(res => res.data),
     });
 

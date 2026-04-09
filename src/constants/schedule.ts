@@ -55,6 +55,10 @@ export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
 }
 
+export function disabledPersonalDays(id: number) {
+    return api.get(`/personais/dias-semana/${id}`);
+}
+
 export async function findAppointmentById(id: number) {
     return await api.get(`/agendamentos/${id}`);
 }

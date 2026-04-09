@@ -33,7 +33,7 @@ export default function MoreOptions() {
         <>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <UserAvatar useUserImage={true} />
+                    <UserAvatar withUsernameClassName={"w-24! h-24! text-3xl!"} userName={userName.data || "Usuario"} useUserImage={true} />
                     <h2>{userName.data || "Usuario"}</h2>
                 </div>
                 <div className={styles.options}>

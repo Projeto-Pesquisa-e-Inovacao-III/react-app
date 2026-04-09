@@ -25,7 +25,7 @@ type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" |
 const STATUS_CONFIG: Record<string, { text: string; color: string; textColor?: string; class: string }> = {
     CONCLUIDO: { text: "Concluído", color: "#0ea500", class: "statusDone" },
     PENDENTE_PERSONAL_CONCLUIR: { text: "Pendente", color: "#FFA500", class: "statusPending" },
-    APROVADO: { text: "Marcado", color: "#FFA500", class: "statusPending" },
+    APROVADO: { text: "Marcado", color: "#0ea500", class: "statusPending" },
     PENDENTE_PERSONAL_APROVACAO: { text: "Em análise", color: "#ffcc00d8", textColor: "#9c5120", class: "statusPending" },
     PENDENTE_CLIENTE_APROVACAO: { text: "Aprovação pendente", color: "#FFA500", class: "statusPending" },
     CANCELADO_PERSONAL: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },

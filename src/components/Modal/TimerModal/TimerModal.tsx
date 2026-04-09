@@ -58,7 +58,7 @@ export default function TimerModal({ isMobile, closeThen, title, content, id, ev
                 <CountdownCircleTimer
                     isPlaying
                     duration={1}
-                    colors="#093A5D"
+                    colors="#093a5d"
                     size={50}
                     strokeWidth={3}
                     onComplete={() => {

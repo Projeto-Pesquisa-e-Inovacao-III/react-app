@@ -4,9 +4,8 @@ import styles from "./ConfirmCloseModal.module.css";
 import useMobile from '../../../hooks/isMobile';
 import classnames from 'classnames';
 import useClickOutside from '../../../hooks/useClickOutside';
-import Button from '../../Button/Button';
 import { X } from 'lucide-react';
-import classNames from 'classnames';
+import DeleteEvent from '../TimerModal/DeleteEvent';
 
 type ConfirmCloseModalProps = {
     isOpen: boolean;
@@ -71,9 +70,9 @@ export default function ConfirmCloseModal({ isOpen, onClose, onConfirm }: Confir
                 </div>
                 <h2>Você tem alterações não salvas</h2>
                 <p className={styles.contentModal}>Deseja mesmo fechar? Todas as alterações não salvas serão perdidas.</p>
-                
+
                 <div className={styles.buttonGroup}>
-                    <Button 
+                    {/* <Button 
                         type="button" 
                         title="Fechar e descartar" 
                         classNameDiv={styles.buttonDiv}
@@ -89,7 +88,28 @@ export default function ConfirmCloseModal({ isOpen, onClose, onConfirm }: Confir
                         classNameDiv={classNames(styles.buttonDiv, "p-0!")}
                         classNameVariable={classNames(styles.cancelBtn, "p-3!")}
                         onClick={handleCloseModal} 
+                    /> */}
+
+                    <DeleteEvent
+                        isMobile={isMobileDevice}
+                        enableButton={true}
+                        handleCloseModal={handleCloseModal}
+                        callSuccessModal={onConfirm}
+                        buttonTitle="Fechar e descartar"
                     />
+{/* 
+                    <SmallerButton
+                        type="button"
+                        classname="w-full! transition h-12!"
+                        title="Fechar e descartar"
+                        handleButtonClick={() => onConfirm()}
+                    />
+                    <SmallerButton
+                        title="Continuar editando"
+                        type="button"
+                        classname="w-full! h-12! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
+                        handleButtonClick={() => handleCloseModal()}
+                    /> */}
                 </div>
             </div>
         </>

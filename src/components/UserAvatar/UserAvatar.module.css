@@ -21,7 +21,7 @@
     width: 50px !important;
     height: 50px !important;
     border-radius: 50%;
-    background-color: var(--carol) !important;
+    background-color: var(--carol-light) !important;
     display: flex;
     align-items: center;
     justify-content: center;

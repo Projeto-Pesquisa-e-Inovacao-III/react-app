@@ -27,7 +27,6 @@ export type ScheduleAfterInserted = {
         nome?: string;
         idade?: number;
         avatarUrl?: string;
-        // adicione outras propriedades se necessário
     };
     data: string,
     dataInicio: Date | string,

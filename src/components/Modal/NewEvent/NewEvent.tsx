@@ -6,9 +6,9 @@ import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../../utils/mascara";
-import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../../CardInfo/CardInfo";
-import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
+import { disabledPersonalDays, getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../ErrorModal/ErrorModal";
@@ -44,6 +44,7 @@ type NewEventProps = {
     newAppointmentCreated?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     goToNextStep?: boolean;
     typeUser?: string;
+    disabledDays?: string[];
 };
 
 type AddressState = {
@@ -71,7 +72,7 @@ type AddressOption = {
 } | null;
 
 export default function NewEvent(
-    { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
+    { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser, disabledDays }: NewEventProps
 ) {
     const {
         openModal,
@@ -93,9 +94,30 @@ export default function NewEvent(
         queryKey: ["personalList"],
         queryFn: getPersonalList,
         select: (res) => res.data,
+        enabled: typeUser === "aluno",
         refetchOnWindowFocus: false,
     });
 
+
+    const checkDays = useQuery({
+        queryKey: ["disabledDays"],
+        queryFn: () => disabledPersonalDays(personalList.data?.id),
+        retry: false,
+        refetchOnWindowFocus: false,
+        enabled: !disabledDays
+    })
+
+    const [disabledDaysRequest, setDisabledDaysRequest] = useState<string[]>([])
+
+    useEffect(() => {
+        checkDays.data?.data.forEach((day: { diaSemana: string, ativo: boolean }) => {
+            if (!day.ativo) {
+                setDisabledDaysRequest((prev) => [...prev, day.diaSemana.toLowerCase()])
+            }
+        });
+    }, [checkDays.data])
+
+    console.log("Disabled days data:", disabledDaysRequest);
 
 
     const myId = useQuery({
@@ -123,7 +145,7 @@ export default function NewEvent(
     const queryClient = useQueryClient();
 
     const [showConfirmClose, setShowConfirmClose] = useState(false);
-    
+
     // Determine initial Address Data based on whether it's Reschedule
     const initialAddressData = useMemo(() => {
         if (appoitmentData && isReschedule && appoitmentData?.endereco) {
@@ -239,6 +261,7 @@ export default function NewEvent(
                 title: "Erro ao agendar",
                 content: "CEP inválido. Por favor, verifique o CEP informado."
             });
+            setLoading(false)
             return;
         }
 
@@ -248,6 +271,7 @@ export default function NewEvent(
                 title: "Erro ao agendar",
                 content: "Por favor, preencha um CEP válido."
             });
+            setLoading(false)
             return;
         }
 
@@ -257,6 +281,7 @@ export default function NewEvent(
                 title: "Erro ao agendar",
                 content: "Por favor, preencha o número do endereço."
             });
+            setLoading(false)
             return;
         }
 
@@ -610,6 +635,7 @@ export default function NewEvent(
         }
     }, [addresses.data, addresses.isSuccess]);
 
+    console.log("appoitmentData", appoitmentData)
 
     return (
         <>
@@ -630,7 +656,7 @@ export default function NewEvent(
                         {typeUser === "personal" ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
-                                icon={<UserAvatar foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
                                 title="Aluno"
                                 subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
                                 subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
@@ -750,7 +776,7 @@ export default function NewEvent(
                                                     personalList.data?.[0]?.caminhoFoto ? (
                                                         <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} />
                                                     ) : (
-                                                        <UserRound />
+                                                        <UserAvatar userName={personalList.data?.[0]?.nome} />
                                                     )
                                                 }
 
@@ -795,6 +821,7 @@ export default function NewEvent(
                                                 isMobile={isMobile}
                                                 hasClassTomorrow={availabilityHoursTomorrow?.data?.length > 0}
                                                 tomorrowDate={tomorrow}
+                                                disabledDays={disabledDays ?? disabledDaysRequest}
                                             />
                                         </div>
                                         {newEventDate && (
@@ -938,7 +965,7 @@ export default function NewEvent(
                                         Resumo do agendamento
                                     </h1>
                                     <InformationCard
-                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
+                                        icon={<UserAvatar userName={!personalList.isLoading && personalList.data?.[0]?.nome} foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} useUserImage={true} />}
                                         title="Personal Trainer"
                                         subtitle={!personalList.isLoading && personalList.data?.[0]?.nome || ""}
                                         subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}

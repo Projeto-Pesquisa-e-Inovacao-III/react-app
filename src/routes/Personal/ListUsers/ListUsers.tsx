@@ -6,33 +6,31 @@ import { listStudents } from "../../../constants/personal";
 import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
 import type { ListStudents } from "../../../models/students";
-
-
+import { useQuery } from "@tanstack/react-query";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../../components/PaginatedList/PaginatedList";
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
-    const users = useQuery({
-        queryKey: ["students"],
-        queryFn: async () => {
-            const response = await listStudents();
-            return response.data as ListStudents;
-        }
+    const { page, goToPage, animClass } = usePagination(0);
+
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["students", page],
+        queryFn: () => listStudents(page, 10),
     });
 
-    console.log(users.data);
+    const students: ListStudents = response?.data?.content ?? [];
+    const pagination = response?.data?.page ?? null;
 
-    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(users.data ?? [], {
-        searchName: (item) => [item.nome],
+    const { filterSearch, setFilterSearch } = useSearchFilter(students, {
+        searchName: (item: ListStudents[number]) => [item.nome],
     });
-
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
             <h1>Usuários</h1>
-            {/* <p>Lista de usuários assinantes.</p> */}
             <div className={classNames(styles.listUsersSearchBar, { [styles.listUsersSearchBarMobile]: isMobile })}>
                 <InputWithIcon
                     type="text"
@@ -42,7 +40,16 @@ export default function ListUsers() {
                     onInputChange={setFilterSearch}
                 />
             </div>
-            <UsersTable input={filterSearch} users={filteredData} isLoading={users.isLoading} />
+
+            <PaginatedList
+                key={page}
+                page={page}
+                animClass={animClass}
+                pagination={pagination}
+                onPageChange={goToPage}
+            >
+                <UsersTable input={filterSearch} users={students} isLoading={isLoading} />
+            </PaginatedList>
         </div>
     )
 }

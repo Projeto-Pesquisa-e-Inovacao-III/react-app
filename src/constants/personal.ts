@@ -4,8 +4,8 @@ import type { TimeSlot } from "../routes/Personal/SetAvailability/SetAvailabilit
 import { api } from "../system";
 import { ptBR } from "date-fns/locale";
 
-export function listStudents() {
-    return api.get(`/alunos`);
+export function listStudents(page: number = 0, size: number = 10) {
+    return api.get(`/alunos`, { params: { page, size } });
 }
 
 export function editPersonalProfile(data: PersonalDTO) {
@@ -39,6 +39,10 @@ export function updateBuffer(buffer: string) {
 
 export function updateWorkDay(day: string) {
     return api.get(`personais/change-activation/${day}`);
+}
+
+export function verifySchedules(day: string, page: number = 0, size: number = 2) {
+    return api.get(`agendamentos/dia-semana/${day}`, { params: { page, size } });
 }
 
 export function getPersonalBuffer() {

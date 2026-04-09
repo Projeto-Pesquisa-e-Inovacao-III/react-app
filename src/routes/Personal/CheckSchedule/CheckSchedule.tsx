@@ -135,7 +135,7 @@ export function CheckSchedule() {
         clearFilters
     } = useSearchFilter(appointmentsList, {
         searchStatus: item => item.status,
-        searchName: item => [item.nome, item.tipoAula, format(item.dataInicio, "dd/MM/yyyy")],
+        searchName: item => [item.nome, item.tipoAula],
         searchTypeClass: item => item.tipoAula,
     });
 
@@ -144,13 +144,10 @@ export function CheckSchedule() {
     useEffect(() => {
         if (searchParams.get("date")) {
             console.log("Appointments data:", searchParams.get("date"));
-            const date = parseISO(searchParams.get("date") || "");
-            setFilterSearch(format(date, "dd/MM/yyyy", { locale: ptBR }));
+            const dateParam = searchParams.get("date") || "";
+            setSelectedDateRange({ start: dateParam, end: dateParam });
         }
-    }, [searchParams, setFilterSearch]);
-
-
-
+    }, [searchParams]);
 
 
     async function handleInvalidateQueries() {
@@ -283,10 +280,6 @@ export function CheckSchedule() {
                     title={<Skeleton width={140} />}
                     value={<Skeleton width={200} height={32} />}
                     color="#006faf"
-                />
-                <CheckScheduleKpis
-                    title={<Skeleton width={130} />}
-                    value={<Skeleton width={200} height={32} />}
                 />
             </div>
         );
@@ -564,12 +557,8 @@ export function CheckSchedule() {
                                                                     className={styles.userAvatar}
                                                                     data-alt={`Client ${card.nome}`}
                                                                 >
-                                                                    {card.foto ? (
-                                                                        <UserAvatar imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+                                                                    <UserAvatar withUsernameClassName="w-9! h-9!" userName={card.nome} imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
 
-                                                                    ) : (
-                                                                        <UserRound />
-                                                                    )}
                                                                 </div>
                                                                 <span className={styles.userName}>{card.nome}</span>
                                                             </div>

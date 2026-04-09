@@ -48,7 +48,8 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                 ))
             }
 
-            {!props.isLoading && props.users.filter(user => user.nome.toLowerCase().includes(props.input.toLowerCase()))
+            {!props.isLoading && (props.users ?? [])
+                .filter(user => user != null && user.nome?.toLowerCase().includes(props.input.toLowerCase()))
                 .map((user, index) => (
                     <div key={index} className={classNames(styles.usersTableCard, {
                         [styles.usersTableCardMobile]: isMobile
@@ -56,7 +57,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
                         })}>
-                            <UserAvatar foto={user.caminhoFoto ? `${user.caminhoFoto}` : undefined} useUserImage={false} />
+                            <UserAvatar userName={user.nome} foto={user.caminhoFoto ? `${user.caminhoFoto}` : undefined} useUserImage={false} />
                             <div className={styles.userData}>
                                 <b>
                                     {user.nome ?? <Skeleton width={100} />}

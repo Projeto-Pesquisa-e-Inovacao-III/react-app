@@ -25,8 +25,9 @@
 
 .modalEventCreated h2 {
     margin: 0;
+    color: var(--indigo);
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .modalEventCreatedMobile {
@@ -51,7 +52,9 @@
 .content-modal {
     text-align: center;
     width: fit-content;
-    font-size: 18px;
+    color: #1f2937;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
 .modalCard {
