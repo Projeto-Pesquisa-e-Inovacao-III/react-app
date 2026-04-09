@@ -56,7 +56,7 @@ export default function ViewUserData() {
                     <div className={styles.mainGrid}>
 
                         <div className={styles.profileCard}>
-                            <UserAvatar imgClassName="w-32! h-32!" foto={user.data?.caminhoFoto} />
+                            <UserAvatar imgClassName="w-32! h-32!" userName={user.data?.nome} withUsernameClassName="w-32! h-32! text-3xl!" foto={user.data?.caminhoFoto} />
                             <div className={styles.userNameBlock}>
                                 {user.isLoading ? <Skeleton width={100} height={18} /> : <p className={styles.userName}>{user.data?.nome}</p>}
                             </div>

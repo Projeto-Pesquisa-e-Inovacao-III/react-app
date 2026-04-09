@@ -1,4 +1,3 @@
-/* ── Base (preserved) ── */
 .container {
     padding: 40px;
     background-color: #f3f4f6;
@@ -9,7 +8,6 @@
     padding: 20px;
 }
 
-/* ── Header ── */
 .content {
     display: flex;
     flex-direction: column;
@@ -35,7 +33,6 @@
     margin: 0;
 }
 
-/* ── Main grid: 4 cols, 2 rows ── */
 .mainGrid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
@@ -44,7 +41,6 @@
     align-items: start;
 }
 
-/* ── Profile: col 1, spans rows 1-2 ── */
 .profileCard {
     grid-column: 1;
     grid-row: 1 / 3;
@@ -99,7 +95,7 @@
 }
 
 .metricCard {
-    background: #0d2035;
+    background: var(--bg-blue);
     border-radius: 12px;
     padding: 18px 20px;
     display: flex;
@@ -140,7 +136,6 @@
     line-height: 1.4;
 }
 
-/* ── Health card: cols 2-3, row 2 ── */
 .healthCard {
     grid-column: 2 / 4;
     grid-row: 2;
@@ -153,7 +148,6 @@
     gap: 10px;
 }
 
-/* ── Activity card: col 4, row 2 ── */
 .activityCard {
     grid-column: 4;
     grid-row: 2;
@@ -166,7 +160,6 @@
     gap: 10px;
 }
 
-/* ── Shared section title ── */
 .sectionTitle {
     font-size: 20px;
     font-weight: 600;
@@ -191,7 +184,6 @@
     line-height: 1;
 }
 
-/* ── Conditions ── */
 .conditionsList {
     display: flex;
     flex-direction: column;
@@ -236,8 +228,8 @@
 }
 
 .observationBlock {
-    border-left: 2px solid #ef4444;
-    background: #fef2f2;
+    border-left: 2px solid var(--lapis-lazuli);
+    background: var(--carol-light);
     border-radius: 0 8px 8px 0;
     padding: 8px 12px;
     display: flex;
@@ -253,13 +245,13 @@
 
 .observationWarning {
     font-size: 11px;
-    color: #ef4444;
+    color: var(--lapis-lazuli);
 }
 
 .observationLabel {
     font-size: 10px;
     font-weight: 600;
-    color: #ef4444;
+    color: var(--lapis-lazuli);
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
@@ -278,7 +270,6 @@
     margin: 0;
 }
 
-/* ── Activity ── */
 .activityLevelRow {
     display: flex;
     align-items: center;
@@ -336,7 +327,6 @@
     margin: 0;
 }
 
-/* ── Mobile overrides ── */
 @media (max-width: 768px) {
     .mainGrid {
         grid-template-columns: 1fr;

@@ -4,6 +4,7 @@ import { Check, RefreshCw, X, MapPin, Calendar, Clock } from "lucide-react";
 import styles from "./AppointmentCard.module.css";
 import { TypeContext } from "../../App";
 import { useContext } from "react";
+import UserAvatar from "../UserAvatar/UserAvatar";
 
 const STATUS_CONFIG = {
   APROVADO: { label: "Marcado", variant: "confirmed" },
@@ -22,14 +23,10 @@ const PENDING_STATUSES = [
   "PENDENTE_PERSONAL_CONCLUIR",
 ];
 
-function getInitials(name: string) {
-  return name
-    .split(" ")
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-}
+const PENDING = [
+  "PENDENTE_CLIENTE_APROVACAO",
+];
+
 
 type Props = {
   agendamentoId: number;
@@ -52,7 +49,8 @@ export function AppointmentCard(props: Props) {
   const typeContext = useContext(TypeContext);
 
 
-  const isPending = PENDING_STATUSES.includes(props.status);
+  const isPendingPersonal = PENDING_STATUSES.includes(props.status);
+  const isPendingStudent = PENDING.includes(props.status);
 
   function handleNavigateToDetail() {
     nav(`/schedule-details?id=${props.agendamentoId}`);
@@ -64,8 +62,6 @@ export function AppointmentCard(props: Props) {
       fn?.();
     };
   }
-
-  const hasValidPhoto = props.photoUrl && props.photoUrl !== "string" && props.photoUrl !== "";
 
   return (
     <div
@@ -94,17 +90,11 @@ export function AppointmentCard(props: Props) {
           [styles.sessionCardLeftMobile]: isMobile,
         })}>
           <div className={styles.sessionCardUser}>
-            {hasValidPhoto ? (
-              <img
-                src={props.photoUrl}
-                alt={props.name}
-                className={styles.sessionCardAvatar}
-              />
-            ) : (
-              <div className={styles.sessionCardAvatar}>
-                {getInitials(props.name)}
-              </div>
-            )}
+            <UserAvatar
+            withUsernameClassName="w-10! h-10!"
+              userName={props.name}
+              foto={props.photoUrl}
+            />
 
             <div style={{ minWidth: 0 }}>
               <p className={styles.sessionCardName}>{props.name}</p>
@@ -141,7 +131,7 @@ export function AppointmentCard(props: Props) {
 
       </div>
 
-      {isPending && typeContext && typeContext.type === "personal" && (
+      {(isPendingPersonal && typeContext?.type === "personal" || isPendingStudent && typeContext?.type === "aluno") && (
         <div className={styles.sessionCardActions}>
           <button
             className={classNames(styles.actionBtn, styles.actionConfirm)}
