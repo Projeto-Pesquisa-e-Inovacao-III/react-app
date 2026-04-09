@@ -31,6 +31,7 @@ const titles = {
     "/users/view-user-data": "Dados do Usuário | CSF Treinamentos",
     "/edit-user": "Editar Usuário | CSF Treinamentos",
     "/edit-user/security": "Editar Usuário | CSF Treinamentos",
+    "/edit-user/addresses": "Endereços | CSF Treinamentos",
     "/personal/check-schedule": "Solicitações | CSF Treinamentos",
     "/more-options": "Mais Opções | CSF Treinamentos",
     "/set-availability": "Definir Horário | CSF Treinamentos",
