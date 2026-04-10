@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { format, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
 import { ptBR } from "date-fns/locale";
+import { useQuery } from "@tanstack/react-query";
+import { disabledPersonalDays } from "../../../constants/schedule";
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
@@ -19,14 +21,23 @@ type Props = {
     fim: string;
   }[];
   clickDate?: (date: string) => void;
+  personalId: number;
 }
 
 const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate, personalId }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
+
+  const checkDays = useQuery({
+    queryKey: ["disabledDaysOverview"],
+    queryFn: () => disabledPersonalDays(personalId),
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
+  console.log("disabledDays:", checkDays.data)
 
   return (
     <div className={styles.containerCalendar}>
