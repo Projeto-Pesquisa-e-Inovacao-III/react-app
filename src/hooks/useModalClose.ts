@@ -34,6 +34,7 @@ export default function useModalClose({
         setIsClosing(true);
         setTimeout(() => {
             onClose();
+            setIsClosing(false);
         }, duration);
     }
 

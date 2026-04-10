@@ -14,9 +14,10 @@ interface UserAvatarProps {
   imgClassName?: string;
   withUsernameClassName?: string;
   isLoading?: boolean;
+  rightIcon?: React.ReactNode;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, withUsernameClassName, isLoading = false }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, withUsernameClassName, isLoading = false, rightIcon }: UserAvatarProps) {
   const userImage = useQuery({
     queryKey: ['userImage'],
     queryFn: () => getUserImage(),
@@ -54,6 +55,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
           {getInitials(userName || "")}
         </div>
       }
+      {rightIcon && <div className={styles.rightIcon}>{rightIcon}</div>}
     </div>
   )
 }

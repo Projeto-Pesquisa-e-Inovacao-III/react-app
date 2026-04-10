@@ -228,7 +228,7 @@ export function Overview() {
 
 
     const checkDays = useQuery({
-        queryKey: ["disabledDays"],
+        queryKey: ["disabledDaysOverview"],
         queryFn: () => disabledPersonalDays(personalId.data.id),
         retry: false,
         refetchOnWindowFocus: false,
@@ -310,7 +310,6 @@ export function Overview() {
     const personalId = useQuery({
         queryKey: ["personalId"],
         queryFn: () => findUserData(),
-        select: (res) => res.data,
         refetchOnWindowFocus: false,
         enabled: type?.type === "personal"
     });
@@ -330,7 +329,6 @@ export function Overview() {
 
     const [clickedDate, setClickedDate] = useState<string>("");
 
-    console.log("Appointments at calendar:", clickedDate);
     return (
         <>
             <div className={classNames(styles.userViewSchedule, { [styles.userViewScheduleMobile]: isMobile })}>
@@ -407,6 +405,7 @@ export function Overview() {
                                     modalType={setModalType}
                                     availabilityHoursTomorrow={getAvailabilityHoursTomorrowQuery.data?.data}
                                     clickDate={setClickedDate}
+                                    personalId={personalList.data?.content[0]?.id}
                                 />
                             )}
                         </div>

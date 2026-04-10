@@ -8,6 +8,10 @@ export function listStudents(page: number = 0, size: number = 10) {
     return api.get(`/alunos`, { params: { page, size } });
 }
 
+export function searchStudent(page: number = 0, size: number = 10, name: string) {
+    return api.get(`/alunos`, { params: { page, size, nome: name } });
+}
+
 export function editPersonalProfile(data: PersonalDTO) {
     return api.put(`/personais/me`, data);
 }

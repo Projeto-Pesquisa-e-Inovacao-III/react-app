@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { CalendarDays, Clock } from 'lucide-react';
+import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation, Phone } from 'lucide-react';
 import CardInfo from '../../components/CardInfo/CardInfo';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
@@ -18,14 +18,15 @@ import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
 import type { AbsenceAppointment } from '../../models/schedule';
 import Skeleton from 'react-loading-skeleton';
 import { TypeContext } from '../../App';
+import UserAvatar from '../../components/UserAvatar/UserAvatar';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
-const STATUS_CONFIG: Record<string, { text: string; color: string; class: string }> = {
+const STATUS_CONFIG: Record<string, { text: string; color: string; textColor?: string; class: string }> = {
     CONCLUIDO: { text: "Concluído", color: "#0ea500", class: "statusDone" },
     PENDENTE_PERSONAL_CONCLUIR: { text: "Pendente", color: "#FFA500", class: "statusPending" },
     APROVADO: { text: "Marcado", color: "#0ea500", class: "statusPending" },
-    PENDENTE_PERSONAL_APROVACAO: { text: "Em análise", color: "#FFA500", class: "statusPending" },
+    PENDENTE_PERSONAL_APROVACAO: { text: "Em análise", color: "#ffcc00d8", textColor: "#9c5120", class: "statusPending" },
     PENDENTE_CLIENTE_APROVACAO: { text: "Aprovação pendente", color: "#FFA500", class: "statusPending" },
     CANCELADO_PERSONAL: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
     CANCELADO_CLIENTE: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
@@ -169,63 +170,140 @@ export default function ScheduleDetails() {
 
     console.log("Dados do agendamento:", appointment.data);
 
+    interface MapProps {
+        endereco: string;
+    }
 
+    function GoogleMapEmbed({ endereco }: MapProps) {
+        const encodedAddress = encodeURIComponent(endereco);
+        const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+
+        return (
+            <div style={{ width: '100%', height: '400px', borderRadius: '8px', overflow: 'hidden' }}>
+                <iframe
+                    title="Mapa do Endereço"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    src={mapUrl}
+                />
+            </div>
+        );
+    };
+
+    function handleWhatsAppClick() {
+        window.open(`https://api.whatsapp.com/send?phone=5511945584686&text=Ol%C3%A1%2C%20tudo%20bem%3F`, "_blank");
+    }
 
     return (
         <>
             <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
-                <GoBackButton />
+                <div className={styles.header}>
+                    <GoBackButton />
+                    {appointment.data?.status && STATUS_CONFIG[appointment.data.status] && (
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: STATUS_CONFIG[appointment.data.status].color, color: STATUS_CONFIG[appointment.data.status].textColor, padding: "6px 12px", borderRadius: "8px" }}>
+                            <span className={styles[STATUS_CONFIG[appointment.data.status].class]}>
+                                {STATUS_CONFIG[appointment.data.status].text}
+                            </span>
+                        </div>
+                    )}
+                </div>
                 <div className={styles.wrapperContent}>
                     <div className={styles.title}>
                         <h1>Detalhes do agendamento</h1>
-                        {appointment.data?.status && STATUS_CONFIG[appointment.data.status] && (
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: STATUS_CONFIG[appointment.data.status].color, padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles[STATUS_CONFIG[appointment.data.status].class]}>
-                                    {STATUS_CONFIG[appointment.data.status].text}
-                                </span>
-                            </div>
-                        )}
                     </div>
-                    <div className={classNames(styles.contentRow)}>
-                        <div className={styles.content}>
-                            <div className={styles.textWithIcon}>
-                                <span><CalendarDays /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : formattedDate}</span>
-                            </div>
-                            <div className={styles.textWithIcon}>
-                                <span><Clock /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : `${appointment.data?.duracaoMinutos} minutos`}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <CardInfo
-                        isMobile={isMobile}
-                        HeaderTitle={type?.type === "personal" ? "Aluno" : "Personal"}
-                        title={(!type || type?.type === null) ? <Skeleton width={150} height={20} /> : (type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome)}
-                        subtitle={(!type || type?.type === null) ? <Skeleton width={150} height={20} /> : `Idade: ${type?.type === "personal" ? appointment.data?.aluno?.idade : appointment.data?.personal?.idade} anos`}
-                        includeImg={true}
-                        imgUrl={(type?.type === "personal" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl) || undefined}
-                        isLoading={appointment.isLoading}
-                    />
+                    <div className={styles.mainGrid}>
 
-                    <div className={styles.contentDetails}>
-                        <h2 className={styles.subtitle}>Detalhes</h2>
-                        <div className={styles.planDetails}>
-                            <span className={styles.planDetailsDescription}>
-                                Tipo:
-                                <span className={styles.planDetailsText}>{appointment.isLoading ? <Skeleton width={250} className='mb-2' /> : appointment.data?.tipoAula
-                                    ?.toLowerCase()
-                                    ?.replace(/^\w/, (c: string) => c.toUpperCase())}
-                                </span>
-                            </span>
-                            <span className={styles.planDetailsDescription}>
-                                Local:
-                                <span className={styles.planDetailsText}>
-                                    {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.tipo?.toLowerCase()
-                                        ?.replace(/^\w/, (c: string) => c.toUpperCase())}
-                                </span>
-                            </span>
-                            <span className={styles.planDetailsDescription}>Endereço: {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
-                            {appointment.data?.endereco.complemento && <span className={styles.planDetailsDescription}>Complemento: {appointment.data?.endereco.complemento}</span>}
+                        {/* Linha inferior: profissional | info+mapa */}
+                        <div className={styles.bottomRow}>
+                            <div className={styles.leftColumn}>
+                                {/* Card do profissional */}
+                                <div className={styles.professionalCard}>
+
+                                    <div className={styles.avatarSection}>
+                                        <UserAvatar foto={type?.type === "personal" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
+                                        <div className={styles.professionalName}>
+                                            {type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                        </div>
+                                        <div className={styles.professionalSub}>{type?.type === "personal" ? "Aluno" : "Personal Trainer"}</div>
+                                    </div>
+                                    <div className={styles.ageDivider}>
+                                        <span className={styles.ageLabel}>Idade</span>
+                                        <span className={styles.ageValue}>
+                                            {type?.type === "personal"
+                                                ? appointment.data?.aluno?.idade
+                                                : appointment.data?.personal?.idade} anos
+                                        </span>
+                                    </div>
+
+                                    {type?.type === "aluno" && (
+                                        <div className={styles.contactButtons}>
+                                            <button className={styles.contactBtn} onClick={handleWhatsAppClick}>
+                                                <MessageSquare size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+
+                                </div>
+                                <div className={styles.dateTimeRow}>
+                                    <div className={styles.dateTimeCard}>
+                                        <CalendarDays size={18} />
+                                        <div>
+                                            <span className={styles.dateTimeLabel}>Data</span>
+                                            <span className={styles.dateTimeValue}>
+                                                {appointment.isLoading ? <Skeleton width={100} /> :
+                                                    new Date(appointment.data?.dataInicio).toLocaleDateString('pt-BR', {
+                                                        day: '2-digit', month: 'short', year: 'numeric'
+                                                    })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.dateTimeCard}>
+                                        <Clock size={18} />
+                                        <div>
+                                            <span className={styles.dateTimeLabel}>Horário</span>
+                                            <span className={styles.dateTimeValue}>
+                                                {appointment.isLoading ? <Skeleton width={80} /> :
+                                                    `${appointment.data?.dataInicio?.split('T')[1]?.slice(0, 5) || '--:--'} - ${appointment.data?.dataFim?.split('T')[1]?.slice(0, 5) || '--:--'}`}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={styles.infoColumn}>
+                                <div className={styles.typeAmbientRow}>
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.infoCardLabel}><Building2 size={14} /> Tipo de Atendimento</div>
+                                        <div className={styles.infoCardValue}>
+                                            {appointment.data?.tipoAula?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
+                                        </div>
+                                    </div>
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.infoCardLabel}><MapPin size={14} /> Ambiente</div>
+                                        <div className={styles.infoCardValue}>
+                                            {appointment.data?.endereco?.tipo?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={styles.mapCard}>
+                                    <div className={styles.mapCardHeader}>
+                                        <span className={styles.infoCardLabel}>Endereço Completo</span>
+                                        <a href="#" className={styles.directionsLink}><Navigation size={13} /> Direções</a>
+                                    </div>
+                                    <div className={styles.addressText}>
+                                        {appointment.data?.endereco?.cep?.logradouro} – {appointment.data?.endereco?.cep?.bairro}, {appointment.data?.endereco?.numero} – {appointment.data?.endereco?.cep?.uf}
+                                    </div>
+                                    {appointment.isLoading ? (
+                                        <Skeleton height={400} borderRadius={8} />
+                                    ) : (
+                                        <GoogleMapEmbed endereco={`${appointment.data?.endereco?.cep?.logradouro} ${appointment.data?.endereco?.cep?.bairro} ${appointment.data?.endereco?.numero} ${appointment.data?.endereco?.cep?.uf}`} />
+                                    )}
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
