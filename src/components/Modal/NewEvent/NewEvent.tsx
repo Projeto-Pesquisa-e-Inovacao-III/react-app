@@ -8,7 +8,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../../utils/mascara";
 import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
 import CardInfo from "../../CardInfo/CardInfo";
-import { disabledPersonalDays, getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
+import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
+import { useDisabledDays } from "../../../hooks/useDisabledDays";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../ErrorModal/ErrorModal";
@@ -98,28 +99,9 @@ export default function NewEvent(
         refetchOnWindowFocus: false,
     });
 
-    console.log("Personal list" + JSON.stringify(personalList))
 
-
-    const checkDays = useQuery({
-        queryKey: ["disabledDays"],
-        queryFn: () => disabledPersonalDays(personalList.data?.content[0]?.id),
-        retry: false,
-        refetchOnWindowFocus: false,
-        enabled: !disabledDays
-    })
-
-    const [disabledDaysRequest, setDisabledDaysRequest] = useState<string[]>([])
-
-    useEffect(() => {
-        checkDays.data?.data.forEach((day: { diaSemana: string, ativo: boolean }) => {
-            if (!day.ativo) {
-                setDisabledDaysRequest((prev) => [...prev, day.diaSemana.toLowerCase()])
-            }
-        });
-    }, [checkDays.data])
-
-    console.log("Disabled days data:", disabledDaysRequest);
+    const internalTargetId = !disabledDays ? personalList.data?.content[0]?.id : undefined;
+    const { disabledDays: disabledDaysRequest } = useDisabledDays(internalTargetId);
 
 
     const myId = useQuery({

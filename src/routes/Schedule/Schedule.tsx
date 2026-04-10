@@ -13,6 +13,7 @@ import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, getPersonalList, refuseAppointment } from "../../constants/schedule";
+import { useDisabledDays } from "../../hooks/useDisabledDays";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
@@ -219,6 +220,10 @@ export default function Schedule() {
 
     console.log(clickedDate)
 
+    const targetId = personalList.data?.content?.[0]?.id;
+    const { disabledDays } = useDisabledDays(type?.type === "aluno" ? targetId : undefined);
+
+
     return (
         <>
             {!isTypeReady ? (
@@ -248,6 +253,7 @@ export default function Schedule() {
                                 clickDate={(date) => {
                                     setClickedDate(date);
                                 }}
+                                disabledDays={disabledDays}
                             />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>

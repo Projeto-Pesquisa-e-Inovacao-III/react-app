@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from "react";
+import { useDisabledDays } from "../../hooks/useDisabledDays";
 import styles from "./Overview.module.css";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
 import { OverviewCard } from "../../components/Overview/OverviewCard/OverviewCard";
@@ -10,7 +11,7 @@ import useMobile from "../../hooks/isMobile";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useQuery } from "@tanstack/react-query";
-import { appointmentAtCalendar, disabledPersonalDays, findUserAppointments, getPersonalList } from "../../constants/schedule";
+import { appointmentAtCalendar, findUserAppointments, getPersonalList } from "../../constants/schedule";
 import { appoitmentsCount, getAvailabilityHoursTomorrow } from "../../constants/personal";
 import { format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -226,25 +227,25 @@ export function Overview() {
         refetchOnWindowFocus: false,
     })
 
-
-    const checkDays = useQuery({
-        queryKey: ["disabledDaysOverview"],
-        queryFn: () => disabledPersonalDays(personalId.data.id),
-        retry: false,
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
         refetchOnWindowFocus: false,
-    })
+        enabled: type?.type === "aluno"
+    });
 
-    const [disabledDays, setDisabledDays] = useState<string[]>([])
+    const personalId = useQuery({
+        queryKey: ["personalId"],
+        queryFn: () => findUserData(),
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "personal"
+    });
 
-    useEffect(() => {
-        checkDays.data?.data.forEach((day: { diaSemana: string, ativo: boolean }) => {
-            if (!day.ativo) {
-                setDisabledDays((prev) => [...prev, day.diaSemana.toLowerCase()])
-            }
-        });
-    }, [checkDays.data])
+    const targetId = type?.type === "personal" ? personalId.data?.id : personalList.data?.content[0]?.id;
 
-    console.log("Disabled days data:", disabledDays);
+    const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
@@ -298,25 +299,12 @@ export function Overview() {
         setModalType("newEvent")
     }
 
-    const personalList = useQuery({
-        queryKey: ["personalList"],
-        queryFn: getPersonalList,
-        select: (res) => res.data,
-        refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
-    });
 
-
-    const personalId = useQuery({
-        queryKey: ["personalId"],
-        queryFn: () => findUserData(),
-        refetchOnWindowFocus: false,
-        enabled: type?.type === "personal"
-    });
 
     const getAvailabilityHoursTomorrowQuery = useQuery({
-        queryKey: ["availabilityHoursTomorrow"],
-        queryFn: () => getAvailabilityHoursTomorrow(type?.type === "personal" ? personalId.data?.id : personalList.data[0].id),
+        queryKey: ["availabilityHoursTomorrow", targetId],
+        queryFn: () => getAvailabilityHoursTomorrow(targetId),
+        enabled: !!targetId,
         refetchOnWindowFocus: false,
     })
 
@@ -324,7 +312,10 @@ export function Overview() {
 
     const isLoadingCalendar =
         isTypeLoading ||
-        appointments.isPending
+        appointments.isPending ||
+        type?.type === "aluno" ? personalList.isPending : personalId.isPending ||
+        isLoadingDisabledDays
+
 
 
     const [clickedDate, setClickedDate] = useState<string>("");
@@ -405,7 +396,7 @@ export function Overview() {
                                     modalType={setModalType}
                                     availabilityHoursTomorrow={getAvailabilityHoursTomorrowQuery.data?.data}
                                     clickDate={setClickedDate}
-                                    personalId={personalList.data?.content[0]?.id}
+                                    disabledDays={disabledDays}
                                 />
                             )}
                         </div>

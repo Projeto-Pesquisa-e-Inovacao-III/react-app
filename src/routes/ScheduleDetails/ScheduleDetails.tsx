@@ -2,8 +2,7 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation, Phone } from 'lucide-react';
-import CardInfo from '../../components/CardInfo/CardInfo';
+import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
@@ -69,12 +68,6 @@ export default function ScheduleDetails() {
 
         setButtonsActionsCondition(today >= appt);
     }, [location.pathname, appointment.data?.dataInicio]);
-
-    const formattedDate = appointment.data ? `${new Date(`${appointment.data.dataInicio}`).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    })} das ${appointment.data.dataInicio?.split('T')[1]?.slice(0, 5) || '--:--'} às ${appointment.data.dataFim?.split('T')[1]?.slice(0, 5) || '--:--'}` : "";
 
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;

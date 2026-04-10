@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 import { format, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
 import { ptBR } from "date-fns/locale";
-import { useQuery } from "@tanstack/react-query";
-import { disabledPersonalDays } from "../../../constants/schedule";
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
@@ -21,23 +19,17 @@ type Props = {
     fim: string;
   }[];
   clickDate?: (date: string) => void;
-  personalId: number;
+  disabledDays?: string[];
 }
 
 const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate, personalId }: Props) {
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate, disabledDays }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
 
-  const checkDays = useQuery({
-    queryKey: ["disabledDaysOverview"],
-    queryFn: () => disabledPersonalDays(personalId),
-    retry: false,
-    refetchOnWindowFocus: false,
-  })
-  console.log("disabledDays:", checkDays.data)
+  console.log("disabledDays:", disabledDays)
 
   return (
     <div className={styles.containerCalendar}>
@@ -134,6 +126,9 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
+            const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (disabledDays?.includes(weekday)) return [styles.fcTodayCustom];
 
             if (cellDate === tomorrow && availabilityHoursTomorrow && availabilityHoursTomorrow.length === 0) return [styles.fcTodayCustom];
 

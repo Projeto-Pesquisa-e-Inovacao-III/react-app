@@ -3,7 +3,6 @@ import styles from "./ListUsers.module.css"
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
 import { listStudents, searchStudent } from "../../../constants/personal";
-import useSearchFilter from "../../../hooks/useSearchFilter";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
 import type { ListStudents } from "../../../models/students";
