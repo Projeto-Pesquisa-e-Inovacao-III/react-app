@@ -50,7 +50,8 @@
 }
 
 .eventCustomCalendarWeekApproved {
-    background-color: #F2B138 !important;
+    background-color: #e49b0f !important;
+    border: 1px solid #815400 !important;
     padding: 2px 8px;
     border-radius: 8px;
 }

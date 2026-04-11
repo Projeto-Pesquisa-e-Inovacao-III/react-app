@@ -25,8 +25,16 @@ export function actualPlan() {
     return api.get(`/produtos-contratados/ativo`)
 }
 
-export function getUserPlansHistory(page: number = 0) {
-    return api.get(`/produtos-contratados?page=${page}`)
+export function getUserPlansHistory(pageParam = 0, size = "10", initialDate?: string, finalDate?: string, name?: string) {
+    return api.get(`/produtos-contratados`, {
+        params: {
+            ...(initialDate && { dataInic: initialDate }),
+            ...(finalDate && { dataFim: finalDate }),
+            ...(name && { nomeProduto: name }),
+            page: pageParam,
+            size
+        }
+    });
 }
 
 export function BoughtPlanDetails(id: number) {
