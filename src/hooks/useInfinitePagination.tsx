@@ -55,6 +55,7 @@ export function useInfinitePagination<T>(
                 const totalPages = lastPage.page.totalPages;
                 return currentPage + 1 < totalPages ? currentPage + 1 : undefined;
             }),
+        refetchOnWindowFocus: false
     });
 
     useEffect(() => {

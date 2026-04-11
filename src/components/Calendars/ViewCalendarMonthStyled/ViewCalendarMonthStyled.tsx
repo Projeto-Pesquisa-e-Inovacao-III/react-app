@@ -50,7 +50,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "6px" }}>
                   {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}

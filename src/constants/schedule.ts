@@ -33,13 +33,14 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export async function findPersonalRequests(pageParam = 1, size = "10", initialDate?: string, finalDate?: string, status?: string, classType?: string) {
+export async function findPersonalRequests(pageParam = 0, size = "10", initialDate?: string, finalDate?: string, status?: string, classType?: string, name?: string) {
     return api.get(`/agendamentos/solicitacoes`, {
         params: {
             ...(initialDate && { dataInic: initialDate }),
             ...(finalDate && { dataFim: finalDate }),
             ...(status && { status: status }),
             ...(classType && { tipoAgendamento: classType }),
+            ...(name && { nomeDoAluno: name }),
             page: pageParam,
             size
         }

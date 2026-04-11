@@ -64,7 +64,11 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           dateClick={(info) => {
             const today = startOfDay(new Date());
             const clickedDate = parseISO(info.dateStr);
+            const weekday = info.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+            console.log(weekday)
+            if (disabledDays?.includes(weekday)) return
+            
             if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
 
             setNewEventDate(info.dateStr)

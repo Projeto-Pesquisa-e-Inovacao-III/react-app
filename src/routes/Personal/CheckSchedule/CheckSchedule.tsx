@@ -5,7 +5,6 @@ import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
-import useSearchFilter from "../../../hooks/useSearchFilter";
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
@@ -80,6 +79,7 @@ export function CheckSchedule() {
     const [linesPerPageValue, setLinesPerPageValue] = useState<string>("7");
     const [filterStatus, setFilterStatus] = useState<string>("");
     const [filterTypeClass, setFilterTypeClass] = useState<string>("");
+    const [studentName, setStudentName] = useState<string>("");
 
     const {
         data: infinitePaginationMobile,
@@ -91,13 +91,14 @@ export function CheckSchedule() {
             linesPerPageValue,
             selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
             selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined
+
         ).then(res => res.data),
-        enable: isMobile
+        enable: isMobile,
     });
 
     const { data: userRescheduleAppointments, isLoading: isLoadingAppointments } =
         useQuery<PaginatedResponse<CheckSchedule>>({
-            queryKey: ["userRescheduleAppointments", linesPerPageValue, page, selectedDateRange.end, filterStatus, filterTypeClass],
+            queryKey: ["userRescheduleAppointments", linesPerPageValue, page, selectedDateRange.end, filterStatus, filterTypeClass, studentName],
             queryFn: async (): Promise<PaginatedResponse<CheckSchedule>> =>
                 findPersonalRequests(
                     page,
@@ -105,9 +106,11 @@ export function CheckSchedule() {
                     selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
                     selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
                     filterStatus,
-                    filterTypeClass
+                    filterTypeClass,
+                    studentName
                 ).then((res) => res.data),
-            enabled: !isMobile
+            enabled: !isMobile,
+            refetchOnWindowFocus: false,
         });
 
 
@@ -124,19 +127,6 @@ export function CheckSchedule() {
     function handlePaginationChange(newPage: number) {
         setPage(newPage);
     }
-
-    //filter
-    const {
-        filteredData,
-        hasFilters,
-        filterSearch,
-        setFilterSearch,
-        clearFilters
-    } = useSearchFilter(appointmentsList, {
-        searchStatus: item => item.status,
-        searchName: item => [item.nome, item.tipoAula],
-        searchTypeClass: item => item.tipoAula,
-    });
 
     const [searchParams] = useSearchParams();
 
@@ -328,6 +318,17 @@ export function CheckSchedule() {
         navigate(`/schedule-details?id=${id}`);
     }
 
+
+    const hasFilters = !!(studentName || filterStatus || filterTypeClass || selectedDateRange.start || selectedDateRange.end);
+
+    function clearFilters() {
+        setStudentName("");
+        setFilterStatus("");
+        setFilterTypeClass("");
+        setSelectedDateRange({ start: "", end: "" });
+        setPage(0);
+    }
+
     const countPendingPersonalApproval = appointmentsList?.filter(appointment => appointment.status === "PENDENTE_PERSONAL_APROVACAO").length || 0;
 
     return (
@@ -360,14 +361,14 @@ export function CheckSchedule() {
 
                     <div className={styles.cardFilter}>
                         <CardFilterCheckSchedule
-                            onSearchChange={setFilterSearch}
+                            onSearchChange={setStudentName}
                             selectStatusValue={filterStatus}
                             onSelectStatusChange={setFilterStatus}
                             onSelectTypeClassChange={setFilterTypeClass}
                             selectTypeClassValue={filterTypeClass}
                             selectLinesPerPageValue={linesPerPageValue}
                             onSelectLinesPerPageChange={setLinesPerPageValue}
-                            searchValue={filterSearch}
+                            searchValue={studentName}
                             onClear={clearFilters}
                             hasFilters={hasFilters}
 
@@ -381,7 +382,7 @@ export function CheckSchedule() {
                     <>
                         {isLoadingAppointments ? (
                             renderMobileCardsSkeleton()
-                        ) : filteredData.length === 0 ? (
+                        ) : (appointmentsList ?? []).length === 0 ? (
                             <div className={styles.mobileEmptyContainer}>
                                 <div className={styles.mobileIconWrapper}>
                                     <CalendarX className={styles.mobileIcon} />
@@ -405,7 +406,7 @@ export function CheckSchedule() {
                                 }
                             </div>
                         ) : (
-                            filteredData.map((card) => (
+                            (appointmentsList ?? []).map((card) => (
 
                                 <div className={styles.mobileCardWrapper}
                                     key={card.agendamentoId}
@@ -528,8 +529,8 @@ export function CheckSchedule() {
                                     renderTableSkeleton()
                                 ) : (
                                     <tbody className={styles.tbody}>
-                                        {filteredData.length !== 0 &&
-                                            filteredData.map((card) => (
+                                        {(appointmentsList ?? []).length !== 0 &&
+                                            (appointmentsList ?? []).map((card) => (
                                                     <tr
                                                         key={card.agendamentoId}
                                                         className={styles.row}
@@ -683,7 +684,7 @@ export function CheckSchedule() {
                                             ))}
 
 
-                                        {filteredData.length === 0 && (
+                                        {(appointmentsList ?? []).length === 0 && (
                                             <tr className={styles.emptyRow}>
                                                 <td colSpan={6} className={styles.emptyCell}>
                                                     <span className={styles.emptyText}>

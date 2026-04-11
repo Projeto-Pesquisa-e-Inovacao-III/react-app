@@ -5,40 +5,28 @@ import classNames from "classnames";
 import { listStudents, searchStudent } from "../../../constants/personal";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
-import type { ListStudents } from "../../../models/students";
 import { useQuery } from "@tanstack/react-query";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginatedList from "../../../components/PaginatedList/PaginatedList";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
     const { page, goToPage, animClass } = usePagination(0);
 
-    const { data: response, isLoading } = useQuery({
-        queryKey: ["students", page],
-        queryFn: () => listStudents(page, 10),
-    });
-
-    const [students, setStudents] = useState<ListStudents>(response?.data?.content ?? []);
-
-    const pagination = response?.data?.page ?? null;
-
-    // const { filterSearch, setFilterSearch } = useSearchFilter(students, {
-    //     searchName: (item: ListStudents[number]) => [searchStudent(page, 10, item.nome)],
-    // });
-
     const [filterSearch, setFilterSearch] = useState("");
 
-    useEffect(() => {
-        async function search() {
-            const result = await searchStudent(page, 10, filterSearch);
-            setStudents(result.data?.content ?? []);
-        };
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["students", page, filterSearch],
+        queryFn: () =>
+            filterSearch.trim()
+                ? searchStudent(page, 10, filterSearch)
+                : listStudents(page, 10),
+    });
 
-        search();
-    }, [filterSearch]);
+    const students = response?.data?.content ?? [];
+    const pagination = response?.data?.page ?? null;
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>

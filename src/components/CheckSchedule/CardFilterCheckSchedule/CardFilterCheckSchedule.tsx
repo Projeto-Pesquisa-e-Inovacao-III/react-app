@@ -3,7 +3,7 @@ import Button from "../../Button/Button";
 import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
 import styles from "./CardFilterCheckSchedule.module.css"
 import Select from "../../Select/Select";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import CalendarMini, { type DateRange } from "../../Calendars/MiniCalendar/CalendarMini";
 import useClickOutside from "../../../hooks/useClickOutside";
 import useMobile from "../../../hooks/isMobile";
@@ -34,9 +34,22 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
 
     const [openCalendar, setOpenCalendar] = useState(false);
 
-    console.log(selectedDateRange);
-
     const calendarRef = useRef<HTMLDivElement>(null);
+
+    const [localSearch, setLocalSearch] = useState(searchValue || "");
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            onSearchChange(localSearch);
+        }, 700);
+        return () => clearTimeout(timer);
+    }, [localSearch, onSearchChange]);
+
+    useEffect(() => {
+        if (searchValue === "") {
+            setLocalSearch("");
+        }
+    }, [searchValue]);
 
     useClickOutside({
         ref: calendarRef,
@@ -51,8 +64,8 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             type="text"
                             placeholder="Buscar aluno"
                             icon={<SearchIcon />}
-                            value={searchValue}
-                            onInputChange={onSearchChange}
+                            value={localSearch}
+                            onInputChange={setLocalSearch}
                         />
                         <Select
                             onSelectStatusChange={onSelectStatusChange}
@@ -182,8 +195,8 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                         placeholder="Buscar aluno"
                         customClassName="bg-white! rounded-lg w-full!"
                         icon={<SearchIcon />}
-                        value={searchValue}
-                        onInputChange={onSearchChange}
+                        value={localSearch}
+                        onInputChange={setLocalSearch}
                     />
 
                     <div className={styles.cardFilterMobile}>
