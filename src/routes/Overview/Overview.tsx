@@ -243,7 +243,7 @@ export function Overview() {
         enabled: type?.type === "personal"
     });
 
-    const targetId = type?.type === "personal" ? personalId.data?.id : personalList.data?.content[0]?.id;
+    const targetId = type?.type === "personal" && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content[0]?.id;
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
