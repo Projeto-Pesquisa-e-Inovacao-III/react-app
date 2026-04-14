@@ -390,8 +390,8 @@
     cursor: pointer;
     margin-top: auto;
     transition: background-color 0.3s ease;
-    border-bottom-right-radius: 30px;
-    border-bottom-left-radius: 30px;
+    /* border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px; */
 }
 
 .cardBtnMobile:hover {

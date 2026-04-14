@@ -391,9 +391,9 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                                     onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
                                                     defaultValue="PRESENCIAL"
                                                     values={classTypeValues}
-                                                    triggerClassName="h-10! w-full!"
-                                                    triggerWrapperClassName="h-10! w-full!"
-                                                    selectWrapperClassName="h-10! w-full!"
+                                                    triggerClassName="h-12! w-full!"
+                                                    triggerWrapperClassName="h-12! w-full!"
+                                                    selectWrapperClassName="h-12! w-full!"
                                                     containerClassName="w-full flex-1"
                                                     setOpenSelectId={setOpenSelectId}
                                                     openSelectId={openSelectId}

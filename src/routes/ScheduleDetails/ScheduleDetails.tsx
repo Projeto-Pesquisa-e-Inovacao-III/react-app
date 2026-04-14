@@ -208,10 +208,8 @@ export default function ScheduleDetails() {
                     </div>
                     <div className={styles.mainGrid}>
 
-                        {/* Linha inferior: profissional | info+mapa */}
                         <div className={styles.bottomRow}>
                             <div className={styles.leftColumn}>
-                                {/* Card do profissional */}
                                 <div className={styles.professionalCard}>
 
                                     <div className={styles.avatarSection}>
