@@ -221,7 +221,22 @@ export function Packages() {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const slidesToRender = activePackages
+    const [emblaRefPackage, emblaApiPackage] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false },
+        []
+    )
+
+    const scrollPrevPackage = useCallback(() => {
+        emblaApiPackage?.scrollPrev()
+    }, [emblaApiPackage])
+
+    const scrollNextPackage = useCallback(() => {
+        emblaApiPackage?.scrollNext()
+    }, [emblaApiPackage])
+
+const slidesToRender = activePackages.length > 0
+  ? [...activePackages, ...activePackages, ...activePackages]
+  : activePackages;
 
     const slidesToRenderAdicional = productsExhibitionsAdicional
 
@@ -273,9 +288,9 @@ export function Packages() {
                         shouldUseCarousel ? (
                             <>
                                 <div className={styles.emblaWrapper}>
-                                    <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                    <button className={styles.emblaButtonPrev} onClick={scrollPrevPackage}>‹</button>
                                     <div className={styles.embla}>
-                                        <div className={styles.emblaViewport} ref={emblaRef}>
+                                        <div className={styles.emblaViewport} ref={emblaRefPackage}>
                                             <div className={styles.emblaContainer}>
                                                 {slidesToRender.map((pacote, index) => (
                                                     <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
@@ -293,7 +308,7 @@ export function Packages() {
                                             </div>
                                         </div>
                                     </div>
-                                    <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
+                                    <button className={styles.emblaButtonNext} onClick={scrollNextPackage}>›</button>
                                     {isPersonal && !isMobile && (
                                         <div
                                             style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
