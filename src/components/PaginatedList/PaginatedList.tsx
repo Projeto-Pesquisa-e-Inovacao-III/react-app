@@ -48,7 +48,6 @@ export default function PaginatedList({
 
         const pages = [];
         for (let i = start; i <= end; i++) {
-            // Include only if it's not the first or the last page, as we handle them explicitly when there are many pages
             if (totalPages > 3 && (i === 0 || i === totalPages - 1)) continue;
             pages.push(i);
         }
