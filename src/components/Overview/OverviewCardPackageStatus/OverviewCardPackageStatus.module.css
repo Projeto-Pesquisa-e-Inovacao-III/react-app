@@ -1,0 +1,112 @@
+
+.section {
+  background-color: var(--bg-blue);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.iconBackground {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: rgba(255, 255, 255, 0.1);
+  transition: transform 0.5s;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+}
+
+.badge {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.planName {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin-bottom: 0.25rem;
+}
+
+.expiryDate {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progressBox {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.progressLabel {
+  /* inherit */
+}
+
+.progressValue {
+  font-weight: 700;
+}
+
+.progressTrack {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.progressBar {
+  background-color: white;
+  height: 100%;
+  width: 80%;
+}
+
+.button {
+  height: 2.75rem;
+  color: var(--bg-blue);
+  cursor: pointer;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: white;
+  font-weight: 700;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  border: none;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.button:hover {
+  background-color: #f8fafc;
+}

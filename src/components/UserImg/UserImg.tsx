@@ -1,17 +1,18 @@
-import './UserImg.css';
+import styles from './UserImg.module.css';
 
 type UserImgProps = {
     Source : string;
     Alt    : string;
     Height?: number;
     Width?: number;
+    classname?: string;
 };
 
-export function UserImg({Source, Alt, Height, Width}: UserImgProps) {
+export function UserImg({Source, Alt, Height, Width, classname}: UserImgProps) {
     return (
         <>
             <img
-                className="user-img"
+                className={`${styles.userImg} ${classname}`}
                 src={Source}
                 alt={Alt}
                 style={{

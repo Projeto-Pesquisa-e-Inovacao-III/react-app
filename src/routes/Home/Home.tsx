@@ -1,4 +1,3 @@
-import { useMediaQuery } from "@mui/material";
 import MainSection from "./MainSection";
 import AboutSection from "./AboutSection";
 import ServicesSection from "./ServicesSection";
@@ -8,10 +7,6 @@ import Footer from "../../components/Home/Footer/Footer";
 import HeaderMobile from "../../components/Home/Header/HeaderMobile/HeaderMobile";
 import HeaderDesktop from "../../components/Home/Header/HeaderDesktop/HeaderDesktop";
 import useMobile from "../../hooks/isMobile";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { isAuthenticated } from "../../constants/user";
-import { useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
 
 //todo: update images; 
 // remake header mobile; 

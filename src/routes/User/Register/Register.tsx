@@ -3,7 +3,6 @@ import { Lock, Mail, Phone, User, IdCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
 import styles from "./Register.module.css";
-import Swal from "sweetalert2";
 import * as validation from "../../../utils/validacao";
 import type { UserDTO } from "../../../models/user";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
@@ -44,9 +43,18 @@ export default function Register() {
 
     const [register, setRegister] = useState(initialRegisterState);
 
-    const [showPasswordValidation, setShowPasswordValidation] = useState<boolean>(false);
     const navigate = useNavigate();
     const errors = validation.validatePassword("");
+
+    const isFormValid =
+        register.name.trim() !== "" &&
+        validation.validateEmail(register.email).startsWith("Email válido") &&
+        register.customerDocument.length === 14 &&
+        register.phone.length === 15 &&
+        register.gender.trim() !== "" &&
+        register.birthDate !== "" &&
+        validation.validatePassword(register.password).startsWith("password válida") &&
+        register.password === register.confirmPassword;
 
     function navToLogin() {
         setOpenModal(null);
@@ -58,22 +66,37 @@ export default function Register() {
             name: "João Silva",
             email: "joao.silva@example.com",
             password: "123456789aA!",
-            customerDocument: "123.456.789-10",
+            customerDocument: "113.825.140-26",
             phone: "(11) 91234-5678",
             gender: "Masculino",
             confirmPassword: "123456789aA!",
-            birthDate: dayjs("01-01-2000") as any
+            birthDate: dayjs("2000-01-01").format("YYYY-MM-DD").toString()
         });
     }
 
-    const handleChange = (field: string, value: any) => {
+    function handleAutoFill2() {
+        setRegister({
+            name: "Maria Oliveira",
+            email: "maria.oliveira@example.com",
+            password: "123456789aA!",
+            customerDocument: "156.425.430-59",
+            phone: "(19) 99570-8678",
+            gender: "Feminino",
+            confirmPassword: "123456789aA!",
+            birthDate: dayjs("2000-01-01").format("YYYY-MM-DD").toString()
+        });
+    }
+
+
+    const handleChange = (field: string, value: string) => {
         setRegister(prev => ({ ...prev, [field]: value }));
     };
 
+    const [loading, setLoading] = useState(false);
+
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
-        let errors = "";
+        setLoading(true);
 
         const userData: UserDTO = {
             nome: register.name,
@@ -89,50 +112,50 @@ export default function Register() {
             dataNascimento: register.birthDate
         };
 
-        if (register.password !== register.confirmPassword) {
-            setModalInfo({ title: "Erro de validação", content: "As senhas não coincidem." });
-            setOpenModal("error");
-            setShowPasswordValidation(true);
-            return;
-        }
-
         const nullOrBlank = validation.isNullOrBlank(userData);
 
         if (nullOrBlank) {
-            setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos"});
+            setModalInfo({ title: "Erro de validação", content: "Campos obrigatórios não preenchidos" });
             setOpenModal("error");
+            setLoading(false);
             return;
+
         } else if (!validation.validateEmail(register.email).startsWith("Email válido")) {
             setModalInfo({ title: "Erro de validação", content: "Email inválido." });
             setOpenModal("error");
+            setLoading(false);
             return;
 
         } else if (register.customerDocument && register.customerDocument.length !== 14) {
             setModalInfo({ title: "Erro de validação", content: "CPF inválido." });
             setOpenModal("error");
+            setLoading(false);
             return;
         } else if (validation.validatePassword(register.password).startsWith("password válida") === false) {
-            setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais."});
+            setModalInfo({ title: "Erro de validação", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
             setOpenModal("error");
+            setLoading(false);
             return;
         }
 
 
         userService
             .register(userData)
-            .then(async (res) => {
+            .then(async () => {
                 setOpenModal("success");
 
-                setTimeout(() => {
-                    if (successRegister) {
+                if (openModal === "success") {
+                    setTimeout(() => {
                         navigate("/login");
-                    }
-                }, 4000);
-
+                    }, 4000);
+                }
             })
             .catch((err) => {
                 setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || err.response?.data?.dataNascimento || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
                 setOpenModal("error");
+            })
+            .finally(() => {
+                setLoading(false);
             });
     }
 
@@ -151,6 +174,7 @@ export default function Register() {
                             <h1>Inscreva-se</h1>
                             <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
                             <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
+                            <button className="border-2" onClick={handleAutoFill2}>Auto preenchimento 2</button>
                         </div>
                         <div className={styles.borderDivision}></div>
 
@@ -165,13 +189,20 @@ export default function Register() {
                                     icon={<User />}
                                     value={register.name}
                                 />
-                                <InputWithIcon
-                                    type="text"
-                                    placeholder="Email"
-                                    onInputChange={(email: string) => handleChange('email', email)}
-                                    icon={<Mail />}
-                                    value={register.email}
-                                />
+                                <div>
+                                    <InputWithIcon
+                                        type="text"
+                                        placeholder="Email"
+                                        onInputChange={(email: string) => handleChange('email', email)}
+                                        icon={<Mail />}
+                                        value={register.email}
+                                        hasError={register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido")}
+                                        hasSuccess={register.email.length > 0 && validation.validateEmail(register.email).startsWith("Email válido")}
+                                    />
+                                    {register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido") && (
+                                        <span className={styles.inputErrorHint}>Email inválido. Tente algo como usuario@dominio.com</span>
+                                    )}
+                                </div>
 
                                 <div className={styles.DoubleInputsRow}>
                                     <div className={styles.datePickerWrapper}>
@@ -183,7 +214,7 @@ export default function Register() {
                                                         field: { openPickerButtonPosition: 'start' },
                                                     }}
                                                     value={dayjs(register.birthDate)}
-                                                    onChange={(date) => handleChange('birthDate', date)}
+                                                    onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
                                                 />
                                             </DemoContainer>
                                         </LocalizationProvider>
@@ -224,6 +255,8 @@ export default function Register() {
                                     icon={<Lock />}
                                     isPassword={true}
                                     value={register.password}
+                                    hasError={register.password.length > 0 && !validation.validatePassword(register.password).startsWith("password válida")}
+                                    hasSuccess={register.password.length > 0 && validation.validatePassword(register.password).startsWith("password válida")}
                                 />
                                 <InputWithIcon
                                     type="password"
@@ -232,6 +265,8 @@ export default function Register() {
                                     icon={<Lock />}
                                     isPassword={true}
                                     value={register.confirmPassword}
+                                    hasError={register.confirmPassword.length > 0 && register.confirmPassword !== register.password}
+                                    hasSuccess={register.confirmPassword.length > 0 && register.confirmPassword === register.password}
                                 />
                             </div>
 
@@ -240,14 +275,20 @@ export default function Register() {
                                 <label>Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
-                            {showPasswordValidation && (
+                            {register.password.length > 0 && (
                                 <div className={styles.passwordValidation}>
-                                    {errors.split('\n').map((msg, index) => (
+                                    {errors.split('\n').filter((msg) => msg.trim() !== "").map((msg, index) => (
                                         <p key={index} className={!validation.validatePassword(register.password).includes(msg) ? styles.strong : styles.weak}>{msg}</p>
                                     ))}
+                                    {register.confirmPassword.length > 0 && register.password !== register.confirmPassword && (
+                                        <p className={styles.weak}>As senhas não coincidem.</p>
+                                    )}
+                                    {register.confirmPassword.length > 0 && register.password === register.confirmPassword && (
+                                        <p className={styles.strong}>Senhas coincidem.</p>
+                                    )}
                                 </div>
                             )}
-                            <Button typeButton="other" type="submit" title="Cadastrar" />
+                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} classNameVariable={styles.btnCad} disabled={!isFormValid} />
                         </form>
                         <span>
                             Já tem uma conta? <Link to="/login">Faça login</Link>

@@ -28,7 +28,7 @@ export default function HeaderMobile() {
         </div>
 
         {burgerActive && (
-          <nav className="flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
+          <nav className="z-10 flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
             <a href="#main-section-mobile">Inicio</a>
             <a href="#about-section-mobile">Quem sou?</a>
             <a href="#services-section-mobile">Bora treinar!</a>
@@ -37,11 +37,11 @@ export default function HeaderMobile() {
             {verify ? (
               <>
                 <Link to="/home" className=" bg-white text-black h-full rounded-md">Perfil</Link>
-                <Link to="/logout" className=" bg-white text-black h-full rounded-md">Logout</Link>
+                <Link to="/logout" className=" bg-white text-black h-full rounded-md">Sair</Link>
               </>
             ) : (
               <>
-                <Link to="/login" className="mt-5 h-full rounded-md">Login</Link>
+                <Link to="/login" className="mt-5 h-full rounded-md">Entrar</Link>
                 <Link to="/register" className=" bg-white text-black h-full rounded-md">Cadastro</Link>
               </>
             )}

@@ -1,0 +1,198 @@
+.popupModal {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(640px, calc(100vw - 2rem));
+    background-color: #ffffff;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -10px 28px rgba(5, 17, 40, 0.2);
+    z-index: 999;
+    padding: 20px 20px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    text-align: left;
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--indigo);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+
+.popupModal h2 {
+    margin: 0;
+    color: var(--indigo);
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.popupModal p {
+    margin: 0;
+    color: #1f2937;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.popupIndicator {
+    width: 44px;
+    height: 5px;
+    border-radius: 999px;
+    background: #cfd8dc;
+}
+
+.popupEnter {
+    animation: popupEnter 0.3s ease-out forwards;
+}
+
+.closing {
+    animation: popupLeave 0.2s ease-in forwards !important;
+}
+
+.backdropEnter {
+    animation: backdropEnter 0.25s ease-out forwards;
+}
+
+.closingBackdrop {
+    animation: backdropLeave 0.2s ease-in forwards !important;
+}
+
+@media (max-width: 768px) {
+    .popupModal {
+        width: calc(100vw - 1rem);
+        padding: 18px 14px 24px;
+        gap: 14px;
+    }
+
+    .popupModal h2 {
+        font-size: 20px;
+    }
+
+    .popupModal p {
+        font-size: 15px;
+    }
+}
+
+@keyframes popupEnter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes popupLeave {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translate(-50%, 24px);
+    }
+}
+
+@keyframes backdropEnter {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes backdropLeave {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+.cardList {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.card {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.cardTitle {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.cardType {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--indigo);
+    background-color: #e0f2fe;
+    padding: 2px 8px;
+    border-radius: 16px;
+}
+
+.cardDetails {
+    font-size: 14px;
+    color: #4b5563;
+    margin: 0;
+}
+
+.cardStatus {
+    font-size: 12px;
+    font-weight: 500;
+    color: #065f46;
+    background-color: #d1fae5;
+    padding: 2px 8px;
+    border-radius: 16px;
+    align-self: flex-start;
+}

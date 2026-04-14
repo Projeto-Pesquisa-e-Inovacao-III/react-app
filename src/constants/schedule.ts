@@ -1,4 +1,4 @@
-import type { Schedule, ScheduleReschedule } from "../models/schedule";
+import type { AbsenceAppointment, Schedule, ScheduleReschedule } from "../models/schedule";
 import { api } from "../system";
 
 export function insertAppointment(data: Schedule) {
@@ -21,11 +21,7 @@ export async function acceptUserAppointment(id: number) {
     return await api.put(`/agendamentos/${id}/aprovar`);
 }
 
-export async function reportAbsenceStudent(data: any) {
-    return await api.put("/agendamentos/relatar-ausencia/aluno", data);
-}
-
-export function reportAbsencePersonal(data: any) {
+export function reportAbsencePersonal(data: AbsenceAppointment) {
     return api.put("/agendamentos/ausencia", data);
 }
 
@@ -37,9 +33,20 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export function findPersonalRequests(page = 0, size = 10) {
-    return api.get(`/agendamentos/solicitacoes?page=${page}&size=${size}`);
+export async function findPersonalRequests(pageParam = 0, size = "10", initialDate?: string, finalDate?: string, status?: string, classType?: string, name?: string) {
+    return api.get(`/agendamentos/solicitacoes`, {
+        params: {
+            ...(initialDate && { dataInic: initialDate }),
+            ...(finalDate && { dataFim: finalDate }),
+            ...(status && { status: status }),
+            ...(classType && { tipoAgendamento: classType }),
+            ...(name && { nomeDoAluno: name }),
+            page: pageParam,
+            size
+        }
+    });
 }
+
 
 export function findUserRescheduleRequests() {
     return api.get(`/agendamentos/solicitacoes`);
@@ -47,6 +54,10 @@ export function findUserRescheduleRequests() {
 
 export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
+}
+
+export function disabledPersonalDays(id: number) {
+    return api.get(`/personais/dias-semana/${id}`);
 }
 
 export async function findAppointmentById(id: number) {

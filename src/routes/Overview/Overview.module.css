@@ -16,6 +16,7 @@
     gap: 40px;
     justify-content: center;
     margin-top: 10px;
+    width: 100%;
 }
 
 .containerContentMobile {
@@ -44,6 +45,7 @@
     flex-direction: column;
     gap: 40px;
     align-items: flex-end;
+    max-width: 500px !important;
 }
 
 .schedulePageUserActionsMobile {
@@ -152,7 +154,7 @@
     margin-top: 20px;
     background-color: #fff;
     border-radius: 8px;
-    padding: 16px;
+    padding: 24px 16px;
 }
 
 .appointmentsSection>p:nth-child(2) {
@@ -202,9 +204,22 @@
     text-align: center;
 }
 
-.schedulePageUserActionsPersonal :global(h2) {
-    text-align: start;
+.btnOverview {
+    background-color: white;
+    color: var(--indigo);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bolder;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 20px;
 }
+
 
 @media (max-width: 1024px) {}
 

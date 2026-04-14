@@ -1,83 +1,165 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import { User, Calendar, LogOut, MapPin, ChevronDown } from "lucide-react";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
-import "./style.css"
-import { Bell } from "lucide-react";
-import { useEffect, useState } from "react";
-import Notification from "../Notification/Notification";
+import styles from "./UserHeaderDesktop.module.css"
+import { useEffect, useRef, useState } from "react";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import { useQueryClient } from "@tanstack/react-query";
+import useClickOutside from "../../../hooks/useClickOutside";
+import useModalClose from "../../../hooks/useModalClose";
+import Skeleton from "react-loading-skeleton";
 
 type UserType = {
-  type: "personal" | "student"
+  userName?: string;
+  type: "personal" | "aluno" | null
+  isLoading: boolean;
 }
 
-export default function UserHeaderDesktop({ type }: UserType) {
+export default function UserHeaderDesktop({ userName, type, isLoading }: UserType) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
+  const { isClosing, handleAnimatedClose } = useModalClose({
+    duration: 200,
+    lockScroll: false,
+    onClose: () => setOpenHeaderModal(false),
+  });
+
   const queryClient = useQueryClient();
 
-  queryClient.invalidateQueries({ queryKey: ['userImage'] });
-
   useEffect(() => {
-    
-  }, [])
+    queryClient.invalidateQueries({ queryKey: ['userImage'] });
+  }, []);
 
+  const userRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside({
+    ref: userRef,
+    callback: () => {
+      if (openHeaderModal && !isClosing) {
+        handleAnimatedClose();
+      }
+    }
+  });
+
+  //verificar se o link está ativo para adicionar a classe active
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink;
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleNavClick = () => setMenuOpen(false);
   return (
     <>
-      <header className="user-header-desktop">
-        <Link to="/"><LogoHeaderDesktop /></Link>
-        <nav>
-          {type === 'personal' ? (
-            <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/personal/check-schedule">Solicitações</Link>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/users">Usuários</Link>
-            </>
-          ) : (
-            <>
-              <Link to="/home">Inicio</Link>
-              <Link to="/schedule">Agenda</Link>
-              <Link to="/packages">Planos</Link>
-              <Link to="/plans-history">Histórico de planos</Link>
-              <Link to="/schedule-history">Histórico de agendamentos</Link>
-            </>
-          )
-          }
+      <header className={styles.userHeaderDesktop}>
+        <nav className={styles.nav}>
+          <Link to="/"><LogoHeaderDesktop /></Link>
+
+          {isLoading && (
+            <div className="flex">
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
+            </div>
+          )}
+
+          {!isLoading && type && (
+            <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
+              {type === 'personal' ? (
+                <>
+                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
+                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
+                  <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
+                  <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
+                  <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
+                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
+                  <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Alunos</NavLink>
+
+                </>
+              ) : (
+                <>
+                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
+                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
+                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
+                  <NavLink to="/plans-history" className={navLinkClass} onClick={handleNavClick}>Histórico de compras</NavLink>
+                  <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
+                </>
+              )}
+
+
+              {menuOpen && (
+                <div className={styles.navOtherLinks}>
+                  <NavLink to="/edit-user" className={navLinkClass} onClick={handleNavClick}>Editar informações</NavLink>
+                  <NavLink to="/logout" className={navLinkClass} onClick={handleNavClick}>Sair</NavLink>
+                </div>
+              )}
+            </div>
+          )}
+
+
         </nav>
 
-        <div className="auth-links">
-          {/* <div onMouseEnter={() => setOpenNotification(true)}  onMouseLeave={() => setOpenNotification(false)} className="notification-bell"> */}
-          {/* <div onClick={() => setOpenNotification(!openNotification)} className="notification-bell">
-            <Bell />
-          </div> */}
-          <div onClick={() => setOpenHeaderModal(!openHeaderModal)} className="user-avatar-header-desktop">
-            <UserAvatar useUserImage={true} />
-          </div>
-        </div>
+        <div ref={userRef} className={styles.authLinks}>
 
-      </header >
-      {/* 
-      {openNotification && (
-        <Notification notifications={notifications} />
-      )
-      } */}
-
-      {openHeaderModal && (
-        <div className="header-modal-desktop" onClick={() => setOpenHeaderModal(false)}>
-          <div className="header-modal-content-desktop" onClick={(e) => e.stopPropagation()}>
-            <Link to="/edit-user">Editar perfil</Link>
-            {type === "personal" && <Link to="/set-availability">Ajustar disponibilidade</Link>}
-            <Link to="/logout">Sair</Link>
+          <div
+            onClick={() => {
+              if (openHeaderModal && !isClosing) {
+                handleAnimatedClose();
+              } else if (!openHeaderModal) {
+                setOpenHeaderModal(true);
+              }
+            }}
+            className={styles.userAvatarHeaderDesktop}
+          >
+            <UserAvatar 
+              userName={userName} 
+              useUsername 
+              useUserImage 
+              isLoading={isLoading} 
+              rightIcon={
+                <ChevronDown 
+                  className={`${styles.avatarChevron} ${openHeaderModal && !isClosing ? styles.rotated : ''}`} 
+                  size={20} 
+                />
+              }
+            />
           </div>
+          <button
+            className={styles.burgerButton}
+            onClick={() => setMenuOpen(prev => !prev)}
+            aria-label="Menu"
+          >
+            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
+            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
+            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
+          </button>
+
+          {openHeaderModal && (
+            <div className={`${styles.headerModalDesktop} ${isClosing ? styles.closing : ''}`}>
+              <div className={styles.headerModalContentDesktop}>
+                <Link onClick={handleAnimatedClose} to="/edit-user">
+                  <User size={18} /> Editar perfil
+                </Link>
+                {type === "personal" &&
+                  <Link onClick={handleAnimatedClose} to="/set-availability">
+                    <Calendar size={18} /> Ajustar disponibilidade
+                  </Link>
+                }
+                {type === "aluno" &&
+                  <Link onClick={handleAnimatedClose} to="/edit-user/addresses">
+                    <MapPin size={18} /> Endereços
+                  </Link>
+                }
+                <div className={styles.divider} />
+                <Link className={styles.logoutLink} onClick={handleAnimatedClose} to="/logout">
+                  <LogOut size={18} /> Sair
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-      )
-      }
+      </header>
     </>
   );
 }
-
-

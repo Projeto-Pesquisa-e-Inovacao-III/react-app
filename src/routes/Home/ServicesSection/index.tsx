@@ -29,14 +29,14 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
           bgColor="bg-indigo"
           title="Um guia para a saúde em todas as idades"
           content="Da infância à melhor idade, a saúde é nossa prioridade em cada etapa! Com um olhar atento às necessidades de cada um, oferecemos orientação personalizada para crianças, jovens, adultos e idosos."
-          image="/Home/cardImage1.JPG"
+          image="/Home/bg-1-2.jpg"
           isReverse={true}
           isMobile={isMobile}
         />
 
         <CardServices
           bgColor={`${isMobile ? "gradient-white-with-blue-bar-mobile" : "gradient-white-with-blue-bar"}`}
-          color="text-black"
+          color="text-oxford-blue"
           title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
           content="Sua saúde é um presente que pode inspirar a todos ao seu redor, especialmente a sua família! Com nosso suporte, você encontrará o equilíbrio perfeito para se cuidar e motivar seus entes queridos a adotarem hábitos saudáveis."
           image="/Home/cardImage2.png"

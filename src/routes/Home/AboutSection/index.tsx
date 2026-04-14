@@ -11,8 +11,8 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                 className={`font-poppins w-full flex ${isMobile ? 'flex-col items-center' : 'ml-20 mr-20'
                     }`}
             >
-                <div className={`${isMobile ? 'w-full mb-5' : ''}`}>
-                    <img className="w-full" src="/Home/imageAbout.png" alt="" />
+                <div className={`${isMobile ? 'w-full mb-5' : 'w-2/4 not-2xl:w-full'}`}>
+                    <img className="rounded-lg" src="/Home/about-2.png" alt="" />
                 </div>
 
                 <div
@@ -28,14 +28,14 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
                         Quem sou?
                     </h1>
                     <p className={`${isMobile ? 'text-lg' : 'text-2xl w-fit whitespace-pre-line'}`}>
-                        Sou <span className="text-gigant-orange font-semibold">Fabio Bernardes</span>, professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento.
+                        Sou <span className="text-gigant-orange font-semibold">Fábio Bernardes</span>, professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento.
                     </p>
                     <p className={`${isMobile ? 'text-lg mt-5' : 'text-2xl w-fit'}`}>
                         Além de <span className="text-gigant-orange font-semibold">profissional</span>, sou marido e pai, e entendo na prática os desafios de conciliar uma rotina agitada com o <span className="text-gigant-orange font-semibold">cuidado da saúde</span>. É por isso que minha consultoria foi desenvolvida para se adaptar aos seus objetivos.
                     </p>
 
                     {!isMobile && (
-                        <ButtonHome to="#plans-section" title="Conheça os planos" />
+                        <ButtonHome to="#plans-section" title="Conheça os pacotes disponíveis" />
                     )}
                 </div>
             </div>

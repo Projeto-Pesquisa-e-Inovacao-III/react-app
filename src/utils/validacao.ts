@@ -10,7 +10,7 @@ export function isNullOrBlank(user: UserDTO): string{
     let response: string = ""
 
     Object.entries(user).slice(0).forEach(([field, value]) => {
-        if(value == null || isBlank(value))
+        if(value == null || (typeof value === 'string' && isBlank(value)))
             response += `${field} está vazio\n`
         }
     )
@@ -35,7 +35,7 @@ export function validateEmail(email: string): string{
         response += "A parte do usuário (parte antes de '@') contém caracteres inválidos ou está mal formatada.\n";
     }
 
-    const regexDomain: RegExp = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/i;
+    const regexDomain: RegExp = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*(?:\.[a-z]{3,}|\.[a-z]{2,3}\.[a-z]{2})$/i;
     if (!regexDomain.test(domain)) {
         response += "O domínio do email (parte pós '@') é inválido ou mal formatado.\n";
     }

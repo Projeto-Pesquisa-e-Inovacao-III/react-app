@@ -4,7 +4,6 @@ import { Lock, Phone } from "lucide-react";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
-import CodeStep from "./CodeStep/CodeStep";
 import ChangePasswordStep from "./ChangePasswordStep/ChangePasswordStep";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import classNames from "classnames";
@@ -16,7 +15,6 @@ import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import { useNavigate } from "react-router-dom";
 
-// todo: fix font family  
 export default function ForgotPassword() {
   const isMobile = useMobile();
 
@@ -29,14 +27,22 @@ export default function ForgotPassword() {
 
     if (step === 1 && isIncrease) {
       const isCodeSent: boolean = await handleSendCode();
-      if (!isCodeSent) return;
+      if (!isCodeSent) {
+        setTextModal({ title: "Houve um erro", content: "Não foi possível enviar o código. Verifique o número e tente novamente." });
+        setOpenModal("error");
+        return;
+      };
       setStep(2);
       return;
     }
 
     if (step === 2 && isIncrease) {
       const isCodeCorrect: boolean = await handleVerifyCode(inputCode);
-      if (!isCodeCorrect) return;
+      if (!isCodeCorrect) {
+        setTextModal({ title: "Houve um erro", content: "Código incorreto. Verifique o código enviado para o seu WhatsApp e tente novamente." });
+        setOpenModal("error");
+        return;
+      };
       setStep(3);
       return;
     }
@@ -173,8 +179,8 @@ export default function ForgotPassword() {
           </div>
         )}
         <div className={styles.forgotPassword}>
-          <div onClick={step != 1 ? (e) => handleStep(e, false) : undefined}>
-            <GoBackButton to={step == 1 ? '/login' : (e) => handleStep(e, true)} />
+          <div onClick={step != 1 ? (e: React.MouseEvent<HTMLElement>) => handleStep(e, false) : undefined}>
+            <GoBackButton to={step == 1 ? '/login' : undefined} />
           </div>
           <div className={classNames(styles.wrapperForgotPasswordElements, { [styles.wrapperForgotPasswordElementsMobile]: isMobile })}>
             {
@@ -220,11 +226,7 @@ export default function ForgotPassword() {
             }
 
             <div className={styles.continueButton} onClick={(e) => handleStep(e, true)}>
-              {isLoading ? (
-                <div className={styles.loader}></div>
-              ) : (
-                <Button type="submit" title="Continuar" />
-              )}
+                <Button type="submit" title="Continuar" loading={isLoading} />
             </div>
 
           </div>

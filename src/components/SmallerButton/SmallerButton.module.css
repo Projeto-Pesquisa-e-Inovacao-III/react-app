@@ -1,0 +1,27 @@
+.btnSched {
+    padding: 15px 30px;
+    background-color: var(--bg-blue);
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+
+    .btnSched {
+        padding: 15px 20px;
+    }
+}

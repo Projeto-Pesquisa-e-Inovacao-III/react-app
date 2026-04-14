@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, Eye, HistoryIcon, Hourglass, HourglassIcon, IdCard, LogOut, MapPin, Package, User, Users } from 'lucide-react';
+import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut} from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
@@ -33,7 +33,7 @@ export default function MoreOptions() {
         <>
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <UserAvatar useUserImage={true} />
+                    <UserAvatar withUsernameClassName={"w-24! h-24! text-3xl!"} userName={userName.data || "Usuario"} useUserImage={true} />
                     <h2>{userName.data || "Usuario"}</h2>
                 </div>
                 <div className={styles.options}>

@@ -1,0 +1,302 @@
+.editUserGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  gap: 25px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas:
+    "header   header "
+    "pages personal"
+    "pages personal"
+    "pages delete"
+    "pages footer"
+}
+
+.aside {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.linkActive {
+  background: var(--bg-blue);
+  color: white;
+}
+
+
+.linkInactive {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.linkInactive:hover {
+  background: #e2e8f0;
+}
+
+.atualizarFotoContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.atualizarFotoContainer>div {
+  width: 100%;
+}
+
+.atualizarFotoContainer span,
+.atualizarFotoContainer :global(.buttonRemoveImage) {
+  padding: 14px;
+  font-size: 16px;
+  background-color: var(--bg-blue);
+  color: var(--btn-color);
+  border-radius: 6px;
+  cursor: pointer;
+  text-wrap: nowrap;
+  width: 100%;
+  max-width: unset;
+}
+
+.atualizarFotoContainer span {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.profileSection {
+  max-width: 364px;
+  max-height: 369px;
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
+}
+
+.profileSection .button {
+  padding: 15px;
+}
+
+.editUserGrid h2 {
+  font-size: 36px;
+  font-weight: 400;
+}
+
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
+
+
+.footer {
+  width: 500px;
+}
+
+.footer .divButtons {
+  gap: 35px;
+  display: flex;
+  flex-direction: row;
+}
+
+.divButtons :global(.buttonDanger),
+.divButtons :global(.buttonDanger) button {
+  background-color: #d9534f;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.divButtons :global(.buttonDanger) button {
+  padding: 12px 20px;
+}
+
+.divButtons :global(.buttonDanger):hover,
+.divButtons :global(.buttonDanger) button:hover {
+  background-color: #c9302c;
+  transform: translateY(-1px);
+}
+
+.footer .btnGeneric button {
+  padding: 18px;
+}
+
+.saveButton {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.btnEditPassword {
+  width: unset !important;
+}
+
+.personalInfoGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  align-items: start;
+  grid-template-areas:
+    "email email email email"
+    "senhaAtual senhaAtual novaSenha novaSenha"
+    "footer footer footer footer"
+  ;
+}
+
+.personalInfoGrid :global(.wrapper_inp) {
+  width: 100%;
+}
+
+.loginInfo :global(whiteContainer) {
+  align-items: start;
+}
+
+
+.loginInfoContainer :global(#email) {
+  width: 100%;
+}
+
+.loginInfoContainer :global(#senha) {
+  width: 100%;
+}
+
+.personalInfoGrid .fotoArea {
+  grid-area: foto;
+}
+
+.personalInfoGrid :global(#nome) {
+  grid-area: nome;
+}
+
+.personalInfoGrid :global(#email) {
+  grid-area: email;
+}
+
+.personalInfoGrid :global(#senhaAtual) {
+  grid-area: senhaAtual;
+}
+
+.personalInfoGrid :global(#novaSenha) {
+  grid-area: novaSenha;
+}
+
+@media (max-width: 1024px) {
+  .personalInfoGrid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "email"
+      "senhaAtual"
+      "novaSenha"
+      "footer"
+    ;
+  }
+
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal"
+      "delete"
+      "footer";
+  }
+
+  .goBackContainer .goBackLogin {
+    top: initial;
+    left: initial;
+    position: initial;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .dashLine {
+    border: none;
+    height: 3px;
+    background-image: linear-gradient(to right, rgb(175, 175, 175) 50%, transparent 50%);
+    background-size: 20px 2px;
+    background-repeat: repeat-x;
+  }
+
+  .footer .btnGeneric {
+    width: 148px;
+  }
+
+  .footer .btnGeneric button {
+    padding: 15px;
+  }
+
+  .footer .btnGeneric :global(.buttonDanger) {
+    width: 100%;
+  }
+
+  .profileSection {
+    max-width: none;
+    max-height: none;
+  }
+
+  .footer .divButtons {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.goBackContainer h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
+
+.deleteAccountSection {
+  grid-area: delete;
+}
+
+.goBackContainer {
+  grid-area: header;
+}
+
+.pagesSection {
+  grid-area: pages;
+}
+
+.personalInfo {
+  grid-area: personal;
+}
+
+.loginInfo {
+  grid-area: login;
+}
+
+.footer {
+  grid-area: footer;
+}
+
+.emailInfo {
+  grid-area: email;
+}
+
+.passwordInfo {
+  grid-area: senha;
+}
+

@@ -1,17 +1,16 @@
-import { use, useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../Calendars/CalendarMonthStyled/CalendarMonthStyled";
-import SmallerButton from "../SmallerButton";
+import SmallerButton from "../SmallerButton/SmallerButton";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
-import Select from "../Inputs/Select/Select";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../utils/mascara";
-import { Clock, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset, UserRound } from "lucide-react";
 import CardInfo from "../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../constants/schedule";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../models/schedule";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import { differenceInYears, format, parse, parseISO, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -20,6 +19,13 @@ import { getTotalByClassType } from "../../constants/overview";
 import { TypeContext } from "../../App";
 import { findUserData } from "../../constants/user";
 import useModal from "../../hooks/useModal";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css'
+import Select from "../Select/Select";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import InformationCard from "../Modal/NewEvent/InformationCard/InformationCard";
+import type { HorariosPersonal } from "../../models/personal";
+import { getUserAddresses } from "../../constants/address";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -27,7 +33,7 @@ type NewEventProps = {
     close: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     openModalExtern: (() => void);
     errorModal: ((title: string, description: string) => void);
-    insertedEvents: any[];
+    insertedEvents: Schedule[];
     title?: string;
     buttonTitle?: string;
     isReschedule?: boolean;
@@ -47,17 +53,30 @@ type AddressState = {
     complement: string;
 };
 
-type modalTypes = "error" | null;
+type AddressOption = {
+    numero: string,
+    id: string,
+    complemento: string,
+    unidade: string,
+    tipo: string,
+    cep: {
+        logradouro: string,
+        cep: string,
+        bairro: string,
+        localidade: string,
+        uf: string
+    }
+} | null;
 
 export default function NewEvent(
     { isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents, title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate, newAppointmentCreated, goToNextStep = true, typeUser }: NewEventProps
 ) {
-      const {
+    const {
         openModal,
         setOpenModal,
         textModal,
         setTextModal
-      } = useModal(null, {title:"", content:""})
+    } = useModal(null, { title: "", content: "" })
 
 
     console.log("clickedDate prop:", clickedDate);
@@ -65,13 +84,15 @@ export default function NewEvent(
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
-    const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
+    const [selectedLocation] = useState<string>("CASA");
+    const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
         queryKey: ["personalList"],
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: typeUser === "aluno",
     });
 
 
@@ -113,7 +134,9 @@ export default function NewEvent(
                 minute: '2-digit',
             });
 
-            const finalHour = date.setHours(date.getHours() + 1);
+            const finalHourDate = new Date(date);
+            const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+            const finalHour = finalHourDate.setMinutes(finalHourDate.getMinutes() + durationMinutes);
 
             return date.toLocaleString('pt-BR', {
                 day: '2-digit',
@@ -121,14 +144,14 @@ export default function NewEvent(
                 year: 'numeric',
             }).replace(" às ", "") + ` das ${initialHour} às ${new Date(finalHour).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
         }
-    }, [newEventDate, newEventStartHour]);
+    }, [newEventDate, newEventStartHour, selectedType]);
 
     useEffect(() => {
         document.body.style.overflow = 'hidden';
     }, []);
 
     useEffect(() => {
-        if (addressData.postalCode.length === 8) {
+        if (addressData.postalCode.replace("-", "").length === 8) {
             axios.get(`https://viacep.com.br/ws/${addressData.postalCode}/json/`)
                 .then(response => {
                     setAddressData({
@@ -146,8 +169,17 @@ export default function NewEvent(
 
     const url = window.location.href;
 
+    async function handleInvalidateQueries() {
+        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
+        await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+
+    }
     async function handleNewEvent(e: React.FormEvent) {
         e.preventDefault();
+        setLoading(true)
 
         if (addressData.address.includes("undefined")) {
             setOpenModal("error");
@@ -205,19 +237,14 @@ export default function NewEvent(
         await insertAppointment(payload)
             .then(async response => {
                 console.log("Evento salvo com sucesso:", response.data);
-
+                setLoading(false)
                 if (calculatedTitle && newEventDate) {
-                    await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                    await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-
+                    handleInvalidateQueries()
                     if (url.includes("/schedule")) {
-                        newAppointmentCreated && newAppointmentCreated(true);
-                        await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-                        await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
+                        if (newAppointmentCreated) {
+                            newAppointmentCreated(true);
+                        }
+                        handleInvalidateQueries()
 
                         openModalExtern();
                         navigation("/schedule");
@@ -228,6 +255,8 @@ export default function NewEvent(
                 }
             }).catch(error => {
                 console.error("Erro ao salvar evento:", error);
+                setLoading(false)
+
                 if (error.status === 400) {
                     setTextModal({
                         title: "Erro ao agendar",
@@ -261,6 +290,8 @@ export default function NewEvent(
 
     async function handleRescheduleEvent(e?: React.FormEvent) {
         console.log("Reagendando evento...");
+        console.log("addressData", addressData);
+        setLoading(true)
         e?.preventDefault();
 
 
@@ -275,19 +306,7 @@ export default function NewEvent(
             idAgendamento: rescheduleId ? rescheduleId : undefined,
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
-            endereco: {
-                numero: addressData.number,
-                complemento: addressData.complement,
-                unidade: "",
-                tipo: selectedLocation,
-                cep: {
-                    id: addressData.postalCode,
-                    logradouro: addressData.address,
-                    bairro: "",
-                    localidade: addressData.city,
-                    uf: addressData.state
-                }
-            },
+            endereco: null,
             personalId: typeUser === "personal" ? myId.data : personalList.data[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
@@ -297,36 +316,29 @@ export default function NewEvent(
 
         await rescheduleAppointment(payload).then(async response => {
             console.log("Evento reagendado com sucesso:", response.data);
+            setLoading(false)
 
         }).catch(error => {
             console.error("Erro ao reagendar evento:", error);
+            errorModal("Erro ao reagendar", "Ocorreu um erro ao tentar reagendar o evento.");
+
             //errorModal();
+            setLoading(false)
+
         });
 
         if (!goToNextStep) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
 
 
         if (calculatedTitle && newEventDate) {
-            await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
-            await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
-            await queryClient.invalidateQueries({ queryKey: ["availabilityHours"] });
-            await queryClient.invalidateQueries({ queryKey: ["personalRequests"] });
-            await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
+            handleInvalidateQueries()
             openModalExtern();
             return;
         }
-
-
 
     }
 
@@ -341,43 +353,31 @@ export default function NewEvent(
             return;
         }
         close(false);
+        handleCloseModalOnClickOverlay();
     }
 
-    function handleButtonClick(hour: string) {
-        setNewEventStartHour(hour);
+    function handleButtonClick(hour: string | boolean) {
+        if (typeof hour === "string") setNewEventStartHour(hour);
     }
 
     const type = useContext(TypeContext);
 
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
+    function handleCloseModalOnClickOverlay() {
+        setOpenModal(null);
+    }
 
-            },
-            {
-                queryKey: ["totalRESIDENCIALNewEvent"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONALNewEvent"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type === "aluno"
     });
 
     function verifyClassAvailability() {
         console.log("Verificando disponibilidade de aulas para o tipo selecionado:", selectedType);
-        console.log("Aulas disponíveis - Presencial:", aulaPresencial.data, "Residencial:", aulaResidencial.data, "Funcional:", aulaFuncional.data);
-        if (selectedType === "PRESENCIAL" && (aulaPresencial.data === 0 && !aulaPresencial.isLoading)) {
+        console.log("Aulas disponíveis - Presencial:", classBalanceQuery.data?.saldoPresencial, "Residencial:", classBalanceQuery.data?.saldoResidencial, "Funcional:", classBalanceQuery.data?.saldoFuncional);
+        if (selectedType === "PRESENCIAL" && (classBalanceQuery.data?.saldoPresencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas presenciais disponíveis para agendar."
@@ -386,7 +386,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "RESIDENCIAL" && (aulaResidencial.data === 0 || aulaResidencial.data === undefined)) {
+        if (selectedType === "RESIDENCIAL" && (classBalanceQuery.data?.saldoResidencial === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas residenciais disponíveis para agendar."
@@ -395,7 +395,7 @@ export default function NewEvent(
             return false;
         }
 
-        if (selectedType === "FUNCIONAL" && (aulaFuncional.data === 0 || aulaFuncional.data === undefined)) {
+        if (selectedType === "FUNCIONAL" && (classBalanceQuery.data?.saldoFuncional === 0 && !classBalanceQuery.isLoading)) {
             setTextModal({
                 title: "Erro ao agendar",
                 content: "Você não possui aulas funcionais disponíveis para agendar."
@@ -441,9 +441,12 @@ export default function NewEvent(
     }, [selectedType]);
 
     const availabilityHours = useQuery({
-        queryKey: ["availabilityHours"],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ? newEventDate : ""),
-        select: (res) => res.data,
+        queryKey: ["availabilityHours", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            newEventDate],
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, newEventDate ?? "", selectedType.toUpperCase()),
+        select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
 
@@ -465,41 +468,160 @@ export default function NewEvent(
 
     }, [availabilityHours.data]);
 
-    useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["availabilityHours"], refetchType: "all" });
-    }, [chooseTimeOfDay, newEventDate, selectedType]);
-
     const tomorrow = format(startOfDay(new Date(Date.now() + 86400000)), "yyyy-MM-dd", { locale: ptBR });
-    console.log("tomorrow", tomorrow);
 
     const availabilityHoursTomorrow = useQuery({
-        queryKey: ["availabilityHoursTomorrow"],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow),
+        queryKey: ["availabilityHoursTomorrow", typeUser,
+            myId.data,
+            personalList.data?.[0]?.id,
+            tomorrow],
+        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data[0]?.id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });
+
+    const [openSelectId, setOpenSelectId] = useState<string | null>(null);
+
+    const [selectedAddress, setSelectedAddress] = useState<AddressOption>(null);
+
+    const addresses = useQuery({
+        queryKey: ["addresses"],
+        queryFn: () => getUserAddresses(),
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+    });
+
+    useEffect(() => {
+        const cep = selectedAddress?.cep?.cep;
+
+
+        if (cep) {
+            setAddressData({
+                postalCode: cep && cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
+                address: `${selectedAddress?.cep?.logradouro} - ${selectedAddress?.cep?.bairro}`,
+                city: selectedAddress?.cep?.localidade,
+                state: selectedAddress?.cep?.uf,
+                number: selectedAddress?.numero,
+                complement: selectedAddress?.complemento
+            });
+        }
+
+    }, [selectedAddress])
+
+    const [selectDefault, setSelectDefault] = useState<string>("");
+
+    useEffect(() => {
+        if (addresses.isSuccess && addresses.data?.length) {
+            const last = addresses.data.at(-1);
+            console.log("Último endereço cadastrado:", last);
+            setSelectDefault(last?.id ?? "");
+            setSelectedAddress(last);
+        }
+    }, [addresses.data, addresses.isSuccess]);
+
 
     return (
         <>
             <div className={styles.overlay} onClick={handleClose}></div>
 
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile })}>
+                {!isMobile && (
+                    <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
+                        {typeUser === "personal" ? (
+                            // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
+                            <InformationCard
+                                icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                title="Aluno"
+                                subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
+                            />
+                        ) : (
+                            <>
+                                {step === 2 && (
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
+                                )}
+
+                                <InformationCard
+                                    icon={
+                                        personalList.data?.[0]?.caminhoFoto ? (
+                                            <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} userName={personalList.data?.[0]?.nome} />
+                                        ) : (
+                                            <UserRound />
+                                        )
+                                    }
+                                    title="Personal Trainer"
+                                    subtitle={personalList.data?.[0]?.nome || ""}
+                                    subtitle2={!personalList.isLoading && personalList.data[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                />
+                            </>
+                        )}
+                        {step === 2 && (
+                            <>
+                                <InformationCard
+                                    icon={<Calendar />}
+                                    title="Data e Horário"
+                                    subtitle={formattedDate?.split(" das ")[0] || ""}
+                                    subtitle2={formattedDate?.split(" das ")[1]}
+                                />
+
+                                <InformationCard
+                                    icon={<MapPin fill="#000" color="#e2e8f0" />}
+                                    title="Tipo de aula"
+                                    subtitle={selectedType}
+                                />
+                            </>
+                        )}
+                        {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
+                        {step === 1 && !isReschedule && (
+                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                    <Select
+                                        defaultValue="PRESENCIAL"
+                                        id="type-select"
+                                        openSelectId={openSelectId}
+                                        setOpenSelectId={setOpenSelectId}
+                                        onSelectStatusChange={setSelectedType}
+                                        values={[
+                                            { label: "Presencial", value: "PRESENCIAL" },
+                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                            { label: "Funcional", value: "FUNCIONAL" }
+                                        ]}
+                                        containerClassName="w-full!"
+                                        triggerClassName="p-3 w-full!"
+                                        selectWrapperClassName="bg-white! rounded-xl! w-full!"
+                                        selectPlaceholder="Selecione o tipo"
+                                        labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                        label="Tipo de Atendimento"
+                                        showSelectAll={false}
+                                        showSearchInput={false}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        {step === 1 && (
+                            <div className="mt-auto hidden md:block">
+                                <div className="p-4 bg-primary/5 dark:bg-primary/10 rounded-xl border border-primary/20">
+                                    <div className="flex items-start gap-2 text-primary">
+                                        <span className="material-icons-round text-sm mt-0.5"><Info size={16} className="" /></span>
+                                        <p className="text-xs leading-relaxed">Selecione uma data e horário disponível para prosseguir com seu agendamento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
                     <div className={classnames(styles.mainTitle, { [styles.mainTitleMobile]: isMobile })}>
-                        {step === 2 && (
-                            <div className={styles.goBackButton} onClick={() => handleStepChange(1)}>
-                                <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
-                                    <path
-                                        d="M7 10.75L1 5.74998M1 5.74998L7 0.75M1 5.74998H13.5"
-                                        stroke="black"
-                                    />
-                                </svg>
-                                <span>Voltar</span>
-                            </div>
-                        )}
 
-                        <h1>{title}</h1>
+                        <div className="flex items-center gap-3">
+                            {step === 2 && (
+                                <span className="cursor-pointer  flex items-center m-0! pr-3! border-r border-gray-400" onClick={() => setStep(1)}><ArrowLeft className="w-5 h-5 text-gray-700" /> Voltar</span>
+                            )}
+                            <h1>{title}</h1>
+                        </div>
                         <div className={classnames(styles.goBackMobile, { [styles.goBackMobileStepTwo]: step === 2 }, { [styles.goBackMobileStepOne]: step === 1 }, { [styles.goBackMobileStepOneDesktop]: step === 1 && !isMobile })}>
 
                             <div className={styles.closeButtonHeader}>
@@ -522,31 +644,60 @@ export default function NewEvent(
                         </div>
                     </div>
                     {step === 1 && (
-                        <>
-                            <div className={styles.containerForm}>
+                        <div className={styles.stepOneContainer}>
 
-                                {typeUser === "personal" ? (
-                                    <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
-                                ) : (
-                                    <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={personalList.data ? personalList.data[0]?.nome : ""} subtitle={`Idade: ${personalList.data ? differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date())) : "N/A"} anos`} includeImg={true} imgUrl={personalList.data ? personalList.data[0]?.caminhoFoto : ""} />
+                            <div className={styles.containerForm} >
+                                {isMobile && (
+                                    <>
+                                        {typeUser === "personal" ? (
+                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
+                                        ) : (
+                                            <InformationCard
+                                                icon={
+                                                    personalList.data?.[0]?.caminhoFoto ? (
+                                                        <UserAvatar useUserImage={true} foto={personalList.data?.[0]?.caminhoFoto} userName={personalList.data?.[0]?.nome} />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )
+                                                }
+
+                                                title="Personal Trainer"
+                                                subtitle={personalList.data?.[0]?.nome || ""}
+                                                subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                            />
+                                        )}
+                                        {!isReschedule && (
+
+                                            <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
+                                                <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                                    <Select
+                                                        defaultValue="PRESENCIAL"
+                                                        id="type-select"
+                                                        openSelectId={openSelectId}
+                                                        setOpenSelectId={setOpenSelectId}
+                                                        onSelectStatusChange={setSelectedType}
+                                                        values={[
+                                                            { label: "Presencial", value: "PRESENCIAL" },
+                                                            { label: "Residencial", value: "RESIDENCIAL" },
+                                                            { label: "Funcional", value: "FUNCIONAL" }
+                                                        ]}
+                                                        containerClassName="w-full"
+                                                        triggerClassName="p-3 w-full!"
+                                                        selectWrapperClassName="rounded-xl!"
+                                                        selectPlaceholder="Selecione o tipo"
+                                                        label="Tipo de Atendimento"
+                                                        showSelectAll={false}
+                                                        showSearchInput={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </>
                                 )}
-                                {/* <div className={`wrapper-inputs${isMobile ? "-mobile" : ""}`}> */}
-                                <div className={classnames(styles.wrappeSelects, { [styles.wrappeSelectsMobile]: isMobile })}>
-                                    <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                        <Select
-                                            placeholder="Selecione o tipo"
-                                            label="Tipo"
-                                            options={["PRESENCIAL", "RESIDENCIAL", "FUNCIONAL"]}
-                                            valuesName={["Presencial", "Residencial", "Funcional"]}
-                                            value={selectedType}
-                                            onInputChange={setSelectedType}
-                                            className={styles.selectComponent}
-                                        />
-                                    </div>
-                                </div>
+
                                 <div className={classnames(styles.wrapperNewEvent, { [styles.wrapperNewEventMobile]: isMobile })}>
                                     <div className={classnames(styles.calendarSmall, { [styles.calendarSmallMobile]: isMobile })}>
-                                        <div className="border-2 border-gray-200 rounded-md p-5">
+                                        <div className={`${isReschedule && "mt-6"}`}>
                                             <CalendarMonthStyled
                                                 clickedDate={setNewEventDate}
                                                 clickedDateStr={newEventDate ? newEventDate.split("T")[0] : clickedDate?.split("T")[0]}
@@ -559,7 +710,6 @@ export default function NewEvent(
                                         </div>
                                         {newEventDate && (
                                             <>
-
                                                 <span className="flex gap-1 mt-5 text-sm items-center">
                                                     <Clock />
                                                     Horários disponíveis para{" "}
@@ -567,14 +717,36 @@ export default function NewEvent(
                                                 </span>
 
                                                 <div className="flex gap-2 mt-3 mb-5">
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
-                                                    {availabilityHours.data?.some(hourBlock => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 12) && <SmallerButton type="button" title="Manhã" selected={chooseTimeOfDay === "MANHÃ"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "MANHÃ" })} icon={<Sun />} handleButtonClick={() => setChooseTimeOfDay("MANHÃ")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) < 18) && <SmallerButton type="button" title="Tarde" selected={chooseTimeOfDay === "TARDE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "TARDE" })} icon={<Sunset />} handleButtonClick={() => setChooseTimeOfDay("TARDE")} />}
+                                                    {availabilityHours.data?.some((hourBlock: { inicio: string }) => parseInt(hourBlock.inicio.split(":")[0]) >= 18) && <SmallerButton type="button" title="Noite" selected={chooseTimeOfDay === "NOITE"} classname={classnames(styles.buttonTimeOfDaySelect, { [styles.buttonTimeOfDaySelectSelected]: chooseTimeOfDay === "NOITE" })} icon={<SunMoon />} handleButtonClick={() => setChooseTimeOfDay("NOITE")} />}
                                                 </div>
 
                                                 {chooseTimeOfDay === "MANHÃ" && (
                                                     <div className={styles.hours}>
-                                                        {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
+                                                        {availabilityHours.isLoading && (
+                                                            <>
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+
+                                                                <Skeleton
+                                                                    height={20}
+                                                                    borderRadius={6}
+                                                                    baseColor="#e5e7eb"
+                                                                    highlightColor="#f3f4f6"
+                                                                />
+                                                            </>
+                                                        )}
 
                                                         {availabilityHours.data?.map((hourBlock, index) => {
                                                             if (hourBlock.inicio && parseInt(hourBlock.inicio.split(":")[0]) < 12) {
@@ -582,8 +754,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
@@ -607,8 +782,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
@@ -622,7 +800,7 @@ export default function NewEvent(
                                                     </div>
                                                 )}
 
-                                                {chooseTimeOfDay === "Noite" && (
+                                                {chooseTimeOfDay === "NOITE" && (
                                                     <div className={styles.hours}>
                                                         {availabilityHours.isLoading && (<p>Carregando horários...</p>)}
 
@@ -632,8 +810,11 @@ export default function NewEvent(
                                                                 const startHour = parseInt(hours);
                                                                 const startMinute = parseInt(minutes);
 
-                                                                const endHour = startHour + 1;
-                                                                const endMinute = startMinute;
+                                                                const durationMinutes = selectedType === "PRESENCIAL" || selectedType === "RESIDENCIAL" ? 60 : 30;
+                                                                const totalMinutes = startMinute + durationMinutes;
+
+                                                                const endHour = startHour + Math.floor(totalMinutes / 60);
+                                                                const endMinute = totalMinutes % 60;
 
                                                                 const finalHour = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
 
@@ -656,14 +837,92 @@ export default function NewEvent(
                                 </div>
 
                             </div>
-                        </>
+                        </div>
                     )}
 
                     {step === 2 && (
+
                         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
-                            <CardInfo isMobile={isMobile} HeaderTitle="Confirmação do agendamento" title={formattedDate ? formattedDate : ""} subtitle={`Personal: ${personalList.data ? personalList.data[0]?.nome : ""}`} />
+                            {step === 2 && isMobile && (
+                                <div className="gap-4 flex flex-col">
+                                    <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
+                                        Resumo do agendamento
+                                    </h1>
+                                    <InformationCard
+                                        icon={<UserAvatar foto={!personalList.isLoading && personalList.data?.[0]?.caminhoFoto} userName={!personalList.isLoading && personalList.data?.[0]?.nome} useUserImage={true} />}
+                                        title="Personal Trainer"
+                                        subtitle={!personalList.isLoading && personalList.data?.[0]?.nome || ""}
+                                        subtitle2={!personalList.isLoading && personalList.data?.[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                    />
+
+                                    <InformationCard
+                                        icon={<Calendar />}
+                                        title="Data e Horário"
+                                        subtitle={formattedDate?.split(" das ")[0] || ""}
+                                        subtitle2={formattedDate?.split(" das ")[1]}
+                                    />
+
+                                    <InformationCard
+                                        icon={<MapPin fill="#000" color="#fff" />}
+                                        title="Tipo de aula"
+                                        subtitle={selectedType}
+                                    />
+                                </div>
+                            )}
+                            <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
+                                <div className="flex justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        {!isMobile && (
+                                            <History />
+                                        )}
+                                        <span className="uppercase font-medium tracking-tight ">
+                                            Usar endereço salvo
+                                        </span>
+                                    </div>
+                                    <span
+                                        className="not-xl:text-sm not-xl:pr-0 text-oxford-blue cursor-pointer transition hover:ring-2 hover:ring-gray-400 ring-2 ring-[##f3f4f6] p-2 rounded-2xl"
+                                        onClick={() => {
+                                            setSelectedAddress(null);
+                                            setSelectDefault("");
+                                            setAddressData({
+                                                postalCode: "",
+                                                address: "",
+                                                city: "",
+                                                state: "",
+                                                number: "",
+                                                complement: ""
+                                            });
+                                        }}>
+                                        Limpar seleção
+                                    </span>
+                                </div>
+                                <Select
+                                    id="address-select"
+                                    openSelectId={openSelectId}
+                                    setOpenSelectId={setOpenSelectId}
+                                    clear={!selectedAddress ? true : false}
+                                    onSelectStatusChange={(addressId: string) => {
+                                        const selected = addresses.data?.find((address: AddressOption) => address?.id === addressId);
+                                        setSelectedAddress(selected || null);
+                                    }}
+                                    values={
+                                        addresses.data?.map((address: AddressOption) => ({
+                                            label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
+                                            value: address?.id,
+                                        }))
+                                    }
+                                    defaultValue={selectDefault}
+                                    containerClassName="w-full!"
+                                    triggerClassName="p-3 w-full!"
+                                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
+                                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
+                                    selectPlaceholder="Selecione um endereço salvo..."
+                                    labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                    showSelectAll={false}
+                                    showSearchInput={false}
+                                />
+                            </div>
                             <div className={styles.title}>
-                                <MapPin />
                                 <span>Endereço do local</span>
                             </div>
                             <form
@@ -683,9 +942,12 @@ export default function NewEvent(
                                             <input
                                                 type="text"
                                                 id="cep"
-                                                placeholder="CEP"
-                                                onChange={(e) => setAddressData({ ...addressData, postalCode: (e.target.value).split("-").join("").trim() })}
-                                                onInput={cepMask}
+                                                placeholder="00000-000"
+                                                onChange={(e) => {
+                                                    const masked = cepMask(e.target.value);
+                                                    setAddressData({ ...addressData, postalCode: masked });
+                                                }}
+                                                value={addressData.postalCode || ""}
                                             />
                                         </div>
                                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
@@ -755,7 +1017,7 @@ export default function NewEvent(
                                 </div>
 
                                 <div className={classnames(styles.buttonNextStep, { [styles.buttonNextStepMobile]: isMobile })}>
-                                    <SmallerButton type="submit" title={"Confirmar agendamento"} />
+                                    <SmallerButton loading={loading} type="submit" title={"Confirmar agendamento"} />
                                 </div>
                             </form>
                         </div>

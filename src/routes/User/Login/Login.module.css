@@ -1,3 +1,12 @@
+.btnAutoFill {
+  border: solid 1px #000;
+  background-color: transparent;
+  width: fit-content;
+  cursor: pointer;
+  margin: 0.5rem;
+  margin-left: 0;
+}
+
 .containerLogin {
   display: flex;
   background-color: var(--bg-blue-darker);
@@ -78,6 +87,15 @@
 
 .configLogin a {
   text-decoration: underline;
+}
+
+
+.btnLogin {
+  background-color: var(--bg-orange) !important;
+  font-size: 1em;
+  cursor: pointer;
+  padding: 10px !important;
+
 }
 
 @media (max-width: 1024px) {

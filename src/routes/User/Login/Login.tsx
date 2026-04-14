@@ -1,17 +1,14 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Lock, Mail } from "lucide-react";
 import * as userService from "../../../constants/user";
 import Swal from "sweetalert2";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
-import { useMediaQuery } from "@mui/material";
 import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
-import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
-import { useQueryClient } from "@tanstack/react-query";
 
 const initialLoginState = {
   email: "",
@@ -24,33 +21,46 @@ export default function Login() {
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const [successLogin, setSuccessLogin] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
   const nav = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
 
-  const queryClient = useQueryClient();
-  function navToHome() {
-    queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
+  function handleAutoFill2() {
+    setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
+  }
 
+
+  function navToHome() {
     nav("/home");
-    setSuccessLogin(false);
     return;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        await queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        setSuccessLogin(true);
+        try {
+          const isAuthenticated = await userService.isAuthenticated();
+          const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
+          
+          if (ativoAnamnese === false) {
+            nav("/anamnesis");
+            return;
+          }
+        } catch {
+          navToHome();
+          return;
+        }
+
+        navToHome();
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -62,7 +72,7 @@ export default function Login() {
         timer: 3000,
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }
 
@@ -97,12 +107,18 @@ export default function Login() {
               <h1>Bem-vindo</h1>
             </div>
             <form onSubmit={handleSubmit}>
+              <button className={styles.btnAutoFill} onClick={() => handleAutoFill("joao.silva@example.com", "123456789aA!")}>
+                AUTO PREENCHER
+              </button>
+              <button className={styles.btnAutoFill} onClick={handleAutoFill2}>
+                AUTO PREENCHER 2
+              </button>
               <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
                 <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />
               </div>
-              {/* temp */}
-              <input type="text" onKeyDown={(e) => {
+              {/*todo: temp!!!! */}
+              <input hidden type="text" onKeyDown={(e) => {
                 if (e.key === "[") {
                   handleAutoFill("EdsonArantes@email.com", "fmc123456");
                 }
@@ -115,7 +131,7 @@ export default function Login() {
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
-              <Button type="submit" title="Entrar" />
+              <Button type="submit" title="Entrar" loading={loading} classNameDiv={styles.btnDiv} classNameVariable={styles.btnLogin} />
             </form>
             <span className={styles.mg15}>
               Não tem uma conta? <Link to="/register">Criar uma conta</Link>
@@ -123,15 +139,6 @@ export default function Login() {
           </div>
         </div>
       </div>
-
-      {successLogin && (
-        <SuccessModal
-          isMobile={isMobile}
-          title="Login bem-sucedido"
-          content="Você foi logado com sucesso!"
-          closeThen={navToHome}
-        />
-      )}
     </>
   );
 }

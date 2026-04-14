@@ -1,0 +1,201 @@
+.editUserGrid {
+  display: grid;
+  gap: 25px;
+  grid-template-columns: 1fr 4fr;
+  grid-template-areas:
+    "header   header"
+    "pages    personal"
+    "pages    personal";
+}
+
+.profileWhiteContainer h2 {
+  margin-bottom: 0 !important;
+}
+
+.personalDataTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.personalDataTitle h3 {
+  color: #6e6e6e;
+}
+
+.editUserGrid h2 {
+  font-size: 36px;
+  font-weight: 400;
+}
+
+:global(.whiteContainer) {
+  padding: 15px 20px;
+}
+
+.conditionsGroup {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.personalInfoGrid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: start;
+  grid-template-areas:
+    "personalData     personalData     personalData"
+    "healthConditions healthConditions healthConditions"
+    "levelOfActivity  levelOfActivity  levelOfActivity"
+    "routine          routine          routine";
+}
+
+.personalInfoGrid :global(#personalData) {
+  grid-area: personalData;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "personalDataTitle personalDataTitle personalDataTitle"
+    "height            weight            mainObjective"
+    "outro             outro             outro";
+  gap: 10px;
+  align-items: start;
+}
+
+.personalInfoGrid :global(.wrapper_inp) {
+  width: 100%;
+}
+
+.personalInfoGrid :global(#routine) {
+  grid-area: routine;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfoGrid :global(#healthConditions) {
+  grid-area: healthConditions;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfoGrid :global(#levelOfActivity) {
+  grid-area: levelOfActivity;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfoGrid :global(#outro) {
+  grid-area: outro;
+}
+
+.personalInfoGrid :global(#height) {
+  grid-area: height;
+}
+
+.personalInfoGrid :global(#weight) {
+  grid-area: weight;
+}
+
+.personalInfoGrid :global(#mainObjective) {
+  grid-area: mainObjective;
+}
+
+.personalInfoGrid :global(#personalDataTitle) {
+  grid-area: personalDataTitle;
+}
+
+.footer {
+  width: 500px;
+}
+
+.footer .divButtons {
+  gap: 35px;
+  display: flex;
+  flex-direction: row;
+}
+
+.errorMessage {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  color: #ef4444;
+}
+
+.inputGroup {
+  margin-top: 12px;
+}
+
+.inputGroupMobile {
+  width: 100%;
+}
+
+
+@media (max-width: 1024px) {
+  .editUserGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "pages"
+      "personal";
+  }
+
+  .personalInfoGrid {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .personalInfoGrid :global(#personalData) {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .conditionsGroup {
+    grid-template-columns: 1fr;
+  }
+
+  .personalInfoGrid :global(#mainObjective),
+  .personalInfoGrid :global(#mainObjective > *) {
+    width: 100% !important;
+  }
+
+  :global(.whiteContainer) {
+    padding: 15px 16px;
+  }
+
+  .footer {
+    width: 100%;
+  }
+
+  .dashLine {
+    border: none;
+    height: 3px;
+    background-image: linear-gradient(to right, rgb(175, 175, 175) 50%, transparent 50%);
+    background-size: 20px 2px;
+    background-repeat: repeat-x;
+  }
+
+  .footer .divButtons {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+.goBackContainer h1 {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
+.goBackContainer {
+  grid-area: header;
+}
+
+.pagesSection {
+  grid-area: pages;
+}
+
+.personalInfo {
+  grid-area: personal;
+}

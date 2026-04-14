@@ -15,11 +15,11 @@ export default function PlansCard({ description, content, price, benefits, isLog
 
   return (
     <div className="h-full">
-      <div className="rounded-lg shadow-2xl bg-white p-5 w-full xl h-full flex flex-col justify-between min-h-4/5">
+      <div className="rounded-lg shadow-2xl bg-white p-5 xl h-full flex flex-col justify-between min-h-4/5 w-full!">
         <div >
           <div className="bg-indigo p-5 rounded-md text-white text-xl">
             {content}
-            <p className="text-sm mt-3">{description}</p>
+            <p className="text-sm mt-3">{Number(description) > 1 ? `${description} agendamentos` : `${description} agendamento`}</p>
           </div>
 
           <div className="">
@@ -34,7 +34,7 @@ export default function PlansCard({ description, content, price, benefits, isLog
         </div>
 
         <div className="font-bold w-3/4 flex justify-center mx-auto mt-5">
-          <Button type="button" title="Ver detalhes" onClick={() => isLoggedIn ? navigate("/packages") : navigate("/login")} />
+          <Button type="button" title="Adquirir pacote" onClick={() => isLoggedIn ? navigate("/packages") : navigate("/login")} />
         </div>
       </div>
 

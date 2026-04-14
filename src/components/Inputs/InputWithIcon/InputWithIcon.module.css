@@ -1,0 +1,87 @@
+.wrapperInp {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: none;
+    gap: 8px;
+}
+
+.wrapperInp input {
+    padding: 12px 16px 12px 40px;
+    background-color: #ffffff !important;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    font-size: .95rem;
+    text-overflow: ellipsis;
+}
+
+.wrapperInp input::placeholder {
+    color: #666 !important;
+}
+
+.errorInput:focus-visible {
+    outline: 1px solid #991b1b !important;
+}
+
+.errorInput {
+    border-color: #991b1b !important;
+    border-width: 1px !important;
+}
+
+.successInput:focus-visible {
+    outline: 1px solid #166534 !important;
+}
+
+/* .successInput {
+    border-color: #166534 !important;
+    border-width: 1px !important;
+} */
+
+.inputIcon {
+    display: flex;
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    height: 1rem;
+    width: 1rem;
+}
+
+.inputIcon svg {
+    height: 100%;
+    width: 100%;
+}
+
+.wrapperInp label {
+    font-size: 16px !important;
+}
+
+.passwordInput {
+    padding-right: 40px !important;
+}
+
+.passwordToggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    transition: all 0.3s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+@media (max-width: 1360px) {
+.wrapperInp {
+    width: 100% !important;
+}
+
+    .wrapperInp input {
+        width: 100% !important;
+    }
+}

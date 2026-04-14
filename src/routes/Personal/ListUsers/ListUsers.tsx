@@ -1,49 +1,45 @@
 import UsersTable from "../../../components/UsersTable/UsersTable";
 import styles from "./ListUsers.module.css"
-import { useEffect, useState } from "react";
-import { SearchBar } from "../../../components/SearchBar/SearchBar";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
-import { listStudents } from "../../../constants/personal";
-import useSearchFilter from "../../../hooks/useSearchFilter";
+import { listStudents, searchStudent } from "../../../constants/personal";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import { SearchIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../../components/PaginatedList/PaginatedList";
+import { useState, useEffect } from "react";
 
 export default function ListUsers() {
     const isMobile = useMobile();
 
+    const { page, goToPage, animClass } = usePagination(0);
 
-    const [pesquisa, setPesquisa] = useState("")
-
-    function fetchUsers() {
-        listStudents()
-            .then(response => {
-                console.log(response.data);
-                setUsers(response.data);
-            }).catch(error => {
-                console.error("Error fetching users:", error);
-            });
-    }
-
-    const [users, setUsers] = useState([
-        { nome: "João Silva", idade: 25 },
-        { nome: "Maria Souza", idade: 30 },
-        { nome: "Pedro Oliveira", idade: 22 }
-    ]);
+    const [filterSearch, setFilterSearch] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState("");
 
     useEffect(() => {
-        fetchUsers();
-    }, [])
+        const timer = setTimeout(() => {
+            setDebouncedSearch(filterSearch);
+        }, 700);
 
-    const { filteredData, filterSearch, setFilterSearch } = useSearchFilter(users, {
-        searchName: (item) => [item.nome],
+        return () => clearTimeout(timer);
+    }, [filterSearch]);
+
+    const { data: response, isLoading } = useQuery({
+        queryKey: ["students", page, debouncedSearch],
+        queryFn: () =>
+            debouncedSearch.trim()
+                ? searchStudent(page, 10, debouncedSearch)
+                : listStudents(page, 10),
     });
 
+    const students = response?.data?.content ?? [];
+    const pagination = response?.data?.page ?? null;
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
             <h1>Usuários</h1>
-            {/* <p>Lista de usuários assinantes.</p> */}
             <div className={classNames(styles.listUsersSearchBar, { [styles.listUsersSearchBarMobile]: isMobile })}>
                 <InputWithIcon
                     type="text"
@@ -53,7 +49,16 @@ export default function ListUsers() {
                     onInputChange={setFilterSearch}
                 />
             </div>
-            <UsersTable input={filterSearch} users={filteredData} />
+
+            <PaginatedList
+                key={page}
+                page={page}
+                animClass={animClass}
+                pagination={pagination}
+                onPageChange={goToPage}
+            >
+                <UsersTable input={filterSearch} users={students} isLoading={isLoading} />
+            </PaginatedList>
         </div>
     )
 }

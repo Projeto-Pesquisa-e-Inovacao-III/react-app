@@ -1,7 +1,6 @@
-import SmallerButton from "../../SmallerButton";
-import { useEffect, useState } from "react";
+import useModalClose from "../../../hooks/useModalClose";
 import styles from "./TextareaModal.module.css"
-import Select from "../../Inputs/Select/Select";
+import classnames from "classnames"
 
 type Props = {
     title?: string;
@@ -12,13 +11,20 @@ type Props = {
 }
 
 export default function TextareaModal(props: Props) {
-    const [motivo, setMotivo] = useState("");
-    const [justificado, setJustificado] = useState(false);
+    const { isClosing, handleAnimatedClose } = useModalClose({
+        onClose: () => props.closeThen(false)
+    });
 
     return (
         <>
-            <div className="overlay"></div>
-            <div className={styles.modal}>
+            <div className={classnames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div className={classnames(styles.modal, {
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <h2 className={styles.title}>{props.title}</h2>
 
                 {props.middleContent && (<div className={styles.middleContent}>
@@ -36,7 +42,7 @@ export default function TextareaModal(props: Props) {
                 </div>
 
                 <div className={styles.buttons}>
-                    <button onClick={() => props.closeThen(false)} className={styles.fechar}>
+                    <button onClick={handleAnimatedClose} className={styles.fechar}>
                         Fechar
                     </button>
                     <button onClick={() => { }} className={styles.enviar}>

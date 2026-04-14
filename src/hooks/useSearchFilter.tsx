@@ -1,31 +1,35 @@
 import { isAfter, isBefore, isValid, parse, parseISO, startOfDay } from 'date-fns';
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 export default function useSearchFilter<T>(
     data: T[],
     filterConfig?: {
         searchStatus?: (item: T) => string;
         searchName?: (item: T) => string[];
+        searchTypeClass?: (item: T) => string;
         dateFilter?: (item: T) => string;
     }) {
 
     const [filterStatus, setFilterStatus] = useState<string>("");
     const [filterSearch, setFilterSearch] = useState<string>("");
+    const [filterTypeClass, setFilterTypeClass] = useState<string>("");
+
     const [filterInitialDate, setFilterInitialDate] = useState<string>("");
     const [filterFinalDate, setFilterFinalDate] = useState<string>("");
+
 
     const filteredData = useMemo(() => {
         if (!data) return [];
         
         const normalizedSearch = filterSearch.toLowerCase();
         const normalizedStatus = filterStatus.toLowerCase();
+        const normalizedTypeClass = filterTypeClass.toLowerCase();
 
         return data.filter(item => {
-            const matchesStatus = filterConfig?.searchStatus ? filterConfig.searchStatus(item).toLowerCase().includes(normalizedStatus) : true;
-            console.log("Item being checked:", item);
-            const matchesSearch = filterConfig?.searchName ? filterConfig.searchName(item).some(field => field.toLowerCase().includes(normalizedSearch)) : true;
-
-            if(!matchesStatus || !matchesSearch) {
+            const matchesStatus = filterConfig?.searchStatus ? filterConfig?.searchStatus(item)?.toLowerCase().includes(normalizedStatus) : true;
+            const matchesSearch = filterConfig?.searchName ? filterConfig?.searchName(item)?.some(field => field.toLowerCase().includes(normalizedSearch)) : true;
+            const matchesTypeClass = filterConfig?.searchTypeClass ? filterConfig?.searchTypeClass(item)?.toLowerCase().includes(normalizedTypeClass) : true;
+            if(!matchesStatus || !matchesSearch || !matchesTypeClass) {
                 return false;
             }
 
@@ -49,15 +53,16 @@ export default function useSearchFilter<T>(
                 }
             }
 
-            return matchesStatus && matchesSearch;
+            return matchesStatus && matchesSearch && matchesTypeClass;
         });
-    }, [data, filterStatus, filterSearch, filterInitialDate, filterFinalDate]);
+    }, [data, filterStatus, filterSearch, filterInitialDate, filterFinalDate, filterConfig, filterTypeClass]);
 
-    const hasFilters = filterStatus !== "" || filterSearch !== "" || filterInitialDate !== "" || filterFinalDate !== "";
+    const hasFilters = filterStatus !== "" || filterSearch !== "" || filterInitialDate !== "" || filterFinalDate !== "" || filterTypeClass !== "";
 
     function clearFilters() {
         setFilterStatus("");
         setFilterSearch("");
+        setFilterTypeClass("");
         setFilterInitialDate("");
         setFilterFinalDate("");
     }
@@ -66,6 +71,8 @@ export default function useSearchFilter<T>(
         setFilterStatus,
         filterSearch,
         setFilterSearch,
+        filterTypeClass,
+        setFilterTypeClass,
         filterInitialDate,
         setFilterInitialDate,
         filterFinalDate,
