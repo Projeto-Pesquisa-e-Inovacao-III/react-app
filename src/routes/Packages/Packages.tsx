@@ -42,8 +42,7 @@ export function Packages() {
     function handleBuyClick(id: number) {
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
-            const href: string = response.data.href
-            window.location.href = href;
+            window.location.href = response.data;
             // setSuccessModalInfos({
             //     title: "Compra Concluída",
             //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
