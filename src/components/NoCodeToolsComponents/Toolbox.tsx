@@ -142,15 +142,11 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
             <div className="p-4">
               {displayName === 'Texto' && (
                 <>
-                  <div className="mb-4">
-                    <Label>Conteúdo do Texto</Label>
-                    <textarea
-                      rows={4}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#0C6291] transition-colors resize-none"
-                      value={props.text ?? ''}
-                      onChange={(e) => setProp('text', e.target.value)}
-                    />
-                  </div>
+                  <TextareaInput
+                    label="Conteúdo do Texto"
+                    value={String(props.text ?? '')}
+                    onChange={(v) => setProp('text', v)}
+                  />
                   <SelectInput
                     label="Tipo de Tag"
                     value={props.tag ?? props.type ?? 'p'}
