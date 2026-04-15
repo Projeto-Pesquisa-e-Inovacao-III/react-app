@@ -26,6 +26,7 @@ import SecurityInformations from "./routes/EditUser/SecurityInformations/Securit
 import Anamnesis from "./routes/User/Anamnesis/anamnesis";
 import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
 import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
+import NoCodeTool from "./routes/Personal/NoCodeTool/NoCodeTool";
 
 // todo: 
 // safari support // deixa baixo
@@ -55,6 +56,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/no-code-tool" element={<NoCodeTool />} />
           </Route>
 
           <Route element={<PrivateRoute />}>
