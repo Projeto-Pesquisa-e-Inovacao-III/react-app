@@ -7,6 +7,10 @@ import UserAvatar from "../UserAvatar/UserAvatar";
 import Skeleton from "react-loading-skeleton";
 import type { ListStudents } from "../../models/students";
 
+const normalizeString = (str?: string) => {
+    return (str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+};
+
 
 export default function UsersTable(props: { users: ListStudents; input: string; isLoading: boolean }) {
     const isMobile = useMobile();
@@ -49,7 +53,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
             }
 
             {!props.isLoading && (props.users ?? [])
-                .filter(user => user != null && user.nome?.toLowerCase().includes(props.input.toLowerCase()))
+                .filter(user => user != null && normalizeString(user.nome).includes(normalizeString(props.input)))
                 .map((user, index) => (
                     <div key={index} className={classNames(styles.usersTableCard, {
                         [styles.usersTableCardMobile]: isMobile
