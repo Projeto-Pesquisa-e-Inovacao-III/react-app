@@ -7,12 +7,16 @@ import EditableButton from "../../../components/NoCodeToolsComponents/EditableBu
 import { EditableSection } from "../../../components/NoCodeToolsComponents/EditableSection";
 import { Save, Eye, Undo2, Redo2 } from "lucide-react";
 import { useEditor } from "@craftjs/core";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getNoCodeContent, createNoCodeContent, updateNoCodeContent } from "../../../services/noCodeService";
 
-function EditorActions() {
+function EditorActions({ contentId, setContentId }: { contentId: string | null; setContentId: (id: string) => void }) {
   const { actions, query, canUndo, canRedo } = useEditor((_, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
   }));
+  const [isSaving, setIsSaving] = useState(false);
 
   return (
     <div className="flex items-center gap-3">
@@ -43,21 +47,70 @@ function EditorActions() {
         Preview
       </button>
       <button
-        onClick={() => {
-          const json = query.serialize();
-          console.log('Saved:', json);
-          alert('Estado salvo no console!\n(integração com backend em breve)');
+        onClick={async () => {
+          try {
+            setIsSaving(true);
+            const json = query.serialize();
+            console.log('Saved:', json);
+            if (contentId) {
+              await updateNoCodeContent(contentId, json);
+              alert('Página atualizada com sucesso!');
+            } else {
+              const res = await createNoCodeContent(json);
+              setContentId(res.id);
+              alert('Página publicada com sucesso!');
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Erro ao salvar página.');
+          } finally {
+            setIsSaving(false);
+          }
         }}
-        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold transition-colors"
+        disabled={isSaving}
+        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold transition-colors disabled:opacity-50"
       >
         <Save size={15} />
-        Publicar
+        {isSaving ? 'Salvando...' : 'Publicar'}
       </button>
     </div>
   );
 }
 
 function NoCodeToolInner() {
+  const { actions } = useEditor();
+  const [contentId, setContentId] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['noCodeContent'],
+    queryFn: getNoCodeContent,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  useEffect(() => {
+    if (!hasInitialized && !isLoading) {
+      if (data && data.content) {
+        setContentId(data.id);
+        try {
+          actions.deserialize(data.content);
+        } catch (e) {
+          console.error('Failed to deserialize:', e);
+        }
+      }
+      setHasInitialized(true);
+    }
+  }, [data, isLoading, actions, hasInitialized]);
+
+  if (isLoading && !hasInitialized) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
+        <span className="text-xl">Carregando conteúdo...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">
       <header
@@ -74,7 +127,7 @@ function NoCodeToolInner() {
           </div>
           <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
         </div>
-        <EditorActions />
+        <EditorActions contentId={contentId} setContentId={setContentId} />
       </header>
 
       <div className="flex flex-1 overflow-hidden">
