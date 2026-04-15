@@ -321,13 +321,13 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
 
   return (
     <div className="h-full flex flex-col text-white">
-      {/* Header */}
+      {/* header */}
       <div className="px-4 py-4 border-b border-white/10">
         <h2 className="font-bold text-lg text-white">Painel de Controle</h2>
         <p className="text-gray-400 text-xs mt-0.5">Clique em qualquer elemento para editá-lo</p>
       </div>
 
-      {/* Tabs */}
+      {/* tabs */}
       <div className="flex border-b border-white/10">
         <button
           className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors
@@ -347,12 +347,12 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
         </button>
       </div>
 
-      {/* Content */}
+      {/* content */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === 'properties' ? renderProperties() : renderLayers()}
       </div>
 
-      {/* Save */}
+      {/* save */}
       <div className="p-4 border-t border-white/10">
         <button
           className="w-full flex items-center justify-center gap-2 bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold py-3 rounded-xl transition-colors"

@@ -72,7 +72,7 @@ function NoCodeToolInner() {
           <div className="w-7 h-7 rounded-md bg-[#0C6291] flex items-center justify-center">
             <span className="text-white font-bold text-xs">NC</span>
           </div>
-          <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool</h1>
+          <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
         </div>
         <EditorActions />
       </header>
