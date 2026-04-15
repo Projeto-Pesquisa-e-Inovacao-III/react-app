@@ -227,7 +227,40 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
 
               {displayName === 'Container' && (
                 <>
-                  <TextInput label="Classe CSS" value={props.className ?? ''} onChange={(v) => setProp('className', v)} />
+                  <SelectInput
+                    label="Direção (Layout)"
+                    value={props.flexDirection ?? ''}
+                    onChange={(v) => setProp('flexDirection', v)}
+                    options={[
+                      { value: '', label: 'Padrão (Bloco)' },
+                      { value: 'row', label: 'Lado a Lado (Linha)' },
+                      { value: 'col', label: 'Empilhado (Coluna)' },
+                    ]}
+                  />
+                  <SelectInput
+                    label="Alinhamento Horizontal"
+                    value={props.justifyContent ?? ''}
+                    onChange={(v) => setProp('justifyContent', v)}
+                    options={[
+                      { value: '', label: 'Padrão' },
+                      { value: 'start', label: 'Início' },
+                      { value: 'center', label: 'Centro' },
+                      { value: 'end', label: 'Fim' },
+                      { value: 'between', label: 'Espaçado' },
+                    ]}
+                  />
+                  <SelectInput
+                    label="Alinhamento Vertical"
+                    value={props.alignItems ?? ''}
+                    onChange={(v) => setProp('alignItems', v)}
+                    options={[
+                      { value: '', label: 'Padrão' },
+                      { value: 'start', label: 'Topo' },
+                      { value: 'center', label: 'Centro' },
+                      { value: 'end', label: 'Fundo' },
+                    ]}
+                  />
+                  <TextInput label="Classe CSS nativa (Tailwind)" value={props.className ?? ''} onChange={(v) => setProp('className', v)} />
                 </>
               )}
 
