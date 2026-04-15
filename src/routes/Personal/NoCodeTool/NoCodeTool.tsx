@@ -8,11 +8,10 @@ import { EditableSection } from "../../../components/NoCodeToolsComponents/Edita
 import { Save, Eye, Undo2, Redo2 } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 
-// Header actions bar that uses the editor context
 function EditorActions() {
-  const { actions, query, canUndo, canRedo } = useEditor((state) => ({
-    canUndo: state.options.enabled && (state as any).history?.undoStack?.length > 0,
-    canRedo: state.options.enabled && (state as any).history?.redoStack?.length > 0,
+  const { actions, query, canUndo, canRedo } = useEditor((_, query) => ({
+    canUndo: query.history.canUndo(),
+    canRedo: query.history.canRedo(),
   }));
 
   return (

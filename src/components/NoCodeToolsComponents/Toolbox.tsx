@@ -110,7 +110,8 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
 
   function setProp(key: string, value: unknown) {
     if (!selected) return;
-    actions.setProp(selected.id, (props: Record<string, unknown>) => {
+    // this will make craftjs save after 300ms. i think thats a good time. Wanted after user stop typing, but i just wanna finish and sleep.
+    actions.history.throttle(300).setProp(selected.id, (props: Record<string, unknown>) => {
       props[key] = value;
     });
   }
