@@ -31,27 +31,27 @@ function TextInput({ label, value, onChange }: { label: string; value: string; o
   );
 }
 
-function ColorInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <div className="mb-4">
-      <Label>{label}</Label>
-      <div className="flex items-center gap-2">
-        <input
-          type="color"
-          className="w-9 h-9 rounded cursor-pointer border border-white/20 bg-transparent"
-          value={value || '#ffffff'}
-          onChange={(e) => onChange(e.target.value)}
-        />
-        <input
-          className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#0C6291] transition-colors"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="#ffffff"
-        />
-      </div>
-    </div>
-  );
-}
+// function ColorInput({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
+//   return (
+//     <div className="mb-4">
+//       <Label>{label}</Label>
+//       <div className="flex items-center gap-2">
+//         <input
+//           type="color"
+//           className="w-9 h-9 rounded cursor-pointer border border-white/20 bg-transparent"
+//           value={value || '#ffffff'}
+//           onChange={(e) => onChange(e.target.value)}
+//         />
+//         <input
+//           className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-[#0C6291] transition-colors"
+//           value={value}
+//           onChange={(e) => onChange(e.target.value)}
+//           placeholder="#ffffff"
+//         />
+//       </div>
+//     </div>
+//   );
+// }
 
 function SelectInput({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }) {
   return (
@@ -161,11 +161,11 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
                       { value: 'span', label: 'Inline (SPAN)' },
                     ]}
                   />
-                  <ColorInput
+                  {/* <ColorInput
                     label="Cor do Texto"
                     value={props.color ?? ''}
                     onChange={(v) => setProp('color', v)}
-                  />
+                  /> */}
                   <SelectInput
                     label="Tamanho da Fonte"
                     value={props.fontSize ?? ''}
@@ -203,8 +203,8 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
                 <>
                   <TextInput label="Texto do Botão" value={props.title ?? ''} onChange={(v) => setProp('title', v)} />
                   <TextInput label="Link (URL)" value={props.href ?? ''} onChange={(v) => setProp('href', v)} />
-                  <ColorInput label="Cor de Fundo" value={props.bgColor ?? ''} onChange={(v) => setProp('bgColor', v)} />
-                  <ColorInput label="Cor do Texto" value={props.textColor ?? ''} onChange={(v) => setProp('textColor', v)} />
+                  {/* <ColorInput label="Cor de Fundo" value={props.bgColor ?? ''} onChange={(v) => setProp('bgColor', v)} />
+                  <ColorInput label="Cor do Texto" value={props.textColor ?? ''} onChange={(v) => setProp('textColor', v)} /> */}
                 </>
               )}
 
@@ -218,7 +218,7 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
 
               {displayName === 'Seção' && (
                 <>
-                  <ColorInput label="Cor de Fundo" value={props.backgroundColor ?? ''} onChange={(v) => setProp('backgroundColor', v)} />
+                  {/* <ColorInput label="Cor de Fundo" value={props.backgroundColor ?? ''} onChange={(v) => setProp('backgroundColor', v)} /> */}
                   <TextInput label="Imagem de Fundo (URL)" value={props.backgroundImage ?? ''} onChange={(v) => setProp('backgroundImage', v)} />
                   <TextInput label="Padding Superior" value={props.paddingTop ?? ''} onChange={(v) => setProp('paddingTop', v)} />
                   <TextInput label="Padding Inferior" value={props.paddingBottom ?? ''} onChange={(v) => setProp('paddingBottom', v)} />
