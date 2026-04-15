@@ -260,7 +260,6 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
                       { value: 'end', label: 'Fundo' },
                     ]}
                   />
-                  <TextInput label="Classe CSS nativa (Tailwind)" value={props.className ?? ''} onChange={(v) => setProp('className', v)} />
                 </>
               )}
 
@@ -275,6 +274,7 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
           <SectionHeader title="Avançado" open={advancedOpen} onToggle={() => setAdvancedOpen(!advancedOpen)} />
           {advancedOpen && (
             <div className="p-4">
+              <TextInput label="Classe CSS nativa (Tailwind)" value={props.className ?? ''} onChange={(v) => setProp('className', v)} />
               <div className="mb-2">
                 <Label>ID do Elemento</Label>
                 <p className="text-gray-500 text-xs font-mono">{selected.id}</p>
