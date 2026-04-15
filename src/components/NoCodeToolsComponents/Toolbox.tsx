@@ -88,7 +88,7 @@ function TextareaInput({ label, value, onChange }: { label: string; value: strin
 }
 
 // main
-export default function Toolbox({ onSave }: { onSave?: () => void }) {
+export default function Toolbox({ onSave, onPreview }: { onSave?: () => void, onPreview?: () => void }) {
   const [activeTab, setActiveTab] = useState<'properties' | 'layers'>('properties');
   const [propsOpen, setPropsOpen] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -302,7 +302,7 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
         <div className="space-y-1">
           {treeNodes.map(([id, node]) => (
             <button
-              key={id}
+               key={id}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm cursor-pointer transition-colors flex items-center gap-2
                 ${selected?.id === id ? 'bg-[#0C6291]/40 text-white border border-[#0C6291]/60' : 'text-gray-300 hover:bg-white/10'}`}
               onClick={() => actions.selectNode(id)}
@@ -354,6 +354,7 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
 
       {/* save */}
       <div className="p-4 border-t border-white/10">
+        {/*
         <button
           className="w-full flex items-center justify-center gap-2 bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold py-3 rounded-xl transition-colors"
           onClick={() => {
@@ -366,9 +367,10 @@ export default function Toolbox({ onSave }: { onSave?: () => void }) {
           <Save size={16} />
           Salvar Alterações
         </button>
+        */}
         <button
           className="w-full flex items-center justify-center gap-2 mt-2 border border-white/20 text-gray-300 hover:text-white hover:border-white/50 font-semibold py-2.5 rounded-xl transition-colors text-sm"
-          onClick={() => window.open('/', '_blank')}
+          onClick={() => onPreview ? onPreview() : window.open('/', '_blank')}
         >
           <Eye size={15} />
           Visualizar Site

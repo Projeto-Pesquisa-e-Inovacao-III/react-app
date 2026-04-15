@@ -10,13 +10,15 @@ import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getNoCodeContent, createNoCodeContent, updateNoCodeContent } from "../../../services/noCodeService";
+import PublishModal from "../../../components/Modal/PublishModal/PublishModal";
 
-function EditorActions({ contentId, setContentId }: { contentId: string | null; setContentId: (id: string) => void }) {
+function EditorActions({ contentId, setContentId, onPreview }: { contentId: string | null; setContentId: (id: string) => void; onPreview?: () => void }) {
   const { actions, query, canUndo, canRedo } = useEditor((_, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
   }));
   const [isSaving, setIsSaving] = useState(false);
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   return (
     <div className="flex items-center gap-3">
@@ -40,39 +42,43 @@ function EditorActions({ contentId, setContentId }: { contentId: string | null; 
       </button>
       <div className="w-px h-6 bg-white/20" />
       <button
-        onClick={() => window.open('/', '_blank')}
+        onClick={() => onPreview ? onPreview() : window.open('/', '_blank')}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
       >
         <Eye size={15} />
         Preview
       </button>
       <button
-        onClick={async () => {
-          try {
-            setIsSaving(true);
-            const json = query.serialize();
-            console.log('Saved:', json);
-            if (contentId) {
-              await updateNoCodeContent(contentId, json);
-              alert('Página atualizada com sucesso!');
-            } else {
-              const res = await createNoCodeContent(json);
-              setContentId(res.id);
-              alert('Página publicada com sucesso!');
-            }
-          } catch (err) {
-            console.error(err);
-            alert('Erro ao salvar página.');
-          } finally {
-            setIsSaving(false);
-          }
-        }}
-        disabled={isSaving}
-        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold transition-colors disabled:opacity-50"
+        onClick={() => setIsPublishModalOpen(true)}
+        className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold transition-colors"
       >
         <Save size={15} />
-        {isSaving ? 'Salvando...' : 'Publicar'}
+        Publicar
       </button>
+
+      {isPublishModalOpen && (
+          <PublishModal 
+              closeThen={() => setIsPublishModalOpen(false)} 
+              isSaving={isSaving}
+              onConfirm={async (modificationName, description) => {
+                  try {
+                    setIsSaving(true);
+                    const json = query.serialize();
+                    console.log('Saved:', json);
+                    
+                    const res = await createNoCodeContent(json, modificationName, description);
+                    setContentId(res.id);
+                    alert('Página publicada com sucesso!');
+                    setIsPublishModalOpen(false);
+                  } catch (err) {
+                    console.error(err);
+                    alert('Erro ao salvar página.');
+                  } finally {
+                    setIsSaving(false);
+                  }
+              }} 
+          />
+      )}
     </div>
   );
 }
@@ -81,6 +87,7 @@ function NoCodeToolInner() {
   const { actions } = useEditor();
   const [contentId, setContentId] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [isPreviewMode, setIsPreviewMode] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['noCodeContent'],
@@ -103,6 +110,12 @@ function NoCodeToolInner() {
     }
   }, [data, isLoading, actions, hasInitialized]);
 
+  useEffect(() => {
+    actions.setOptions((options) => {
+      options.enabled = !isPreviewMode;
+    });
+  }, [isPreviewMode, actions]);
+
   if (isLoading && !hasInitialized) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
@@ -114,7 +127,9 @@ function NoCodeToolInner() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">
       <header
-        className="w-full flex-shrink-0 flex justify-between items-center px-8 h-16 border-b border-white/10"
+        className={`w-full flex-shrink-0 flex justify-between items-center px-8 h-16 border-b border-white/10 transition-all duration-500 ease-in-out ${
+          isPreviewMode ? '-mt-16 opacity-0 pointer-events-none' : 'mt-0 opacity-100 pointer-events-auto'
+        }`}
         style={{
           backgroundColor: 'rgba(5, 17, 40, 0.95)',
           backdropFilter: 'blur(12px)',
@@ -127,10 +142,10 @@ function NoCodeToolInner() {
           </div>
           <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
         </div>
-        <EditorActions contentId={contentId} setContentId={setContentId} />
+        <EditorActions contentId={contentId} setContentId={setContentId} onPreview={() => setIsPreviewMode(true)} />
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative">
         <div className="flex-1 overflow-y-auto" style={{ minWidth: 0 }}>
           <div className="min-h-full">
             <Frame>
@@ -366,13 +381,30 @@ function NoCodeToolInner() {
 
         {/* aside */}
         <div
-          className="flex-shrink-0 w-80 border-l border-white/10 overflow-hidden flex flex-col"
+          className={`flex-shrink-0 w-80 border-l border-white/10 overflow-hidden flex flex-col transition-all duration-500 ease-in-out ${
+            isPreviewMode ? '-mr-80 opacity-0 pointer-events-none' : 'mr-0 opacity-100 pointer-events-auto'
+          }`}
           style={{
             backgroundColor: 'rgba(5, 17, 40, 0.85)',
             backdropFilter: 'blur(16px)',
           }}
         >
-          <Toolbox />
+          <Toolbox onPreview={() => setIsPreviewMode(true)} />
+        </div>
+
+        {/* Voltar animado */}
+        <div
+          className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ease-in-out ${
+            isPreviewMode ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-10 pointer-events-none'
+          }`}
+        >
+          <button
+            onClick={() => setIsPreviewMode(false)}
+            className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold transition-colors hover:opacity-90 shadow-lg"
+            style={{ backgroundColor: 'rgba(5, 17, 40)' }}
+          >
+            Voltar ao painel de controle
+          </button>
         </div>
       </div>
     </div>

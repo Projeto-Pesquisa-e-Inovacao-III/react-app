@@ -12,8 +12,8 @@ export const getNoCodeContent = async (): Promise<NoCodeResponse> => {
   return response.data;
 };
 
-export const createNoCodeContent = async (content: string): Promise<NoCodeResponse> => {
-  const response = await api.post("/no-code", { content });
+export const createNoCodeContent = async (content: string, modificationName: string, description: string): Promise<NoCodeResponse> => {
+  const response = await api.post("/no-code", { content, modificationName, description });
   return response.data;
 };
 
