@@ -5,7 +5,7 @@ import EditableText from "../../../components/NoCodeToolsComponents/EditableText
 import EditableImage from "../../../components/NoCodeToolsComponents/EditableImage";
 import EditableButton from "../../../components/NoCodeToolsComponents/EditableButton";
 import { EditableSection } from "../../../components/NoCodeToolsComponents/EditableSection";
-import { Save, Eye, Undo2, Redo2 } from "lucide-react";
+import { Save, Eye, Undo2, Redo2, History } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -14,12 +14,14 @@ import PublishModal from "../../../components/Modal/PublishModal/PublishModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import useModal from "../../../hooks/useModal";
+import HistoryDrawer from "../../../components/NoCodeToolsComponents/HistoryDrawer";
 
 const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
-function EditorActions({ onPreview, onPublishClick }: {
+function EditorActions({ onPreview, onPublishClick, onHistoryClick }: {
   onPreview: () => void;
   onPublishClick: () => void;
+  onHistoryClick: () => void;
 }) {
   const { actions, canUndo, canRedo } = useEditor((_, query) => ({
     canUndo: query.history.canUndo(),
@@ -37,6 +39,13 @@ function EditorActions({ onPreview, onPublishClick }: {
         Refazer
       </button>
       <div className="w-px h-6 bg-white/20" />
+      <button
+        onClick={onHistoryClick}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+      >
+        <History size={15} />
+        Histórico
+      </button>
       <button
         onClick={onPreview}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
@@ -63,6 +72,7 @@ function NoCodeToolInner() {
   const [init, setInit] = useState({ done: false });
   const [publish, setPublish] = useState({ isOpen: false, isSaving: false });
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
 
   const resetPublish = () => setPublish({ isOpen: false, isSaving: false });
 
@@ -119,9 +129,24 @@ function NoCodeToolInner() {
           </div>
           <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
         </div>
-        <EditorActions onPreview={() => setIsPreviewMode(true)} onPublishClick={() => setPublish(prev => ({ ...prev, isOpen: true }))} />
+        <EditorActions
+          onPreview={() => setIsPreviewMode(true)}
+          onPublishClick={() => setPublish(prev => ({ ...prev, isOpen: true }))}
+          onHistoryClick={() => setHistoryOpen(true)}
+        />
       </header>
 
+      <HistoryDrawer
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        onRestore={(content) => {
+          try {
+            actions.deserialize(content);
+          } catch (e) {
+            console.error('Failed to deserialize restored content:', e);
+          }
+        }}
+      />
       {publish.isOpen && (
         <PublishModal
           closeThen={() => setPublish(prev => ({ ...prev, isOpen: false }))}

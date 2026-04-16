@@ -15,6 +15,16 @@ export type CreateNoCodeRequest = {
   description: string;
 };
 
+export type NoCodeHistoryPage = {
+  content: NoCodeResponse[];
+  page: {
+    number: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+};
+
 export const getNoCodeContent = async (): Promise<NoCodeResponse> => {
   const response = await api.get("/no-code");
   return response.data;
@@ -22,5 +32,18 @@ export const getNoCodeContent = async (): Promise<NoCodeResponse> => {
 
 export const createNoCodeContent = async (body: CreateNoCodeRequest): Promise<NoCodeResponse> => {
   const response = await api.post("/no-code", body);
+  return response.data;
+};
+
+export const getNoCodeHistory = async (
+  page = 0,
+  size = 10,
+): Promise<NoCodeHistoryPage> => {
+  const response = await api.get("/no-code/history", { params: { page, size } });
+  return response.data;
+};
+
+export const restoreNoCodeContent = async (id: string): Promise<NoCodeResponse> => {
+  const response = await api.post(`/no-code/restore/${id}`);
   return response.data;
 };
