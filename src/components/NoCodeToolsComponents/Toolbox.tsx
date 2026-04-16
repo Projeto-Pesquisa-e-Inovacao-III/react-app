@@ -1,6 +1,6 @@
 import { useEditor } from "@craftjs/core";
 import { useState } from "react";
-import { Save, Eye, Layers, Settings2, ChevronDown, ChevronUp } from "lucide-react";
+import { Eye, Layers, Settings2, ChevronDown, ChevronUp } from "lucide-react";
 
 function Label({ children }: { children: React.ReactNode }) {
   return <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">{children}</label>;
@@ -88,12 +88,12 @@ function TextareaInput({ label, value, onChange }: { label: string; value: strin
 }
 
 // main
-export default function Toolbox({ onSave, onPreview }: { onSave?: () => void, onPreview?: () => void }) {
+export default function Toolbox({ onPreview }: { onPreview: () => void }) {
   const [activeTab, setActiveTab] = useState<'properties' | 'layers'>('properties');
   const [propsOpen, setPropsOpen] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
-  const { selected, actions, query, nodes } = useEditor((state) => {
+  const { selected, actions, nodes } = useEditor((state) => {
     const [id] = state.events.selected;
     if (!id) return { selected: null, nodes: state.nodes };
 
