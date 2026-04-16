@@ -7,6 +7,7 @@ export type NoCodeResponse = {
   description: string | null;
   createdAt: string;
   updatedAt: string;
+  restoredFromId: string | null;
 };
 
 export type CreateNoCodeRequest = {

@@ -170,6 +170,19 @@ export default function HistoryDrawer({
                     {item.modificationName}
                   </span>
 
+                  {item.restoredFromId && (
+                    <span
+                      className="self-start text-xs px-2 py-0.5 rounded-full font-medium"
+                      style={{
+                        background: "rgba(234,179,8,0.15)",
+                        color: "#facc15",
+                        border: "1px solid rgba(234,179,8,0.3)",
+                      }}
+                    >
+                      Restauração
+                    </span>
+                  )}
+
                   {item.description && (
                     <span
                       className="text-xs leading-relaxed line-clamp-2"
