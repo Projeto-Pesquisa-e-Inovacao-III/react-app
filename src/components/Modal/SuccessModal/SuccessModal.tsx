@@ -1,18 +1,17 @@
 import styles from "./SuccessModal.module.css";
 import SmallerButton from "../../SmallerButton/SmallerButton";
-import { useEffect } from "react";
 import classnames from "classnames";
 import useModalClose from "../../../hooks/useModalClose";
+import useMobile from "../../../hooks/isMobile";
 
-export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
+export default function SuccessModal({ isMobile: isMobileProp, closeThen, title, content }: { isMobile?: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
+    const isMobileDevice = useMobile();
+    const isMobile = isMobileProp ?? isMobileDevice;
 
     const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
         onClose: () => closeThen(false)
     });
 
-    useEffect(() => {
-        console.log("Modal aberto");
-    }, []);
 
     return (
         <>

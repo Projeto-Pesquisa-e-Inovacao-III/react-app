@@ -9,85 +9,62 @@ import { Save, Eye, Undo2, Redo2 } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getNoCodeContent, createNoCodeContent, updateNoCodeContent } from "../../../services/noCodeService";
+import { getNoCodeContent, createNoCodeContent } from "../../../services/noCodeService";
 import PublishModal from "../../../components/Modal/PublishModal/PublishModal";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
+import useModal from "../../../hooks/useModal";
 
-function EditorActions({ contentId, setContentId, onPreview }: { contentId: string | null; setContentId: (id: string) => void; onPreview?: () => void }) {
-  const { actions, query, canUndo, canRedo } = useEditor((_, query) => ({
+const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
+
+function EditorActions({ onPreview, onPublishClick }: {
+  onPreview: () => void;
+  onPublishClick: () => void;
+}) {
+  const { actions, canUndo, canRedo } = useEditor((_, query) => ({
     canUndo: query.history.canUndo(),
     canRedo: query.history.canRedo(),
   }));
-  const [isSaving, setIsSaving] = useState(false);
-  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
 
   return (
     <div className="flex items-center gap-3">
-      <button
-        disabled={!canUndo}
-        onClick={() => actions.history.undo()}
-        title="Desfazer"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
+      <button disabled={!canUndo} onClick={() => actions.history.undo()} title="Desfazer" className={TOOLBAR_BTN_CLASS}>
         <Undo2 size={15} />
         Desfazer
       </button>
-      <button
-        disabled={!canRedo}
-        onClick={() => actions.history.redo()}
-        title="Refazer"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-      >
+      <button disabled={!canRedo} onClick={() => actions.history.redo()} title="Refazer" className={TOOLBAR_BTN_CLASS}>
         <Redo2 size={15} />
         Refazer
       </button>
       <div className="w-px h-6 bg-white/20" />
       <button
-        onClick={() => onPreview ? onPreview() : window.open('/', '_blank')}
+        onClick={onPreview}
         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
       >
         <Eye size={15} />
         Preview
       </button>
       <button
-        onClick={() => setIsPublishModalOpen(true)}
+        onClick={onPublishClick}
         className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold transition-colors"
       >
         <Save size={15} />
         Publicar
       </button>
-
-      {isPublishModalOpen && (
-          <PublishModal 
-              closeThen={() => setIsPublishModalOpen(false)} 
-              isSaving={isSaving}
-              onConfirm={async (modificationName, description) => {
-                  try {
-                    setIsSaving(true);
-                    const json = query.serialize();
-                    console.log('Saved:', json);
-                    
-                    const res = await createNoCodeContent(json, modificationName, description);
-                    setContentId(res.id);
-                    alert('Página publicada com sucesso!');
-                    setIsPublishModalOpen(false);
-                  } catch (err) {
-                    console.error(err);
-                    alert('Erro ao salvar página.');
-                  } finally {
-                    setIsSaving(false);
-                  }
-              }} 
-          />
-      )}
     </div>
   );
 }
 
 function NoCodeToolInner() {
-  const { actions } = useEditor();
-  const [contentId, setContentId] = useState<string | null>(null);
-  const [hasInitialized, setHasInitialized] = useState(false);
+  const { actions, query } = useEditor();
+  
+  const { openModal, setOpenModal } = useModal(null, { title: "", content: "" });
+
+  const [init, setInit] = useState({ done: false });
+  const [publish, setPublish] = useState({ isOpen: false, isSaving: false });
   const [isPreviewMode, setIsPreviewMode] = useState(false);
+
+  const resetPublish = () => setPublish({ isOpen: false, isSaving: false });
 
   const { data, isLoading } = useQuery({
     queryKey: ['noCodeContent'],
@@ -97,18 +74,18 @@ function NoCodeToolInner() {
   });
 
   useEffect(() => {
-    if (!hasInitialized && !isLoading) {
+    if (!init.done && !isLoading) {
       if (data && data.content) {
-        setContentId(data.id);
         try {
           actions.deserialize(data.content);
         } catch (e) {
-          console.error('Failed to deserialize:', e);
+          console.error('Failed to deserialize content:', e);
+          setOpenModal("error");
         }
       }
-      setHasInitialized(true);
+      setInit({ done: true });
     }
-  }, [data, isLoading, actions, hasInitialized]);
+  }, [data, isLoading, actions, init.done, setOpenModal]);
 
   useEffect(() => {
     actions.setOptions((options) => {
@@ -116,7 +93,7 @@ function NoCodeToolInner() {
     });
   }, [isPreviewMode, actions]);
 
-  if (isLoading && !hasInitialized) {
+  if (isLoading && !init.done) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
         <span className="text-xl">Carregando conteúdo...</span>
@@ -142,8 +119,43 @@ function NoCodeToolInner() {
           </div>
           <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
         </div>
-        <EditorActions contentId={contentId} setContentId={setContentId} onPreview={() => setIsPreviewMode(true)} />
+        <EditorActions onPreview={() => setIsPreviewMode(true)} onPublishClick={() => setPublish(prev => ({ ...prev, isOpen: true }))} />
       </header>
+
+      {publish.isOpen && (
+        <PublishModal
+          closeThen={() => setPublish(prev => ({ ...prev, isOpen: false }))}
+          isSaving={publish.isSaving}
+          onConfirm={async (modificationName, description) => {
+            try {
+              setPublish(prev => ({ ...prev, isSaving: true }));
+              const json = query.serialize();
+              await createNoCodeContent({ content: json, modificationName, description });
+              resetPublish();
+              setOpenModal("success");
+            } catch (err) {
+              console.error(err);
+              resetPublish();
+              setOpenModal("error");
+            }
+          }}
+        />
+      )}
+
+      {openModal === "success" && (
+        <SuccessModal
+          closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
+          title="Página publicada com sucesso!"
+          content="As modificações foram salvas e estão disponíveis."
+        />
+      )}
+      {openModal === "error" && (
+        <ErrorModal
+          closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
+          title="Erro ao publicar"
+          content="Não foi possível salvar as modificações. Tente novamente."
+        />
+      )}
 
       <div className="flex flex-1 overflow-hidden relative">
         <div className="flex-1 overflow-y-auto" style={{ minWidth: 0 }}>

@@ -56,7 +56,6 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/no-code-tool" element={<NoCodeTool />} />
           </Route>
 
           <Route element={<PrivateRoute />}>
@@ -89,6 +88,7 @@ function App() {
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/no-code-tool" element={<NoCodeTool />} />
             </Route>
           </Route>
 

@@ -3,8 +3,16 @@ import { api } from "../system";
 export type NoCodeResponse = {
   id: string;
   content: string;
+  modificationName: string;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateNoCodeRequest = {
+  content: string;
+  modificationName: string;
+  description: string;
 };
 
 export const getNoCodeContent = async (): Promise<NoCodeResponse> => {
@@ -12,12 +20,7 @@ export const getNoCodeContent = async (): Promise<NoCodeResponse> => {
   return response.data;
 };
 
-export const createNoCodeContent = async (content: string, modificationName: string, description: string): Promise<NoCodeResponse> => {
-  const response = await api.post("/no-code", { content, modificationName, description });
-  return response.data;
-};
-
-export const updateNoCodeContent = async (id: string, content: string): Promise<NoCodeResponse> => {
-  const response = await api.put("/no-code", { id, content });
+export const createNoCodeContent = async (body: CreateNoCodeRequest): Promise<NoCodeResponse> => {
+  const response = await api.post("/no-code", body);
   return response.data;
 };

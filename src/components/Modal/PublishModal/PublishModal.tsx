@@ -1,85 +1,114 @@
-import useModalClose from "../../../hooks/useModalClose";
-import InputWithIcon from "../../Inputs/InputWithIcon/InputWithIcon";
-import TextareaWithIcon from "../../Inputs/TextareaWithIcon/TextareaWithIcon";
-import SmallerButton from "../../SmallerButton/SmallerButton";
-import styles from "./PublishModal.module.css";
-import classnames from "classnames";
-import { useState } from "react";
-import { Tag, AlignLeft } from "lucide-react";
+import { useRef, useState } from 'react';
+import classnames from 'classnames';
+import { X, Tag, FileText } from 'lucide-react';
+import styles from './PublishModal.module.css';
+import useModalClose from '../../../hooks/useModalClose';
+import useClickOutside from '../../../hooks/useClickOutside';
+import useMobile from '../../../hooks/isMobile';
+import InputWithIcon from '../../Inputs/InputWithIcon/InputWithIcon';
+import TextareaWithIcon from '../../Inputs/TextareaWithIcon/TextareaWithIcon';
+import SmallerButton from '../../SmallerButton/SmallerButton';
 
-type Props = {
+type PublishModalProps = {
     closeThen: () => void;
-    onConfirm: (name: string, description: string) => void;
     isSaving: boolean;
-}
+    onConfirm: (modificationName: string, description: string) => Promise<void>;
+};
 
-export default function PublishModal({ closeThen, onConfirm, isSaving }: Props) {
+export default function PublishModal({ closeThen, isSaving, onConfirm }: PublishModalProps) {
+    const isMobileDevice = useMobile();
+    const modalRef = useRef<HTMLDivElement>(null);
+    const [modificationName, setModificationName] = useState('');
+    const [description, setDescription] = useState('');
+
     const { isClosing, handleAnimatedClose } = useModalClose({
-        onClose: closeThen
+        onClose: closeThen,
+        duration: 200,
+        lockScroll: false,
     });
 
-    const [modificationName, setModificationName] = useState("");
-    const [description, setDescription] = useState("");
+    useClickOutside({
+        ref: modalRef,
+        callback: () => {
+            if (!isSaving) handleAnimatedClose();
+        },
+    });
+
+    const handleConfirm = async () => {
+        if (!modificationName.trim()) return;
+        await onConfirm(modificationName.trim(), description.trim());
+    };
 
     return (
         <>
-            <div className={classnames("overlay", {
-                [styles.backdropEnter]: !isClosing,
-                [styles.closingBackdrop]: isClosing,
-            })} onClick={handleAnimatedClose}></div>
-            
-            <div className={classnames(styles.modal, {
-                [styles.modalCard]: !isClosing,
-                [styles.closing]: isClosing,
-            })}>
-                
-                <div className={styles.titleSection}>
-                    <h2>Publicar Modificação</h2>
-                    <p>Registre as informações relevantes sobre esta atualização.</p>
+            <div
+                className={classnames('overlay', styles.overlayPublish, {
+                    [styles.backdropEnter]: !isClosing,
+                    [styles.closingBackdrop]: isClosing,
+                })}
+            />
+            <div
+                ref={modalRef}
+                className={classnames(styles.modalContainer, {
+                    [styles.modalContainerMobile]: isMobileDevice,
+                    [styles.modalCard]: !isClosing,
+                    [styles.closing]: isClosing,
+                })}
+            >
+                <div className={styles.header}>
+                    <h2>Publicar modificação</h2>
+                    <button
+                        className={styles.closeButton}
+                        onClick={handleAnimatedClose}
+                        disabled={isSaving}
+                        aria-label="Fechar"
+                    >
+                        <X size={22} color="#909fb5" />
+                    </button>
                 </div>
 
-                <div className={styles.formContainer}>
+                <div className={styles.form}>
                     <InputWithIcon
+                        id="publish-modification-name"
                         type="text"
-                        id="modificationName"
-                        label={<span className={styles.labelSpan}>Nome da modificação *</span>}
-                        placeholder="Ex: Atualização do banner principal"
-                        icon={<Tag size={20} className="text-gray-400" />}
+                        label="Nome da modificação"
+                        placeholder="Ex: Atualização da seção hero"
+                        icon={<Tag size={16} />}
                         value={modificationName}
                         onInputChange={setModificationName}
+                        disabled={isSaving}
+                        maxLength={100}
+                        customClassName={styles.nameInput}
                     />
 
                     <TextareaWithIcon
-                        id="description"
-                        label={<span className={styles.labelSpan}>Descrição (opcional)</span>}
-                        placeholder="Descreva o que foi alterado nesta versão..."
-                        icon={<AlignLeft size={20} className="text-gray-400" />}
+                        id="publish-description"
+                        label="Descrição (opcional)"
+                        placeholder="Descreva brevemente as alterações realizadas..."
+                        icon={<FileText size={16} />}
                         value={description}
                         onInputChange={setDescription}
-                        rows={4}
-                    />
-                </div>
-
-                <div className={styles.footer}>
-                    <SmallerButton 
-                        handleButtonClick={handleAnimatedClose} 
-                        classname={styles.cancelBtn}
                         disabled={isSaving}
-                        title="Cancelar"
+                        maxLength={500}
+                        rows={4}
+                        customClassName={styles.descriptionInput}
                     />
-                    <SmallerButton 
-                        handleButtonClick={() => {
-                            if (!modificationName.trim()) {
-                                alert("O nome da modificação é obrigatório.");
-                                return;
-                            }
-                            onConfirm(modificationName, description);
-                        }} 
-                        classname={styles.confirmBtn}
-                        disabled={!modificationName.trim()}
-                        loading={isSaving}
-                        title="Confirmar Publicação"
-                    />
+
+                    <div className={styles.buttonGroup}>
+                        <SmallerButton
+                            classname={styles.confirmBtn}
+                            handleButtonClick={handleConfirm}
+                            disabled={isSaving || !modificationName.trim()}
+                            loading={isSaving}
+                            title="Publicar"
+                        />
+                        <SmallerButton
+                            classname={styles.cancelBtn}
+                            handleButtonClick={handleAnimatedClose}
+                            disabled={isSaving}
+                            title="Cancelar"
+                        />
+                    </div>
                 </div>
             </div>
         </>
