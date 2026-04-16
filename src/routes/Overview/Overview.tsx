@@ -247,6 +247,8 @@ export function Overview() {
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
+    console.log("disabledDays", disabledDays)
+
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
         queryFn: () => findUserAppointments(),
@@ -307,6 +309,8 @@ export function Overview() {
         enabled: !!targetId,
         refetchOnWindowFocus: false,
     })
+
+    console.log("getAvailabilityHoursTomorrowQuery", getAvailabilityHoursTomorrowQuery.data)
 
     const isTypeLoading = type?.type === undefined;
 
