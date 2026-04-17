@@ -121,7 +121,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                                                 }
                                                 setOpenCalendar(false);
                                             }}
-                                            classname="absolute bottom-8"
+                                            classname="absolute bottom-0"
                                         />
                                     )}
                                 </div>
@@ -229,9 +229,9 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             dropDownClassName={styles.dropdownTipoAula}
                         />
 
-                        <div ref={calendarRef} className={styles.calendarWrapper} onClick={() => setOpenCalendar(!openCalendar)}>
+                        <div ref={calendarRef} className={styles.calendarWrapper}>
 
-                            <div className={styles.calendarIconContainer}>
+                            <div className={styles.calendarIconContainer} onClick={() => setOpenCalendar(!openCalendar)}>
                                 <Calendar
                                     color="#707070"
                                     className={styles.calendarIcon}

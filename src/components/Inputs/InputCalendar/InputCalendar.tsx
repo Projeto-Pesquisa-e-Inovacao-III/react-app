@@ -7,11 +7,10 @@ import { Calendar } from "lucide-react";
 type InputCalendarProps = {
     selectedDate: string;
     setSelectedDate: React.Dispatch<React.SetStateAction<string>> | ((date: string) => void);
-    canGoPrev?: boolean;
     paramData?: string;
 }
 
-export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev, paramData }: InputCalendarProps) {
+export default function InputCalendar({ selectedDate, setSelectedDate, paramData }: InputCalendarProps) {
     const [openCalendar, setOpenCalendar] = useState(false)
 
 
@@ -69,7 +68,7 @@ export default function InputCalendar({ selectedDate, setSelectedDate, canGoPrev
                         >
                             <path d="M2 20L11 11M20 2L11 11M11 11L20 20M11 11L2 2" stroke="#858D9D" strokeWidth="3" />
                         </svg>
-                        <MiniCalendar clickedDate={handleDateSelect} canGoPrev={canGoPrev} />
+                        <MiniCalendar clickedDate={handleDateSelect} />
                     </div>
                 </>
             )}

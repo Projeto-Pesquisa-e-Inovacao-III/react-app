@@ -1,4 +1,4 @@
-import { useState } from "react"; // Removi useReducer
+import { useState, useMemo } from "react"; // Removi useReducer
 import { Lock, Mail, Phone, User, IdCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
@@ -17,7 +17,6 @@ import Select from "../../../components/Inputs/Select/Select";
 import dayjs from "dayjs";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import classNames from "classnames";
-import InputRowDouble from "../../../components/Inputs/InputRowDouble/InputRowDouble";
 import useMobile from "../../../hooks/isMobile";
 import { cellphoneMask, cpfMask } from "../../../utils/mascara";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
@@ -37,14 +36,33 @@ type modalTypes = "success" | "error" | null;
 
 export default function Register() {
     const isMobile = useMobile();
+    const navigate = useNavigate();
 
     const [openModal, setOpenModal] = useState<modalTypes>(null);
     const [modalInfo, setModalInfo] = useState<{ title: string; content: string }>({ title: "", content: "" });
 
     const [register, setRegister] = useState(initialRegisterState);
 
-    const navigate = useNavigate();
-    const errors = validation.validatePassword("");
+    const allPasswordRules = useMemo(() => {
+        return validation.validatePassword("").split('\n').filter(m => m.trim() !== "");
+    }, []);
+
+    const passwordValidationData = useMemo(() => {
+        if (!register.password) return null;
+        
+        const currentErrors = validation.validatePassword(register.password) || "";
+        const currentErrorsArray = currentErrors.split('\n').filter(m => m.trim() !== "");
+        const passedErrors = allPasswordRules.filter(e => !currentErrorsArray.includes(e));
+
+        const total = allPasswordRules.length;
+        const passed = passedErrors.length;
+        const pct = total === 0 ? 0 : Math.round((passed / total) * 100);
+        
+        const color = pct < 50 ? "#ef4444" : pct < 100 ? "#f59e0b" : "#22c55e";
+        const label = pct < 50 ? "Senha fraca" : pct < 100 ? "Quase completa..." : "Senha forte";
+
+        return { currentErrorsArray, pct, color, label };
+    }, [register.password, allPasswordRules]);
 
     const isFormValid =
         register.name.trim() !== "" &&
@@ -171,33 +189,43 @@ export default function Register() {
                         <div className={classNames(styles.welcomeMessage, {
                             [styles.welcomeMessageMobile]: isMobile
                         })}>
-                            <h1>Inscreva-se</h1>
-                            <p>Crie sua conta e tenha acesso completo à nossa plataforma. Preencha os dados abaixo para começar sua jornada conosco.</p>
-                            <button className="border-2" onClick={handleAutoFill}>Auto preenchimento</button>
-                            <button className="border-2" onClick={handleAutoFill2}>Auto preenchimento 2</button>
+                            <h1>Criar conta</h1>
+                            <p>Preencha os dados abaixo e comece sua jornada conosco.</p>
                         </div>
-                        <div className={styles.borderDivision}></div>
 
+                        <div className="flex gap-2">
+                            <button className="border" onClick={handleAutoFill}>Auto Preencher 1</button>
+                            <button className="border" onClick={handleAutoFill2}>Auto Preencher 2</button>
+                        </div>
 
                         <form onSubmit={handleSubmit}>
 
                             <div className={styles.wrapperInputsFromForm}>
-                                <InputWithIcon
-                                    type="text"
-                                    placeholder="Nome"
-                                    onInputChange={(name: string) => handleChange('name', name)}
-                                    icon={<User />}
-                                    value={register.name}
-                                />
-                                <div>
+                                <div className={styles.fieldGroup}>
                                     <InputWithIcon
+                                        id="reg-name"
                                         type="text"
-                                        placeholder="Email"
+                                        placeholder="Digite seu nome"
+                                        label="Nome completo"
+                                        onInputChange={(name: string) => handleChange('name', name)}
+                                        icon={<User />}
+                                        value={register.name}
+                                        customClassName={styles.inputCustom}
+                                    />
+                                </div>
+
+                                <div className={styles.fieldGroup}>
+                                    <InputWithIcon
+                                        id="reg-email"
+                                        type="text"
+                                        placeholder="usuario@dominio.com"
+                                        label="E-mail"
                                         onInputChange={(email: string) => handleChange('email', email)}
                                         icon={<Mail />}
                                         value={register.email}
                                         hasError={register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido")}
                                         hasSuccess={register.email.length > 0 && validation.validateEmail(register.email).startsWith("Email válido")}
+                                        customClassName={styles.inputCustom}
                                     />
                                     {register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido") && (
                                         <span className={styles.inputErrorHint}>Email inválido. Tente algo como usuario@dominio.com</span>
@@ -205,94 +233,144 @@ export default function Register() {
                                 </div>
 
                                 <div className={styles.DoubleInputsRow}>
-                                    <div className={styles.datePickerWrapper}>
-                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DemoContainer components={['DatePicker']}>
-                                                <DatePicker
-                                                    format="DD/MM/YYYY"
-                                                    slotProps={{
-                                                        field: { openPickerButtonPosition: 'start' },
-                                                    }}
-                                                    value={dayjs(register.birthDate)}
-                                                    onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
-                                                />
-                                            </DemoContainer>
-                                        </LocalizationProvider>
+                                    <div className={styles.fieldGroup} style={{ flex: 1 }}>
+                                        <label className={styles.fieldLabel}>Data de nascimento</label>
+                                        <div className={styles.datePickerWrapper}>
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DemoContainer components={['DatePicker']}>
+                                                    <DatePicker
+                                                        format="DD/MM/YYYY"
+                                                        slotProps={{
+                                                            field: { openPickerButtonPosition: 'start' },
+                                                        }}
+                                                        value={dayjs(register.birthDate)}
+                                                        onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
+                                                    />
+                                                </DemoContainer>
+                                            </LocalizationProvider>
+                                        </div>
                                     </div>
 
-                                    <div className={styles.selectGenderRegister}>
-                                        <Select
-                                            id="gender"
-                                            placeholder="Selecione um genero"
-                                            onInputChange={(gender: string) => handleChange('gender', gender)}
-                                            icon={<User />}
-                                            value={register.gender}
-                                            options={["Masculino", "Feminino", "Outro"]}
+                                    <div className={styles.fieldGroup} style={{ flex: 1 }}>
+                                        <label className={styles.fieldLabel} htmlFor="gender">Gênero</label>
+                                        <div className={styles.selectGenderRegister}>
+                                            <Select
+                                                id="gender"
+                                                placeholder="Selecione um gênero"
+                                                onInputChange={(gender: string) => handleChange('gender', gender)}
+                                                icon={<User />}
+                                                value={register.gender}
+                                                options={["Masculino", "Feminino", "Outro"]}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={styles.DoubleInputsRow}>
+                                    <div className={styles.fieldGroup} style={{ flex: 1 }}>
+                                        <InputWithIcon
+                                            id="reg-cpf"
+                                            type="text"
+                                            placeholder="CPF"
+                                            label="CPF"
+                                            onInputChange={(customerDocument: string) => handleChange('customerDocument', customerDocument)}
+                                            icon={<IdCard />}
+                                            value={register.customerDocument}
+                                            mask={cpfMask}
+                                            customClassName={styles.inputCustom}
+                                        />
+                                    </div>
+                                    <div className={styles.fieldGroup} style={{ flex: 1 }}>
+                                        <InputWithIcon
+                                            id="reg-phone"
+                                            type="text"
+                                            placeholder="Telefone"
+                                            label="Telefone"
+                                            onInputChange={(phone: string) => handleChange('phone', phone)}
+                                            icon={<Phone />}
+                                            value={register.phone}
+                                            mask={cellphoneMask}
+                                            customClassName={styles.inputCustom}
                                         />
                                     </div>
                                 </div>
-
-                                <InputRowDouble
-                                    firstPlaceholder="CPF"
-                                    secondPlaceholder="Telefone"
-                                    firstIcon={<IdCard />}
-                                    secondIcon={<Phone />}
-                                    setFirstOnChange={(customerDocument: string) => handleChange('customerDocument', customerDocument)}
-                                    setSecondOnChange={(phone: string) => handleChange('phone', phone)}
-                                    valueFirst={register.customerDocument}
-                                    valueSecond={register.phone}
-                                    firstMask={cpfMask}
-                                    secondMask={cellphoneMask}
-                                />
                             </div>
-                            <div className={styles.borderDivision}></div>
 
-                            <div className={styles.wrapperPasswordInput}>
-                                <InputWithIcon
-                                    type="password"
-                                    placeholder="Senha"
-                                    onInputChange={(password: string) => handleChange('password', password)}
-                                    icon={<Lock />}
-                                    isPassword={true}
-                                    value={register.password}
-                                    hasError={register.password.length > 0 && !validation.validatePassword(register.password).startsWith("password válida")}
-                                    hasSuccess={register.password.length > 0 && validation.validatePassword(register.password).startsWith("password válida")}
-                                />
-                                <InputWithIcon
-                                    type="password"
-                                    placeholder="Confirmar Senha"
-                                    onInputChange={(confirmPassword: string) => handleChange('confirmPassword', confirmPassword)}
-                                    icon={<Lock />}
-                                    isPassword={true}
-                                    value={register.confirmPassword}
-                                    hasError={register.confirmPassword.length > 0 && register.confirmPassword !== register.password}
-                                    hasSuccess={register.confirmPassword.length > 0 && register.confirmPassword === register.password}
-                                />
+                            <div className={styles.passwordSection}>
+                                <div className={styles.wrapperPasswordInput}>
+                                    <InputWithIcon
+                                        type="password"
+                                        placeholder="Senha"
+                                        onInputChange={(password: string) => handleChange('password', password)}
+                                        icon={<Lock />}
+                                        isPassword={true}
+                                        label="Senha"
+                                        customClassName={styles.inputCustom}
+                                        value={register.password}
+                                        hasError={register.password.length > 0 && !validation.validatePassword(register.password).startsWith("password válida")}
+                                        hasSuccess={register.password.length > 0 && validation.validatePassword(register.password).startsWith("password válida")}
+                                    />
+                                    <InputWithIcon
+                                        type="password"
+                                        placeholder="Confirmar Senha"
+                                        onInputChange={(confirmPassword: string) => handleChange('confirmPassword', confirmPassword)}
+                                        icon={<Lock />}
+                                        isPassword={true}
+                                        label="Confirmar Senha"
+                                        customClassName={styles.inputCustom}
+                                        value={register.confirmPassword}
+                                        hasError={register.confirmPassword.length > 0 && register.confirmPassword !== register.password}
+                                        hasSuccess={register.confirmPassword.length > 0 && register.confirmPassword === register.password}
+                                    />
+                                </div>
+
+                                {passwordValidationData && (
+                                    <div className={styles.strengthWrapper}>
+                                        <div className={styles.strengthBar}>
+                                            <div className={styles.strengthFill} style={{ width: `${passwordValidationData.pct}%`, backgroundColor: passwordValidationData.color }} />
+                                        </div>
+                                        <div className={styles.strengthMeta}>
+                                            <span className={styles.strengthLabel} style={{ color: passwordValidationData.color }}>{passwordValidationData.label}</span>
+                                            {register.confirmPassword.length > 0 && register.password !== register.confirmPassword && (
+                                                <span className={styles.weak}>As senhas não coincidem.</span>
+                                            )}
+                                            {register.confirmPassword.length > 0 && register.password === register.confirmPassword && (
+                                                <span className={styles.strong}>Senhas coincidem ✓</span>
+                                            )}
+                                        </div>
+                                        <div className={styles.passwordRulesList}>
+                                            {allPasswordRules.map((rule, idx) => {
+                                                const isPassed = !passwordValidationData.currentErrorsArray.includes(rule);
+                                                return (
+                                                    <div key={idx} className={styles.passwordRuleItem}>
+                                                        <span className={isPassed ? styles.markerPassed : styles.markerFailed}>{isPassed ? "✓" : "○"}</span>
+                                                        <span className={isPassed ? styles.rulePassed : styles.ruleFailed}>{rule}</span>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className={styles.terms}>
-                                <input type="checkbox" />
-                                <label>Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
+                                <input type="checkbox" id="terms-checkbox" />
+                                <label htmlFor="terms-checkbox">Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
-                            {register.password.length > 0 && (
-                                <div className={styles.passwordValidation}>
-                                    {errors.split('\n').filter((msg) => msg.trim() !== "").map((msg, index) => (
-                                        <p key={index} className={!validation.validatePassword(register.password).includes(msg) ? styles.strong : styles.weak}>{msg}</p>
-                                    ))}
-                                    {register.confirmPassword.length > 0 && register.password !== register.confirmPassword && (
-                                        <p className={styles.weak}>As senhas não coincidem.</p>
-                                    )}
-                                    {register.confirmPassword.length > 0 && register.password === register.confirmPassword && (
-                                        <p className={styles.strong}>Senhas coincidem.</p>
-                                    )}
+                            { !isFormValid && (
+                                <div style={{ textAlign: "center", fontSize: "0.85rem", color: "#6b7280", marginTop: "10px" }}>
+                                    Preencha corretamente todos os campos obrigatórios acima para liberar o cadastro.
                                 </div>
                             )}
-                            <Button typeButton="other" type="submit" title="Cadastrar" loading={loading} classNameVariable={styles.btnCad} disabled={!isFormValid} />
+
+                            <Button typeButton="other" type="submit" title="Criar conta →" loading={loading} classNameVariable={styles.btnCad} disabled={!isFormValid} />
                         </form>
-                        <span>
-                            Já tem uma conta? <Link to="/login">Faça login</Link>
+
+                        <span className={styles.loginLink}>
+                            Já tem uma conta? <Link to="/login">Faça login →</Link>
                         </span>
+
                     </div>
                 </div >
 
