@@ -56,10 +56,16 @@ export default function Register() {
         validation.validatePassword(register.password).startsWith("password válida") &&
         register.password === register.confirmPassword;
 
-    function navToLogin() {
+    // function navToLogin() {
+    //     setOpenModal(null);
+    //     navigate("/login");
+    // }
+
+    function navToAnamnesis() {
         setOpenModal(null);
-        navigate("/login");
+        navigate("/anamnesis");
     }
+
 
     function handleAutoFill() {
         setRegister({
@@ -142,13 +148,13 @@ export default function Register() {
         userService
             .register(userData)
             .then(async () => {
-                setOpenModal("success");
+                // setOpenModal("success");
 
-                if (openModal === "success") {
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 4000);
-                }
+                // if (openModal === "success") {
+                // setTimeout(() => {
+                navigate("/anamnesis");
+                // }, 4000);
+                // }
             })
             .catch((err) => {
                 setModalInfo({ title: "Erro!", content: err.response?.data?.Exception || err.response?.data?.dataNascimento || "Ocorreu um erro ao realizar o cadastro. Tente novamente mais tarde." });
@@ -307,8 +313,8 @@ export default function Register() {
                 <SuccessModal
                     isMobile={isMobile}
                     title="Cadastro realizado com sucesso!"
-                    content="Você já pode fazer login na sua conta."
-                    closeThen={navToLogin}
+                    content="Você pode seguir com o preenchimento da anamnese."
+                    closeThen={navToAnamnesis}
                 />
             )}
 

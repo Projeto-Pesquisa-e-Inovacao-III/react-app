@@ -39,6 +39,25 @@ export default function Login() {
     return;
   }
 
+  async function navToAnamnesis() {
+    const isAuthenticated = await userService.isAuthenticated();
+    const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
+    if (ativoAnamnese === false) {
+      nav("/anamnesis");
+      return;
+    }
+  }
+
+  useEffect(() => {
+    try {
+      navToAnamnesis();
+
+    } catch (err) {
+      console.log("User not authenticated");
+    }
+
+  }, [nav]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -48,13 +67,7 @@ export default function Login() {
 
       if (res.status === 200) {
         try {
-          const isAuthenticated = await userService.isAuthenticated();
-          const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
-          
-          if (ativoAnamnese === false) {
-            nav("/anamnesis");
-            return;
-          }
+          await navToAnamnesis();
         } catch {
           navToHome();
           return;
