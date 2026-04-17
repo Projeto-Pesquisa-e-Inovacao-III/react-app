@@ -13,10 +13,11 @@ import type { ProductExhibition } from "../../models/products";
 import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
-import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
+import { CircleX, History, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import PackageHistoryModal from "../../components/Modal/PackageHistoryModal/PackageHistoryModal";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | "history" | null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -159,6 +160,14 @@ export function Packages() {
 
     }
 
+    function handleReactivate(pkg: ProductExhibition) {
+        if (pkg.tipoProduto === "ADICIONAL") {
+            setProductsExhibitionsAdicional(prev => [...prev, pkg]);
+        } else {
+            setProductsExhibitions(prev => [...prev, pkg]);
+        }
+    }
+
     function handleUpdatePackage(id: number, isAdicional: boolean = false) {
         console.log("Editing package with id:", id);
         if (!packageId) {
@@ -234,9 +243,9 @@ export function Packages() {
         emblaApiPackage?.scrollNext()
     }, [emblaApiPackage])
 
-const slidesToRender = activePackages.length > 0
-  ? [...activePackages, ...activePackages, ...activePackages]
-  : activePackages;
+    const slidesToRender = activePackages.length > 0
+        ? [...activePackages, ...activePackages, ...activePackages]
+        : activePackages;
 
     const slidesToRenderAdicional = productsExhibitionsAdicional
 
@@ -267,7 +276,8 @@ const slidesToRender = activePackages.length > 0
                         }
                     </div>
                     {isPersonal && (
-                        <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
+                        <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })} style={{ width: "37.574%", display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                            <SmallerButton icon={<History size={16} />} type="button" title="Pacotes inativos" handleButtonClick={() => setOpenModal("history")} />
                             {verifyNumberOfPackagesFront ?
                                 <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
                                 :
@@ -584,6 +594,15 @@ const slidesToRender = activePackages.length > 0
             {
                 openModal === "loadingPagBank" && (
                     <PagBankModal isMobile={isMobile} />
+                )
+            }
+
+            {
+                openModal === "history" && (
+                    <PackageHistoryModal
+                        onClose={handleCloseModal}
+                        onReactivate={handleReactivate}
+                    />
                 )
             }
         </>

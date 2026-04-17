@@ -13,6 +13,14 @@ export function desactivateProductExhibition(id: number) {
     return api.patch(`/produtos-exibicoes/desativar/${id}`)
 }
 
+export function reactivateProductExhibition(id: number) {
+    return api.patch(`/produtos-exibicoes/reativar/${id}`)
+}
+
+export function getInactiveProductsExhibitions() {
+    return api.get(`/produtos-exibicoes/status/inativo`)
+}
+
 export function updateProductExhibition(id: number | undefined, data: Partial<ProductExhibition>) {
     return api.post(`/produtos-exibicoes/editar/${id}`, data);
 }
