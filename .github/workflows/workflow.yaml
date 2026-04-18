@@ -2,7 +2,9 @@ name: Continuous Integration
 
 on: 
   pull_request:
-    branches: [ develop ]
+    branches: [ main, develop ]
+  push:
+    branches: [feat/workflows]
 
 jobs:
   continuous-integration:
@@ -15,63 +17,38 @@ jobs:
         with:
           node-version: 20.x
       - name: run install dependencies and build
+        env:
+          VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }}
         run: |
           npm install
           npm run build
 
       - name: Build Docker image
-        run: docker build -t react-app:ci .
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-app:latest .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-app:${{ github.sha }} .
 
       - name: Run container and smoke test
         run: |
-          docker run -d --name react-app-ci -p 8080:80 react-app:ci
+          docker run -d --name react-app-ci -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/react-app:latest
           curl --retry 10 --retry-delay 1 --retry-connrefused -f http://localhost:8080
 
       - name: Cleanup container
         if: always()
         run: docker rm -f react-app-ci || true
+      
+      - name: login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-app:${{ github.sha }}
 
-      # TODO: Exemplo real de como ficaria o deploy para VM AWS (EC2)
-      #
-      # deploy-aws-vm:
-      #   name: Deploy AWS VM
-      #   runs-on: ubuntu-latest
-      #   needs: continuous-integration
-      #   if: github.ref == 'refs/heads/develop'
-      #   steps:
-      #     - name: Checkout
-      #       uses: actions/checkout@v3
-      #
-      #     - name: Login no Docker Hub
-      #       uses: docker/login-action@v3
-      #       with:
-      #         username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #         password: ${{ secrets.DOCKERHUB_TOKEN }}
-      #
-      #     - name: Build e push da imagem
-      #       run: |
-      #         IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/react-app:${{ github.sha }}
-      #         docker build -t $IMAGE .
-      #         docker push $IMAGE
-      #
-      #     - name: Configurar chave SSH
-      #       run: |
-      #         mkdir -p ~/.ssh
-      #         echo "${{ secrets.AWS_VM_SSH_KEY }}" > ~/.ssh/id_rsa
-      #         chmod 600 ~/.ssh/id_rsa
-      #         ssh-keyscan -H ${{ secrets.AWS_VM_HOST }} >> ~/.ssh/known_hosts
-      #
-      #     - name: Deploy na VM
-      #       run: |
-      #         IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/react-app:${{ github.sha }}
-      #         ssh ${{ secrets.AWS_VM_USER }}@${{ secrets.AWS_VM_HOST }} "
-      #           docker pull $IMAGE &&
-      #           docker rm -f react-app || true &&
-      #           docker run -d --name react-app -p 80:80 $IMAGE
-      #         "
-      #
-      #     - name: Healthcheck remoto
-      #       run: curl -f http://${{ secrets.AWS_VM_HOST }}
+      
           
 
   
