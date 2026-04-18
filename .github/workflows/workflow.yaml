@@ -31,7 +31,24 @@ jobs:
       - name: Run container and smoke test
         run: |
           docker run -d --name react-app-ci -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/react-app:latest
-          curl --retry 10 --retry-delay 1 --retry-connrefused -f http://localhost:8080
+          for i in {1..20}; do
+            if curl -fsS http://localhost:8080/ > /dev/null; then
+              echo "Smoke test passed"
+              exit 0
+            fi
+
+            if [ -z "$(docker ps -q -f name=react-app-ci -f status=running)" ]; then
+              echo "Container stopped unexpectedly. Logs:"
+              docker logs react-app-ci || true
+              exit 1
+            fi
+
+            sleep 1
+          done
+
+          echo "Smoke test timed out. Logs:"
+          docker logs react-app-ci || true
+          exit 1
 
       - name: Cleanup container
         if: always()
