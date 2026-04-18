@@ -58,7 +58,7 @@
   transition: all 0.2s ease;
 }
 
-:global(.fc .fc-daygrid-day.fc-day-today) {
+.miniWrapperStyledCalendar :global(.fc .fc-daygrid-day.fc-day-today) {
   background: var(--carol-light, #b6d0dd) !important;
   border-radius: 50%;
 }
