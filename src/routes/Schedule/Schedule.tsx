@@ -209,20 +209,17 @@ export default function Schedule() {
         refetchOnWindowFocus: false,
     });
 
+    const targetId = personalList.data?.content?.[0]?.id;
+
     const availabilityHoursTomorrowQuery = useQuery({
         queryKey: ["availabilityHoursTomorrow"],
-        queryFn: () => getAvailabilityHoursTomorrow(personalList.data[0].id),
+        queryFn: () => getAvailabilityHoursTomorrow(targetId),
         refetchOnWindowFocus: false,
         enabled: type?.type === "aluno"
     })
 
-    console.log("availabilityHoursTomorrowQuery", availabilityHoursTomorrowQuery)
 
-    console.log(clickedDate)
-
-    const targetId = personalList.data?.content?.[0]?.id;
     const { disabledDays } = useDisabledDays(type?.type === "aluno" ? targetId : undefined);
-
 
     return (
         <>

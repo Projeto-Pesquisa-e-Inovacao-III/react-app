@@ -507,54 +507,57 @@ export default function SetAvailability() {
                                     key={daySchedule.day}
                                     className={`${styles.dayRow} ${disabled ? styles.disabled : ""}`}
                                 >
-                                    <div className={styles.dayToggle}>
-                                        <Toggle
-                                            checked={!disabled}
-                                            onChange={() => toggleDay(dayIndex)}
+                                    <div className={styles.dayInfo}>
+                                        <div className={styles.dayToggle}>
+                                            <Toggle
+                                                checked={!disabled}
+                                                onChange={() => toggleDay(dayIndex)}
 
-                                        />
+                                            />
+                                        </div>
+
+                                        <div className={styles.dayLabel}>
+                                            <span className={`${styles.dayName} ${disabled ? styles.disabled : ""}`}>
+                                                {DAYS_META[daySchedule.day]}
+                                            </span>
+                                        </div>
                                     </div>
 
-                                    <div className={styles.dayLabel}>
+                                    <div className={styles.dayTimes}>
+                                        {workSlot && breakSlot ? (
+                                            <>
+                                                <TimeRange
+                                                    startValue={workSlot.horaInicio}
+                                                    endValue={breakSlot.horaInicio}
+                                                    disabled={disabled}
+                                                    onStartChange={(v) =>
+                                                        updateLocalSlot(dayIndex, workIndex, "horaInicio", v)
+                                                    }
+                                                    onEndChange={(v) =>
+                                                        updateLocalSlot(dayIndex, breakIndex, "horaInicio", v)
+                                                    }
+                                                />
 
-                                        <span className={`${styles.dayName} ${disabled ? styles.disabled : ""}`}>
-                                            {DAYS_META[daySchedule.day]}
-                                        </span>
+                                                <div className={`${styles.periodDivider} ${disabled ? styles.disabled : ""}`} />
+
+                                                <TimeRange
+                                                    startValue={breakSlot.horaFim}
+                                                    endValue={workSlot.horaFim}
+                                                    disabled={disabled}
+                                                    onStartChange={(v) =>
+                                                        updateLocalSlot(dayIndex, breakIndex, "horaFim", v)
+                                                    }
+                                                    onEndChange={(v) =>
+                                                        updateLocalSlot(dayIndex, workIndex, "horaFim", v)
+                                                    }
+                                                />
+                                            </>
+                                        ) : (
+                                            <span className={styles.noSlots}>
+                                                Sem horários cadastrados
+                                            </span>
+                                        )}
                                     </div>
-
-                                    {workSlot && breakSlot ? (
-                                        <>
-                                            <TimeRange
-                                                startValue={workSlot.horaInicio}
-                                                endValue={breakSlot.horaInicio}
-                                                disabled={disabled}
-                                                onStartChange={(v) =>
-                                                    updateLocalSlot(dayIndex, workIndex, "horaInicio", v)
-                                                }
-                                                onEndChange={(v) =>
-                                                    updateLocalSlot(dayIndex, breakIndex, "horaInicio", v)
-                                                }
-                                            />
-
-                                            <div className={`${styles.periodDivider} ${disabled ? styles.disabled : ""}`} />
-
-                                            <TimeRange
-                                                startValue={breakSlot.horaFim}
-                                                endValue={workSlot.horaFim}
-                                                disabled={disabled}
-                                                onStartChange={(v) =>
-                                                    updateLocalSlot(dayIndex, breakIndex, "horaFim", v)
-                                                }
-                                                onEndChange={(v) =>
-                                                    updateLocalSlot(dayIndex, workIndex, "horaFim", v)
-                                                }
-                                            />
-                                        </>
-                                    ) : (
-                                        <span className={styles.noSlots}>
-                                            Sem horários cadastrados
-                                        </span>
-                                    )}
                                 </div>
                             );
                         })}

@@ -2,6 +2,7 @@
 import classNames from "classnames";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import {
     ArrowLeft,
     ArrowRight,
@@ -63,6 +64,7 @@ export default function Anamnesis() {
 
     const isMobile = useMobile();
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     // Estado principal dos campos do formulário.
     const [anamnesisForm, setAnamnesisForm] = useState<AnamnesisForm>({
@@ -513,8 +515,9 @@ export default function Anamnesis() {
             {requestModal.type === "success" && (
                 <SuccessModal
                     isMobile={isMobile}
-                    closeThen={() => {
+                    closeThen={async () => {
                         setRequestModal((previousValues) => ({ ...previousValues, type: null }));
+                        await queryClient.refetchQueries({ queryKey: ["isAuthenticated"] });
                         navigate("/home");
                     }}
                     title={requestModal.text.title}
