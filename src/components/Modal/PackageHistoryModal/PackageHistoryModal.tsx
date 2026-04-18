@@ -80,7 +80,6 @@ export default function PackageHistoryModal({ onClose, onReactivate }: PackageHi
                     [styles.modalLeave]: isClosing,
                 })}
             >
-                {/* Header */}
                 <div className={styles.header}>
                     <div className={styles.headerLeft}>
                         <History size={22} color="#0a3a5c" />
@@ -94,7 +93,6 @@ export default function PackageHistoryModal({ onClose, onReactivate }: PackageHi
                     Pacotes desativados podem ser reativados a qualquer momento. Nenhum dado é perdido.
                 </p>
 
-                {/* List */}
                 <div className={styles.listContainer}>
                     {isLoading ? (
                         <div className={styles.loadingWrapper}>

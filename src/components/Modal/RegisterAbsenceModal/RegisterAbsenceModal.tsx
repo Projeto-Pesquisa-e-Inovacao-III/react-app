@@ -49,7 +49,6 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
                     placeholder="Selecione o motivo da ausência"
                     onInputChange={(value: string) => { setChangeSelectType(value) }}
                 />
-                {/* se for aluno */}
                 {changeSelectType === "Aluno" && (
                     <div className={styles.fieldGroup}>
                         <label className={styles.label}>Motivo: </label>

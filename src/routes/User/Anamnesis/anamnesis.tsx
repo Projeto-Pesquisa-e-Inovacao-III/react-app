@@ -284,7 +284,6 @@ export default function Anamnesis() {
                 <div className={classNames(styles.anamnesisElements, {
                     [styles.anamnesisElementsMobile]: isMobile
                 })}>
-                    {/* Responsabilidade: etapa 1 (dados pessoais e objetivo). */}
                     {step === 1 && (
                         <>
                             <AnamnesisProgressLine step={1} form={anamnesisForm} />
@@ -377,7 +376,6 @@ export default function Anamnesis() {
                         </>
                     )}
 
-                    {/* Responsabilidade: etapa 2 (histórico de saúde e envio final). */}
                     {step === 2 && (
                         <>
                             <AnamnesisProgressLine step={2} form={anamnesisForm} />

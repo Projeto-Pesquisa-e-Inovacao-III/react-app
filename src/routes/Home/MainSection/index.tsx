@@ -9,7 +9,6 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                     : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center overflow-hidden"
             }
         >
-                {/* Overlay azul diagonal — apenas desktop */}
                 {!isMobile && (
                     <div
                         className="absolute inset-0 pointer-events-none"
