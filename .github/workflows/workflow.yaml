@@ -1,10 +1,8 @@
 name: Continuous Integration
 
 on: 
-  pull_request:
-    branches: [ main, develop ]
   push:
-    branches: [feat/workflows]
+    branches: [ main, develop ]
 
 jobs:
   continuous-integration:
