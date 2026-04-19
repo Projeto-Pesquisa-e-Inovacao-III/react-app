@@ -174,7 +174,7 @@ export function CheckSchedule() {
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
-            tipoUsuario: data.type,
+            tipoUsuario: data.type.includes("personal") ? "PERSONAL" : "ALUNO",
             descricaoCancelamento: data.description === "" ? null : data.description
         };
         await reportAbsencePersonal(payload).then(async () => {

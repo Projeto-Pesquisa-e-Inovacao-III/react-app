@@ -35,7 +35,7 @@ export default function ListUsers() {
             debouncedSearch.trim()
                 ? searchStudent(page, 10, debouncedSearch)
                 : listStudents(page, 10),
-        enabled: type?.type !== "aluno",
+        enabled: !type?.type?.includes("aluno"),
     });
 
     const students = response?.data?.content ?? [];

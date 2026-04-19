@@ -169,7 +169,7 @@ function AppointmentsSectionContent({
         <>
             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                 <h1>Agendamentos</h1>
-                {userType === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
+                {userType?.includes("aluno") && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
                     onClick={onNewEvent}
                 />}
             </div>
@@ -204,14 +204,14 @@ export function Overview() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: !type?.type?.includes("aluno")
+        enabled: type?.type?.includes("aluno")
     });
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: !type?.type?.includes("aluno")
+        enabled: type?.type?.includes("aluno")
     });
 
     console.log("Class balance data:", classBalanceQuery.data);
@@ -232,7 +232,7 @@ export function Overview() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: !type?.type?.includes("aluno")
+        enabled: type?.type?.includes("aluno")
     });
 
     const personalId = useQuery({
@@ -243,11 +243,12 @@ export function Overview() {
         enabled: !type?.type?.includes("aluno")
     });
 
-    const targetId = !type?.type?.includes("aluno") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+    const targetId = type?.type?.includes("personal") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+
+    console.log("targetId", targetId)
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
-    console.log("targetId", targetId)
     console.log("disabledDays", disabledDays)
 
     const appointmentsCards = useQuery({
@@ -393,7 +394,7 @@ export function Overview() {
                                 <ViewCalendarMonthStyled
                                     isMobile={isMobile}
                                     events={appointments.data?.data}
-                                    isUserAuthorizedToInteract={!type?.type?.includes("aluno") && !!actualPlanQuery.data}
+                                    isUserAuthorizedToInteract={type?.type?.includes("aluno") && !!actualPlanQuery.data}
                                     canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}

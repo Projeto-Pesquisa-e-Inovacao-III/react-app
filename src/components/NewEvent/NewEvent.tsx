@@ -92,7 +92,7 @@ export default function NewEvent(
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: typeUser === "aluno",
+        enabled: typeUser?.includes("aluno"),
     });
 
 
@@ -101,7 +101,7 @@ export default function NewEvent(
         queryKey: ["myId"],
         queryFn: findUserData,
         select: (res) => res.data?.id,
-        enabled: typeUser === "personal" || typeUser === "admin",
+        enabled: typeUser?.includes("personal") || typeUser?.includes("admin"),
         refetchOnWindowFocus: false,
     });
 
