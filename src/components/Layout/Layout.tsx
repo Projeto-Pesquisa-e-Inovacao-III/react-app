@@ -72,6 +72,7 @@ export default function Layout() {
 
     const { type, setType } = context;
 
+    console.log("type é: ", type)
     useEffect(() => {
         console.log("logado e nao carregando", !isLoggedIn.isLoading && !isLoggedIn.data?.autentificado)
         console.log("erro e nao carregando", isLoggedIn.isError && !isLoggedIn.isLoading)
@@ -83,8 +84,8 @@ export default function Layout() {
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {
-            const backendType = isLoggedIn.data.user.roles.includes("personal") ? "personal" : "aluno";
-            setType(backendType);
+            const backendType = isLoggedIn.data.user.roles;
+            setType(backendType.map((item: string) => item.toLowerCase()));
         }
     }, [isLoggedIn.data]);
 
@@ -93,7 +94,7 @@ export default function Layout() {
 
         const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
         const isAnamnesisRoute = location.pathname === "/anamnesis";
-        if (!ativoAnamnese && !exceptions.includes(location.pathname) && !isAnamnesisRoute && type === "aluno") {
+        if (!ativoAnamnese && !exceptions.includes(location.pathname) && !isAnamnesisRoute && type?.includes("aluno")) {
             nav("/anamnesis");
         }
     }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);

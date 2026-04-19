@@ -37,7 +37,7 @@ export function Packages() {
         }
     }, [openModal]);
 
-    const isPersonal = type?.type === "personal" || type?.type === "admin";
+    const isPersonal = type?.type?.includes("personal");
 
     function handleBuyClick(id: number) {
         setOpenModal("loadingPagBank");

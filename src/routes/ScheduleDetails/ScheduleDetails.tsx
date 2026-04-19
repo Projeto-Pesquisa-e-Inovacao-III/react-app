@@ -324,14 +324,14 @@ export default function ScheduleDetails() {
 
                     {
                         (
-                            (type?.type !== "aluno" && (
+                            (!type?.type?.includes("aluno") && (
 
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
-                            (type?.type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
+                            (type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
-                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "admin" || type?.type === "aluno" })}>
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type?.includes("personal") || type?.type?.includes("admin") || type?.type?.includes("aluno") })}>
                                 <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />

@@ -38,14 +38,14 @@ export default function MoreOptions() {
                 </div>
                 <div className={styles.options}>
                     <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
-                    {type?.type === "aluno" &&
+                    {type?.type?.includes("aluno") &&
                         <>
                             <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => nav("/plans-history")} />
                             <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' onClick={() => nav("/schedule-history")} />
                         </>
                     }
 
-                    {type?.type === "personal" &&
+                    {type?.type?.includes("personal") &&
                         <>
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                             <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />

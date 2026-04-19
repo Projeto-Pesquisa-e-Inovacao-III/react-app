@@ -367,7 +367,7 @@ export default function NewEvent(
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             endereco: null,
-            personalId: typeUser === "personal" ? myId.data : personalList.data?.content[0]?.id,
+            personalId: typeUser?.includes("personal") ? myId.data : personalList.data?.content[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -636,7 +636,7 @@ export default function NewEvent(
             })}>
                 {!isMobile && (
                     <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
-                        {typeUser === "personal" ? (
+                        {typeUser?.includes("personal") ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
                                 icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}

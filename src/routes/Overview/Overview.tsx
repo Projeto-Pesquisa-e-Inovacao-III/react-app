@@ -204,14 +204,14 @@ export function Overview() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: !type?.type?.includes("aluno")
     });
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: !type?.type?.includes("aluno")
     });
 
     console.log("Class balance data:", classBalanceQuery.data);
@@ -232,7 +232,7 @@ export function Overview() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: !type?.type?.includes("aluno")
     });
 
     const personalId = useQuery({
@@ -240,13 +240,14 @@ export function Overview() {
         queryFn: () => findUserData(),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type !== "aluno"
+        enabled: !type?.type?.includes("aluno")
     });
 
-    const targetId = type?.type !== "aluno" && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+    const targetId = !type?.type?.includes("aluno") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
+    console.log("targetId", targetId)
     console.log("disabledDays", disabledDays)
 
     const appointmentsCards = useQuery({
@@ -262,9 +263,11 @@ export function Overview() {
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
     useEffect(() => {
-        if (type?.type === "aluno") return;
-        const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
-        loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
+        if (type?.type?.includes("personal")) {
+
+            const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
+            loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
+        };
     }, [type]);
 
     const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
@@ -278,8 +281,6 @@ export function Overview() {
     function openModal(type: ModalType) {
         setModalType(type);
     }
-
-    console.log(modalType)
 
     function handleSuccessModalInfo(title: string, description: string) {
         openModal("success");
@@ -310,14 +311,12 @@ export function Overview() {
         refetchOnWindowFocus: false,
     })
 
-    console.log("getAvailabilityHoursTomorrowQuery", getAvailabilityHoursTomorrowQuery.data)
-
     const isTypeLoading = type?.type === undefined;
 
     const isLoadingCalendar =
         isTypeLoading ||
-        appointments.isPending ||
-        type?.type === "aluno" ? personalList.isPending : personalId.isPending ||
+            appointments.isPending ||
+            type?.type?.includes("aluno") ? personalList.isPending : personalId.isPending ||
         isLoadingDisabledDays
 
 
@@ -330,7 +329,7 @@ export function Overview() {
                 <div className={classNames(styles.containerContent, { [styles.containerContentMobile]: isMobile })}>
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
 
-                        {isMobile && type?.type === "aluno" && (
+                        {isMobile && type?.type?.includes("aluno") && (
                             <MobileAlunoPanel
                                 isPending={!!actualPlanQuery?.isPending}
                                 hasPlan={!!actualPlanQuery?.data?.data}
@@ -342,7 +341,7 @@ export function Overview() {
                             />
                         )}
 
-                        {isMobile && type?.type !== "aluno" && (
+                        {isMobile && !type?.type?.includes("aluno") && (
                             <div className={styles.schedulePageUserActionsMobile}>
                                 <OverviewCardPersonal
                                     title={"Aulas para realizar hoje"}
@@ -394,7 +393,7 @@ export function Overview() {
                                 <ViewCalendarMonthStyled
                                     isMobile={isMobile}
                                     events={appointments.data?.data}
-                                    isUserAuthorizedToInteract={type?.type === "aluno" && !!actualPlanQuery.data}
+                                    isUserAuthorizedToInteract={!type?.type?.includes("aluno") && !!actualPlanQuery.data}
                                     canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}
@@ -419,7 +418,7 @@ export function Overview() {
                         </div>
                     </div>
 
-                    {!type || type?.type === null && (
+                    {type?.type === null && (
                         <div className={styles.schedulePageUserActions}>
                             <div className="bg-white rounded-xl shadow-xl p-6">
                                 <Skeleton height={24} width={350} className="mb-4" />
@@ -437,7 +436,7 @@ export function Overview() {
                         </div>
                     )}
 
-                    {!isMobile && (!type || type?.type === "aluno") && (
+                    {!isMobile && (type?.type?.includes("aluno")) && (
                         isLoadingCalendar ? (
                             <div className={styles.schedulePageUserActions}>
                                 <div className="bg-white rounded-xl shadow-xl p-6">
@@ -475,7 +474,7 @@ export function Overview() {
                         )
                     )}
 
-                    {!isMobile && type?.type && type.type !== "aluno" && (
+                    {!isMobile && type?.type && !type.type.includes("aluno") && (
                         <div className={classNames(styles.schedulePageUserActions, styles.schedulePageUserActionsPersonal)}>
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}

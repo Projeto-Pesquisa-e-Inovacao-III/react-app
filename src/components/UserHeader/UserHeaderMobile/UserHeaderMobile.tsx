@@ -1,18 +1,19 @@
 import { Link } from "react-router-dom";
 import HeaderIconsMobile from "../../HeaderIconsMobile/HeaderIconsMobile";
 import "./style.css"
+import type { UserType } from "../../../App";
 
 
-type UserType = {
-    type: "personal" | "aluno" | null
+type Props = {
+    type: UserType[] | null
 }
 
-export default function UserHeaderMobile({ type }: UserType) {
+export default function UserHeaderMobile({ type }: Props) {
 
 
     function getIcons() {
 
-        if (type === 'personal') {
+        if (type?.includes('personal')) {
             return (<>
                 <Link to="/home">
                     <HeaderIconsMobile icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,7 +117,7 @@ export default function UserHeaderMobile({ type }: UserType) {
     }
 
     return (
-        <header className={type === 'personal' ? "header-personal-mobile" : "user-header-mobile"}>
+        <header className={type?.includes('personal') ? "header-personal-mobile" : "user-header-mobile"}>
             {getIcons()}
         </header >
     );

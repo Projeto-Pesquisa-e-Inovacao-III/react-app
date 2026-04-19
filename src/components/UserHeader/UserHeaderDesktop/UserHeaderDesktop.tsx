@@ -67,7 +67,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
 
           {!isLoading && type && (
             <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
-              {type === 'personal' && (
+              {type.includes('personal') && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
@@ -78,7 +78,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
                 </>
               )}
 
-              {type === 'admin' || type === 'personal' && (
+              {type.includes('admin') && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
@@ -91,7 +91,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
                 </>
               )}
 
-              {type === 'aluno' && (
+              {type.includes('aluno') && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
@@ -156,12 +156,12 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
                 <Link onClick={handleAnimatedClose} to="/edit-user">
                   <User size={18} /> Editar perfil
                 </Link>
-                {type === "personal" &&
+                {(type?.includes("personal") || (type?.includes("admin") && type?.includes("personal"))) &&
                   <Link onClick={handleAnimatedClose} to="/set-availability">
                     <Calendar size={18} /> Ajustar disponibilidade
                   </Link>
                 }
-                {type === "aluno" &&
+                {type?.includes("aluno") &&
                   <Link onClick={handleAnimatedClose} to="/edit-user/addresses">
                     <MapPin size={18} /> Endereços
                   </Link>
