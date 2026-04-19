@@ -10,7 +10,7 @@ FROM nginxinc/nginx-unprivileged:alpine
 #    docker build -t react-app:local .
 # 5) Run container locally:
 #    docker run --rm -p 8080:8080 react-app:local
-COPY --chown=101:101 dist/ /usr/share/nginx/html
+COPY --chown=root:root --chmod=755 dist/ /usr/share/nginx/html
 COPY nginx/default.conf.template /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
