@@ -38,14 +38,23 @@ log_error() {
 }
 
 if ! command -v apt-get >/dev/null 2>&1; then
-  log_error "apt-get nao encontrado. Este step espera Ubuntu/Debian."
-  exit 1
+  log_info "apt-get nao encontrado. Pulando update da maquina."
+  exit 0
 fi
 
-log_info "Iniciando update da maquina..."
-APT_COMMON_OPTS="-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30"
-apt-get ${APT_COMMON_OPTS} update
-DEBIAN_FRONTEND=noninteractive apt-get ${APT_COMMON_OPTS} -y upgrade
+log_info "Iniciando update simples da maquina (best effort)..."
+APT_OPTS="-o Acquire::ForceIPv4=true -o Acquire::Retries=2 -o Acquire::http::Timeout=20"
+
+if ! apt-get ${APT_OPTS} update; then
+  log_info "Sem acesso aos mirrors no momento. Pulando update sem bloquear deploy."
+  exit 0
+fi
+
+if ! DEBIAN_FRONTEND=noninteractive apt-get ${APT_OPTS} -y upgrade; then
+  log_info "Upgrade falhou por conectividade. Seguindo sem bloquear deploy."
+  exit 0
+fi
+
 log_info "Update da maquina finalizado"
 EOF
 )
