@@ -1,8 +1,8 @@
 import type { ReqAdicionarRoleDTO, ResCadastrarPersonalDTO, ResNeedDataDTO, ResUsuarioWithRolesResponseDTO } from "../models/admin";
 import { api } from "../system";
 
-export function getUsers(): Promise<ResUsuarioWithRolesResponseDTO[]> {
-    return api.get("/admin/usuarios");
+export function getUsers(page: number = 0, size: number = 10, nome?: string, email?: string, role?: string): Promise<ResUsuarioWithRolesResponseDTO[]> {
+    return api.get("/admin/usuarios", { params: { page, size, nome, email, role } });
 }
 
 export function deleteUser(id: number) {
