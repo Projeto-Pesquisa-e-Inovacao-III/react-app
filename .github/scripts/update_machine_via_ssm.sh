@@ -43,8 +43,9 @@ if ! command -v apt-get >/dev/null 2>&1; then
 fi
 
 log_info "Iniciando update da maquina..."
-apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+APT_COMMON_OPTS="-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30"
+apt-get ${APT_COMMON_OPTS} update
+DEBIAN_FRONTEND=noninteractive apt-get ${APT_COMMON_OPTS} -y upgrade
 log_info "Update da maquina finalizado"
 EOF
 )
