@@ -34,8 +34,8 @@ import AddressManagement from "./routes/EditUser/AddressManagement/AddressManage
 // alunos = continua as mesmas rotas
 // personal = não pode: dash e criar e editar pacotes
 // admin = pode tudo que personal podia antes, usuários ao inves de alunos, cadastrar personal
-
-export type UserType = "aluno" | "personal" | "admin";
+export type Roles = "aluno" | "personal" | "admin";
+export type UserType = Roles[];
 
 type TypeContextType = {
   type: UserType | null;
@@ -54,7 +54,6 @@ function App() {
 
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
             {/* temp */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

@@ -33,12 +33,6 @@ export default function Login() {
     setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
   }
 
-
-  function navToHome() {
-    nav("/home");
-    return;
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -47,20 +41,9 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        try {
-          const isAuthenticated = await userService.isAuthenticated();
-          const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
-          
-          if (ativoAnamnese === false) {
-            nav("/anamnesis");
-            return;
-          }
-        } catch {
-          navToHome();
-          return;
-        }
 
-        navToHome();
+        nav("/home");
+
       }
     } catch (err) {
       console.error("Login error:", err);
