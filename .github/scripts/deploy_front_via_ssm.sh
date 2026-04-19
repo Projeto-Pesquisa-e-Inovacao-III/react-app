@@ -58,15 +58,25 @@ rollback() {
   fi
 }
 
-# Para e remove o container atual somente se ele existir.
+# Baixa a nova imagem antes de mexer no container atual.
+if ! docker pull "$APP_IMAGE"; then
+  log_error "Falha ao baixar a nova imagem. Mantendo container atual sem alteracoes."
+  exit 1
+fi
+
+# Para e remove o container atual somente depois que a nova imagem estiver disponivel.
 if docker inspect front-server >/dev/null 2>&1; then
   docker stop front-server
   docker rm front-server
 fi
 
-# Faz deploy da nova imagem e valida execucao + healthcheck HTTP.
-docker pull "$APP_IMAGE"
-docker run -d --name front-server --restart always -p 80:80 "$APP_IMAGE"
+# Sobe nova versao e faz rollback imediato se o run falhar.
+if ! docker run -d --name front-server --restart always -p 80:80 "$APP_IMAGE"; then
+  log_error "Falha ao iniciar novo container. Tentando rollback."
+  rollback
+  exit 1
+fi
+
 sleep 3
 
 if ! docker ps --filter name=front-server --filter status=running | grep -q front-server; then
