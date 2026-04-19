@@ -433,7 +433,7 @@ export default function NewEvent(
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: type?.type?.includes("aluno")
     });
 
     const [scheduleTypes, setScheduleTypes] = useState<{
@@ -751,7 +751,7 @@ export default function NewEvent(
                             <div className={styles.containerForm} >
                                 {isMobile && (
                                     <>
-                                        {typeUser === "personal" ? (
+                                        {typeUser?.includes("personal") ? (
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard

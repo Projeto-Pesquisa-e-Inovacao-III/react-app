@@ -83,6 +83,7 @@ export function Packages() {
     }, [productsData]);
 
 
+    const isAdmin = !!type?.type?.includes("admin");
 
     const numberOfPackages = useQuery({
         queryKey: ['verifyNumberOfPackages'],
@@ -90,7 +91,8 @@ export function Packages() {
         select: (response) => {
             return response.data;
         },
-        enabled: isPersonal
+        refetchOnWindowFocus: false,
+        enabled: isAdmin
     });
 
     const [verifyNumberOfPackagesFront, setVerifyNumberOfPackagesFront] = useState(false);
@@ -186,7 +188,8 @@ export function Packages() {
                     preco={0}
                     onClick={() => { }}
                     isMobile={isMobile}
-                    isAdmin={type?.type === "admin"}
+                    isAdmin={type?.type?.includes("admin")}
+                    isPersonal={type?.type?.includes("personal")}
                     setHandleDelete={() => { }}
                     setHandleEdit={() => { }}
                     isLoading={true}
@@ -250,7 +253,7 @@ const slidesToRender = activePackages.length > 0
                     )}
                 >
                     <div>
-                        {isPersonal ? (
+                        {isAdmin ? (
                             <>
                                 <h1>
                                     Pacotes Atuais
@@ -266,7 +269,7 @@ const slidesToRender = activePackages.length > 0
                         )
                         }
                     </div>
-                    {isPersonal && (
+                    {isAdmin && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
                             {verifyNumberOfPackagesFront ?
                                 <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
@@ -279,7 +282,7 @@ const slidesToRender = activePackages.length > 0
                 </div>
 
 
-                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isPersonal ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
+                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
                     { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
                     { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
@@ -293,13 +296,14 @@ const slidesToRender = activePackages.length > 0
                                         <div className={styles.emblaViewport} ref={emblaRefPackage}>
                                             <div className={styles.emblaContainer}>
                                                 {slidesToRender.map((pacote, index) => (
-                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isAdmin })} key={`slide-${index}-${pacote.id}`}>
                                                         <PackageCard
                                                             {...pacote}
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
-                                                            isAdmin={type?.type === "admin"}
+                                                            isAdmin={type?.type?.includes("admin")}
+                                                            isPersonal={type?.type?.includes("personal")}
                                                             setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                             setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                                         />
@@ -309,7 +313,7 @@ const slidesToRender = activePackages.length > 0
                                         </div>
                                     </div>
                                     <button className={styles.emblaButtonNext} onClick={scrollNextPackage}>›</button>
-                                    {isPersonal && !isMobile && (
+                                    {isAdmin && !isMobile && (
                                         <div
                                             style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
                                             className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
@@ -333,12 +337,13 @@ const slidesToRender = activePackages.length > 0
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
-                                        isAdmin={type?.type === "admin"}
+                                        isAdmin={type?.type?.includes("admin")}
+                                        isPersonal={type?.type?.includes("personal")}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                     />
                                 ))}
-                                {isPersonal && !isMobile && (
+                                {isAdmin && !isMobile && (
                                     <div
                                         style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
                                         className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
@@ -364,13 +369,13 @@ const slidesToRender = activePackages.length > 0
                             </h3>
 
                             <p className={styles.emptyPackageText}>
-                                {type?.type === "admin" ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
+                                {type?.type?.includes("admin") ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
                             </p>
                         </div>
                     )}
                 </div>
             </div >
-            {isPersonal && isMobile && (
+            {isAdmin && isMobile && (
                 <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront })} onClick={() => handleClickAddPackage("add")}>
                     <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
                         {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
@@ -388,7 +393,7 @@ const slidesToRender = activePackages.length > 0
                 )}
             >
                 <div>
-                    {isPersonal ? (
+                    {isAdmin ? (
                         <>
                             <h1>
                                 Pacotes Adicionais
@@ -405,7 +410,7 @@ const slidesToRender = activePackages.length > 0
                     )
                     }
                 </div>
-                {isPersonal && (
+                {isAdmin && (
                     <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
                         {verifyNumberOfAdditional ?
                             <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
@@ -417,7 +422,7 @@ const slidesToRender = activePackages.length > 0
                 )}
             </div>
 
-            <div style={!shouldUseCarouselAdicional ? { gridTemplateColumns: `repeat(${activeAdicionais.length + (isPersonal ? 1 : 0)}, 1fr)` } : {}} className={classnames(
+            <div style={!shouldUseCarouselAdicional ? { gridTemplateColumns: `repeat(${activeAdicionais.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(
                 styles.packagesListWrapperDesktop,
                 { [styles.packagesListWrapperDesktopEmpty]: productsExhibitionsAdicional.length === 0 || (productsExhibitionsAdicional.length > 0 && !productsExhibitionsAdicional.some(p => p.status === "ATIVO")) },
                 { [styles.packagesListWrapperMobile]: isMobile })}>
@@ -432,13 +437,14 @@ const slidesToRender = activePackages.length > 0
                                     <div className={styles.emblaViewport} ref={emblaRef}>
                                         <div className={styles.emblaContainer}>
                                             {slidesToRenderAdicional.map((pacote, index) => (
-                                                <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })}>
+                                                <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isAdmin })}>
                                                     <PackageCard
                                                         {...pacote}
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
-                                                        isAdmin={type?.type === "admin"}
+                                                        isAdmin={type?.type?.includes("admin")}
+                                                        isPersonal={type?.type?.includes("personal")}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                                     />
@@ -448,7 +454,7 @@ const slidesToRender = activePackages.length > 0
                                     </div>
                                 </div>
                                 <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
-                                {isPersonal && !isMobile && (
+                                {isAdmin && !isMobile && (
                                     <div
                                         style={!shouldUseCarouselAdicional ? { maxWidth: "inherit" } : {}}
                                         className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfAdditional })}
@@ -471,12 +477,13 @@ const slidesToRender = activePackages.length > 0
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
-                                        isAdmin={type?.type === "admin"}
+                                        isAdmin={type?.type?.includes("admin")}
+                                        isPersonal={type?.type?.includes("personal")}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                     />
                                 ))}
-                                {isPersonal && !isMobile && (
+                                {isAdmin && !isMobile && (
 
                                     <div
                                         style={!shouldUseCarouselAdicional ? { maxWidth: "inherit" } : {}}
@@ -492,7 +499,7 @@ const slidesToRender = activePackages.length > 0
                                 )}
                             </>
                         )}
-                        {isPersonal && isMobile && (
+                        {isAdmin && isMobile && (
                             <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfAdditional })} onClick={() => handleClickAddPackage("addAdditional")}>
                                 <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfAdditional })}>
                                     {verifyNumberOfAdditional ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
@@ -514,7 +521,7 @@ const slidesToRender = activePackages.length > 0
                         </h3>
 
                         <p className={styles.emptyPackageText}>
-                            {type?.type === "admin" ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
+                            {type?.type?.includes("admin") ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
                         </p>
                     </div>
                 )}

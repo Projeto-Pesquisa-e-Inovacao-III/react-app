@@ -15,7 +15,7 @@ type PackageCardProps = {
     tipoAula?: string | React.ReactNode;
     quantidadeAula?: number | React.ReactNode;
     descricao: string[] | React.ReactNode[];
-    beneficios?:  {valor: string;}[]| React.ReactNode[];
+    beneficios?: { valor: string; }[] | React.ReactNode[];
     onClick?: () => void;
     setHandleEdit?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     setHandleDelete?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
@@ -23,6 +23,7 @@ type PackageCardProps = {
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";
     isAdmin?: boolean;
+    isPersonal?: boolean;
     classNameContainer?: string;
 };
 
@@ -214,12 +215,14 @@ export function PackageCard(props: PackageCardProps) {
                         />
                     </div>
                 ) : (
-                    <button
-                        className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
-                        onClick={props.onClick}
-                    >
-                        Comprar
-                    </button>
+                    !props.isPersonal && (
+                        <button
+                            className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
+                            onClick={props.onClick}
+                        >
+                            Comprar
+                        </button>
+                    )
                 )
             )}
         </div>

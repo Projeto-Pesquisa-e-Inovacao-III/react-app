@@ -10,6 +10,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
+import { verifyRole } from "../../../services/verifyRole";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
@@ -770,7 +771,7 @@ export function CheckSchedule() {
                             rescheduleId={appointmentId}
                             goToNextStep={false}
                             appoitmentData={appointment.data}
-                            typeUser={type ?? undefined}
+                            typeUser={type ? verifyRole(type) ?? undefined : undefined}
 
                         />
                     </>

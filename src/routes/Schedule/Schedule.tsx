@@ -215,11 +215,11 @@ export default function Schedule() {
         queryKey: ["availabilityHoursTomorrow"],
         queryFn: () => getAvailabilityHoursTomorrow(targetId),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: !!type?.type?.includes("aluno")
     })
 
 
-    const { disabledDays } = useDisabledDays(type?.type?.includes("aluno") ? targetId : undefined);
+    const { disabledDays } = useDisabledDays(!!type?.type?.includes("aluno") ? targetId : undefined);
 
     return (
         <>

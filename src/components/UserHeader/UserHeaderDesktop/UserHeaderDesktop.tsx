@@ -67,7 +67,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
 
           {!isLoading && type && (
             <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
-              {type.includes('personal') && (
+              {type.includes('personal') && !type.includes('admin') && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>

@@ -118,7 +118,7 @@ function MobileAlunoPanel({ isPending, hasPlan, classBalanceData, actualPlan, is
 type AppointmentsSectionProps = {
     isLoading: boolean;
     isEmpty: boolean | undefined;
-    userType: string | null | undefined;
+    userType: string[] | null | undefined;
     isMobile: boolean;
     data: appointmentsCards | undefined;
     onNewEvent: () => void;
@@ -179,7 +179,7 @@ function AppointmentsSectionContent({
                         key={index}
                         agendamentoId={card.agendamentoId}
                         status={card.agendamentoStatus}
-                        name={userType !== "aluno" ? card.alunoNome : card.personalNome}
+                        name={userType?.includes("aluno") ? card.alunoNome : card.personalNome}
                         photoUrl={card.caminhoFoto}
                         type={card.tipoAula}
                         date={card.data ? format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}

@@ -3,7 +3,7 @@ import SmallerButton from "../../SmallerButton/SmallerButton";
 import styles from "./AppointmentsEmptyState.module.css";
 
 type AppointmentsEmptyStateProps = {
-    userType: string | null | undefined;
+    userType: string[] | null | undefined;
     hasActivePlan: boolean;
     isMobile: boolean;
     onSchedule: () => void;
