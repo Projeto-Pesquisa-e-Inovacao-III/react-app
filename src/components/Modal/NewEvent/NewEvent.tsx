@@ -108,7 +108,7 @@ export default function NewEvent(
         queryKey: ["myId"],
         queryFn: findUserData,
         select: (res) => res.data?.id,
-        enabled: typeUser === "personal",
+        enabled: typeUser !== "aluno",
         refetchOnWindowFocus: false,
     });
 
@@ -544,7 +544,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser !== "aluno" ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
@@ -574,7 +574,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             tomorrow],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser !== "aluno" ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });

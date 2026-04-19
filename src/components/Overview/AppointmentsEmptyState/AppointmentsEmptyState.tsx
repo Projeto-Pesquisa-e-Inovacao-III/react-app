@@ -57,7 +57,7 @@ export default function AppointmentsEmptyState({
                 </>
             )}
 
-            {userType === "personal" && (
+            {userType !== "aluno" && (
                 <div className={styles.subtitleWrapper}>
                     <h2 className={styles.subtitle}>Você ainda não possui agendamentos pendentes.</h2>
                 </div>

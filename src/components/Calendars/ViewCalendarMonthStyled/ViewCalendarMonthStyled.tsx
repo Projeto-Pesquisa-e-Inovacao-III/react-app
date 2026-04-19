@@ -84,7 +84,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             console.log(today)
 
 
-            if (type?.type === "personal" && appointment && appointment.length > 1) {
+            if (type?.type !== "aluno" && appointment && appointment.length > 1) {
               nav(`/personal/check-schedule/?date=${clickedDate}`);
               return
             }

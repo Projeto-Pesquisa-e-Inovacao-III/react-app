@@ -8,14 +8,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import useClickOutside from "../../../hooks/useClickOutside";
 import useModalClose from "../../../hooks/useModalClose";
 import Skeleton from "react-loading-skeleton";
+import type { UserType } from "../../../App";
 
-type UserType = {
+type Props = {
   userName?: string;
-  type: "personal" | "aluno" | null
+  type: UserType;
   isLoading: boolean;
 }
 
-export default function UserHeaderDesktop({ userName, type, isLoading }: UserType) {
+export default function UserHeaderDesktop({ userName, type, isLoading }: Props) {
 
   const [openHeaderModal, setOpenHeaderModal] = useState<boolean>(false);
 
@@ -66,18 +67,31 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
 
           {!isLoading && type && (
             <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
-              {type === 'personal' ? (
+              {type === 'personal' && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
                   <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
-                  <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
                   <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
                   <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
                   <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Alunos</NavLink>
-
                 </>
-              ) : (
+              )}
+
+              {type === 'admin' || type === 'personal' && (
+                <>
+                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
+                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
+                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
+                  <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
+                  <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
+                  <NavLink to="/plans-history" className={navLinkClass} onClick={handleNavClick}>Histórico de compras</NavLink>
+                  <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
+                  <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
+                </>
+              )}
+
+              {type === 'aluno' && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
                   <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
@@ -86,6 +100,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
                   <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
                 </>
               )}
+
 
 
               {menuOpen && (
@@ -112,15 +127,15 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: UserTyp
             }}
             className={styles.userAvatarHeaderDesktop}
           >
-            <UserAvatar 
-              userName={userName} 
-              useUsername 
-              useUserImage 
-              isLoading={isLoading} 
+            <UserAvatar
+              userName={userName}
+              useUsername
+              useUserImage
+              isLoading={isLoading}
               rightIcon={
-                <ChevronDown 
-                  className={`${styles.avatarChevron} ${openHeaderModal && !isClosing ? styles.rotated : ''}`} 
-                  size={20} 
+                <ChevronDown
+                  className={`${styles.avatarChevron} ${openHeaderModal && !isClosing ? styles.rotated : ''}`}
+                  size={20}
                 />
               }
             />

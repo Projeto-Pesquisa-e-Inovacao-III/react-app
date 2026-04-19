@@ -227,7 +227,7 @@ export default function Schedule() {
                 <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
                 </div>
-            ) : type.type === "personal" ? (
+            ) : type.type !== "aluno" ? (
                 <CalendarWeek
                     insertedEvents={appointmentsUser || []}
                     openModal={() => setOpenModal("newEvent")}

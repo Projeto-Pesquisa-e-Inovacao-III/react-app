@@ -179,7 +179,7 @@ function AppointmentsSectionContent({
                         key={index}
                         agendamentoId={card.agendamentoId}
                         status={card.agendamentoStatus}
-                        name={userType === "personal" ? card.alunoNome : card.personalNome}
+                        name={userType !== "aluno" ? card.alunoNome : card.personalNome}
                         photoUrl={card.caminhoFoto}
                         type={card.tipoAula}
                         date={card.data ? format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
@@ -240,10 +240,10 @@ export function Overview() {
         queryFn: () => findUserData(),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type === "personal"
+        enabled: type?.type !== "aluno"
     });
 
-    const targetId = type?.type === "personal" && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+    const targetId = type?.type !== "aluno" && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
@@ -262,7 +262,7 @@ export function Overview() {
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
     useEffect(() => {
-        if (type?.type !== "personal") return;
+        if (type?.type === "aluno") return;
         const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
         loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
     }, [type]);
@@ -476,7 +476,7 @@ export function Overview() {
                     )}
 
                     {!isMobile && type?.type && type.type !== "aluno" && (
-                        <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
+                        <div className={classNames(styles.schedulePageUserActions, styles.schedulePageUserActionsPersonal)}>
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? <Skeleton />}

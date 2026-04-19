@@ -8,10 +8,13 @@ import { SearchIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginatedList from "../../../components/PaginatedList/PaginatedList";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { TypeContext } from "../../../App";
 
 export default function ListUsers() {
     const isMobile = useMobile();
+
+    const type = useContext(TypeContext);
 
     const { page, goToPage, animClass } = usePagination(0);
 
@@ -32,10 +35,24 @@ export default function ListUsers() {
             debouncedSearch.trim()
                 ? searchStudent(page, 10, debouncedSearch)
                 : listStudents(page, 10),
+        enabled: type?.type !== "aluno",
     });
 
     const students = response?.data?.content ?? [];
     const pagination = response?.data?.page ?? null;
+
+    // const { data: responseAdmin, isLoading: isLoadingAdmin } = useQuery({
+    //     queryKey: ["students", page, debouncedSearch],
+    //     queryFn: () =>
+    //         debouncedSearch.trim()
+    //             ? searchUsers(page, 10, debouncedSearch)
+    //             : listUsers(page, 10),
+    //     enabled: type === "admin",
+    // });
+
+    // const users = type === "personal" ? response?.data?.content : responseAdmin?.data?.content;
+    // const pagination = type === "personal" ? response?.data?.page : responseAdmin?.data?.page;
+    // const isLoading = type === "personal" ? isLoading : isLoadingAdmin;
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>

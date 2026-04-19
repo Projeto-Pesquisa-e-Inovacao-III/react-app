@@ -22,7 +22,7 @@ type PackageCardProps = {
     isMobile?: boolean;
     isLoading?: boolean;
     variant?: "consultoria" | "adicional";
-    isPersonal?: boolean;
+    isAdmin?: boolean;
     classNameContainer?: string;
 };
 
@@ -174,7 +174,7 @@ export function PackageCard(props: PackageCardProps) {
             </div>
 
             {isLoading ? (
-                props.isPersonal ? (
+                props.isAdmin ? (
                     <div
                         className={classnames(styles.cardBtnPersonal, {
                             [styles.cardBtnPersonalMobile]: isMobile,
@@ -191,7 +191,7 @@ export function PackageCard(props: PackageCardProps) {
                     />
                 )
             ) : (
-                props.isPersonal ? (
+                props.isAdmin ? (
                     <div
                         className={classnames(styles.cardBtnPersonal, {
                             [styles.cardBtnPersonalMobile]: isMobile,

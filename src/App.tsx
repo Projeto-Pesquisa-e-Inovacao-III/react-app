@@ -30,7 +30,12 @@ import AddressManagement from "./routes/EditUser/AddressManagement/AddressManage
 // todo: 
 // safari support // deixa baixo
 
-type UserType = "aluno" | "personal";
+// profiles:
+// alunos = continua as mesmas rotas
+// personal = não pode: dash e criar e editar pacotes
+// admin = pode tudo que personal podia antes, usuários ao inves de alunos, cadastrar personal
+
+export type UserType = "aluno" | "personal" | "admin";
 
 type TypeContextType = {
   type: UserType | null;
@@ -81,6 +86,16 @@ function App() {
           </Route>
 
           <Route element={<PrivateRoute allowedRoles={["personal"]} />}>
+            <Route element={<Layout />}>
+              <Route path="/users" element={<ListUsers />} />
+              <Route path="/users/view-user-data" element={<ViewUserData />} />
+              <Route path="/set-availability" element={<SetAvailability />} />
+              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+            </Route>
+          </Route>
+
+
+          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
             <Route element={<Layout />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<ListUsers />} />

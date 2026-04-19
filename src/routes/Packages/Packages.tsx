@@ -37,7 +37,7 @@ export function Packages() {
         }
     }, [openModal]);
 
-    const isPersonal = type?.type === "personal";
+    const isPersonal = type?.type === "personal" || type?.type === "admin";
 
     function handleBuyClick(id: number) {
         setOpenModal("loadingPagBank");
@@ -186,7 +186,7 @@ export function Packages() {
                     preco={0}
                     onClick={() => { }}
                     isMobile={isMobile}
-                    isPersonal={isPersonal}
+                    isAdmin={type?.type === "admin"}
                     setHandleDelete={() => { }}
                     setHandleEdit={() => { }}
                     isLoading={true}
@@ -299,7 +299,7 @@ const slidesToRender = activePackages.length > 0
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
-                                                            isPersonal={isPersonal}
+                                                            isAdmin={type?.type === "admin"}
                                                             setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                             setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                                         />
@@ -333,7 +333,7 @@ const slidesToRender = activePackages.length > 0
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
-                                        isPersonal={isPersonal}
+                                        isAdmin={type?.type === "admin"}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                     />
@@ -364,7 +364,7 @@ const slidesToRender = activePackages.length > 0
                             </h3>
 
                             <p className={styles.emptyPackageText}>
-                                {type?.type === "personal" ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
+                                {type?.type === "admin" ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
                             </p>
                         </div>
                     )}
@@ -438,7 +438,7 @@ const slidesToRender = activePackages.length > 0
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
-                                                        isPersonal={isPersonal}
+                                                        isAdmin={type?.type === "admin"}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                                     />
@@ -471,7 +471,7 @@ const slidesToRender = activePackages.length > 0
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
-                                        isPersonal={isPersonal}
+                                        isAdmin={type?.type === "admin"}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                     />
@@ -514,7 +514,7 @@ const slidesToRender = activePackages.length > 0
                         </h3>
 
                         <p className={styles.emptyPackageText}>
-                            {type?.type === "personal" ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
+                            {type?.type === "admin" ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
                         </p>
                     </div>
                 )}

@@ -213,16 +213,16 @@ export default function ScheduleDetails() {
                                 <div className={styles.professionalCard}>
 
                                     <div className={styles.avatarSection}>
-                                        <UserAvatar foto={type?.type === "personal" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
+                                        <UserAvatar foto={type?.type !== "aluno" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={type?.type !== "aluno" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
                                         <div className={styles.professionalName}>
-                                            {type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                            {type?.type !== "aluno" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
                                         </div>
-                                        <div className={styles.professionalSub}>{type?.type === "personal" ? "Aluno" : "Personal Trainer"}</div>
+                                        <div className={styles.professionalSub}>{type?.type !== "aluno" ? "Aluno" : "Personal Trainer"}</div>
                                     </div>
                                     <div className={styles.ageDivider}>
                                         <span className={styles.ageLabel}>Idade</span>
                                         <span className={styles.ageValue}>
-                                            {type?.type === "personal"
+                                            {type?.type !== "aluno"
                                                 ? appointment.data?.aluno?.idade
                                                 : appointment.data?.personal?.idade} anos
                                         </span>
@@ -299,7 +299,7 @@ export default function ScheduleDetails() {
                 </div>
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
-                    {type?.type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {type?.type !== "aluno" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
 
                             <div className={styles.buttonAbsence}>
@@ -324,14 +324,14 @@ export default function ScheduleDetails() {
 
                     {
                         (
-                            (type?.type === "personal" && (
+                            (type?.type !== "aluno" && (
 
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
                             (type?.type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
-                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "aluno" })}>
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "admin" || type?.type === "aluno" })}>
                                 <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />
@@ -407,7 +407,7 @@ export default function ScheduleDetails() {
                             clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
                             typeUser={type?.type || undefined}
                             appoitmentData={appointment.data}
-                            goToNextStep={type?.type === "personal" ? false : true}
+                            goToNextStep={type?.type !== "aluno" ? false : true}
                         />
                     </>
                 )}
