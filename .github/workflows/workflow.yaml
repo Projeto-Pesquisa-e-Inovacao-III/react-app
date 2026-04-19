@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI/CD
 
 on: 
   push:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Run container and smoke test
         run: |
-          docker run -d --name react-app-ci -p 8080:80 ${{ secrets.DOCKER_USERNAME }}/react-app:latest
+          docker run -d --name react-app-ci -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/react-app:latest
           for i in {1..20}; do
             if curl -fsS http://localhost:8080/ > /dev/null; then
               echo "Smoke test passed"
@@ -68,7 +68,6 @@ jobs:
     needs: continuous-integration
     steps:
       - uses: actions/checkout@v3
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:

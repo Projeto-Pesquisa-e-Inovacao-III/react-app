@@ -52,7 +52,7 @@ rollback() {
 
   if [ -n "$PREV_IMAGE_ID" ]; then
     log_info "Executando rollback para $PREV_IMAGE_ID"
-    docker run -d --name front-server --restart always -p 80:80 "$PREV_IMAGE_ID"
+    docker run -d --name front-server --restart always -p 80:8080 "$PREV_IMAGE_ID"
   else
     log_error "Rollback indisponivel: sem imagem anterior registrada."
   fi
@@ -71,7 +71,7 @@ if docker inspect front-server >/dev/null 2>&1; then
 fi
 
 # Sobe nova versao e faz rollback imediato se o run falhar.
-if ! docker run -d --name front-server --restart always -p 80:80 "$APP_IMAGE"; then
+if ! docker run -d --name front-server --restart always -p 80:8080 "$APP_IMAGE"; then
   log_error "Falha ao iniciar novo container. Tentando rollback."
   rollback
   exit 1
