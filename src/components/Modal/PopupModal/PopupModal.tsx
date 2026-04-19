@@ -232,7 +232,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                                     }
                                 };
                             })()}
-                            typeUser={type || ""}
+                            typeUser={type || []}
                             clickedDate={date}
                             goToNextStep={false}
                         />

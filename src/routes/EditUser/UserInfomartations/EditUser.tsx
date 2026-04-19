@@ -411,7 +411,7 @@ export default function EditUser() {
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
-            {type?.type === "aluno" ? (
+            {type?.type?.includes("aluno") ? (
               <InputWithIcon
                 id="cpf"
                 type="text"
@@ -603,7 +603,7 @@ export default function EditUser() {
                       type="button"
                       classNameVariable="buttonRemoveImage"
                       onClick={() => {
-                        (type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
+                        (type?.type?.includes("aluno") ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
                       }}
                     />
                   </div>

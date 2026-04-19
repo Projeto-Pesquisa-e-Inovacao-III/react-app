@@ -44,7 +44,7 @@ type NewEventProps = {
     clickedDate?: string;
     newAppointmentCreated?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     goToNextStep?: boolean;
-    typeUser?: string;
+    typeUser?: string[];
     disabledDays?: string[];
 };
 
@@ -544,7 +544,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(!typeUser?.includes("aluno") ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("aluno") ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });
@@ -574,7 +574,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             tomorrow],
-        queryFn: () => getPersonalHours(typeUser !== "aluno" ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });

@@ -771,7 +771,7 @@ export function CheckSchedule() {
                             rescheduleId={appointmentId}
                             goToNextStep={false}
                             appoitmentData={appointment.data}
-                            typeUser={type ? verifyRole(type) ?? undefined : undefined}
+                            typeUser={type || []}
 
                         />
                     </>
