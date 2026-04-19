@@ -12,7 +12,7 @@ import type { UserType } from "../../../App";
 
 type Props = {
   userName?: string;
-  type: UserType;
+  type: UserType[] | null;
   isLoading: boolean;
 }
 

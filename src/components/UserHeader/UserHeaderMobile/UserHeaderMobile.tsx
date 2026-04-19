@@ -5,7 +5,8 @@ import type { UserType } from "../../../App";
 
 
 type Props = {
-    type: UserType[] | null
+    type: UserType[] | null;
+    isLoading?: boolean;
 }
 
 export default function UserHeaderMobile({ type }: Props) {
@@ -13,7 +14,7 @@ export default function UserHeaderMobile({ type }: Props) {
 
     function getIcons() {
 
-        if (type?.includes('personal')) {
+        if (type?.includes("personal")) {
             return (<>
                 <Link to="/home">
                     <HeaderIconsMobile icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

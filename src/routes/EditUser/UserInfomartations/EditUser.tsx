@@ -513,7 +513,7 @@ export default function EditUser() {
                   type="button"
                   classname="w-full! transition "
                   title="Salvar Alterações"
-                  handleButtonClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                  handleButtonClick={type?.type?.includes("aluno") ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
                 <SmallerButton
                   title="Descartar alterações"
                   type="button"

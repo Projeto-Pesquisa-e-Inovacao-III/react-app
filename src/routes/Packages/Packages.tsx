@@ -189,7 +189,7 @@ export function Packages() {
                     onClick={() => { }}
                     isMobile={isMobile}
                     isAdmin={type?.type?.includes("admin")}
-                    isPersonal={type?.type?.includes("personal")}
+                    isPersonal={isPersonal}
                     setHandleDelete={() => { }}
                     setHandleEdit={() => { }}
                     isLoading={true}
@@ -303,7 +303,7 @@ const slidesToRender = activePackages.length > 0
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
                                                             isAdmin={type?.type?.includes("admin")}
-                                                            isPersonal={type?.type?.includes("personal")}
+                                                            isPersonal={isPersonal}
                                                             setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                             setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                                         />
@@ -338,7 +338,7 @@ const slidesToRender = activePackages.length > 0
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
-                                        isPersonal={type?.type?.includes("personal")}
+                                        isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                     />
@@ -444,7 +444,7 @@ const slidesToRender = activePackages.length > 0
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
                                                         isAdmin={type?.type?.includes("admin")}
-                                                        isPersonal={type?.type?.includes("personal")}
+                                                        isPersonal={isPersonal}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                                     />
@@ -478,7 +478,7 @@ const slidesToRender = activePackages.length > 0
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
-                                        isPersonal={type?.type?.includes("personal")}
+                                        isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                     />
