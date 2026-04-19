@@ -7,6 +7,8 @@ on:
 jobs:
   continuous-integration:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/react-app
     
     steps:
       - uses: actions/checkout@v3
@@ -23,12 +25,12 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-app:latest .
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-app:${{ github.sha }} .
+          docker build -t "$IMAGE_REPOSITORY:latest" .
+          docker build -t "$IMAGE_REPOSITORY:${{ github.sha }}" .
 
       - name: Run container and smoke test
         run: |
-          docker run -d --name react-app-ci -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/react-app:latest
+          docker run -d --name react-app-ci -p 8080:8080 "$IMAGE_REPOSITORY:latest"
           for i in {1..20}; do
             if curl -fsS http://localhost:8080/ > /dev/null; then
               echo "Smoke test passed"
@@ -60,8 +62,8 @@ jobs:
       
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/react-app:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/react-app:${{ github.sha }}
+          docker push "$IMAGE_REPOSITORY:latest"
+          docker push "$IMAGE_REPOSITORY:${{ github.sha }}"
 
   deploy-aws:
     runs-on: ubuntu-latest
