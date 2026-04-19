@@ -23,7 +23,11 @@ fi
 
 # Script remoto para atualizar a maquina Ubuntu via apt.
 REMOTE_SCRIPT=$(cat <<'EOF'
-set -euo pipefail
+set -eu
+
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 
 log_info() {
   echo "[INFO] $*"
@@ -62,9 +66,11 @@ fi
 
 log_info "CommandId do update via SSM: ${COMMAND_ID}"
 
-aws ssm wait command-executed \
+if ! aws ssm wait command-executed \
   --command-id "${COMMAND_ID}" \
-  --instance-id "${AWS_INSTANCE_ID}" || true
+  --instance-id "${AWS_INSTANCE_ID}" >/dev/null 2>&1; then
+  log_info "Waiter do SSM nao retornou sucesso imediato; coletando status final..."
+fi
 
 # Le tudo de uma vez para reduzir repeticao de chamadas.
 INVOCATION_JSON=$(aws ssm get-command-invocation \

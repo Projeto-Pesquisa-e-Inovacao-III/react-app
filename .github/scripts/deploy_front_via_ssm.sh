@@ -28,7 +28,11 @@ fi
 
 # Script remoto executado na instancia via SSM.
 REMOTE_SCRIPT=$(cat <<'EOF'
-set -euo pipefail
+set -eu
+
+if (set -o pipefail) 2>/dev/null; then
+  set -o pipefail
+fi
 
 log_info() {
   echo "[INFO] $*"
@@ -103,9 +107,11 @@ fi
 log_info "CommandId do deploy via SSM: ${COMMAND_ID}"
 
 # Aguarda execucao remota.
-aws ssm wait command-executed \
+if ! aws ssm wait command-executed \
   --command-id "${COMMAND_ID}" \
-  --instance-id "${AWS_INSTANCE_ID}" || true
+  --instance-id "${AWS_INSTANCE_ID}" >/dev/null 2>&1; then
+  log_info "Waiter do SSM nao retornou sucesso imediato; coletando status final..."
+fi
 
 # Le tudo em uma chamada so.
 INVOCATION_JSON=$(aws ssm get-command-invocation \
