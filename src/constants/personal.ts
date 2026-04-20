@@ -24,6 +24,10 @@ export function getPersonalHours(personalId: number, date: string, classType: st
     return api.get(`/personais/${personalId}/horarios-disponiveis`, { params: {data: date, tipoAula: classType} });
 }
 
+export function getPersonalById(personalId: string) {
+    return api.get(`/personais/${personalId}`);
+}
+
 export function getAvailabilityHoursTomorrow(personalId: number) {
     const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
     return api.get(`/personais/${personalId}/horarios-disponiveis`, { params: {data: tomorrow, tipoAula: "PRESENCIAL"} });

@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut} from 'lucide-react';
+import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
@@ -38,20 +38,37 @@ export default function MoreOptions() {
                 </div>
                 <div className={styles.options}>
                     <Button icon={<IdCard />} type='button' classNameVariable={styles.buttonOption} title='Suas informações' onClick={() => nav("/edit-user")} />
-                    {type?.type === "aluno" &&
+                    {type?.type?.includes("aluno") &&
                         <>
                             <Button icon={<Banknote />} type='button' classNameVariable={styles.buttonOption} title='Histórico de compras' onClick={() => nav("/plans-history")} />
                             <Button icon={<HistoryIcon />} type='button' classNameVariable={styles.buttonOption} title='Historico de agendamentos' onClick={() => nav("/schedule-history")} />
                         </>
                     }
 
-                    {type?.type === "personal" &&
+                    {/* personal não admin */}
+                    {type?.type?.includes("personal") && !type?.type?.includes("admin") &&
+                        <>
+                            <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
+                            <Button icon={<Clock />} type='button' classNameVariable={styles.buttonOption} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
+                        </>
+                    }
+
+                    {/* personal e admin */}
+                    {type?.type?.includes("personal") && type?.type?.includes("admin") &&
                         <>
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                             <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
                             <Button icon={<Clock />} type='button' classNameVariable={styles.buttonOption} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
                         </>
                     }
+
+                    {/* apenas admin */}
+                    {type?.type?.includes("admin") && !type?.type?.includes("personal") &&
+                        <>
+                            <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
+                        </>
+                    }
+
                     <Button icon={<LogOut />} type='button' classNameVariable={styles.buttonOption} title='Sair' onClick={() => nav("/logout")} />
                 </div>
 

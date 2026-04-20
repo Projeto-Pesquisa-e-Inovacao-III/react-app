@@ -84,7 +84,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             console.log(today)
 
 
-            if (type?.type === "personal" && appointment && appointment.length > 1) {
+            if (type?.type?.includes("aluno") && appointment && appointment.length > 1) {
               nav(`/personal/check-schedule/?date=${clickedDate}`);
               return
             }
@@ -108,7 +108,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
               return
             }
 
-            if (!canMakeAppointment && type?.type === "aluno") {
+            if (!canMakeAppointment && type?.type?.includes("aluno")) {
               modalInfo?.({ title: "Aulas indisponíveis", description: "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal." });
               modalType?.("error");
               return;
@@ -116,7 +116,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
 
             if (clickedDate === tomorrow && (!availabilityHoursTomorrow || availabilityHoursTomorrow.length === 0)) return;
 
-            if (canMakeAppointment && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if (canMakeAppointment && isUserAuthorizedToInteract && type?.type?.includes("aluno") && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
 

@@ -9,6 +9,9 @@ import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
+import { useQuery } from "@tanstack/react-query";
+import { isAuthenticated } from "../../../constants/user";
+
 
 const initialLoginState = {
   email: "",
@@ -17,13 +20,28 @@ const initialLoginState = {
 
 
 export default function Login() {
+  const { data: isUserAuthenticated } = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: () => isAuthenticated(),
+    retry: false,
+    refetchOnWindowFocus: false,
+    select: (res) => res.data,
+  });
+
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (isUserAuthenticated?.autentificado) {
+      nav("/home");
+    }
+  }, [isUserAuthenticated]);
+
   const isMobile = useMobile();
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const nav = useNavigate();
-
   const [loading, setLoading] = useState(false);
+
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
@@ -31,12 +49,6 @@ export default function Login() {
 
   function handleAutoFill2() {
     setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
-  }
-
-
-  function navToHome() {
-    nav("/home");
-    return;
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,20 +59,9 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        try {
-          const isAuthenticated = await userService.isAuthenticated();
-          const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
-          
-          if (ativoAnamnese === false) {
-            nav("/anamnesis");
-            return;
-          }
-        } catch {
-          navToHome();
-          return;
-        }
 
-        navToHome();
+        nav("/home");
+
       }
     } catch (err) {
       console.error("Login error:", err);
