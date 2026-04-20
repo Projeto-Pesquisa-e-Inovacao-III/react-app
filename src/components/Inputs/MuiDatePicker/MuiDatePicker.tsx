@@ -1,7 +1,4 @@
-import * as React from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { Calendar } from "lucide-react";
-import styles from "../InputWithIcon/InputWithIcon.module.css";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import "dayjs/locale/pt-br";
@@ -15,7 +12,6 @@ interface MuiDatePickerProps {
 }
 
 export default function MuiDatePicker({
-  label,
   value,
   onChange,
   error,

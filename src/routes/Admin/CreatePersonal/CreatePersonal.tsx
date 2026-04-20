@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "./CreatePersonal.module.css";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon";
 import Select from "../../../components/Inputs/Select/Select";
-import { Mail, User, Calendar, Phone, Hash, Users } from "lucide-react";
+import { Mail, User, Phone, Hash, Users } from "lucide-react";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";

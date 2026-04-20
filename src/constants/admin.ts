@@ -1,4 +1,4 @@
-import type { ReqAdicionarRoleDTO, ResCadastrarPersonalDTO, ResNeedDataDTO, ResUsuarioWithRolesResponseDTO, ReqCreateUserDTO } from "../models/admin";
+import type { ReqAdicionarRoleDTO, ResCadastrarPersonalDTO, ResNeedDataDTO, ReqCreateUserDTO } from "../models/admin";
 import { api } from "../system";
 
 export function getUsers(page: number = 0, size: number = 10, nome?: string, email?: string, role?: string) {
