@@ -17,8 +17,12 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
 
     const nav = useNavigate();
 
-    function handleViewUserData(id: number) {
-        nav("/users/view-user-data?id=" + id);
+    function handleViewUserData(id: number, roles: string[]) {
+        if (roles.some(role => role.toLowerCase() === "personal")) {
+            nav("/users/view-personal-data?id=" + id);
+        } else {
+            nav("/users/view-user-data?id=" + id);
+        }
     }
 
     return (
@@ -72,7 +76,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                             </div>
                         </div>
                         <div>
-                            <SmallerButton handleButtonClick={() => handleViewUserData(user.id)} title="Ver Dados" />
+                            <SmallerButton handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
                         </div>
                     </div>
                 ))}

@@ -10,6 +10,7 @@ import { usePagination } from "../../../hooks/usePagination";
 import PaginatedList from "../../../components/PaginatedList/PaginatedList";
 import { useState, useEffect, useContext } from "react";
 import { TypeContext } from "../../../App";
+import { getUsers } from "../../../constants/admin";
 
 export default function ListUsers() {
     const isMobile = useMobile();
@@ -35,24 +36,20 @@ export default function ListUsers() {
             debouncedSearch.trim()
                 ? searchStudent(page, 10, debouncedSearch)
                 : listStudents(page, 10),
-        enabled: !type?.type?.includes("aluno"),
+        enabled: type?.type?.includes("personal") && !type?.type?.includes("admin"),
     });
 
     const students = response?.data?.content ?? [];
     const pagination = response?.data?.page ?? null;
 
-    // const { data: responseAdmin, isLoading: isLoadingAdmin } = useQuery({
-    //     queryKey: ["students", page, debouncedSearch],
-    //     queryFn: () =>
-    //         debouncedSearch.trim()
-    //             ? searchUsers(page, 10, debouncedSearch)
-    //             : listUsers(page, 10),
-    //     enabled: type === "admin",
-    // });
+    const { data: responseAdmin, isLoading: isLoadingAdmin } = useQuery({
+        queryKey: ["users", page, debouncedSearch],
+        queryFn: () => getUsers(page, 10, debouncedSearch.trim()),
+        enabled: type?.type?.includes("admin"),
+    });
 
-    // const users = type === "personal" ? response?.data?.content : responseAdmin?.data?.content;
-    // const pagination = type === "personal" ? response?.data?.page : responseAdmin?.data?.page;
-    // const isLoading = type === "personal" ? isLoading : isLoadingAdmin;
+    const users = responseAdmin?.data?.content ?? [];
+    const paginationAdmin = responseAdmin?.data?.page ?? null;
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
@@ -71,10 +68,10 @@ export default function ListUsers() {
                 key={page}
                 page={page}
                 animClass={animClass}
-                pagination={pagination}
+                pagination={type?.type?.includes("admin") ? paginationAdmin : pagination}
                 onPageChange={goToPage}
             >
-                <UsersTable input={filterSearch} users={students} isLoading={isLoading} />
+                <UsersTable input={filterSearch} users={type?.type?.includes("admin") ? users : students} isLoading={type?.type?.includes("admin") ? isLoadingAdmin : isLoading} />
             </PaginatedList>
         </div>
     )

@@ -12,17 +12,18 @@ import { getAnamnesisById } from "../../../constants/anamnesis";
 export default function ViewUserData() {
     const isMobile = useMobile();
     const [params] = useSearchParams();
+    const userId = params.get("id");
     const user = useQuery({
-        queryKey: ['userData', params.get("id")],
-        queryFn: () => getById(params.get("id") || ""),
-        enabled: !!params.get("id"),
+        queryKey: ['userData', userId],
+        queryFn: () => getById(userId || ""),
+        enabled: !!userId,
         select: (res) => res.data,
     });
 
     const anamnesis = useQuery({
-        queryKey: ['anamnesisData', params.get("id")],
-        queryFn: () => getAnamnesisById(params.get("id") || ""),
-        enabled: !!params.get("id"),
+        queryKey: ['anamnesisData', userId],
+        queryFn: () => getAnamnesisById(userId || ""),
+        enabled: !!userId,
         select: (res) => res.data,
     });
 
