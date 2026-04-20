@@ -8,11 +8,22 @@
     padding: 0;
 }
 
-.container {
+.container{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+
+.content {
     display: flex;
     justify-content: center;
     padding: 40px 16px;
     width: 100%;
+}
+
+.title{
+	width: fit-content;
 }
 
 .form {
@@ -41,7 +52,12 @@
 	gap: 16px;
 }
 
-:global(.MuiFormControl-root .MuiPickersInputBase-root) {
+.rowDoubleMobile {
+	flex-direction: column;
+	gap: 16px;
+}
+
+.muiWrapper :global(.MuiFormControl-root .MuiPickersInputBase-root) {
     height: 48px;
 }
 

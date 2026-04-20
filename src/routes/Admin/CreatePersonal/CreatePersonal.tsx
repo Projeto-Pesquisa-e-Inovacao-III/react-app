@@ -8,10 +8,13 @@ import { Mail, User, Calendar, Phone, Hash, Users } from "lucide-react";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer";
 import useMobile from "../../../hooks/isMobile";
 import classNames from "classnames";
-import { cellphoneMask } from "../../../utils/mascara";
+import { cellphoneMask, crefMask } from "../../../utils/mascara";
 import * as validation from "../../../utils/validacao";
 import dayjs from "dayjs";
 import * as adminService from "../../../constants/admin";
+import useModal from "../../../hooks/useModal";
+import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 
 export default function CreatePersonal() {
   const isMobile = useMobile();
@@ -25,17 +28,37 @@ export default function CreatePersonal() {
     cref: "",
     telefone: "",
   });
+
+  const {
+    openModal,
+    setOpenModal,
+    textModal,
+    setTextModal
+  } = useModal(null, { title: "", content: "" })
+
+  const [touched, setTouched] = useState<{ [key: string]: boolean }>({
+    nome: false,
+    email: false,
+  });
+  const [showNomeError, setShowNomeError] = useState(false);
+  const [showEmailError, setShowEmailError] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
 
   function handleChange(field: string, value: string) {
-    console.log("[handleChange]", field, value);
     setForm((prev) => ({ ...prev, [field]: value }));
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    if (field === "nome") {
+      setShowNomeError(false);
+      setTimeout(() => setShowNomeError(true), 200);
+    }
+    if (field === "email") {
+      setShowEmailError(false);
+      setTimeout(() => setShowEmailError(true), 200);
+    }
   }
 
   function parseTelefone(telefone: string) {
-    // Espera formato (11) 91234-5678
     const onlyNums = telefone.replace(/\D/g, "");
     return {
       pais: 55,
@@ -57,25 +80,37 @@ export default function CreatePersonal() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
+
+    setSubmitAttempted(true);
+    setTouched({ nome: true, email: true });
+    setShowNomeError(true);
+    setShowEmailError(true);
+
+    if (!isFormValid()) {
+      return;
+    }
+
     setLoading(true);
+
     try {
       const data = {
         nome: form.nome,
         sexo: form.sexo,
-        dataNascimento: dayjs(form.dataNascimento, "DD/MM/YYYY").format(
-          "YYYY-MM-DD",
-        ),
+        dataNascimento: dayjs(form.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD"),
         email: form.email,
         cref: form.cref,
         telefone: parseTelefone(form.telefone),
       };
-      console.log("[handleSubmit] Dados enviados:", data);
-      console.log("[API] Chamando adminService.createPersonal com:", data);
-      const response = await adminService.createPersonal(data);
-      console.log("[API] Resposta recebida:", response);
-      setSuccess("Personal cadastrado com sucesso!");
+      await adminService.createPersonal(data);
+      setTextModal({
+        title: "Personal Cadastrado!",
+        content: "O personal trainer foi cadastrado com sucesso no sistema."
+      })
+      setOpenModal("success");
+      setSubmitAttempted(false);
+      setTouched({ nome: false, email: false });
+      setShowNomeError(false);
+      setShowEmailError(false);
       setForm({
         nome: "",
         sexo: "",
@@ -85,26 +120,66 @@ export default function CreatePersonal() {
         telefone: "",
       });
     } catch (err: any) {
-      console.error("[handleSubmit] Erro ao cadastrar personal:", err);
-      setError(err?.response?.data?.Exception || "Erro ao cadastrar personal.");
+      console.log(err);
+      setTextModal({
+        title: "Erro ao Cadastrar Personal!",
+        content: err.response?.data.Exception || "Ocorreu um erro ao cadastrar o personal trainer. Tente novamente."
+      })
+      setOpenModal("error");
+      
     } finally {
       setLoading(false);
     }
   }
 
+  const nomeHasError =
+    (submitAttempted || (touched.nome && showNomeError)) &&
+    form.nome.trim() === "";
+
+  const emailHasError =
+    (submitAttempted || (touched.email && showEmailError)) &&
+    form.email.length > 0 &&
+    !validation.validateEmail(form.email).startsWith("Email válido");
+
+  const emailEmptyError =
+    submitAttempted && form.email.trim() === "";
+
   return (
-    <div className={classNames(styles.page, { [styles.pageMobile]: isMobile })}>
-      <WhiteContainer
-        title="Cadastrar Personal"
-        titleFontSize={32}
-        titleMarginBottom={4}
-        contentClassName={styles.container}
-      >
+    <>
+      {
+        (openModal === "success" &&
+          <SuccessModal
+            isMobile={isMobile}
+            closeThen={() => setOpenModal(null)}
+            title={textModal.title}
+            content={textModal.content}
+          />
+        ) 
+        ||
+        (openModal === "error" && 
+        <ErrorModal
+          closeThen={() => setOpenModal(null)}
+          title={textModal.title}
+          content={textModal.content}
+        />
+      )
+      }
+      <div className={classNames(styles.page, { [styles.pageMobile]: isMobile })}>
+        <WhiteContainer
+          title="Cadastrar Personal"
+          titleFontSize={32}
+          titleMarginBottom={4}
+          containerClassName={styles.container}
+          contentClassName={styles.content}
+          titleClassName={styles.title}
+        >
         <p className={styles.subtitle}>
           Preencha os dados para criar um novo personal trainer no sistema.
         </p>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div className="">
+
+          {/* Nome */}
+          <div>
             <InputWithIcon
               type="text"
               label="Nome Completo"
@@ -113,16 +188,23 @@ export default function CreatePersonal() {
               value={form.nome}
               onInputChange={(v: string) => handleChange("nome", v)}
               id="nome-completo"
-              hasError={form.nome.length > 0 && form.nome.trim() === ""}
+              hasError={nomeHasError}
+              onBlur={() => {
+                setTouched((prev) => ({ ...prev, nome: true }));
+                setTimeout(() => setShowNomeError(true), 200);
+              }}
             />
-            {form.nome.trim() === "" && (
-              <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}>
+            {nomeHasError && (
+              <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
                 O nome é obrigatório.
               </span>
             )}
           </div>
-          <div className={styles.rowDouble}>
-            <div className="">
+
+          <div className={classNames(styles.rowDouble, { [styles.rowDoubleMobile]: isMobile })}>
+
+            {/* Email */}
+            <div>
               <InputWithIcon
                 type="email"
                 label="Email Profissional"
@@ -131,30 +213,29 @@ export default function CreatePersonal() {
                 value={form.email}
                 onInputChange={(v: string) => handleChange("email", v)}
                 id="email-profissional"
-                hasError={
-                  form.email.length > 0 &&
-                  !validation
-                    .validateEmail(form.email)
-                    .startsWith("Email válido")
-                }
+                hasError={emailHasError || emailEmptyError}
                 hasSuccess={
                   form.email.length > 0 &&
-                  validation
-                    .validateEmail(form.email)
-                    .startsWith("Email válido")
+                  validation.validateEmail(form.email).startsWith("Email válido")
                 }
+                onBlur={() => {
+                  setTouched((prev) => ({ ...prev, email: true }));
+                  setTimeout(() => setShowEmailError(true), 200);
+                }}
               />
-              {form.email.length > 0 &&
-                !validation
-                  .validateEmail(form.email)
-                  .startsWith("Email válido") && (
-                  <span
-                    style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}
-                  >
-                    Digite um email válido.
-                  </span>
-                )}
+              {emailEmptyError && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+                  O email é obrigatório.
+                </span>
+              )}
+              {emailHasError && !emailEmptyError && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+                  Digite um email válido.
+                </span>
+              )}
             </div>
+
+            {/* Sexo */}
             <div className={styles.selectWrapper}>
               <label htmlFor="genero" className={styles.selectLabel}>
                 Genero
@@ -168,41 +249,49 @@ export default function CreatePersonal() {
                 id="genero"
                 className={styles.select}
               />
-              {form.sexo.trim() === "" && (
-                <span
-                  style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}
-                >
+              {(submitAttempted && form.sexo.trim() === "") && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
                   Selecione o genero.
                 </span>
               )}
             </div>
           </div>
 
-          <div className={styles.rowDouble}>
+          <div className={classNames(styles.rowDouble, { [styles.rowDoubleMobile]: isMobile })}>
+
+            {/* Data de Nascimento */}
             <div className={styles.muiWrapper}>
-                <label htmlFor="data-nascimento" className={styles.selectLabel}>
+              <label htmlFor="data-nascimento" className={styles.selectLabel}>
                 Data de Nascimento
-                </label>
-                <MuiDatePicker
-                    label=""
-                    value={form.dataNascimento}
-                    onChange={v => handleChange("dataNascimento", v)}
-                    error={form.dataNascimento.length > 0 && form.dataNascimento.length !== 10}
-                    helperText={
-                    form.dataNascimento.length > 0 && form.dataNascimento.length !== 10
-                        ? "Data no formato DD/MM/AAAA."
-                        : undefined
-                    }
-                />
-                {form.dataNascimento.length > 0 && form.dataNascimento.length !== 10 && (
-                    <span
-                    style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}
-                    >
-                    A data de nascimento é obrigatória.
-                    </span>
-                )}
+              </label>
+              <MuiDatePicker
+                label=""
+                value={form.dataNascimento}
+                onChange={(v) => handleChange("dataNascimento", v)}
+                error={
+                  (submitAttempted && form.dataNascimento.length === 0) ||
+                  (form.dataNascimento.length > 0 && form.dataNascimento.length !== 10)
+                }
+                helperText={
+                  form.dataNascimento.length > 0 && form.dataNascimento.length !== 10
+                    ? "Data no formato DD/MM/AAAA."
+                    : undefined
+                }
+              />
+              {submitAttempted && form.dataNascimento.length === 0 && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+                  A data de nascimento é obrigatória.
+                </span>
+              )}
+              {form.dataNascimento.length > 0 && form.dataNascimento.length !== 10 && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+                  Data no formato DD/MM/AAAA.
+                </span>
+              )}
             </div>
-            <div className="">
+
+            {/* CREF */}
+            <div>
               <InputWithIcon
                 type="text"
                 label="Registro CREF"
@@ -211,18 +300,19 @@ export default function CreatePersonal() {
                 value={form.cref}
                 onInputChange={(v: string) => handleChange("cref", v)}
                 id="registro-cref"
-                hasError={form.cref.length > 0 && form.cref.trim() === ""}
+                hasError={submitAttempted && form.cref.trim() === ""}
+                mask={crefMask}
               />
-              {form.cref.trim() === "" && (
-                <span
-                  style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}
-                >
+              {submitAttempted && form.cref.trim() === "" && (
+                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
                   O registro CREF é obrigatório.
                 </span>
               )}
             </div>
           </div>
 
+          {/* Telefone */}
+          <div className="">
           <InputWithIcon
             id="reg-phone"
             type="text"
@@ -234,31 +324,32 @@ export default function CreatePersonal() {
             mask={cellphoneMask}
             maxLength={15}
             hasError={
-              form.telefone.length > 0 &&
-              form.telefone.replace(/\D/g, "").length !== 11
+              (submitAttempted && form.telefone.length === 0) ||
+              (form.telefone.length > 0 && form.telefone.replace(/\D/g, "").length !== 11)
             }
           />
-          {form.telefone.length > 0 &&
-            form.telefone.replace(/\D/g, "").length !== 11 && (
-              <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4 }}>
-                Telefone deve ter 11 dígitos.
-              </span>
-            )}
+          {submitAttempted && form.telefone.length === 0 && (
+            <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+              O telefone é obrigatório.
+            </span>
+          )}
+          {form.telefone.length > 0 && form.telefone.replace(/\D/g, "").length !== 11 && (
+            <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+              Telefone deve ter 11 dígitos.
+            </span>
+          )}
+          </div>
 
-          {error && (
-            <div style={{ color: "#b91c1c", textAlign: "center" }}>{error}</div>
-          )}
-          {success && (
-            <div style={{ color: "#166534", textAlign: "center" }}>
-              {success}
-            </div>
-          )}
           <div className={styles.buttonRow}>
             <button
               type="button"
               className={styles.cancelButton}
               disabled={loading}
-              onClick={() =>
+              onClick={() => {
+                setSubmitAttempted(false);
+                setTouched({ nome: false, email: false });
+                setShowNomeError(false);
+                setShowEmailError(false);
                 setForm({
                   nome: "",
                   sexo: "",
@@ -266,15 +357,15 @@ export default function CreatePersonal() {
                   email: "",
                   cref: "",
                   telefone: "",
-                })
-              }
+                });
+              }}
             >
               Cancelar
             </button>
             <button
               type="submit"
               className={styles.submitButton}
-              disabled={!isFormValid() || loading}
+              disabled={loading}
             >
               {loading ? "Cadastrando..." : "Cadastrar Personal"}
             </button>
@@ -282,5 +373,6 @@ export default function CreatePersonal() {
         </form>
       </WhiteContainer>
     </div>
+    </>
   );
 }

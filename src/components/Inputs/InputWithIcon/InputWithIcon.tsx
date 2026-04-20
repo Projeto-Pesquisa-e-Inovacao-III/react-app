@@ -6,14 +6,14 @@ import Skeleton from "react-loading-skeleton";
 type Props = {
     type: string;
     placeholder?: string;
-    icon?: React.ReactNode;
+    icon: React.ReactNode;
     label?: React.ReactNode;
     id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
     value?: string | number | undefined | null;
-    mask?: (input: React.FormEvent<HTMLInputElement>) => void
+    mask?: (input: React.InputEvent<HTMLInputElement>) => void
     disabled?: boolean;
     customClassName?: string;
     classNameInput?: string;
@@ -25,9 +25,11 @@ type Props = {
     maxLength?: number;
     maxDecimalPlaces?: number;
     decimalSeparator?: "." | ",";
+
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, decimalSeparator = ".", hasError, hasSuccess }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, decimalSeparator = ".", hasError, hasSuccess, onBlur }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -109,6 +111,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             onKeyDown={handleKeyDown}
                             disabled={disabled}
                             maxLength={maxLength}
+                            onBlur={onBlur}
                         />
                         {isPassword && (
                             <button
