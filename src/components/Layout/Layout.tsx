@@ -29,6 +29,7 @@ const titles = {
     "/dashboard": "Dashboard | CSF Treinamentos",
     "/users": "Usuários | CSF Treinamentos",
     "/users/view-user-data": "Dados do Usuário | CSF Treinamentos",
+    "/users/view-personal-data": "Dados do Personal | CSF Treinamentos",
     "/edit-user": "Editar Usuário | CSF Treinamentos",
     "/edit-user/security": "Editar Usuário | CSF Treinamentos",
     "/edit-user/addresses": "Endereços | CSF Treinamentos",

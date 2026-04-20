@@ -9,6 +9,9 @@ import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
+import { useQuery } from "@tanstack/react-query";
+import { isAuthenticated } from "../../../constants/user";
+
 
 const initialLoginState = {
   email: "",
@@ -17,13 +20,28 @@ const initialLoginState = {
 
 
 export default function Login() {
+  const { data: isUserAuthenticated } = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: () => isAuthenticated(),
+    retry: false,
+    refetchOnWindowFocus: false,
+    select: (res) => res.data,
+  });
+
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (isUserAuthenticated?.autentificado) {
+      nav("/home");
+    }
+  }, [isUserAuthenticated]);
+
   const isMobile = useMobile();
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const nav = useNavigate();
-
   const [loading, setLoading] = useState(false);
+
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });

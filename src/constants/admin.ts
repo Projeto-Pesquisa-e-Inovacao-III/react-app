@@ -6,7 +6,7 @@ export function getUsers(page: number = 0, size: number = 10, nome?: string, ema
 }
 
 export function deleteUser(id: number) {
-    return api.put(`/admin/usuarios/${id}/deletar`);
+    return api.patch(`/admin/usuarios/${id}/deletar`);
 }
 
 export function getVerifyNeedDataToAddRole(id: number, role: string): Promise<ResNeedDataDTO> {

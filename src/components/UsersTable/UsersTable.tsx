@@ -12,6 +12,7 @@ const normalizeString = (str?: string) => {
 };
 
 
+
 export default function UsersTable(props: { users: ListStudents; input: string; isLoading: boolean }) {
     const isMobile = useMobile();
 
@@ -24,6 +25,24 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
             nav("/users/view-user-data?id=" + id);
         }
     }
+
+    function getAge(dateOfBirthString?: string) {
+        if (!dateOfBirthString) return null;
+
+        const today = new Date();
+        const birthDate = new Date(dateOfBirthString);
+
+        if (isNaN(birthDate.getTime())) return null;
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
 
     return (
         <div className={classNames(styles.usersTableContainer, {
@@ -71,7 +90,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                                     {user.nome ?? <Skeleton width={100} />}
                                 </b>
                                 <span>
-                                    Idade: {user.idade ?? <Skeleton width={100} />}
+                                    Idade: {user.idade ?? getAge(user.dataNascimento) ?? <Skeleton width={100} />}
                                 </span>
                             </div>
                         </div>

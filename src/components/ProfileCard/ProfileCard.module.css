@@ -1,0 +1,97 @@
+.profileCard {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.profileCover {
+    height: 100px;
+    background: var(--bg-blue);
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.profileAvatarWrapper {
+    position: absolute;
+    bottom: -40px;
+    border: 4px solid #ffffff;
+    border-radius: 50%;
+    background: #ffffff;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileInfo {
+    padding: 56px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.userName {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 12px 0;
+    text-align: center;
+}
+
+.statusPill {
+    display: inline-flex;
+    align-items: center;
+    background: #ffedd5;
+    color: #9a3412;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.statusPillInactive {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.userFieldsList {
+    padding: 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.userField {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fieldLabelGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #6b7280;
+}
+
+.fieldIconWrapper {
+    color: #4b5563;
+    display: flex;
+    align-items: center;
+}
+
+.fieldLabel {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.fieldValue {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 500;
+}
