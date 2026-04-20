@@ -4,7 +4,6 @@ import styles from "./ViewUserData.module.css";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
-import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 import { differenceInYears, parse } from "date-fns";
 import Skeleton from "react-loading-skeleton";
 import { getAnamnesisById } from "../../../constants/anamnesis";
