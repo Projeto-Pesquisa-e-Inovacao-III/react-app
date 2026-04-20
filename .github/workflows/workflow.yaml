@@ -67,6 +67,7 @@ jobs:
 
   deploy-aws:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     needs: continuous-integration
     steps:
       - uses: actions/checkout@v3
