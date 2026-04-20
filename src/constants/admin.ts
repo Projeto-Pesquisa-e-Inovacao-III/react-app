@@ -1,4 +1,4 @@
-import type { ReqAdicionarRoleDTO, ResCadastrarPersonalDTO, ResNeedDataDTO } from "../models/admin";
+import type { ReqAdicionarRoleDTO, ResCadastrarPersonalDTO, ResNeedDataDTO, ResUsuarioWithRolesResponseDTO, ReqCreateUserDTO } from "../models/admin";
 import { api } from "../system";
 
 export function getUsers(page: number = 0, size: number = 10, nome?: string, email?: string, role?: string) {
@@ -21,6 +21,6 @@ export function removeRoleFromUser(id: number, role: string) {
     return api.delete(`/admin/usuarios/${id}/roles?role=${role}`);
 }
 
-export function createPersonal(data: ResCadastrarPersonalDTO): Promise<ResCadastrarPersonalDTO> {
+export function createPersonal(data: ReqCreateUserDTO): Promise<ResCadastrarPersonalDTO> {
     return api.post("/admin/usuarios/personal", data);
 }

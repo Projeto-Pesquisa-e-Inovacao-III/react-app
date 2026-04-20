@@ -6,7 +6,7 @@ import Skeleton from "react-loading-skeleton";
 type Props = {
     type: string;
     placeholder?: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
     label?: React.ReactNode;
     id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
@@ -101,7 +101,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             id={`${id}-input`}
                             type={isPassword && showPassword ? "text" : (type === "number" ? "text" : type)}
                             inputMode={type === "number" ? "decimal" : undefined}
-                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""}`}
+                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""} ${!icon ? styles.noIconInput : ""}`}
                             placeholder={placeholder}
                             onInput={(e) => mask ? mask(e) : undefined}
                             value={value ?? undefined}

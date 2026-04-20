@@ -27,6 +27,7 @@ import Anamnesis from "./routes/User/Anamnesis/anamnesis";
 import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
 import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
 import ViewPersonalData from "./routes/Personal/ViewPersonalData/ViewPersonalData";
+import CreatePersonal from "./routes/Admin/CreatePersonal/CreatePersonal";
 
 // todo: 
 // safari support // deixa baixo
@@ -103,6 +104,7 @@ function App() {
               <Route path="/users/view-personal-data" element={<ViewPersonalData />} />
               <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/create-personal" element={<CreatePersonal />} />
             </Route>
           </Route>
 

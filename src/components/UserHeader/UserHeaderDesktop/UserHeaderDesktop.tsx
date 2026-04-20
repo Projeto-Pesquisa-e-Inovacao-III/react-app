@@ -86,6 +86,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
                   <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
                   <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
                   <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Usuários</NavLink>
+                  <NavLink to="/create-personal" className={navLinkClass} onClick={handleNavClick}>Criar personal</NavLink>
                   {type.includes('personal') && <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>}
                 </>
               )}

@@ -1,0 +1,115 @@
+.page {
+    display: flex;
+    align-items: center;
+    padding: 5% 10%;
+}
+
+.pageMobile {
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    width: 100%;
+}
+
+.form {
+	border-radius: 16px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.title {
+	font-size: 2rem;
+	font-weight: 700;
+	margin-bottom: 0;
+	color: #1a202c;
+}
+
+.subtitle {
+	font-size: 1rem;
+	color: #4a5568;
+	margin-bottom: 12px;
+}
+
+.rowDouble {
+	display: flex;
+	gap: 16px;
+}
+
+:global(.MuiFormControl-root .MuiPickersInputBase-root) {
+    height: 48px;
+}
+
+.muiWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.rowDouble > * {
+	flex: 1;
+}
+
+.selectWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.selectWrapper label {
+    font-size: 16px;
+    margin-bottom: 3px;
+}
+
+.select > select {
+    max-height: 48px;
+}
+.select .select-icon {
+    top: 70%;
+}
+
+.select label {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.buttonRow {
+	display: flex;
+	justify-content: flex-end;
+	gap: 16px;
+	margin-top: 12px;
+}
+
+.cancelButton {
+	background: none;
+	border: none;
+	color: #4a5568;
+	font-size: 1rem;
+	padding: 10px 24px;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+.cancelButton:hover {
+	background: #f1f5f9;
+}
+
+.submitButton {
+	background: #0a2239;
+	color: #fff;
+	border: none;
+	font-size: 1rem;
+	padding: 10px 24px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-weight: 600;
+	transition: background 0.2s;
+}
+.submitButton:hover {
+	background: #14375a;
+}
