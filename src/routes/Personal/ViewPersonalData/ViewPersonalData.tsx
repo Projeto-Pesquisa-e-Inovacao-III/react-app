@@ -1,12 +1,12 @@
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import styles from "../ViewPersonalData/ViewPersonalData.module.css";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { differenceInYears, parse } from "date-fns";
 import { getPersonalById } from "../../../constants/personal";
 import { deleteUser, getVerifyNeedDataToAddRole, addRoleToUser, removeRoleFromUser } from "../../../constants/admin";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar, Mail, Phone, Briefcase, ArrowLeft, ShieldCheck, Plus, Minus, X, Trash2 } from "lucide-react";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import useModal from "../../../hooks/useModal";
@@ -20,6 +20,7 @@ export default function ViewPersonalData() {
     const [params] = useSearchParams();
     const personalId = params.get("id");
 
+
     const personal = useQuery({
         queryKey: ['personalData', personalId],
         queryFn: () => getPersonalById(personalId || ""),
@@ -28,6 +29,13 @@ export default function ViewPersonalData() {
         refetchOnMount: false,
         select: (res) => res.data,
     });
+
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (personal.data && !personal.data?.ativo) {
+            navigate("/users");
+        }
+    }, [personalId, navigate, personal.data]);
 
     const age = personal.data?.dataNascimento
         ? differenceInYears(new Date(), parse(personal.data?.dataNascimento, "yyyy-MM-dd", new Date()))
@@ -45,7 +53,7 @@ export default function ViewPersonalData() {
             setOpenModal("success");
             setTimeout(() => {
                 window.location.href = "/users";
-            }, 2000);
+            }, 300);
         } catch (error: any) {
             setTextModal({ title: "Erro", content: error?.response?.data?.Exception || "Erro ao deletar usuário." });
             setOpenModal("error");
