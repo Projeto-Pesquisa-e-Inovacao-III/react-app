@@ -19,7 +19,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
     const nav = useNavigate();
 
     function handleViewUserData(id: number, roles: string[]) {
-        if (roles.some(role => role.toLowerCase() === "personal")) {
+        if (roles.some(role => role.toLowerCase() === "personal" || role.toLowerCase() === "deletado")) {
             nav("/users/view-personal-data?id=" + id);
         } else {
             nav("/users/view-user-data?id=" + id);
@@ -79,7 +79,8 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                 .filter(user => user != null && normalizeString(user.nome).includes(normalizeString(props.input)))
                 .map((user, index) => (
                     <div key={index} className={classNames(styles.usersTableCard, {
-                        [styles.usersTableCardMobile]: isMobile
+                        [styles.usersTableCardMobile]: isMobile,
+                        [styles.usersTableCardDeleted]: !user.ativo
                     })}>
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
@@ -92,10 +93,15 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                                 <span>
                                     Idade: {user.idade ?? getAge(user.dataNascimento) ?? <Skeleton width={100} />}
                                 </span>
+                                <div className={classNames({ [styles.rolesContainer]: true, 'hidden': isMobile && !user.roles?.length })}>
+                                    {user.roles?.map((role, rIndex) => (
+                                        <span key={rIndex} className={styles.roleBadge}>{role}</span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <SmallerButton handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
+                            <SmallerButton disabled={!user.ativo} handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
                         </div>
                     </div>
                 ))}

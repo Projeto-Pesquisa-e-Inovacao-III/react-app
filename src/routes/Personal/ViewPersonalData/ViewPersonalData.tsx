@@ -3,13 +3,11 @@ import useMobile from "../../../hooks/isMobile";
 import styles from "../ViewPersonalData/ViewPersonalData.module.css";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 import { differenceInYears, parse } from "date-fns";
-import Skeleton from "react-loading-skeleton";
 import { getPersonalById } from "../../../constants/personal";
 import { deleteUser, getVerifyNeedDataToAddRole, addRoleToUser, removeRoleFromUser } from "../../../constants/admin";
 import { useState } from "react";
-import { Calendar, Mail, Phone, Briefcase, ArrowLeft, ShieldCheck, ChevronDown, Plus, Minus, X, Trash2 } from "lucide-react";
+import { Calendar, Mail, Phone, Briefcase, ArrowLeft, ShieldCheck, Plus, Minus, X, Trash2 } from "lucide-react";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import useModal from "../../../hooks/useModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
@@ -45,6 +43,9 @@ export default function ViewPersonalData() {
             await deleteUser(userId);
             setTextModal({ title: "Sucesso", content: "Usuário deletado com sucesso!" });
             setOpenModal("success");
+            setTimeout(() => {
+                window.location.href = "/users";
+            }, 2000);
         } catch (error: any) {
             setTextModal({ title: "Erro", content: error?.response?.data?.Exception || "Erro ao deletar usuário." });
             setOpenModal("error");
@@ -57,6 +58,7 @@ export default function ViewPersonalData() {
             await personal.refetch();
             setTextModal({ title: "Sucesso", content: "Permissão adicionada com sucesso!" });
             setOpenModal("success");
+
         } catch (error: any) {
             setTextModal({ title: "Erro", content: error?.response?.data?.Exception || "Erro ao adicionar permissão." });
             setOpenModal("error");
@@ -107,21 +109,19 @@ export default function ViewPersonalData() {
                 </div>
 
                 <div className={styles.mainGrid}>
-
-                    {/* Left Column: Profile Card */}
                     <ProfileCard
                         name={personal.data?.nome}
                         photoUrl={personal.data?.caminhoFoto}
                         isLoading={personal.isLoading}
                         className="w-96"
                         statusPill={{
-                            text: isAtivo ? "Active Member" : "Inactive Member",
+                            text: isAtivo ? "Ativo" : "Inativo",
                             isActive: isAtivo
                         }}
                         fields={[
                             {
                                 icon: <Calendar size={16} />,
-                                label: "Age",
+                                label: "Idade",
                                 value: age,
                                 isLoading: personal.isLoading
                             },
@@ -133,7 +133,7 @@ export default function ViewPersonalData() {
                             },
                             {
                                 icon: <Phone size={16} />,
-                                label: "Phone",
+                                label: "Telefone",
                                 value: personal.data?.telefones?.[0]?.numeroCompleto || "-",
                                 isLoading: personal.isLoading
                             },
