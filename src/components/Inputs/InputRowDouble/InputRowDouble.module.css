@@ -1,0 +1,30 @@
+.doubleRowInput {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.firstBlock,
+.secondBlock {
+    flex: 1;
+}
+
+.wrapperInp {
+    position: relative;
+}
+
+.inputIcon {
+    display: flex;
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted-foreground);
+    height: 1rem;
+    width: 1rem;
+}
+
+.inputIcon svg {
+    height: 100%;
+    width: 100%;
+}

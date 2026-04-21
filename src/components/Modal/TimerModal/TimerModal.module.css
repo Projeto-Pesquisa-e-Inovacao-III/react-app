@@ -1,0 +1,120 @@
+.modalEventCreated,
+.modalEventCreatedMobile {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    width: 40%;
+
+    & .contentModal {
+        color: #1f2937;
+        font-size: 16px;
+        line-height: 1.5;
+        white-space: pre-line;
+    }
+
+    & h2 {
+        margin: 0;
+        color: var(--indigo);
+        font-size: 24px;
+        font-weight: 700;
+    }
+}
+
+.modalEventCreatedMobile {
+    padding: 20px !important;
+}
+
+.buttonsGroupModal {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.buttonsGroupModalMobile {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.buttonsGroupModal,
+.buttonsGroupModalMobile {
+    & .btnSchedDisabled {
+        background-color: gray;
+        cursor: not-allowed;
+    }
+
+    & .btnSchedRed {
+        background-color: var(--bg-orange);
+    }
+
+    & .btnSchedGreen {
+        background-color: var(--bg-green);
+    }
+}
+
+.modalCard {
+    animation: modalEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.closing {
+    animation: modalLeave 0.18s ease-in forwards !important;
+}
+
+@keyframes modalEnter {
+    from { 
+        opacity: 0; 
+        scale: 0.92;
+        translate: -50% calc(-50% + 8px);
+    }
+    to { 
+        opacity: 1; 
+        scale: 1;
+        translate: -50% -50%;
+    }
+}
+
+@keyframes modalLeave {
+    from {
+        opacity: 1; 
+        scale: 1;
+        translate: -50% -50%;
+    }
+    to {
+        opacity: 0; 
+        scale: 0.92;
+        translate: -50% calc(-50% + 8px);
+    }
+}
+
+.backdropEnter {
+    animation: backdropEnter 0.25s ease-out forwards;
+    z-index: 1000 !important;
+}
+
+.closingBackdrop {
+    animation: backdropLeave 0.18s ease-in forwards !important;
+}
+
+@keyframes backdropEnter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes backdropLeave {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}

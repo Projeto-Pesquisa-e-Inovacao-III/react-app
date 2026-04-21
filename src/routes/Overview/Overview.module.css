@@ -1,0 +1,251 @@
+.userViewSchedule {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    place-items: center;
+    background-color: #E5E7EB;
+}
+
+.overviewLeftColumn h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.containerContent {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.containerContentMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.schedulePageCalendar {
+    background-color: white;
+    padding: 20px;
+    flex: 2;
+    border-radius: 8px;
+}
+
+.schedulePageCalendarMobile {
+    background-color: white;
+    padding: 20px;
+    flex: 2;
+    border-radius: 8px;
+
+}
+
+.schedulePageUserActions {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: flex-end;
+    max-width: 500px !important;
+}
+
+.schedulePageUserActionsMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: unset;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scheduleView {
+    display: flex;
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.left {
+    width: 100%;
+}
+
+.userPersonal {
+    font-size: 24px;
+    font-weight: lighter;
+}
+
+.schedulePageUser {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.schedulePageUser img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.btnActions {
+    display: flex;
+    gap: 15px;
+}
+
+.borderDivision {
+    border-left: 1px solid black;
+    margin: 0 20px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.btnSched {
+    padding: 15px 30px;
+    background-color: var(--bg-blue);
+    color: white;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    gap: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.overviewFlexContainer {
+    display: flex;
+    gap: 40px;
+    padding: 40px;
+}
+
+.overviewLeftColumn {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    gap: 20px;
+}
+
+.overviewLeftColumnMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.overviewLeftColumnMobile h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.overviewRightColumn {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+    gap: 20px;
+}
+
+.appointmentsSection {
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 24px 16px;
+}
+
+.appointmentsSection>p:nth-child(2) {
+    padding: 16px;
+    background-color: #e1e1e1;
+    border-radius: 8px;
+    border: solid 1px #a6a6a6;
+}
+
+.appointmentCardsRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+    gap: 24px;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.appointmentCardsRowMobile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: start;
+    width: 100%;
+}
+
+.containerContentMobile .schedulePageUserActionsMobile .scheduleView {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.containerContentMobile .schedulePageUserActionsMobile .scheduleView .left,
+.containerContentMobile .schedulePageUserActionsMobile .scheduleView .right {
+    width: 100%;
+}
+
+.containerContentMobile .schedulePageUserActionsMobile .scheduleView .borderDivision {
+    border-left: none;
+    border-top: 1px solid black;
+    margin: 20px 0;
+}
+
+.schedulePageUserActionsPersonal {
+    text-align: center;
+}
+
+.btnOverview {
+    background-color: white;
+    color: var(--indigo);
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bolder;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 20px;
+}
+
+
+@media (max-width: 1024px) {}
+
+@media (max-width: 400px) {
+    .containerContentMobile {
+        flex-direction: column !important;
+        gap: 20px;
+    }
+
+    .containerContentMobile .overviewLeftColumnMobile h1 {
+        font-size: 18px;
+    }
+
+    .containerContentMobile .borderDivision {
+        margin: 20px 0;
+        border: 1px solid black;
+        border-left-style: none;
+    }
+
+    .containerContentMobile .right {
+        text-align: center;
+    }
+
+    .containerContentMobile .right span {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 600;
+    }
+}

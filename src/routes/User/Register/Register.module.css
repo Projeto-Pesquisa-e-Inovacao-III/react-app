@@ -1,0 +1,405 @@
+.register {
+    display: flex;
+    align-items: flex-start;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    min-height: 100vh;
+    background-color: var(--bg-blue-darker);
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
+}
+
+.register a {
+    color: var(--link-text);
+    text-decoration: none;
+}
+
+.register a:hover {
+    text-decoration: underline;
+}
+
+.sectionLogoLogin {
+    flex: 1;
+    padding: 30px 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-blue-darker);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    min-height: 100vh;
+    align-self: flex-start;
+}
+
+.wrapperRegisterElementsMobile {
+    height: fit-content !important;
+    border-radius: 0 !important;
+}
+
+.wrapperRegisterElements {
+    min-height: 100vh;
+    height: auto;
+    padding: 4.5rem 6.5rem;
+    flex: 2;
+    background-color: #ffffff !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.registerElements {
+    max-width: 580px;
+    width: 100%;
+    gap: 32px;
+    display: flex;
+    flex-direction: column;
+}
+
+.borderDivision {
+    border: dashed 1px #ddd;
+    height: 1px;
+    margin: .5rem 0;
+}
+
+.welcomeMessage {
+    text-align: start;
+}
+
+.welcomeMessage h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.welcomeMessage p {
+    color: #6b7280;
+    max-width: 70%;
+    margin-top: 0.4rem;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.loginLink {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+    text-align: center;
+}
+
+.welcomeMessageMobile {
+    text-align: center;
+    width: 100%;
+}
+
+.welcomeMessageMobile h1 {
+    font-size: 2.25rem;
+    color: #111827;
+}
+
+.welcomeMessageMobile p {
+    color: #6b7280;
+    max-width: 100%;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+.wrapperPasswordInput {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.wrapperPasswordInput .wrapperInp {
+    flex: 1;
+}
+
+.wrapperPasswordInput input {
+    width: 100% !important;
+}
+
+.registerElements form {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+    text-align: left;
+}
+
+.wrapperInputsFromForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.inputCustom label {
+    font-size: 0.8rem !important;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 2px;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.fieldLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: 2px;
+}
+
+div.fieldGroup :global(.wrapperInp) :global(input),
+div.fieldGroup div :global(select),
+.registerElements .passwordSection :global(input) {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 10px !important;
+    height: 52px !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+div.fieldGroup :global(.wrapperInp) :global(input):focus,
+div.fieldGroup div :global(select):focus,
+.registerElements .passwordSection :global(input):focus {
+    border-color: var(--bg-orange) !important;
+    box-shadow: 0 0 0 3px rgba(242, 100, 48, 0.15) !important;
+    outline: none !important;
+}
+
+.fieldGroup:focus-within :global(svg),
+.passwordSection:focus-within :global(svg) {
+    color: var(--bg-orange) !important;
+}
+
+.DoubleInputsRow {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.registerElements form input[type="checkbox"] {
+    background-color: transparent;
+}
+
+.terms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: var(--muted-foreground);
+}
+
+.configRegister {
+    display: flex;
+    justify-content: space-between;
+}
+
+.configRegister span {
+    margin-left: 10px;
+}
+
+.selectGenderRegister {
+    flex: 1;
+}
+
+.datePickerWrapper {
+    display: flex;
+    flex: 1;
+    min-width: 0 !important;
+}
+
+
+.datePickerWrapper :global(.MuiStack-root) {
+    padding-top: 0px !important;
+    display: flex;
+    flex: 1;
+}
+
+.datePickerWrapper :global(.MuiTextField-root),
+.datePickerWrapper :global(.MuiPickersTextField-root) {
+    min-width: 0 !important;
+    background-color: #ffffff;
+    width: 100%;
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    transition: all 0.2s ease;
+}
+
+.datePickerWrapper :global(.MuiTextField-root):focus-within,
+.datePickerWrapper :global(.MuiPickersTextField-root):focus-within {
+    border-color: var(--bg-orange) !important;
+    box-shadow: 0 0 0 3px rgba(242, 100, 48, 0.15) !important;
+}
+
+.datePickerWrapper :global(.MuiInputBase-root)::before,
+.datePickerWrapper :global(.MuiInputBase-root)::after {
+    display: none !important;
+}
+
+.datePickerWrapper :global(.MuiInputBase-root) {
+    height: 50px;
+}
+
+.datePickerWrapper :global(.MuiInputBase-input) {
+    padding: 0 16px !important;
+    padding-left: 0 !important;
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.datePickerWrapper :global(.MuiInputAdornment-root) {
+    margin-left: 12px;
+}
+
+.btnCad {
+    background-color: var(--bg-orange) !important;
+    color: white !important;
+    font-size: 1.05rem !important;
+    cursor: pointer;
+    padding: 16px !important;
+    border-radius: 10px !important;
+    border: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+    transition: opacity 0.2s ease, transform 0.15s ease, background-color 0.2s ease !important;
+}
+
+.btnCad:hover:not(:disabled) {
+    opacity: 0.95;
+    transform: translateY(-1px);
+    background-color: #e55a2b !important;
+}
+
+div :global(.btnGeneric) button.btnCad:disabled,
+button.btnCad:disabled {
+    background-color: var(--bg-orange) !important;
+    color: white !important;
+    opacity: 0.55 !important;
+    cursor: not-allowed;
+    filter: grayscale(15%) saturate(85%) !important;
+}
+
+.passwordValidation {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    gap: 2px;
+}
+
+.weak {
+    color: #ef4444;
+}
+
+.strong {
+    color: #008330;
+}
+
+.inputErrorHint {
+    color: #ef4444;
+    font-size: 0.82rem;
+    text-align: left;
+    margin-top: 4px;
+    display: block;
+}
+
+.passwordSection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.strengthWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.strengthBar {
+    height: 5px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.strengthFill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.35s ease, background-color 0.35s ease;
+}
+
+.strengthMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+}
+
+.strengthLabel {
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.passwordRulesList {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+    padding-left: 2px;
+}
+
+.passwordRuleItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.2;
+}
+
+.rulePassed {
+    color: #6b7280;
+    text-decoration: line-through;
+    font-size: 0.8rem;
+}
+
+.ruleFailed {
+    color: #4b5563;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.markerPassed {
+    color: #22c55e;
+    width: 16px;
+    display: inline-block;
+}
+
+.markerFailed {
+    color: #9ca3af;
+    width: 16px;
+    display: inline-block;
+}

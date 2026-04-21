@@ -1,0 +1,87 @@
+.selectableOption {
+    width: 100%;
+    min-height: 20px;
+    padding: 14px 15px;
+    border: 1px solid #cdd5df;
+    border-radius: 16px;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.selectableOptionSelected {
+    background-color: #d7dee9;
+    border-color: #0c4772;
+}
+
+.selectionMark {
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    border: 1.5px solid #b6c0ce;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    flex-shrink: 0;
+}
+
+.selectionMarkSelected {
+    background-color: #0c4772;
+    border-color: #0c4772;
+}
+
+.checkboxMark {
+    border-radius: 6px;
+}
+
+.radioDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background-color: #ffffff;
+    opacity: 0;
+}
+
+.selectionMarkSelected .radioDot {
+    opacity: 1;
+}
+
+.checkboxTick {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0;
+}
+
+.selectionMarkSelected .checkboxTick {
+    opacity: 1;
+}
+
+.optionText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.optionLabel {
+    color: #334155;
+    font-size: 0.95rem;
+    line-height: 26px;
+    font-weight: 500;
+    text-align: left;
+}
+
+.optionSubtitle {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-align: left;
+}

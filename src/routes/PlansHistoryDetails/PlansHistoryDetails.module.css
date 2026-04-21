@@ -1,0 +1,127 @@
+.container {
+    background-color: #fff;
+    position: relative;
+    padding: 30px;
+    border-radius: 8px;
+
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+}
+
+.container .title {
+    font-size: 30px;
+    font-weight: 500;
+    padding: 36px 0;
+}
+
+.subtitle {
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.container .content {
+    display: flex;
+    flex-direction: column;
+}
+
+.content h2 {
+    padding-bottom: 24px;
+}
+
+.container .contentRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    flex-wrap: wrap;
+
+}
+
+.orderDetailsSection {
+    border: 1px solid #b3b3b3;
+    padding: 8px !important;
+    padding-right: 0 !important;
+    border-radius: 8px;
+}
+
+.content span,
+.contentRow span {
+    color: #333;
+}
+
+.dashed {
+    background-color: #E0E0E0;
+    height: 1px;
+    border: none;
+    margin: 12px 0;
+}
+
+
+.contentRow .cardDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 24px;
+    border-radius: 8px;
+    min-width: 300px;
+    flex: .3;
+}
+
+.paymentMethodMobile {
+    margin-top: 20px;
+
+}
+
+.cardDetails,
+.paymentMethod,
+.orderDetails {
+    min-width: 300px;
+
+}
+
+@media (max-width: 400px) {
+    .paymentMethodMobile h2 {
+        width: min-content;
+    }
+
+
+    .cardDetails,
+    .paymentMethod,
+    .orderDetails {
+        min-width: 100%;
+    }
+
+    .title {
+        padding: 44px 0 !important;
+    }
+}
+
+
+.planDetailsDescription {
+    display: flex;
+    width: 70%;
+    max-width: 600px;
+}
+
+.planDetailsDescriptionMobile {
+    width: 100%;
+    max-width: none;
+}
+
+.cardDetails .highlight {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cardDetailsMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid #E0E0E0;
+    padding: 24px;
+    border-radius: 8px;
+    margin-top: 12px;
+    min-width: auto !important;
+    flex: 1 !important;
+}

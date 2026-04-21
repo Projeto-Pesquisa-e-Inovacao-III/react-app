@@ -1,0 +1,133 @@
+.newEventOpenedWrapperCallendar {
+    filter: opacity(0.4);
+}
+
+.disabledDay {
+    cursor: none;
+    background-color: #ddd !important;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.wrapperCallendar {
+    max-height: 600px;
+}
+
+.wrapperCallendar :global(.fc-timegrid-body) {
+    overflow-y: hidden !important;
+}
+
+.wrapperCallendar :global(.fc-scroller) {
+    overflow-y: hidden !important;
+}
+
+:global(.fc .fc-timegrid-col.fc-day-today) {
+    background-color: rgba(15, 71, 177, 0.15);
+}
+
+.eventCustomCalendarWeek {
+    cursor: pointer;
+    background-color: var(--bg-blue);
+    transition: background-color 0.3s ease;
+    padding: 4px 8px 0 8px !important;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.eventCustomCalendarWeek:hover {
+    background-color: #001e4e !important;
+}
+
+@media (max-width: 1024px) {
+    /* :global(.fc.fc-media-screen.fc-direction-ltr.fc-theme-standard.fc-liquid-hack) {
+        height: 100vh;
+    } */
+
+    :global(.fc-toolbar-title) {
+        font-size: 1.2rem !important;
+        text-align: center;
+    }
+}
+
+.eventCustomCalendarWeekApproved {
+    background-color: #e49b0f !important;
+    border: 1px solid #815400 !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.eventCustomCalendarWeekCanceled {
+    background-color: #B3393A !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.eventCustomCalendarWeekCompleted {
+    background-color: #4CAF50 !important;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+
+.calendarSkeleton {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 600px;
+}
+
+.skeletonHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.skeletonButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.skeletonCalendarGrid {
+  display: flex;
+  gap: 1px;
+  background: #e0e0e0;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skeletonTimeColumn {
+  width: 80px;
+  background: #fafafa;
+}
+
+.skeletonDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1;
+  gap: 1px;
+  background: #e0e0e0;
+}
+
+.skeletonDay {
+  background: #fff;
+  position: relative;
+  min-height: 600px;
+}
+
+.skeletonEvents {
+  position: relative;
+  height: calc(100% - 56px);
+  padding: 8px;
+}
+
+@media (max-width: 768px) {
+  .skeletonDays {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .skeletonDay {
+    min-height: 400px;
+  }
+}

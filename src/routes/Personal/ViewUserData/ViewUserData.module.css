@@ -1,0 +1,324 @@
+.container {
+    padding: 40px;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.containerMobile {
+    padding: 20px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4b5563;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.pageTitle {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+}
+
+.pageSubtitle {
+    font-size: 13px;
+    color: #888;
+    margin: 0;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.metricsRow {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.detailsRow {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 14px;
+    align-items: start;
+}
+
+.profileCard {
+    background: #fff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.userNameBlock {
+    text-align: center;
+}
+
+.userName {
+    font-size: 22px !important;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+}
+
+.userFieldsList {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    border-top: 0.5px solid #e5e7eb;
+    padding-top: 12px;
+}
+
+.userField {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.fieldLabel {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.fieldValue {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.healthCard {
+    background: #fff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activityCard {
+    background: #fff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sectionTitle {
+    font-size: 20px;
+    font-weight: 600;
+    color: #111;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+}
+
+.sectionIconCircle {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 0.5px solid #d1d5db;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #6b7280;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.conditionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.conditionItem {
+    border: 0.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.conditionItemHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.conditionDot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.conditionCategory {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.conditionValue {
+    font-size: 12px;
+    color: #111;
+}
+
+.observationBlock {
+    border-left: 2px solid var(--lapis-lazuli);
+    background: var(--carol-light);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.observationHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.observationWarning {
+    font-size: 11px;
+    color: var(--lapis-lazuli);
+}
+
+.observationLabel {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--lapis-lazuli);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.observationText {
+    font-size: 12px;
+    color: #111;
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.noData {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0;
+}
+
+.activityLevelRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 9px 12px;
+}
+
+.activityBadge {
+    font-size: 11px;
+    font-weight: 600;
+    color: #92400e;
+    background: #fef3c7;
+    border-radius: 8px;
+    padding: 2px 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.activityBadgeSedentario {
+    color: #92400e;
+    background: #fef3c7;
+}
+
+.rotinaBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.rotinaHeader {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rotinaDot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ef4444;
+    flex-shrink: 0;
+    display: inline-block;
+}
+
+.rotinaText {
+    font-size: 12px;
+    color: #111;
+    line-height: 1.6;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .metricsRow {
+        grid-template-columns: 1fr;
+    }
+
+    .detailsRow {
+        grid-template-columns: 1fr;
+    }
+
+}

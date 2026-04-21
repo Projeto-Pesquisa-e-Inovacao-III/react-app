@@ -1,0 +1,269 @@
+.sessionCard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  background-color: #fff;
+  border: 0.5px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.sessionCard:hover {
+  border-color: #c0c0c0;
+}
+
+.sessionCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 0.5px solid #e0e0e0;
+  background-color: transparent;
+  font-size: unset;
+  font-weight: unset;
+  color: unset;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.badgeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.badge_pending   { background: #FAEEDA; color: #633806; }
+.badge_pending .badgeDot { background: #BA7517; }
+
+.badge_confirmed { background: #EAF3DE; color: #27500A; }
+.badge_confirmed .badgeDot { background: #3B6D11; }
+
+.badge_completed { background: #E6F1FB; color: #0C447C; }
+.badge_completed .badgeDot { background: #185FA5; }
+
+.badge_cancelled { background: #FCEBEB; color: #791F1F; }
+.badge_cancelled .badgeDot { background: #A32D2D; }
+
+.sessionCardStatus {
+  font-size: 11px;
+  font-weight: 500;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-left: auto;
+}
+
+.sessionCardInfo {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+  gap: 0;
+}
+
+.sessionCardLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.sessionCardUser {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sessionCardAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #CEECF6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0C447C;
+}
+
+.sessionCardName {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.sessionCardAddress {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #666;
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-wrap: wrap;
+  text-align: start;
+}
+
+.sessionCardDivider {
+  width: 0.5px;
+  height: 44px;
+  background-color: #e0e0e0;
+  margin: 0 14px;
+  flex-shrink: 0;
+}
+
+.sessionCardRight {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  justify-content: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.sessionCardDate {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111;
+}
+
+.sessionCardTime {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #555;
+}
+
+.metaIcon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.sessionCardActions {
+  display: flex;
+  border-top: 0.5px solid #e0e0e0;
+}
+
+.actionBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.actionBtn + .actionBtn {
+  border-left: 0.5px solid #e0e0e0;
+}
+.actionBtn:hover {
+  background: #f5f5f5;
+}
+
+.actionConfirm       { color: #27500A; }
+.actionConfirm:hover { background: #EAF3DE; }
+
+.actionCancel        { color: #791F1F; }
+.actionCancel:hover  { background: #FCEBEB; }
+
+/*   MOBILE */
+.sessionCardMobile {
+  max-width: unset;
+}
+
+.sessionCardLeftMobile {
+  max-width: unset;
+}
+
+.sessionCardDividerMobile {
+  width: 0.5px;
+  height: 44px;
+  background-color: #e0e0e0;
+  margin: 0 12px;
+  flex-shrink: 0;
+}
+
+.sessionCardRightMobile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  min-width: 80px;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .sessionCardMobile {
+    padding: 0;
+  }
+
+  .sessionCardInfo {
+    padding: 12px 10px;
+  }
+
+  .sessionCardDividerMobile {
+    margin: 0 8px;
+  }
+
+  .sessionCardAvatar {
+    width: 34px;
+    height: 34px;
+    font-size: 11px;
+  }
+
+  .sessionCardName {
+    font-size: 13px;
+  }
+
+  .sessionCardDate,
+  .sessionCardTime {
+    font-size: 12px;
+  }
+
+  .sessionCardRightMobile {
+    align-items: center;
+    min-width: 70px;
+  }
+
+  .actionBtn {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+}

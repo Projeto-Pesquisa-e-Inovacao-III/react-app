@@ -1,0 +1,36 @@
+.metricCard {
+    background: var(--bg-blue);
+    border-radius: 12px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.metricLabel {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b8fa8;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.metricValue {
+    font-size: 30px;
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.metricUnit {
+    font-size: 13px;
+    font-weight: 400;
+    color: #8aa8c0;
+}
+
+.metricText {
+    font-size: 24px;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.4;
+}

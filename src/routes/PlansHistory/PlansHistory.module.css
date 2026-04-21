@@ -1,0 +1,63 @@
+.container .title {
+    margin-bottom: 24px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.container .title h1 {
+    color: #333;
+}
+
+.search {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.search input {
+    border: 1px solid #ccc;
+}
+
+.calendarWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.verticalDivider {
+    width: 0.125rem;
+    height: 100%;
+    border: 1px solid #d1d5db;
+}
+
+.calendarIcon {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.calendarDropdown {
+    position: absolute;
+    top: 2.5rem;
+    z-index: 50;
+    width: 18rem;
+    max-width: 48rem;
+}
+
+@media (max-width: 1024px) {
+
+    .search {
+        flex-wrap: wrap;
+
+    }
+
+    .search input {
+        width: 100%;
+
+    }
+
+    .searchInput {
+        width: 100%;
+    }
+
+}

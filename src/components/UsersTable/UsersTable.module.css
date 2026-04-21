@@ -1,0 +1,110 @@
+.usersTableContainer {
+    width: 100%;
+}
+
+.h3 {
+    width: 100%;
+    padding-top: 1%;
+    padding-bottom: 2%;
+    border-bottom: 1px solid rgb(189, 189, 189);
+}
+
+.usersTableCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    padding: 1.5%;
+    padding-inline: 2%;
+    width: 100%;
+    border: 1px solid #cecdcd;
+
+    border: 1px solid #eee;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-top: 25px;
+    -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+    box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
+}
+
+.usersTableCardDeleted {
+    background-color: #fef2f2;
+    border: 2px dashed #ef4444;
+}
+
+.userDataFull {
+    display: flex;
+    align-items: center;
+    gap: 5%;
+    width: 50%;
+}
+
+.userDataFull svg {
+    width: 50px;
+    height: 50px;
+    background-color: #dddddd;
+    border-radius: 50%;
+}
+
+.userData {
+    display: flex;
+    flex-direction: column;
+}
+
+.userImage {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+.rolesContainer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.roleBadge {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 1024px) {
+    .usersTableContainerMobile {
+        width: 100%;
+    }
+
+    .usersTableCardMobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: white;
+        padding: 10px;
+        padding-inline: 5%;
+        width: 100%;
+        border: 1px solid #cecdcd;
+        margin-bottom: 1.5%;
+    }
+
+    .userDataFullMobile {
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        gap: 5%;
+        width: 50%;
+    }
+
+
+    .userDataFullMobile svg {
+        width: 50px;
+        height: 50px;
+        background-color: #dddddd;
+        border-radius: 50%;
+    }
+}

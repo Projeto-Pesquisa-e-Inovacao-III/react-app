@@ -1,0 +1,13 @@
+.chartBarPersonal {
+    flex: 1;
+    background-color: #fff;
+    padding: 26px;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 50vh;
+    width: 100%;
+}
+
+.chartBarPersonalMobile {
+     padding: 16px 0px 40px 0 !important
+}

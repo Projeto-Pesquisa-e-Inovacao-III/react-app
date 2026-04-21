@@ -1,0 +1,22 @@
+.studentPendingCheckSchedule {
+    display: flex;
+    gap: 5px;
+
+}
+
+.statusPendingCheckSchedule {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.textPendingCheckSchedule {
+    width: 100%;
+    font-size: 14px;
+}
+
+.dotIconCheckSchedule {
+    color: var(--bg-yellow);
+    color: #FFA800;
+}
