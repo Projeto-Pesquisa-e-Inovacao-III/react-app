@@ -542,11 +542,12 @@ export default function NewEvent(
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours", typeUser,
             myId.data,
-            personalList.data?.content[0]?.id,
+            personalList.data?.content?.[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content?.[0]?.id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
+        enabled: typeUser?.includes("personal") ? !!myId.data : !!personalList.data?.content?.[0]?.id,
     });
 
 

@@ -39,10 +39,6 @@ export default function ScheduleDetails() {
 
     const type = useContext(TypeContext);
 
-    console.log("type: ", type?.type?.includes("aluno"));
-
-    console.log("User type in ScheduleDetails:", type);
-
     const [searchParams] = useSearchParams();
 
 
