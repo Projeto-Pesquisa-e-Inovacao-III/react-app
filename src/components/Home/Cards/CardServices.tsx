@@ -27,7 +27,7 @@ export default function CardServices({ bgColor, color, title, content, image, is
           <div className="w-[550px] shrink-0 overflow-hidden p-10 bg-white flex items-center justify-center h-auto">
             <img className="w-full h-[420px] object-cover object-center rounded-xl" src={image} alt={title} />
           </div>
-          <div className={`flex-1 text-center ${color ? color : "text-white"} flex justify-center items-center flex-col p-12 pb-20 pt-20 ${!isReverse ? "pl-12 pr-12" : "pl-12 pr-12"}`}>
+          <div className={`flex-1 text-center ${color ? color : "text-white"} flex justify-center items-center flex-col p-12 pb-20 pt-20 ${!isReverse ? "pl-12 pr-24!" : "pl-12 pr-12"}`}>
             <h1 className="text-4xl font-bold mb-4">{title}</h1>
             <p className="text-2xl">{content}</p>
           </div>
