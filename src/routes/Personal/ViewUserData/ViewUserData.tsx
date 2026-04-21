@@ -1,13 +1,13 @@
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
 import Skeleton from "react-loading-skeleton";
 import { getAnamnesisById } from "../../../constants/anamnesis";
-import { Calendar, Mail, Phone } from "lucide-react";
+import { Calendar, Mail, Phone, ArrowLeft } from "lucide-react";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import MetricCard from "../../../components/MetricCard/MetricCard";
 
@@ -53,6 +53,10 @@ export default function ViewUserData() {
                 <div className={styles.content}>
 
                     <div className={styles.pageHeader}>
+                        <Link to="/users" className={styles.backLink}>
+                            <ArrowLeft size={16} />
+                            Voltar
+                        </Link>
                         <h1 className={styles.pageTitle}>Dados &amp; Anamnese</h1>
                     </div>
 
