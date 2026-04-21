@@ -39,9 +39,6 @@ export default function ScheduleDetails() {
 
     const type = useContext(TypeContext);
 
-
-    console.log("User type in ScheduleDetails:", type);
-
     const [searchParams] = useSearchParams();
 
 
@@ -213,16 +210,16 @@ export default function ScheduleDetails() {
                                 <div className={styles.professionalCard}>
 
                                     <div className={styles.avatarSection}>
-                                        <UserAvatar foto={type?.type?.includes("aluno") ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
+                                        <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={!type?.type?.includes("aluno") ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
                                         <div className={styles.professionalName}>
-                                            {type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                            {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
                                         </div>
-                                        <div className={styles.professionalSub}>{type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
+                                        <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
                                     </div>
                                     <div className={styles.ageDivider}>
                                         <span className={styles.ageLabel}>Idade</span>
                                         <span className={styles.ageValue}>
-                                            {type?.type?.includes("aluno")
+                                            {!type?.type?.includes("aluno")
                                                 ? appointment.data?.aluno?.idade
                                                 : appointment.data?.personal?.idade} anos
                                         </span>

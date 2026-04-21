@@ -20,6 +20,17 @@
     gap: 4px;
 }
 
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4b5563;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    width: fit-content;
+}
+
 .pageTitle {
     font-size: 22px;
     font-weight: 600;
@@ -35,7 +46,7 @@
 
 .mainGrid {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 400px 1fr;
     gap: 24px;
     align-items: start;
 }
@@ -309,4 +320,5 @@
     .detailsRow {
         grid-template-columns: 1fr;
     }
+
 }
