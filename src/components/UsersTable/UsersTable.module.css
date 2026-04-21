@@ -27,6 +27,11 @@
     box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
 }
 
+.usersTableCardDeleted {
+    background-color: #fef2f2;
+    border: 2px dashed #ef4444;
+}
+
 .userDataFull {
     display: flex;
     align-items: center;
@@ -51,6 +56,23 @@
     width: 50px;
     height: 50px;
     object-fit: cover;
+}
+.rolesContainer {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.roleBadge {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
 }
 
 @media (max-width: 1024px) {

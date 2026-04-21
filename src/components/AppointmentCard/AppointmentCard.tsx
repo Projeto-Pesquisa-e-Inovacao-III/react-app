@@ -131,7 +131,7 @@ export function AppointmentCard(props: Props) {
 
       </div>
 
-      {(isPendingPersonal && typeContext?.type === "personal" || isPendingStudent && typeContext?.type === "aluno") && (
+      {(isPendingPersonal && typeContext?.type?.includes("personal") || isPendingStudent && typeContext?.type?.includes("aluno")) && (
         <div className={styles.sessionCardActions}>
           <button
             className={classNames(styles.actionBtn, styles.actionConfirm)}

@@ -12,14 +12,37 @@ const normalizeString = (str?: string) => {
 };
 
 
+
 export default function UsersTable(props: { users: ListStudents; input: string; isLoading: boolean }) {
     const isMobile = useMobile();
 
     const nav = useNavigate();
 
-    function handleViewUserData(id: number) {
-        nav("/users/view-user-data?id=" + id);
+    function handleViewUserData(id: number, roles: string[]) {
+        if (roles.some(role => role.toLowerCase() === "personal" || role.toLowerCase() === "deletado")) {
+            nav("/users/view-personal-data?id=" + id);
+        } else {
+            nav("/users/view-user-data?id=" + id);
+        }
     }
+
+    function getAge(dateOfBirthString?: string) {
+        if (!dateOfBirthString) return null;
+
+        const today = new Date();
+        const birthDate = new Date(dateOfBirthString);
+
+        if (isNaN(birthDate.getTime())) return null;
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
 
     return (
         <div className={classNames(styles.usersTableContainer, {
@@ -56,7 +79,8 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                 .filter(user => user != null && normalizeString(user.nome).includes(normalizeString(props.input)))
                 .map((user, index) => (
                     <div key={index} className={classNames(styles.usersTableCard, {
-                        [styles.usersTableCardMobile]: isMobile
+                        [styles.usersTableCardMobile]: isMobile,
+                        [styles.usersTableCardDeleted]: !user.ativo
                     })}>
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
@@ -67,12 +91,17 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                                     {user.nome ?? <Skeleton width={100} />}
                                 </b>
                                 <span>
-                                    Idade: {user.idade ?? <Skeleton width={100} />}
+                                    Idade: {user.idade ?? getAge(user.dataNascimento) ?? <Skeleton width={100} />}
                                 </span>
+                                <div className={classNames({ [styles.rolesContainer]: true, 'hidden': isMobile && !user.roles?.length })}>
+                                    {user.roles?.map((role, rIndex) => (
+                                        <span key={rIndex} className={styles.roleBadge}>{role}</span>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                         <div>
-                            <SmallerButton handleButtonClick={() => handleViewUserData(user.id)} title="Ver Dados" />
+                            <SmallerButton disabled={!user.ativo} handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
                         </div>
                     </div>
                 ))}

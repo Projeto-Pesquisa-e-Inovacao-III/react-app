@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Login from "./routes/User/Login/Login";
 import Home from "./routes/Home/Home";
@@ -26,21 +26,28 @@ import SecurityInformations from "./routes/EditUser/SecurityInformations/Securit
 import Anamnesis from "./routes/User/Anamnesis/anamnesis";
 import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
 import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
+import ViewPersonalData from "./routes/Personal/ViewPersonalData/ViewPersonalData";
+import CreatePersonal from "./routes/Admin/CreatePersonal/CreatePersonal";
 
 // todo: 
 // safari support // deixa baixo
 
-type UserType = "aluno" | "personal";
+// profiles:
+// alunos = continua as mesmas rotas
+// personal = não pode: dash e criar e editar pacotes
+// admin = pode tudo que personal podia antes, usuários ao inves de alunos, cadastrar personal
+export type Roles = "aluno" | "personal" | "admin";
+export type UserType = Roles;
 
 type TypeContextType = {
-  type: UserType | null;
-  setType: React.Dispatch<React.SetStateAction<UserType | null>>;
+  type: UserType[] | null;
+  setType: React.Dispatch<React.SetStateAction<UserType[] | null>>;
 };
 
 export const TypeContext = createContext<TypeContextType | null>(null);
 
 function App() {
-  const [type, setType] = useState<UserType | null>(null);
+  const [type, setType] = useState<UserType[] | null>(null);
 
   return (
     <TypeContext.Provider value={{ type, setType }}>
@@ -49,7 +56,6 @@ function App() {
 
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
             {/* temp */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -82,11 +88,23 @@ function App() {
 
           <Route element={<PrivateRoute allowedRoles={["personal"]} />}>
             <Route element={<Layout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/users" element={<ListUsers />} />
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+            </Route>
+          </Route>
+
+
+          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/users" element={<ListUsers />} />
+              <Route path="/users/view-user-data" element={<ViewUserData />} />
+              <Route path="/users/view-personal-data" element={<ViewPersonalData />} />
+              <Route path="/set-availability" element={<SetAvailability />} />
+              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              <Route path="/create-personal" element={<CreatePersonal />} />
             </Route>
           </Route>
 

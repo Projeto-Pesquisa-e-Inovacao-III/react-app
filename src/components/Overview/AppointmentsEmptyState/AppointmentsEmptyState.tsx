@@ -3,7 +3,7 @@ import SmallerButton from "../../SmallerButton/SmallerButton";
 import styles from "./AppointmentsEmptyState.module.css";
 
 type AppointmentsEmptyStateProps = {
-    userType: string | null | undefined;
+    userType: string[] | null | undefined;
     hasActivePlan: boolean;
     isMobile: boolean;
     onSchedule: () => void;
@@ -23,7 +23,7 @@ export default function AppointmentsEmptyState({
                 <CalendarX color="#0a3a5c" size={40} />
             </div>
 
-            {userType === "aluno" && hasActivePlan && (
+            {userType?.includes("aluno") && hasActivePlan && (
                 <>
                     <h1 className={styles.title}>Sem agendamentos para hoje</h1>
                     <div className={styles.subtitleWrapper}>
@@ -40,7 +40,7 @@ export default function AppointmentsEmptyState({
                 </>
             )}
 
-            {userType === "aluno" && !hasActivePlan && (
+            {userType?.includes("aluno") && !hasActivePlan && (
                 <>
                     <h1 className={styles.title}>Nenhum pacote ativo</h1>
                     <div className={styles.subtitleWrapper}>
@@ -57,7 +57,7 @@ export default function AppointmentsEmptyState({
                 </>
             )}
 
-            {userType === "personal" && (
+            {!userType?.includes("aluno") && (
                 <div className={styles.subtitleWrapper}>
                     <h2 className={styles.subtitle}>Você ainda não possui agendamentos pendentes.</h2>
                 </div>
