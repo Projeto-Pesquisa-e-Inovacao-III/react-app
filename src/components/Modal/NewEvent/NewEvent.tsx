@@ -544,7 +544,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser?.includes("aluno") ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
     });

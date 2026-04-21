@@ -18,8 +18,8 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
 
     const nav = useNavigate();
 
-    function handleViewUserData(id: number, roles: string[]) {
-        if (roles.some(role => role.toLowerCase() === "personal" || role.toLowerCase() === "deletado")) {
+    function handleViewUserData(id: number, roles?: string[]) {
+        if (roles?.some(role => role.toLowerCase() === "personal" || role.toLowerCase() === "deletado")) {
             nav("/users/view-personal-data?id=" + id);
         } else {
             nav("/users/view-user-data?id=" + id);
@@ -80,7 +80,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                 .map((user, index) => (
                     <div key={index} className={classNames(styles.usersTableCard, {
                         [styles.usersTableCardMobile]: isMobile,
-                        [styles.usersTableCardDeleted]: !user.ativo
+                        [styles.usersTableCardDeleted]: user.ativo === false
                     })}>
                         <div className={classNames(styles.userDataFull, {
                             [styles.userDataFullMobile]: isMobile
@@ -101,7 +101,7 @@ export default function UsersTable(props: { users: ListStudents; input: string; 
                             </div>
                         </div>
                         <div>
-                            <SmallerButton disabled={!user.ativo} handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
+                            <SmallerButton disabled={user.ativo === false} handleButtonClick={() => handleViewUserData(user.id, user.roles)} title="Ver Dados" />
                         </div>
                     </div>
                 ))}
