@@ -51,6 +51,10 @@ export default function Login() {
     setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
   }
 
+  function handleAutoFill3() {
+    setLoginInfo({ email: "fabio.admin@email.com", password: "admin123" });
+  }
+
 
   function navToHome() {
     nav("/home");
@@ -144,6 +148,9 @@ export default function Login() {
               </button>
               <button className={styles.btnAutoFill} onClick={handleAutoFill2}>
                 AUTO PREENCHER 2
+              </button>
+              <button className={styles.btnAutoFill} onClick={handleAutoFill3}>
+                AUTO PREENCHER DONO
               </button>
               <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />

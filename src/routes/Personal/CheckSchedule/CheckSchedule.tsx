@@ -145,6 +145,7 @@ export function CheckSchedule() {
         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
         await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
+        await queryClient.invalidateQueries({ queryKey: ["dataKpi"] });
     }
 
     async function handleSuccessReschedule() {
@@ -209,7 +210,7 @@ export function CheckSchedule() {
     }
 
     const dataKpi = useQuery<DataKpi>({
-        queryKey: ["data"],
+        queryKey: ["dataKpi"],
         queryFn: () => getScheduleData().then(res => res.data),
         refetchOnWindowFocus: false,
     })
@@ -329,8 +330,6 @@ export function CheckSchedule() {
         setPage(0);
     }
 
-    const countPendingPersonalApproval = appointmentsList?.filter(appointment => appointment.status === "PENDENTE_PERSONAL_APROVACAO").length || 0;
-
     return (
         <>
             <div className={styles.containerCheckSchedule}
@@ -343,7 +342,7 @@ export function CheckSchedule() {
                             
                             <CheckScheduleKpis
                                 title="Total pendente"
-                                value={countPendingPersonalApproval || 0}
+                                value={dataKpi.data?.totalPendente || 0}
                                 color="#F59E0B"
                             />
                             <CheckScheduleKpis
