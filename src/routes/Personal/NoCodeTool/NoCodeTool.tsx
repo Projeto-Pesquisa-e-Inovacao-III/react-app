@@ -5,6 +5,7 @@ import EditableText from "../../../components/NoCodeToolsComponents/EditableText
 import EditableImage from "../../../components/NoCodeToolsComponents/EditableImage";
 import EditableButton from "../../../components/NoCodeToolsComponents/EditableButton";
 import { EditableSection } from "../../../components/NoCodeToolsComponents/EditableSection";
+import EditableAccordion from "../../../components/NoCodeToolsComponents/EditableAccordion";
 import { Save, Eye, Undo2, Redo2, History } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
@@ -66,7 +67,7 @@ function EditorActions({ onPreview, onPublishClick, onHistoryClick }: {
 
 function NoCodeToolInner() {
   const { actions, query } = useEditor();
-  
+
   const { openModal, setOpenModal } = useModal(null, { title: "", content: "" });
 
   const [init, setInit] = useState({ done: false });
@@ -114,9 +115,8 @@ function NoCodeToolInner() {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">
       <header
-        className={`w-full flex-shrink-0 flex justify-between items-center px-8 h-16 border-b border-white/10 transition-all duration-500 ease-in-out ${
-          isPreviewMode ? '-mt-16 opacity-0 pointer-events-none' : 'mt-0 opacity-100 pointer-events-auto'
-        }`}
+        className={`w-full flex-shrink-0 flex justify-between items-center px-8 h-16 border-b border-white/10 transition-all duration-500 ease-in-out ${isPreviewMode ? '-mt-16 opacity-0 pointer-events-none' : 'mt-0 opacity-100 pointer-events-auto'
+          }`}
         style={{
           backgroundColor: 'rgba(5, 17, 40, 0.95)',
           backdropFilter: 'blur(12px)',
@@ -383,6 +383,7 @@ function NoCodeToolInner() {
                   paddingBottom="40px"
                   className="px-5"
                 >
+                  
                   <Element is={Container} canvas className="bg-white rounded-lg p-8 ml-20 mr-20">
                     <Element
                       is={EditableText}
@@ -390,23 +391,27 @@ function NoCodeToolInner() {
                       text="Perguntas Frequentes"
                       className="text-black text-2xl mb-5 font-bold"
                     />
-                    <Element is={Container} canvas className="space-y-4">
-                      <Element is={Container} canvas className="border-b border-gray-200 pb-4">
-                        <Element is={EditableText} tag="h3" text="A consultoria é totalmente online?" className="font-semibold text-gray-800 text-lg mb-2" />
-                        <Element is={EditableText} tag="p" text="A consultoria é totalmente online, realizada via WhatsApp. Alguns pacotes incluem aulas presenciais com o personal, nas quais você recebe acompanhamento e orientações práticas durante o treino." className="text-gray-600" />
-                      </Element>
-                      <Element is={Container} canvas className="border-b border-gray-200 pb-4">
-                        <Element is={EditableText} tag="h3" text="Quais as formas de pagamento disponíveis?" className="font-semibold text-gray-800 text-lg mb-2" />
-                        <Element is={EditableText} tag="p" text="Atualmente, o pagamento é feito via PIX. Alguns bancos digitais oferecem a opção de parcelamento diretamente pelo aplicativo." className="text-gray-600" />
-                      </Element>
-                      <Element is={Container} canvas className="border-b border-gray-200 pb-4">
-                        <Element is={EditableText} tag="h3" text="A consultoria é para todos ou apenas para quem já treina?" className="font-semibold text-gray-800 text-lg mb-2" />
-                        <Element is={EditableText} tag="p" text="A consultoria é indicada para todos os perfis, inclusive para quem nunca treinou ou não tem experiência com atividades físicas." className="text-gray-600" />
-                      </Element>
-                      <Element is={Container} canvas className="pb-4">
-                        <Element is={EditableText} tag="h3" text="Tenho direito a reembolso?" className="font-semibold text-gray-800 text-lg mb-2" />
-                        <Element is={EditableText} tag="p" text="Sim. Você pode solicitar o reembolso em até 7 (sete) dias corridos após a contratação. Esse prazo segue o Código de Defesa do Consumidor para compras realizadas online." className="text-gray-600" />
-                      </Element>
+                    <Element is={Container} canvas>
+                      <Element 
+                        is={EditableAccordion} 
+                        title="A consultoria é totalmente online?" 
+                        content="A consultoria é totalmente online, realizada via WhatsApp. Alguns pacotes incluem aulas presenciais com o personal, nas quais você recebe acompanhamento e orientações práticas durante o treino." 
+                      />
+                      <Element 
+                        is={EditableAccordion} 
+                        title="Quais as formas de pagamento disponíveis?" 
+                        content="Atualmente, o pagamento é feito via PIX. Alguns bancos digitais oferecem a opção de parcelamento diretamente pelo aplicativo." 
+                      />
+                      <Element 
+                        is={EditableAccordion} 
+                        title="A consultoria é para todos ou apenas para quem já treina?" 
+                        content="A consultoria é indicada para todos os perfis, inclusive para quem nunca treinou ou não tem experiência com atividades físicas." 
+                      />
+                      <Element 
+                        is={EditableAccordion} 
+                        title="Tenho direito a reembolso?" 
+                        content="Sim. Você pode solicitar o reembolso em até 7 (sete) dias corridos após a contratação. Esse prazo segue o Código de Defesa do Consumidor para compras realizadas online." 
+                      />
                     </Element>
                   </Element>
                 </Element>
@@ -418,9 +423,8 @@ function NoCodeToolInner() {
 
         {/* aside */}
         <div
-          className={`flex-shrink-0 w-80 border-l border-white/10 overflow-hidden flex flex-col transition-all duration-500 ease-in-out ${
-            isPreviewMode ? '-mr-80 opacity-0 pointer-events-none' : 'mr-0 opacity-100 pointer-events-auto'
-          }`}
+          className={`flex-shrink-0 w-80 border-l border-white/10 overflow-hidden flex flex-col transition-all duration-500 ease-in-out ${isPreviewMode ? '-mr-80 opacity-0 pointer-events-none' : 'mr-0 opacity-100 pointer-events-auto'
+            }`}
           style={{
             backgroundColor: 'rgba(5, 17, 40, 0.85)',
             backdropFilter: 'blur(16px)',
@@ -431,9 +435,8 @@ function NoCodeToolInner() {
 
         {/* Voltar animado */}
         <div
-          className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ease-in-out ${
-            isPreviewMode ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-10 pointer-events-none'
-          }`}
+          className={`fixed bottom-6 right-6 z-50 transition-all duration-500 ease-in-out ${isPreviewMode ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-10 pointer-events-none'
+            }`}
         >
           <button
             onClick={() => setIsPreviewMode(false)}
@@ -457,6 +460,7 @@ export default function NoCodeTool() {
         EditableImage,
         EditableButton,
         EditableSection,
+        EditableAccordion,
       }}
     >
       <NoCodeToolInner />

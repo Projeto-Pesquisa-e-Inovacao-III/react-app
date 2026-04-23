@@ -263,7 +263,14 @@ export default function Toolbox({ onPreview }: { onPreview: () => void }) {
                 </>
               )}
 
-              {!['Texto', 'Botão', 'Imagem', 'Seção', 'Container'].includes(displayName) && (
+              {displayName === 'Accordion' && (
+                <>
+                  <TextInput label="Título da Pergunta" value={props.title ?? ''} onChange={(v) => setProp('title', v)} />
+                  <TextareaInput label="Conteúdo da Resposta" value={props.content ?? ''} onChange={(v) => setProp('content', v)} />
+                </>
+              )}
+
+              {!['Texto', 'Botão', 'Imagem', 'Seção', 'Container', 'Accordion'].includes(displayName) && (
                 <p className="text-gray-400 text-sm">Nenhuma propriedade editável disponível para este elemento.</p>
               )}
             </div>
