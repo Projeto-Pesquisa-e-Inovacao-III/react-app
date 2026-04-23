@@ -118,7 +118,7 @@ function MobileAlunoPanel({ isPending, hasPlan, classBalanceData, actualPlan, is
 type AppointmentsSectionProps = {
     isLoading: boolean;
     isEmpty: boolean | undefined;
-    userType: string | null | undefined;
+    userType: string[] | null | undefined;
     isMobile: boolean;
     data: appointmentsCards | undefined;
     onNewEvent: () => void;
@@ -169,7 +169,7 @@ function AppointmentsSectionContent({
         <>
             <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2 ">
                 <h1>Agendamentos</h1>
-                {userType === "aluno" && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
+                {userType?.includes("aluno") && <Button type="button" title="Novo agendamento" icon={<CalendarIcon />} classNameDiv="" classNameVariable="flex items-center  gap-2 h-10 "
                     onClick={onNewEvent}
                 />}
             </div>
@@ -179,7 +179,7 @@ function AppointmentsSectionContent({
                         key={index}
                         agendamentoId={card.agendamentoId}
                         status={card.agendamentoStatus}
-                        name={userType === "personal" ? card.alunoNome : card.personalNome}
+                        name={!userType?.includes("aluno") ? card.alunoNome : card.personalNome}
                         photoUrl={card.caminhoFoto}
                         type={card.tipoAula}
                         date={card.data ? format(parse(card.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
@@ -204,14 +204,14 @@ export function Overview() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: type?.type?.includes("aluno")
     });
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: type?.type?.includes("aluno")
     });
 
     console.log("Class balance data:", classBalanceQuery.data);
@@ -232,7 +232,7 @@ export function Overview() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: type?.type?.includes("aluno")
     });
 
     const personalId = useQuery({
@@ -240,12 +240,16 @@ export function Overview() {
         queryFn: () => findUserData(),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type === "personal"
+        enabled: !type?.type?.includes("aluno")
     });
 
-    const targetId = type?.type === "personal" && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+    const targetId = type?.type?.includes("personal") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
+
+    console.log("targetId", targetId)
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
+
+    console.log("disabledDays", disabledDays)
 
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
@@ -260,9 +264,11 @@ export function Overview() {
     const [countAppointmentsPending, setCountAppointmentsPending] = useState<number | null>(null);
 
     useEffect(() => {
-        if (type?.type !== "personal") return;
-        const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
-        loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
+        if (type?.type?.includes("personal")) {
+
+            const today = format(startOfDay(new Date()), "yyyy-MM-dd", { locale: ptBR });
+            loadAppointmentCounts(setCountAppointmentsToday, setCountAppointmentsPending, today);
+        };
     }, [type]);
 
     const [modalText, setModalText] = useState<{ title: string; description: string }>({ title: "", description: "" });
@@ -276,8 +282,6 @@ export function Overview() {
     function openModal(type: ModalType) {
         setModalType(type);
     }
-
-    console.log(modalType)
 
     function handleSuccessModalInfo(title: string, description: string) {
         openModal("success");
@@ -312,8 +316,8 @@ export function Overview() {
 
     const isLoadingCalendar =
         isTypeLoading ||
-        appointments.isPending ||
-        type?.type === "aluno" ? personalList.isPending : personalId.isPending ||
+            appointments.isPending ||
+            type?.type?.includes("aluno") ? personalList.isPending : personalId.isPending ||
         isLoadingDisabledDays
 
 
@@ -326,7 +330,7 @@ export function Overview() {
                 <div className={classNames(styles.containerContent, { [styles.containerContentMobile]: isMobile })}>
                     <div className={classNames(styles.overviewLeftColumn, { [styles.overviewLeftColumnMobile]: isMobile })}>
 
-                        {isMobile && type?.type === "aluno" && (
+                        {isMobile && type?.type?.includes("aluno") && (
                             <MobileAlunoPanel
                                 isPending={!!actualPlanQuery?.isPending}
                                 hasPlan={!!actualPlanQuery?.data?.data}
@@ -338,7 +342,7 @@ export function Overview() {
                             />
                         )}
 
-                        {isMobile && type?.type !== "aluno" && (
+                        {isMobile && !type?.type?.includes("aluno") && (
                             <div className={styles.schedulePageUserActionsMobile}>
                                 <OverviewCardPersonal
                                     title={"Aulas para realizar hoje"}
@@ -390,7 +394,7 @@ export function Overview() {
                                 <ViewCalendarMonthStyled
                                     isMobile={isMobile}
                                     events={appointments.data?.data}
-                                    isUserAuthorizedToInteract={type?.type === "aluno" && !!actualPlanQuery.data}
+                                    isUserAuthorizedToInteract={type?.type?.includes("aluno") && !!actualPlanQuery.data}
                                     canMakeAppointment={classBalanceQuery.data?.saldoPresencial > 0 || classBalanceQuery.data?.saldoResidencial > 0 || classBalanceQuery.data?.saldoFuncional > 0}
                                     modalInfo={setModalText}
                                     modalType={setModalType}
@@ -415,7 +419,7 @@ export function Overview() {
                         </div>
                     </div>
 
-                    {!type || type?.type === null && (
+                    {type?.type === null && (
                         <div className={styles.schedulePageUserActions}>
                             <div className="bg-white rounded-xl shadow-xl p-6">
                                 <Skeleton height={24} width={350} className="mb-4" />
@@ -433,7 +437,7 @@ export function Overview() {
                         </div>
                     )}
 
-                    {!isMobile && (!type || type?.type === "aluno") && (
+                    {!isMobile && (type?.type?.includes("aluno")) && (
                         isLoadingCalendar ? (
                             <div className={styles.schedulePageUserActions}>
                                 <div className="bg-white rounded-xl shadow-xl p-6">
@@ -471,8 +475,8 @@ export function Overview() {
                         )
                     )}
 
-                    {!isMobile && type?.type && type.type !== "aluno" && (
-                        <div className={classNames(styles.schedulePageUserActions, { [styles.schedulePageUserActionsPersonal]: type?.type === "personal" })}>
+                    {!isMobile && type?.type && !type.type.includes("aluno") && (
+                        <div className={classNames(styles.schedulePageUserActions, styles.schedulePageUserActionsPersonal)}>
                             <OverviewCardPersonal
                                 title={"Aulas para realizar hoje"}
                                 subtitle={countAppointmentsToday ?? <Skeleton />}

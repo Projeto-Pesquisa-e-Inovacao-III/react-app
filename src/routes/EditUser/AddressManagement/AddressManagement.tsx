@@ -263,7 +263,7 @@ export default function AddressManagement() {
                       <Map size={36} color="#093a5d" className={styles.emptyIcon} />
                     </div>
                     <h3>Nenhum endereço encontrado</h3>
-                    <p>Você ainda não cadastrou nenhum endereço. Adicione um para agilizar seus agendamentos e entregas.</p>
+                    <p>Você ainda não cadastrou nenhum endereço. Adicione um para agilizar seus agendamentos.</p>
                     <SmallerButton
                       type="button"
                       icon={<MapPin size={16} />}

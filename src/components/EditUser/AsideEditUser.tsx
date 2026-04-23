@@ -18,7 +18,7 @@ export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesi
                     Informações Pessoais
                 </Link>
 
-                {type?.type === "aluno" && (
+                {type?.type?.includes("aluno") && (
                     <Link to="/edit-user/anamnesis"
                         className={classNames(styles.link, props.activeTab === "anamnesis" ? styles.linkActive : styles.linkInactive)}
                     >
@@ -35,7 +35,7 @@ export default function AsideEditUser(props: { activeTab: "edituser" | "anamnesi
                     Segurança
                 </Link>
 
-                {type?.type === "aluno" && (
+                {type?.type?.includes("aluno") && (
                     <Link
                         to="/edit-user/addresses"
                         className={classNames(styles.link, props.activeTab === "addresses" ? styles.linkActive : styles.linkInactive)}

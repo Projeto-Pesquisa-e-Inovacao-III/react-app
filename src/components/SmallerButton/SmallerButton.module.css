@@ -19,6 +19,13 @@
     cursor: not-allowed;
 }
 
+.btnSched:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #cbd5e1;
+    color: #475569;
+}
+
 @media (max-width: 1024px) {
 
     .btnSched {

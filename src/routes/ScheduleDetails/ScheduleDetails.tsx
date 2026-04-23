@@ -39,9 +39,6 @@ export default function ScheduleDetails() {
 
     const type = useContext(TypeContext);
 
-
-    console.log("User type in ScheduleDetails:", type);
-
     const [searchParams] = useSearchParams();
 
 
@@ -213,22 +210,22 @@ export default function ScheduleDetails() {
                                 <div className={styles.professionalCard}>
 
                                     <div className={styles.avatarSection}>
-                                        <UserAvatar foto={type?.type === "personal" ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
+                                        <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={!type?.type?.includes("aluno") ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
                                         <div className={styles.professionalName}>
-                                            {type?.type === "personal" ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                            {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
                                         </div>
-                                        <div className={styles.professionalSub}>{type?.type === "personal" ? "Aluno" : "Personal Trainer"}</div>
+                                        <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
                                     </div>
                                     <div className={styles.ageDivider}>
                                         <span className={styles.ageLabel}>Idade</span>
                                         <span className={styles.ageValue}>
-                                            {type?.type === "personal"
+                                            {!type?.type?.includes("aluno")
                                                 ? appointment.data?.aluno?.idade
                                                 : appointment.data?.personal?.idade} anos
                                         </span>
                                     </div>
 
-                                    {type?.type === "aluno" && (
+                                    {type?.type?.includes("aluno") && (
                                         <div className={styles.contactButtons}>
                                             <button className={styles.contactBtn} onClick={handleWhatsAppClick}>
                                                 <MessageSquare size={16} />
@@ -299,7 +296,7 @@ export default function ScheduleDetails() {
                 </div>
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
-                    {type?.type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {type?.type?.includes("personal") && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
 
                             <div className={styles.buttonAbsence}>
@@ -324,14 +321,14 @@ export default function ScheduleDetails() {
 
                     {
                         (
-                            (type?.type === "personal" && (
+                            (!type?.type?.includes("aluno") && (
 
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
-                            (type?.type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
+                            (type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
-                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "aluno" })}>
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type?.includes("personal") || type?.type?.includes("admin") || type?.type?.includes("aluno") })}>
                                 <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />
@@ -364,7 +361,7 @@ export default function ScheduleDetails() {
                     )}
 
 
-                    {type?.type === "aluno" && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
+                    {type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
                         <div className={classNames(styles.buttonGroup)}>
                             <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");
@@ -405,9 +402,9 @@ export default function ScheduleDetails() {
                             isReschedule={true}
                             rescheduleId={appointmentId}
                             clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
-                            typeUser={type?.type || undefined}
+                            typeUser={type?.type || []}
                             appoitmentData={appointment.data}
-                            goToNextStep={type?.type === "personal" ? false : true}
+                            goToNextStep={!type?.type?.includes("aluno")}
                         />
                     </>
                 )}

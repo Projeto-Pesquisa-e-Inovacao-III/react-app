@@ -2,5 +2,8 @@ export type ListStudents = {
     "id": number,
     "nome": string,
     "idade": number,
-    "caminhoFoto": string
+    "dataNascimento"?: string,
+    "caminhoFoto": string,
+    "ativo"?: boolean,
+    "roles": string[]
 }[];

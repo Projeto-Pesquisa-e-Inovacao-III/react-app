@@ -29,6 +29,7 @@ const titles = {
     "/dashboard": "Dashboard | CSF Treinamentos",
     "/users": "Usuários | CSF Treinamentos",
     "/users/view-user-data": "Dados do Usuário | CSF Treinamentos",
+    "/users/view-personal-data": "Dados do Personal | CSF Treinamentos",
     "/edit-user": "Editar Usuário | CSF Treinamentos",
     "/edit-user/security": "Editar Usuário | CSF Treinamentos",
     "/edit-user/addresses": "Endereços | CSF Treinamentos",
@@ -73,6 +74,7 @@ export default function Layout() {
 
     const { type, setType } = context;
 
+    console.log("type é: ", type)
     useEffect(() => {
         console.log("logado e nao carregando", !isLoggedIn.isLoading && !isLoggedIn.data?.autentificado)
         console.log("erro e nao carregando", isLoggedIn.isError && !isLoggedIn.isLoading)
@@ -84,20 +86,20 @@ export default function Layout() {
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {
-            const backendType = isLoggedIn.data.user.tipo.toLowerCase();
-            setType(backendType === "personal" ? "personal" : "aluno");
+            const backendType = isLoggedIn.data.user.roles;
+            setType(backendType.map((item: string) => item.toLowerCase()));
         }
     }, [isLoggedIn.data]);
 
-    // useEffect(() => {
-    //     if (isLoggedIn.isLoading || !isLoggedIn.data) return;
+    useEffect(() => {
+        if (isLoggedIn.isLoading || !isLoggedIn.data) return;
 
-    //     const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
-    //     console.log("ativoAnamnese", !ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno");
-    //     if (!ativoAnamnese && !exceptions.includes(location.pathname) && type === "aluno") {
-    //         nav("/anamnesis");
-    //     }
-    // }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
+        const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
+        const isAnamnesisRoute = location.pathname === "/anamnesis";
+        if (!ativoAnamnese && !exceptions.includes(location.pathname) && !isAnamnesisRoute && type?.includes("aluno")) {
+            nav("/anamnesis");
+        }
+    }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
 
     return (
         <div>

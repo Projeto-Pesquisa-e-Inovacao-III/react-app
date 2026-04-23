@@ -67,10 +67,6 @@
   margin-bottom: 0.25rem;
 }
 
-.progressLabel {
-  /* inherit */
-}
-
 .progressValue {
   font-weight: 700;
 }

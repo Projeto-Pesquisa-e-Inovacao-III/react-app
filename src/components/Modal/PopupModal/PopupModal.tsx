@@ -197,7 +197,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                     </PaginatedList>
                 )}
 
-                {type === "aluno" && (
+                {type?.includes("aluno") && (
                     <SmallerButton classname="h-12" type="button" title="Novo agendamento" handleButtonClick={() => {
                         closingAction.current = "newEvent";
                         handleAnimatedClose();
@@ -232,7 +232,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                                     }
                                 };
                             })()}
-                            typeUser={type || ""}
+                            typeUser={type || []}
                             clickedDate={date}
                             goToNextStep={false}
                         />

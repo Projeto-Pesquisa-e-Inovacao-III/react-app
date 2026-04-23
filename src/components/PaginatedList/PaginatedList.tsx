@@ -55,8 +55,10 @@ export default function PaginatedList({
     }, [page, pagination]);
 
     return (
-        <div className={`${listClassName} ${animClass}`.trim()}>
-            {children}
+        <>
+            <div className={`${listClassName} ${animClass}`.trim()}>
+                {children}
+            </div>
 
             {pagination && pagination.totalPages > 1 && (
                 <div className={styles.navButtons}>
@@ -110,7 +112,6 @@ export default function PaginatedList({
                     />
                 </div>
             )}
-
-        </div>
+        </>
     );
 }

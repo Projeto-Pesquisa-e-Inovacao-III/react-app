@@ -44,7 +44,7 @@ type NewEventProps = {
     clickedDate?: string;
     newAppointmentCreated?: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
     goToNextStep?: boolean;
-    typeUser?: string;
+    typeUser?: string[];
     disabledDays?: string[];
 };
 
@@ -95,7 +95,7 @@ export default function NewEvent(
         queryKey: ["personalList"],
         queryFn: getPersonalList,
         select: (res) => res.data,
-        enabled: typeUser === "aluno",
+        enabled: typeUser?.includes("aluno"),
         refetchOnWindowFocus: false,
     });
 
@@ -108,7 +108,7 @@ export default function NewEvent(
         queryKey: ["myId"],
         queryFn: findUserData,
         select: (res) => res.data?.id,
-        enabled: typeUser === "personal",
+        enabled: !typeUser?.includes("aluno"),
         refetchOnWindowFocus: false,
     });
 
@@ -367,7 +367,7 @@ export default function NewEvent(
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             endereco: null,
-            personalId: typeUser === "personal" ? myId.data : personalList.data?.content[0]?.id,
+            personalId: typeUser?.includes("personal") ? myId.data : personalList.data?.content[0]?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -433,7 +433,7 @@ export default function NewEvent(
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: type?.type?.includes("aluno")
     });
 
     const [scheduleTypes, setScheduleTypes] = useState<{
@@ -542,11 +542,12 @@ export default function NewEvent(
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours", typeUser,
             myId.data,
-            personalList.data?.content[0]?.id,
+            personalList.data?.content?.[0]?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data?.content[0].id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content?.[0]?.id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
+        enabled: typeUser?.includes("personal") ? !!myId.data : !!personalList.data?.content?.[0]?.id,
     });
 
 
@@ -574,7 +575,7 @@ export default function NewEvent(
             myId.data,
             personalList.data?.content[0]?.id,
             tomorrow],
-        queryFn: () => getPersonalHours(typeUser === "personal" ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
     });
@@ -636,7 +637,7 @@ export default function NewEvent(
             })}>
                 {!isMobile && (
                     <div className={`p-4 py-7 bg-gray-100 border-r border-gray-300 sticky left-0 top-0 flex ${step === 2 && "gap-4"} ${step === 1 && "justify-between"} flex-col w-lg`} style={{ zIndex: 1000 }}>
-                        {typeUser === "personal" ? (
+                        {typeUser?.includes("personal") ? (
                             // <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno.avatarUrl : ""} />
                             <InformationCard
                                 icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
@@ -751,7 +752,7 @@ export default function NewEvent(
                             <div className={styles.containerForm} >
                                 {isMobile && (
                                     <>
-                                        {typeUser === "personal" ? (
+                                        {typeUser?.includes("personal") ? (
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
                                             <InformationCard

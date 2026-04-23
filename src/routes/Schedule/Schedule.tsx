@@ -76,14 +76,14 @@ export default function Schedule() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: isTypeReady && type?.type === "aluno"
+        enabled: isTypeReady && type?.type?.includes("aluno")
     });
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: isTypeReady && type?.type?.includes("aluno")
     });
 
 
@@ -157,7 +157,7 @@ export default function Schedule() {
     });
 
     const appointmentsUser: RescheduleAppointment[] =
-        type?.type === "aluno"
+        type?.type?.includes("aluno")
             ? userRescheduleAppointments.filter(
                 appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
             )
@@ -209,20 +209,17 @@ export default function Schedule() {
         refetchOnWindowFocus: false,
     });
 
+    const targetId = personalList.data?.content?.[0]?.id;
+
     const availabilityHoursTomorrowQuery = useQuery({
         queryKey: ["availabilityHoursTomorrow"],
-        queryFn: () => getAvailabilityHoursTomorrow(personalList.data[0].id),
+        queryFn: () => getAvailabilityHoursTomorrow(targetId),
         refetchOnWindowFocus: false,
-        enabled: type?.type === "aluno"
+        enabled: !!type?.type?.includes("aluno")
     })
 
-    console.log("availabilityHoursTomorrowQuery", availabilityHoursTomorrowQuery)
 
-    console.log(clickedDate)
-
-    const targetId = personalList.data?.content?.[0]?.id;
-    const { disabledDays } = useDisabledDays(type?.type === "aluno" ? targetId : undefined);
-
+    const { disabledDays } = useDisabledDays(!!type?.type?.includes("aluno") ? targetId : undefined);
 
     return (
         <>
@@ -230,7 +227,7 @@ export default function Schedule() {
                 <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
                 </div>
-            ) : type.type === "personal" ? (
+            ) : !type?.type?.includes("aluno") ? (
                 <CalendarWeek
                     insertedEvents={appointmentsUser || []}
                     openModal={() => setOpenModal("newEvent")}

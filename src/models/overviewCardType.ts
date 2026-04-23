@@ -4,5 +4,5 @@ export type OverviewCardType = {
     type: string;
     titletbn: string;
     onClick: () => void;
-    typeUser: "personal" | "usuario";
+    typeUser: "personal" | "usuario" | "admin";
 };
