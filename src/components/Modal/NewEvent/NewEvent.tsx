@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import CalendarMonthStyled from "../../Calendars/CalendarMonthStyled/CalendarMonthStyled";
 import SmallerButton from "../../SmallerButton/SmallerButton";
@@ -25,7 +25,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import Select from "../../Select/Select";
 import UserAvatar from "../../UserAvatar/UserAvatar";
 import InformationCard from "./InformationCard/InformationCard";
-import type { HorariosPersonal } from "../../../models/personal";
+import type { HorariosPersonal, PersonalSummary } from "../../../models/personal";
 import { getUserAddresses } from "../../../constants/address";
 import useModalClose from "../../../hooks/useModalClose";
 import ConfirmCloseModal from "../ConfirmCloseModal/ConfirmCloseModal";
@@ -88,7 +88,7 @@ export default function NewEvent(
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
-    const [selectedLocation] = useState<string>("CASA");
+    const [selectedLocation] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
@@ -99,8 +99,23 @@ export default function NewEvent(
         refetchOnWindowFocus: false,
     });
 
+    const [selectedPersonalId, setSelectedPersonalId] = useState<number | undefined>(undefined);
 
-    const internalTargetId = !disabledDays ? personalList.data?.content[0]?.id : undefined;
+    const selectedPersonal: PersonalSummary | undefined = personalList.data?.content?.find(
+        (p: PersonalSummary) => p.id === selectedPersonalId
+    ) ?? personalList.data?.content?.[0];
+
+    const personalOptions = useMemo(
+        () => personalList.data?.content?.map((p: PersonalSummary) => ({ value: p.id, label: p.nome })),
+        [personalList.data?.content]
+    );
+
+    const handlePersonalChange = useCallback((val: string | number) => {
+        setSelectedPersonalId(Number(val));
+        setNewEventStartHour(undefined);
+    }, []);
+
+    const internalTargetId = !disabledDays ? selectedPersonal?.id : undefined;
     const { disabledDays: disabledDaysRequest } = useDisabledDays(internalTargetId);
 
 
@@ -113,7 +128,6 @@ export default function NewEvent(
     });
 
 
-    console.log("personalList data:", personalList.data);
 
     const [addressData, setAddressData] = useState<AddressState>({
         postalCode: "",
@@ -179,10 +193,6 @@ export default function NewEvent(
         document.addEventListener("keydown", handleKeyDown, true);
         return () => document.removeEventListener("keydown", handleKeyDown, true);
     }, [newEventDate, newEventStartHour, selectedType, addressData]);
-
-    useEffect(() => {
-        console.log("newEventStartHour atualizado:", newEventStartHour);
-    }, [newEventStartHour]);
 
     const formattedDate = useMemo(() => {
         if (newEventDate && newEventStartHour) {
@@ -288,7 +298,7 @@ export default function NewEvent(
                     uf: addressData.state
                 }
             },
-            personalId: personalList.data?.content[0]?.id,
+            personalId: Number(selectedPersonal?.id),
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -367,7 +377,7 @@ export default function NewEvent(
             data: `${newEventDate}T${newEventStartHour}`,
             descricao: calculatedTitle,
             endereco: null,
-            personalId: typeUser?.includes("personal") ? myId.data : personalList.data?.content[0]?.id,
+            personalId: typeUser?.includes("personal") ? myId.data : selectedPersonal?.id,
             tipoAulaProdutoContratado: selectedType.toUpperCase()
         }
 
@@ -542,12 +552,12 @@ export default function NewEvent(
     const availabilityHours = useQuery({
         queryKey: ["availabilityHours", typeUser,
             myId.data,
-            personalList.data?.content?.[0]?.id,
+            selectedPersonal?.id,
             newEventDate],
-        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content?.[0]?.id, newEventDate ?? "", selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : selectedPersonal?.id, newEventDate ?? "", selectedType.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
         refetchOnWindowFocus: false,
-        enabled: typeUser?.includes("personal") ? !!myId.data : !!personalList.data?.content?.[0]?.id,
+        enabled: !!newEventDate && (typeUser?.includes("personal") ? !!myId.data : !!selectedPersonal?.id),
     });
 
 
@@ -573,11 +583,12 @@ export default function NewEvent(
     const availabilityHoursTomorrow = useQuery({
         queryKey: ["availabilityHoursTomorrow", typeUser,
             myId.data,
-            personalList.data?.content[0]?.id,
+            selectedPersonal?.id,
             tomorrow],
-        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content[0].id, tomorrow, selectedType.toUpperCase()),
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : selectedPersonal?.id, tomorrow, selectedType.toUpperCase()),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: typeUser?.includes("personal") ? !!myId.data : !!selectedPersonal?.id,
     });
 
     const [openSelectId, setOpenSelectId] = useState<string | null>(null);
@@ -619,7 +630,26 @@ export default function NewEvent(
         }
     }, [addresses.data, addresses.isSuccess]);
 
-    console.log("appoitmentData", appoitmentData)
+    function renderPersonalCard(withNav = true) {
+        
+        return (
+            <InformationCard
+                icon={
+                    <UserAvatar useUserImage={true} foto={selectedPersonal?.caminhoFoto} userName={selectedPersonal?.nome} />
+                }
+                title="Personal Trainer"
+                subtitle={selectedPersonal?.nome || ""}
+                subtitle2={
+                    !personalList.isLoading && selectedPersonal?.dataNascimento
+                        ? `${differenceInYears(new Date(), parse(selectedPersonal.dataNascimento, "yyyy-MM-dd", new Date()))} anos`
+                        : ""
+                }
+                options={withNav ? personalOptions : undefined}
+                selectedValue={withNav ? selectedPersonal?.id : undefined}
+                onOptionChange={withNav ? handlePersonalChange : undefined}
+            />
+        );
+    }
 
     return (
         <>
@@ -653,15 +683,7 @@ export default function NewEvent(
                                     </h1>
                                 )}
 
-                                <InformationCard
-                                    icon={
-                                        <UserAvatar useUserImage={true} foto={personalList.data?.content[0]?.caminhoFoto} userName={personalList.data?.content[0]?.nome} />
-
-                                    }
-                                    title="Personal Trainer"
-                                    subtitle={personalList.data?.content[0]?.nome || ""}
-                                    subtitle2={!personalList.isLoading && personalList.data?.content[0].dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
-                                />
+                                {renderPersonalCard()}
                             </>
                         )}
                         {step === 2 && (
@@ -700,7 +722,27 @@ export default function NewEvent(
                                         showSelectAll={false}
                                         showSearchInput={false}
                                     />
+
                                 </div>
+                                {/* <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
+                                    <Select
+                                        defaultValue="PRESENCIAL"
+                                        id="type-select"
+                                        openSelectId={openSelectId}
+                                        setOpenSelectId={setOpenSelectId}
+                                        onSelectStatusChange={setSelectedLocation}
+                                        values={scheduleTypes}
+                                        containerClassName="w-full!"
+                                        triggerClassName="p-3 w-full!"
+                                        selectWrapperClassName="bg-white! rounded-xl! w-full!"
+                                        selectPlaceholder="Selecione o local"
+                                        labelClassName="text-slate-500! font-bold text-sm uppercase"
+                                        label="Local"
+                                        showSelectAll={false}
+                                        showSearchInput={false}
+                                    />
+
+                                </div> */}
                             </div>
                         )}
                         {step === 1 && (
@@ -755,19 +797,7 @@ export default function NewEvent(
                                         {typeUser?.includes("personal") ? (
                                             <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
                                         ) : (
-                                            <InformationCard
-                                                icon={
-                                                    personalList.data?.content[0]?.caminhoFoto ? (
-                                                        <UserAvatar useUserImage={true} foto={personalList.data?.content[0]?.caminhoFoto} />
-                                                    ) : (
-                                                        <UserAvatar userName={personalList.data?.content[0]?.nome} />
-                                                    )
-                                                }
-
-                                                title="Personal Trainer"
-                                                subtitle={personalList.data?.content[0]?.nome || ""}
-                                                subtitle2={!personalList.isLoading && personalList.data?.content[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data?.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
-                                            />
+                                            renderPersonalCard()
                                         )}
                                         {!isReschedule && (
 
@@ -933,7 +963,7 @@ export default function NewEvent(
                                     </div>
                                 </div>
                                 <div className={classnames(styles.buttonNextStep)}>
-                                    <SmallerButton type="button" title={buttonTitle || "Avançar"} handleButtonClick={() => handleStepChange(2)} classname={newEventStartHour && newEventDate && selectedType && selectedLocation ? styles.enabled : styles.disabled} />
+                                    <SmallerButton type="button" title={buttonTitle || "Avançar"} handleButtonClick={() => handleStepChange(2)} classname={newEventStartHour && newEventDate && selectedType ? styles.enabled : styles.disabled} />
                                 </div>
 
                             </div>
@@ -948,12 +978,7 @@ export default function NewEvent(
                                     <h1 className={classnames(styles.summaryTitle, { [styles.summaryTitleMobile]: isMobile })}>
                                         Resumo do agendamento
                                     </h1>
-                                    <InformationCard
-                                        icon={<UserAvatar userName={!personalList.isLoading && personalList.data?.content[0]?.nome} foto={!personalList.isLoading && personalList.data?.content[0]?.caminhoFoto} useUserImage={true} />}
-                                        title="Personal Trainer"
-                                        subtitle={!personalList.isLoading && personalList.data?.content[0]?.nome || ""}
-                                        subtitle2={!personalList.isLoading && personalList.data?.content[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
-                                    />
+                                    {renderPersonalCard(false)}
 
                                     <InformationCard
                                         icon={<Calendar />}

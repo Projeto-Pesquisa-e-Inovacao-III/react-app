@@ -225,6 +225,7 @@
 .wrappeSelects {
   display: flex;
   justify-content: space-between;
+  flex-direction: column;
   gap: 20px;
   border-radius: 8px;
   margin: 20px 0;
