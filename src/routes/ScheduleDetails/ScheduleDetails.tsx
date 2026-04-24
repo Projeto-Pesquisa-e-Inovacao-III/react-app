@@ -186,6 +186,11 @@ export default function ScheduleDetails() {
         window.open(`https://api.whatsapp.com/send?phone=5511945584686&text=Ol%C3%A1%2C%20tudo%20bem%3F`, "_blank");
     }
 
+    function handleGoogleMapsClick() {
+        const encodedAddress = encodeURIComponent(appointment.data?.endereco?.cep?.logradouro + ", " + appointment.data?.endereco?.cep?.bairro + ", " + appointment.data?.endereco?.numero + " – " + appointment.data?.endereco?.cep?.uf);
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, "_blank");
+    }
+
     return (
         <>
             <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
@@ -278,7 +283,7 @@ export default function ScheduleDetails() {
                                 <div className={styles.mapCard}>
                                     <div className={styles.mapCardHeader}>
                                         <span className={styles.infoCardLabel}>Endereço Completo</span>
-                                        <a href="#" className={styles.directionsLink}><Navigation size={13} /> Direções</a>
+                                        <a onClick={() => handleGoogleMapsClick()} className={styles.directionsLink}><Navigation size={13} /> Direções</a>
                                     </div>
                                     <div className={styles.addressText}>
                                         {appointment.data?.endereco?.cep?.logradouro} – {appointment.data?.endereco?.cep?.bairro}, {appointment.data?.endereco?.numero} – {appointment.data?.endereco?.cep?.uf}
