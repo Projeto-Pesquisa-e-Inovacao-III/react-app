@@ -21,6 +21,20 @@ type UseInfinitePaginationProps<T> = {
     ) => number | undefined;
 };
 
+// hook for infinite pagination
+/* 
+example of usage:
+const { data, fetchNextPage, hasNextPage, isFetchingNextPage, loadMoreRef } = useInfinitePagination({
+    queryKey: ["students"],
+    queryFn: (page) => listStudents(page),
+    enable: true,
+    getNextPageParam: (lastPage) => {
+        const currentPage = lastPage.page.number;
+        const totalPages = lastPage.page.totalPages;
+        return currentPage + 1 < totalPages ? currentPage + 1 : undefined;
+    }
+});
+*/
 export function useInfinitePagination<T>(
 
     { queryKey, queryFn, enable, getNextPageParam }: UseInfinitePaginationProps<T>) {
@@ -35,10 +49,13 @@ export function useInfinitePagination<T>(
         getNextPageParam:
             getNextPageParam ??
             ((lastPage) => {
+                if (!lastPage?.page) return undefined;
+
                 const currentPage = lastPage.page.number;
                 const totalPages = lastPage.page.totalPages;
                 return currentPage + 1 < totalPages ? currentPage + 1 : undefined;
             }),
+        refetchOnWindowFocus: false
     });
 
     useEffect(() => {
@@ -61,6 +78,6 @@ export function useInfinitePagination<T>(
         ...query,
         loadMoreRef,
         data: query.data?.pages.flatMap(page => page.content) ?? [],
-            pagination: query.data?.pages.at(-1)?.page
+        pagination: query.data?.pages.at(-1)?.page
     }
 }

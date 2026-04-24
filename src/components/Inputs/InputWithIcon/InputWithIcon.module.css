@@ -21,6 +21,24 @@
     color: #666 !important;
 }
 
+.errorInput:focus-visible {
+    outline: 1px solid #991b1b !important;
+}
+
+.errorInput {
+    border-color: #991b1b !important;
+    border-width: 1px !important;
+}
+
+.successInput:focus-visible {
+    outline: 1px solid #166534 !important;
+}
+
+/* .successInput {
+    border-color: #166534 !important;
+    border-width: 1px !important;
+} */
+
 .inputIcon {
     display: flex;
     position: absolute;
@@ -32,13 +50,17 @@
     width: 1rem;
 }
 
+.noIconInput{
+ padding-left: 12px !important;
+}
+
 .inputIcon svg {
     height: 100%;
     width: 100%;
 }
 
 .wrapperInp label {
-    font-size: 14px;
+    font-size: 16px !important;
 }
 
 .passwordInput {

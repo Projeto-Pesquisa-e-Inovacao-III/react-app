@@ -6,16 +6,17 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { TypeContext } from "../../App";
 import useMobile from "../../hooks/isMobile";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
-import AddPackagePlan from "../../components/AddPackagePlan/AddPackagePlan";
+import AddPackagePlan from "../../components/Modal/AddPackagePlan/AddPackagePlan";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
+import PagBankModal from "../../components/Modal/PagBankModal/PagBankModal";
 import type { ProductExhibition } from "../../models/products";
-import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions } from "../../constants/products";
+import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarX, LucidePlusCircle, Package, Plus, PlusCircle } from "lucide-react";
+import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 
-type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | null;
+type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | null;
 
 export function Packages() {
     const isMobile = useMobile();
@@ -36,12 +37,12 @@ export function Packages() {
         }
     }, [openModal]);
 
-    const isPersonal = type?.type === "personal";
+    const isPersonal = type?.type?.includes("personal");
 
     function handleBuyClick(id: number) {
+        setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
-            const href: string = response.data.href
-            window.location.href = href;
+            window.location.href = response.data;
             // setSuccessModalInfos({
             //     title: "Compra Concluída",
             //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
@@ -50,7 +51,7 @@ export function Packages() {
             // setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
-            handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
+            // handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
         });
     };
 
@@ -59,6 +60,7 @@ export function Packages() {
         setPackageId(null);
     }
 
+
     const [productsExhibitions, setProductsExhibitions] = useState<ProductExhibition[]>([]);
     const [productsExhibitionsAdicional, setProductsExhibitionsAdicional] = useState<ProductExhibition[]>([]);
 
@@ -66,7 +68,6 @@ export function Packages() {
         queryKey: ['productsExhibitions'],
         queryFn: () => getProductsExhibitions(),
         select: (response) => {
-            console.log("Produtos de Exibição obtidos com sucesso!", response);
             return {
                 pacotes: response.data.filter((product: ProductExhibition) => product.tipoProduto === "PACOTE"),
                 adicionais: response.data.filter((product: ProductExhibition) => product.tipoProduto === "ADICIONAL")
@@ -81,6 +82,58 @@ export function Packages() {
         }
     }, [productsData]);
 
+
+    const isAdmin = !!type?.type?.includes("admin");
+
+    const numberOfPackages = useQuery({
+        queryKey: ['verifyNumberOfPackages'],
+        queryFn: () => verifyNumberOfPackages(),
+        select: (response) => {
+            return response.data;
+        },
+        refetchOnWindowFocus: false,
+        enabled: isAdmin
+    });
+
+    const [verifyNumberOfPackagesFront, setVerifyNumberOfPackagesFront] = useState(false);
+    const [verifyNumberOfAdditional, setVerifyNumberOfAdditional] = useState(false);
+    useEffect(() => {
+        if (numberOfPackages.data) {
+            const pacotesData = numberOfPackages.data.find((item: any) => item.tipoProduto === "PACOTE");
+            const adicionaisData = numberOfPackages.data.find((item: any) => item.tipoProduto === "ADICIONAL");
+
+            const pacotesAtivos = productsExhibitions.filter(p => p.status === "ATIVO").length;
+            const adicionaisAtivos = productsExhibitionsAdicional.filter(p => p.status === "ATIVO").length;
+
+            if (pacotesData && adicionaisData) {
+                setVerifyNumberOfPackagesFront(
+                    pacotesAtivos >= pacotesData.limit
+                );
+                setVerifyNumberOfAdditional(
+                    adicionaisAtivos >= adicionaisData.limit
+                );
+            }
+        }
+    }, [numberOfPackages.data, productsExhibitions, productsExhibitionsAdicional]);
+
+    // const verifyNumberOfPackagesFront = (productsExhibitions.filter(p => p.status === "ATIVO").length + productsExhibitionsAdicional.filter(p => p.status === "ATIVO").length) === numberOfPackages.data?.limit;
+
+
+    // [{"tipoProduto":"PACOTE","limit":6,"size":1},{"tipoProduto":"ADICIONAL","limit":6,"size":0}]
+    async function handleClickAddPackage(type: "add" | "addAdditional") {
+
+        const { data } = await numberOfPackages.refetch();
+        const classType = type === "add" ? "PACOTE" : "ADICIONAL";
+
+        const dataForType = data.find((item: any) => item.tipoProduto === classType);
+
+        if (dataForType.limit === dataForType.size) {
+            handleErrorModalInfos("Limite de Pacotes", "Você já atingiu o limite máximo de pacotes ativos.");
+            return;
+        }
+
+        setOpenModal(type);
+    }
 
     function handleErrorModalInfos(title: string, content: string) {
         setSuccessModalInfos({ title, content });
@@ -125,15 +178,6 @@ export function Packages() {
         return productsExhibitions.find(pkg => pkg.id === id);
     }
 
-    //temp
-    function safeParseDescricao(descricao: string) {
-        try {
-            return JSON.parse(descricao);
-        } catch {
-            return descricao;
-        }
-    }
-
     function renderPackageCardSkeleton() {
         return (
             <>{[...Array(3)].map((_, index) => (
@@ -144,6 +188,7 @@ export function Packages() {
                     preco={0}
                     onClick={() => { }}
                     isMobile={isMobile}
+                    isAdmin={type?.type?.includes("admin")}
                     isPersonal={isPersonal}
                     setHandleDelete={() => { }}
                     setHandleEdit={() => { }}
@@ -155,17 +200,16 @@ export function Packages() {
 
     const activePackages = productsExhibitions
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
     const activeAdicionais = productsExhibitionsAdicional
         .filter(p => p.status === "ATIVO")
-        .sort((a, b) => b.preco - a.preco)
+        .sort((a, b) => Number(b.preco) - Number(a.preco))
 
-    const packagesToRender = 5
 
-    const shouldUseCarousel = isPersonal ? activePackages.length >= 4 : activePackages.length >= packagesToRender
+    const shouldUseCarousel = activePackages.length >= 4
 
-    const shouldUseCarouselAdicional = isPersonal ? activeAdicionais.length >= 4 : activePackages.length >= packagesToRender
+    const shouldUseCarouselAdicional = activeAdicionais.length >= 4
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { align: "start", loop: true, skipSnaps: false },
@@ -180,7 +224,22 @@ export function Packages() {
         emblaApi?.scrollNext()
     }, [emblaApi])
 
-    const slidesToRender = activePackages
+    const [emblaRefPackage, emblaApiPackage] = useEmblaCarousel(
+        { align: "start", loop: true, skipSnaps: false },
+        []
+    )
+
+    const scrollPrevPackage = useCallback(() => {
+        emblaApiPackage?.scrollPrev()
+    }, [emblaApiPackage])
+
+    const scrollNextPackage = useCallback(() => {
+        emblaApiPackage?.scrollNext()
+    }, [emblaApiPackage])
+
+const slidesToRender = activePackages.length > 0
+  ? [...activePackages, ...activePackages, ...activePackages]
+  : activePackages;
 
     const slidesToRenderAdicional = productsExhibitionsAdicional
 
@@ -194,7 +253,7 @@ export function Packages() {
                     )}
                 >
                     <div>
-                        {isPersonal ? (
+                        {isAdmin ? (
                             <>
                                 <h1>
                                     Pacotes Atuais
@@ -210,14 +269,20 @@ export function Packages() {
                         )
                         }
                     </div>
-                    {isPersonal && (
+                    {isAdmin && (
                         <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                            <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => setOpenModal("add")} />
+                            {verifyNumberOfPackagesFront ?
+                                <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
+                                :
+                                (
+                                    <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote" handleButtonClick={() => handleClickAddPackage("add")} />
+                                )}
                         </div>
                     )}
                 </div>
 
-                <div className={classnames(styles.packagesListWrapperDesktop,
+
+                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
                     { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
                     { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
@@ -226,17 +291,18 @@ export function Packages() {
                         shouldUseCarousel ? (
                             <>
                                 <div className={styles.emblaWrapper}>
-                                    <button className={styles.emblaButtonPrev} onClick={scrollPrev}>‹</button>
+                                    <button className={styles.emblaButtonPrev} onClick={scrollPrevPackage}>‹</button>
                                     <div className={styles.embla}>
-                                        <div className={styles.emblaViewport} ref={emblaRef}>
+                                        <div className={styles.emblaViewport} ref={emblaRefPackage}>
                                             <div className={styles.emblaContainer}>
                                                 {slidesToRender.map((pacote, index) => (
-                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })} key={`slide-${index}-${pacote.id}`}>
+                                                    <div className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isAdmin })} key={`slide-${index}-${pacote.id}`}>
                                                         <PackageCard
                                                             {...pacote}
-                                                            descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                            descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                             onClick={() => handleBuyClick(pacote.id!)}
                                                             isMobile={isMobile}
+                                                            isAdmin={type?.type?.includes("admin")}
                                                             isPersonal={isPersonal}
                                                             setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                             setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
@@ -246,14 +312,18 @@ export function Packages() {
                                             </div>
                                         </div>
                                     </div>
-                                    <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
-                                    {isPersonal && !isMobile && (
-                                        <div className={styles.addCard} onClick={() => setOpenModal("add")}>
-                                            <div className={styles.addIconWrapper}>
-                                                <Plus size={24} color="#a2afc1" />
+                                    <button className={styles.emblaButtonNext} onClick={scrollNextPackage}>›</button>
+                                    {isAdmin && !isMobile && (
+                                        <div
+                                            style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
+                                            className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
+                                            onClick={() => handleClickAddPackage("add")}>
+
+                                            <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                                {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                             </div>
-                                            <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
-                                            <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                            {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                            {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                         </div>
                                     )}
                                 </div>
@@ -264,21 +334,26 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
+                                        isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, false)}
                                     />
                                 ))}
-                                {isPersonal && !isMobile && (
-                                    <div className={styles.addCard} onClick={() => setOpenModal("add")}>
-                                        <div className={styles.addIconWrapper}>
-                                            <Plus size={24} color="#a2afc1" />
+                                {isAdmin && !isMobile && (
+                                    <div
+                                        style={!shouldUseCarousel ? { maxWidth: "inherit" } : {}}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfPackagesFront })}
+                                        onClick={() => handleClickAddPackage("add")}>
+
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                                            {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
-                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                        {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </>
@@ -294,19 +369,20 @@ export function Packages() {
                             </h3>
 
                             <p className={styles.emptyPackageText}>
-                                Você ainda não cadastrou pacotes.
+                                {type?.type?.includes("admin") ? "Você ainda não cadastrou pacotes." : "Não há pacotes disponíveis no momento."}
                             </p>
                         </div>
                     )}
                 </div>
             </div >
-            {isPersonal && isMobile && (
-                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile })} onClick={() => setOpenModal("add")}>
-                    <div className={styles.addIconWrapper}>
-                        <Plus size={24} color="#a2afc1" />
+            {isAdmin && isMobile && (
+                <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfPackagesFront })} onClick={() => handleClickAddPackage("add")}>
+                    <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfPackagesFront })}>
+                        {verifyNumberOfPackagesFront ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                     </div>
-                    <h4 className={styles.addTitle}>Criar Novo Pacote</h4>
-                    <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+
+                    {!verifyNumberOfPackagesFront ? <h4 className={styles.addTitle}>Criar Novo Pacote</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                    {!verifyNumberOfPackagesFront ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                 </div>
             )}
             <div
@@ -317,14 +393,14 @@ export function Packages() {
                 )}
             >
                 <div>
-                    {isPersonal ? (
+                    {isAdmin ? (
                         <>
                             <h1>
                                 Pacotes Adicionais
                             </h1>
 
                             <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">adicionais ativos</span>
+                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "adicionais ativos" : "adicional ativo"}</span>
                             </div>
                         </>
                     ) : (
@@ -334,14 +410,19 @@ export function Packages() {
                     )
                     }
                 </div>
-                {isPersonal && (
+                {isAdmin && (
                     <div className={classnames(styles.addButtonContainer, { [styles.addButtonContainerMobile]: isMobile })}>
-                        <SmallerButton type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => setOpenModal("addAdditional")} />
+                        {verifyNumberOfAdditional ?
+                            <SmallerButton icon={<LucideCircleX />} classname="bg-red-200! border! border-red-800! cursor-not-allowed! text-red-900!" type="button" title="Limite de pacotes atingido" handleButtonClick={() => handleClickAddPackage("add")} />
+                            :
+                            (
+                                <SmallerButton icon={<LucidePlusCircle />} type="button" title="Adicionar Pacote Adicional" handleButtonClick={() => handleClickAddPackage("addAdditional")} />
+                            )}
                     </div>
                 )}
             </div>
 
-            <div className={classnames(
+            <div style={!shouldUseCarouselAdicional ? { gridTemplateColumns: `repeat(${activeAdicionais.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(
                 styles.packagesListWrapperDesktop,
                 { [styles.packagesListWrapperDesktopEmpty]: productsExhibitionsAdicional.length === 0 || (productsExhibitionsAdicional.length > 0 && !productsExhibitionsAdicional.some(p => p.status === "ATIVO")) },
                 { [styles.packagesListWrapperMobile]: isMobile })}>
@@ -356,12 +437,13 @@ export function Packages() {
                                     <div className={styles.emblaViewport} ref={emblaRef}>
                                         <div className={styles.emblaContainer}>
                                             {slidesToRenderAdicional.map((pacote, index) => (
-                                                <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isPersonal })}>
+                                                <div key={`slide-${index}-${pacote.id}`} className={classnames(styles.emblaSlide, { [styles.emblaSlideUser]: !isAdmin })}>
                                                     <PackageCard
                                                         {...pacote}
-                                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                                         onClick={() => handleBuyClick(pacote.id!)}
                                                         isMobile={isMobile}
+                                                        isAdmin={type?.type?.includes("admin")}
                                                         isPersonal={isPersonal}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
@@ -372,13 +454,17 @@ export function Packages() {
                                     </div>
                                 </div>
                                 <button className={styles.emblaButtonNext} onClick={scrollNext}>›</button>
-                                {isPersonal && !isMobile && (
-                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
-                                        <div className={styles.addIconWrapper}>
-                                            <Plus size={24} color="#a2afc1" />
+                                {isAdmin && !isMobile && (
+                                    <div
+                                        style={!shouldUseCarouselAdicional ? { maxWidth: "inherit" } : {}}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfAdditional })}
+                                        onClick={() => handleClickAddPackage("addAdditional")}>
+
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfAdditional })}>
+                                            {verifyNumberOfAdditional ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
-                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                        {!verifyNumberOfAdditional ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfAdditional ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </div>
@@ -388,24 +474,40 @@ export function Packages() {
                                     <PackageCard
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
-                                        descricao={pacote.beneficios && pacote.beneficios.map(b => b.valor)}
+                                        descricao={pacote.beneficios?.map(b => b.valor) || []}
                                         onClick={() => handleBuyClick(pacote.id!)}
                                         isMobile={isMobile}
+                                        isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
                                     />
                                 ))}
-                                {isPersonal && !isMobile && (
-                                    <div className={styles.addCard} onClick={() => setOpenModal("addAdditional")}>
-                                        <div className={styles.addIconWrapper}>
-                                            <Plus size={24} color="#a2afc1" />
+                                {isAdmin && !isMobile && (
+
+                                    <div
+                                        style={!shouldUseCarouselAdicional ? { maxWidth: "inherit" } : {}}
+                                        className={classnames(styles.addCard, { [styles.addCardLimit]: verifyNumberOfAdditional })}
+                                        onClick={() => handleClickAddPackage("addAdditional")}>
+
+                                        <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfAdditional })}>
+                                            {verifyNumberOfAdditional ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
                                         </div>
-                                        <h4 className={styles.addTitle}>Criar Novo Adicional</h4>
-                                        <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p>
+                                        {!verifyNumberOfAdditional ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                        {!verifyNumberOfAdditional ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
                                     </div>
                                 )}
                             </>
+                        )}
+                        {isAdmin && isMobile && (
+                            <div className={classnames(styles.addCard, { [styles.addCardMobile]: isMobile }, { [styles.addCardLimit]: verifyNumberOfAdditional })} onClick={() => handleClickAddPackage("addAdditional")}>
+                                <div className={classnames(styles.addIconWrapper, { [styles.addIconWrapperLimit]: verifyNumberOfAdditional })}>
+                                    {verifyNumberOfAdditional ? <CircleX size={24} color="#943032" /> : <Plus size={24} color="#a2afc1" />}
+                                </div>
+
+                                {!verifyNumberOfAdditional ? <h4 className={styles.addTitle}>Criar Novo Adicional</h4> : <h4 className={styles.addTitle}>Limite de pacotes atingido</h4>}
+                                {!verifyNumberOfAdditional ? <p className={styles.addText}>Adicione novas modalidades ou planos de fidelidade.</p> : <p className={styles.addText}>Você atingiu o limite máximo de pacotes.</p>}
+                            </div>
                         )}
                     </>
                 ) : (
@@ -419,7 +521,7 @@ export function Packages() {
                         </h3>
 
                         <p className={styles.emptyPackageText}>
-                            Você ainda não cadastrou pacotes adicionais.
+                            {type?.type?.includes("admin") ? "Você ainda não cadastrou pacotes adicionais." : "Não há pacotes adicionais disponíveis no momento."}
                         </p>
                     </div>
                 )}
@@ -439,7 +541,7 @@ export function Packages() {
 
             {
                 openModal === "error" && (
-                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                    <ErrorModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} closeThen={() => handleCloseModal()} />
                 )
             }
 
@@ -449,7 +551,7 @@ export function Packages() {
                     <AddPackagePlan title="Editar Pacote" onClose={(e) => {
                         setOpenModal(e ? "success" : null)
                         setPackageId(null)
-                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" values={packageId && productsExhibitionsFindById(packageId)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
+                    }} packageCreated={setProductsExhibitions} typePackage="PACOTE" packageValues={packageId ? productsExhibitionsFindById(packageId) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote foi editado com sucesso")} isEdit={true} />
                 )
             }
 
@@ -459,7 +561,7 @@ export function Packages() {
                         <AddPackagePlan title="Editar Adicional" onClose={(e) => {
                             setOpenModal(e ? "success" : null)
                             setPackageId(null)
-                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" values={packageId && productsExhibitionsFindById(packageId, true)} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
+                        }} packageCreated={setProductsExhibitionsAdicional} typePackage="ADICIONAL" packageValues={packageId ? productsExhibitionsFindById(packageId, true) : undefined} callSuccessModal={() => handleSuccessModalInfos("Edição concluída", "O pacote adicional foi editado com sucesso")} isEdit={true} />
                     </>
                 )
             }
@@ -483,6 +585,12 @@ export function Packages() {
             {
                 openModal === "success" && (
                     <SuccessModal title={SuccessModalInfos.title} content={SuccessModalInfos.content} isMobile={isMobile} closeThen={handleCloseModal} />
+                )
+            }
+
+            {
+                openModal === "loadingPagBank" && (
+                    <PagBankModal isMobile={isMobile} />
                 )
             }
         </>

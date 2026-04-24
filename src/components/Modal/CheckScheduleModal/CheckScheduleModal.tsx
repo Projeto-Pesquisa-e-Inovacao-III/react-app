@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useModalClose from "../../../hooks/useModalClose";
 import styles from "./CheckScheduleModal.module.css";
 import Button from "../../Button/Button";
 import MiniCalendar from "../../Calendars/MiniCalendar/CalendarMini";
@@ -9,6 +10,7 @@ import { findAppointmentById, rescheduleAppointment } from "../../../constants/s
 import { useQuery } from "@tanstack/react-query";
 import type { ScheduleReschedule } from "../../../models/schedule";
 import useMobile from "../../../hooks/isMobile";
+
 
 type CheckScheduleModalProps = {
     closeThen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,18 +27,17 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
     const [rescheduleReason, setRescheduleReason] = useState("")
     const [newEventStartHour, setNewEventStartHour] = useState<string>("")
 
-    function handleButtonClick(value: string) {
-        setNewEventStartHour(value)
+    function handleButtonClick(value: string | boolean) {
+        if (typeof value === "string") setNewEventStartHour(value)
     }
 
     function handleOpenCalendar() {
         setOpenCalendar(true)
     }
 
-    function handleCloseModal() {
-        document.body.style.overflow = 'auto';
-        closeThen(false);
-    }
+    const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
+        onClose: () => closeThen(false)
+    });
 
     function handleCloseCalendar() {
         setOpenCalendar(false)
@@ -47,10 +48,6 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
             setOpenCalendar(false)
         }
     }, [selectedDate])
-
-    useEffect(() => {
-        document.body.style.overflow = 'hidden';
-    }, []);
 
     const eventToReschedule = useQuery({
         queryKey: ["appointmentDetails"],
@@ -66,19 +63,7 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
                 idAgendamento: appointmentId,
                 data: selectedDate && newEventStartHour && `${selectedDate}T${newEventStartHour}`,
                 descricao: rescheduleReason,
-                endereco: {
-                    numero: eventToReschedule?.data.endereco.numero || "",
-                    tipo: eventToReschedule?.data.endereco.tipo || "",
-                    unidade: eventToReschedule?.data.endereco.unidade || "",
-                    complemento: eventToReschedule?.data.endereco.complemento || "",
-                    cep: {
-                        id: eventToReschedule?.data.endereco.cep.id || "",
-                        logradouro: eventToReschedule?.data.endereco.cep.logradouro || "",
-                        bairro: eventToReschedule?.data.endereco.cep.bairro || "",
-                        localidade: eventToReschedule?.data.endereco.cep.localidade || "",
-                        uf: eventToReschedule?.data.endereco.cep.uf || ""
-                    }
-                },
+                endereco: null
             };
 
             rescheduleAppointment(payload).then(() => {
@@ -92,8 +77,14 @@ export default function CheckScheduleModal({ closeThen, openSuccess, appointment
 
     return (
         <>
-            <div className="overlay"></div>
-            <div className={styles.modalCheckSchedule}>
+            <div className={classNames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div className={classNames(styles.modalCheckSchedule, {
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <div className={styles.titleX}>
                     <h2>Reagendar</h2>
                     <svg className={styles.exitIcon} width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={handleCloseModal}>

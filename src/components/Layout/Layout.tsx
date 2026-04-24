@@ -29,14 +29,20 @@ const titles = {
     "/dashboard": "Dashboard | CSF Treinamentos",
     "/users": "Usuários | CSF Treinamentos",
     "/users/view-user-data": "Dados do Usuário | CSF Treinamentos",
+    "/users/view-personal-data": "Dados do Personal | CSF Treinamentos",
     "/edit-user": "Editar Usuário | CSF Treinamentos",
     "/edit-user/security": "Editar Usuário | CSF Treinamentos",
+    "/edit-user/addresses": "Endereços | CSF Treinamentos",
     "/personal/check-schedule": "Solicitações | CSF Treinamentos",
     "/more-options": "Mais Opções | CSF Treinamentos",
     "/set-availability": "Definir Horário | CSF Treinamentos",
+    "/anamnesis": "Anamnese | CSF Treinamentos",
+    "/edit-user/anamnesis": "Editar Anamnese | CSF Treinamentos",
 };
 
 const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
+
+const exceptionsWithoutHeader = [...exceptions, "/anamnesis"];
 
 export default function Layout() {
     const isMobile = useMobile();
@@ -67,6 +73,7 @@ export default function Layout() {
 
     const { type, setType } = context;
 
+    console.log("type é: ", type)
     useEffect(() => {
         console.log("logado e nao carregando", !isLoggedIn.isLoading && !isLoggedIn.data?.autentificado)
         console.log("erro e nao carregando", isLoggedIn.isError && !isLoggedIn.isLoading)
@@ -78,21 +85,30 @@ export default function Layout() {
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {
-            const backendType = isLoggedIn.data.user.tipo.toLowerCase();
-            setType(backendType === "personal" ? "personal" : "aluno");
+            const backendType = isLoggedIn.data.user.roles;
+            setType(backendType.map((item: string) => item.toLowerCase()));
         }
     }, [isLoggedIn.data]);
 
+    useEffect(() => {
+        if (isLoggedIn.isLoading || !isLoggedIn.data) return;
+
+        const ativoAnamnese = isLoggedIn.data?.ativoAnamnese;
+        const isAnamnesisRoute = location.pathname === "/anamnesis";
+        if (!ativoAnamnese && !exceptions.includes(location.pathname) && !isAnamnesisRoute && type?.includes("aluno")) {
+            nav("/anamnesis");
+        }
+    }, [isLoggedIn.data, isLoggedIn.isLoading, location.pathname, nav, type]);
 
     return (
         <div>
             <>
-                {!isMobile && !exceptions.includes(location.pathname) && <Header userName={isLoggedIn.data?.user.nome} type={type} />}
+                {!isMobile && (!exceptions.includes(location.pathname) && !exceptionsWithoutHeader.includes(location.pathname)) && <Header userName={isLoggedIn.data?.user.nome} type={type} isLoading={isLoggedIn.isLoading} />}
                 {isMobile && !hideLogoPaths && <div className="logo_header_mobile">
                     <LogoHeaderMobile />
                 </div>}
-                <main className={`${!hideLogoPaths ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
-                {isMobile && !exceptions.includes(location.pathname) && <Header type={type} />}
+                <main className={`${!hideLogoPaths && !exceptionsWithoutHeader.includes(location.pathname) ? "layout_main_outlet" : ""}`}><Outlet context={type} /></main>
+                {isMobile && (!exceptions.includes(location.pathname) && !exceptionsWithoutHeader.includes(location.pathname)) && <Header type={type} isLoading={isLoggedIn.isLoading} />}
             </>
         </div>
     )

@@ -2,7 +2,7 @@ export const statusProperties = [
     {
         "cardStatus": "CONCLUIDO",
         "cardDescription": "Agendamento concluído",
-        "cardColor": "#123"
+        "cardColor": "bg-emerald-200 text-emerald-700 border border-emerald-800"
     },
     {
         "cardStatus": "PENDENTE_PERSONAL_APROVACAO",
@@ -22,7 +22,7 @@ export const statusProperties = [
     {
         "cardStatus": "PENDENTE_PERSONAL_CONCLUIR",
         "cardDescription": "Pendente (conclusão)",
-        "cardColor": "#012"
+        "cardColor": "bg-emerald-200 text-emerald-700 border border-emerald-800"
     },
     {
         "cardStatus": "CANCELADO_PERSONAL",
@@ -37,11 +37,11 @@ export const statusProperties = [
     {
         "cardStatus": "AUSENCIA_CLIENTE",
         "cardDescription": "Ausência (cliente)",
-        "cardColor": "#9AB"
+        "cardColor": "bg-gray-200 text-gray-900 border border-gray-800"
     },
     {
         "cardStatus": "AUSENCIA_PERSONAL",
         "cardDescription": "Ausência (personal)",
-        "cardColor": "#CDE"
+        "cardColor": "bg-gray-200 text-gray-900 border border-gray-800"
     }
 ]

@@ -1,31 +1,33 @@
-import { Dot, SearchIcon } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Dot, SearchIcon, Calendar } from "lucide-react";
 import InputWithIcon from "../../components/Inputs/InputWithIcon/InputWithIcon";
 import classNames from "classnames";
 
 import styles from "./ScheduleHistory.module.css";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
-import InputCalendar from "../../components/Inputs/InputCalendar/InputCalendar";
+import CalendarMini, { type DateRange } from "../../components/Calendars/MiniCalendar/CalendarMini";
+import useClickOutside from "../../hooks/useClickOutside";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import RowWithHeaderTitle from "../../components/RowWithHeaderTitle/RowWithHeaderTitle";
-import useSearchFilter from "../../hooks/useSearchFilter";
-import { useQuery } from "@tanstack/react-query";
 import { findPersonalRequests } from "../../constants/schedule";
 import type { ScheduleAfterInserted } from "../../models/schedule";
-import { format, parse } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { usePagination } from "../../hooks/usePagination";
+import PaginatedList from "../../components/PaginatedList/PaginatedList";
 
 export default function ScheduleHistory() {
 
     // postalCode does not exist at this endpoint
-    const listOfAppointments = useQuery({
-        queryKey: ['userAppointments'],
-        queryFn: () => findPersonalRequests(),
-        select: (res) => res.data,
-    })
+    // const listOfAppointments = useQuery({
+    //     queryKey: ['userAppointments'],
+    //     queryFn: () => findPersonalRequests(0),
+    //     select: (res) => res.data,
+    // })
 
     const [params] = useSearchParams()
 
-    const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
+    // const parseDate = params.get("date") ? parse(params.get("date")!, "yyyy-MM-dd", new Date()) : undefined;
 
 
     const navigate = useNavigate();
@@ -36,23 +38,54 @@ export default function ScheduleHistory() {
         clearFilters();
     }
 
-    const {
-        filterSearch,
-        setFilterSearch,
-        filterInitialDate,
-        setFilterInitialDate,
-        filterFinalDate,
-        setFilterFinalDate,
-        filteredData,
-        hasFilters,
-        clearFilters,
-    } = useSearchFilter(listOfAppointments.data?.content ?? [], {
-        searchName: (item: ScheduleAfterInserted) => [item.tipoAula, item.status],
-        dateFilter: (item: ScheduleAfterInserted) => typeof item.dataInicio === 'string' ? item.dataInicio : item.dataInicio.toISOString(),
+    const [filterSearch, setFilterSearch] = useState<string>("");
+    const [debouncedSearch, setDebouncedSearch] = useState<string>("");
+    const [selectedDateRange, setSelectedDateRange] = useState<DateRange>({ start: "", end: "" });
+    const [openCalendar, setOpenCalendar] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(filterSearch);
+        }, 700);
+
+        return () => clearTimeout(timer);
+    }, [filterSearch]);
+
+    const calendarRef = useRef<HTMLDivElement>(null);
+
+    useClickOutside({
+        ref: calendarRef,
+        callback: () => setOpenCalendar(false)
     });
 
+    const { page, goToPage, animClass } = usePagination(0);
 
-    const data = (filteredData as ScheduleAfterInserted[]).map((event) => ({
+    const { data: response, isLoading: filteredDataIsLoading } = useQuery({
+        queryKey: ["scheduleHistoryPaginated", page, debouncedSearch, selectedDateRange?.start, selectedDateRange?.end],
+        queryFn: () => findPersonalRequests(
+            page,
+            "10",
+            selectedDateRange?.start ? format(selectedDateRange?.start, "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+            selectedDateRange?.end ? format(selectedDateRange?.end, "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+            undefined,
+            undefined,
+            debouncedSearch || undefined,
+        ),
+    });
+
+    const appointmentsList = response?.data?.content ?? [];
+    const pagination = response?.data?.page ?? null;
+
+    const hasFilters = !!(filterSearch || selectedDateRange?.start || selectedDateRange?.end);
+
+    function clearFilters() {
+        setFilterSearch("");
+        setSelectedDateRange({ start: "", end: "" });
+    }
+
+
+
+    const data = (appointmentsList as ScheduleAfterInserted[]).map((event) => ({
         id: event.agendamentoId,
         headerTitle: new Date(event.dataInicio).toLocaleString("pt-BR", { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" }),
         title: event.tipoAula,
@@ -129,9 +162,34 @@ export default function ScheduleHistory() {
                         onInputChange={setFilterSearch}
                     />
                 </div>
-                <div className={styles.datePickerWrapper}>
-                    <InputCalendar selectedDate={filterInitialDate} setSelectedDate={setFilterInitialDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
-                    <InputCalendar selectedDate={filterFinalDate} setSelectedDate={setFilterFinalDate} canGoPrev={true} paramData={params.get('date') ? format(parseDate!, 'dd/MM/yyyy', { locale: ptBR }) : undefined} />
+                <div ref={calendarRef} className={styles.calendarWrapper}>
+                    <div className={styles.verticalDivider}></div>
+                    <Calendar
+                        color={`${selectedDateRange?.start && selectedDateRange?.end ? "#093a5d" : "#707070"}`}
+                        className={styles.calendarIcon}
+                        onClick={() => setOpenCalendar(!openCalendar)}
+                    />
+                    {openCalendar && (
+                        <div className={styles.calendarDropdown}>
+                            <CalendarMini
+                                dateRange={true}
+                                selectedDateRange={selectedDateRange}
+                                setSelectedDateRange={setSelectedDateRange}
+                            />
+                            {selectedDateRange?.start && selectedDateRange?.end && (
+                                <SmallerButton
+                                    title="Resetar filtro"
+                                    handleButtonClick={() => {
+                                        if (setSelectedDateRange) {
+                                            setSelectedDateRange({ start: "", end: "" });
+                                        }
+                                        setOpenCalendar(false);
+                                    }}
+                                    classname="absolute bottom-8"
+                                />
+                            )}
+                        </div>
+                    )}
                 </div>
                 {hasFilters && (
                     <div className={classNames(styles.searchButton)}>
@@ -140,7 +198,24 @@ export default function ScheduleHistory() {
                 )}
             </div>
 
-            <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} isLoading={listOfAppointments.isLoading}/>
+            <PaginatedList
+                key={page}
+                page={page}
+                animClass={animClass}
+                pagination={pagination}
+                onPageChange={goToPage}
+            >
+                <RowWithHeaderTitle data={data} includeDetailsButton={true} buttonLabel="Ver Detalhes" handleDetailsClick={handleDetailsClick} isLoading={filteredDataIsLoading} />
+            </PaginatedList>
+
+            {appointmentsList.length === 0 && !filteredDataIsLoading && (
+                <div className="flex justify-center items-center mt-10 my-5 gap-5">
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                    <span className="text-slate-500 w-1/2 text-center">Não há agendamentos para exibir</span>
+                    <span className="flex items-center justify-center w-full h-1 bg-gray-400"></span>
+                </div>
+            )}
+
         </div>
     );
 }

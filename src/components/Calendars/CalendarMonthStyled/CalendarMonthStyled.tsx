@@ -15,17 +15,19 @@ type Props = {
   isMobile: boolean;
   hasClassTomorrow?: boolean;
   tomorrowDate?: string;
+  disabledDays?: string[];
 };
 
-export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate }: Props) {
+export default function CalendarMonthStyled({ clickedDate, clickedDateStr, createdEvents, eventToReschedule, isMobile, hasClassTomorrow, tomorrowDate, disabledDays }: Props) {
 
   const [newEventDate, setNewEventDate] = useState<string>("");
   const calendarRef = useRef<FullCalendar>(null);
-
+  console.log(createdEvents)
   const databaseEvents = useMemo(() => {
     return Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
+      const eventData = event.data || (event as any).dataInicio;
       return {
-        data: event.data instanceof Date ? event.data.toISOString().split("T")[0] : event.data,
+        data: eventData instanceof Date ? eventData.toISOString().split("T")[0] : eventData,
         agendamentoId: event.agendamentoId,
         status: (event as any).status,
       };
@@ -33,7 +35,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   }, [createdEvents]);
 
   const [events, setEvents] = useState<typeof databaseEvents>(databaseEvents || []);
-  
+
   useEffect(() => {
     if (databaseEvents && databaseEvents.length > 0) {
       setEvents(databaseEvents);
@@ -62,20 +64,23 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
           dateClick={(info) => {
             const today = startOfDay(new Date());
             const clickedDate = parseISO(info.dateStr);
+            const weekday = info.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+            console.log(weekday)
+            if (disabledDays?.includes(weekday)) return
+            
             if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
 
             setNewEventDate(info.dateStr)
           }}
           dayCellClassNames={(arg) => {
             const dateStr = arg.date.toISOString().split("T")[0];
+            const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
-            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate)) return [styles.disabledDay];
+            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate) || disabledDays?.includes(weekday)) return [styles.disabledDay];
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return [styles.selectedDay];
-
-  
 
             return [];
           }}
@@ -83,7 +88,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const cellDate = arg.date.toISOString().split("T")[0];
 
             const eventsOfDay = events?.filter(event =>
-              event.data.split("T")[0] === cellDate
+              event.data?.split("T")[0] === cellDate
             ) || [];
 
             return (
@@ -98,12 +103,11 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" ||
-                            event.status === "APROVADO"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO"
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONCLUIDO"
+                              : event.status === "CONCLUIDO" || event.status === "APROVADO"
                                 ? "#4CAF50"
                                 : "gray",
                       }}

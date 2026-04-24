@@ -1,5 +1,4 @@
 import { Check } from 'lucide-react';
-import React from 'react'
 
 type Props = {
     text: string;

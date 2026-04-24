@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styles from "./Schedule.module.css"
 import UserScheduleCard from "../../components/UserScheduleCard/UserScheduleCard";
 import ViewCalendarMonthStyled from "../../components/Calendars/ViewCalendarMonthStyled/ViewCalendarMonthStyled";
-import NewEvent from "../../components/NewEvent/NewEvent";
+import NewEvent from "../../components/Modal/NewEvent/NewEvent";
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import TimerModal from "../../components/Modal/TimerModal/TimerModal";
 import SmallerButton from "../../components/SmallerButton/SmallerButton";
@@ -11,16 +11,19 @@ import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
 import { useSearchParams } from "react-router-dom";
-import { useQueries, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, refuseAppointment } from "../../constants/schedule";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, getPersonalList, refuseAppointment } from "../../constants/schedule";
+import { useDisabledDays } from "../../hooks/useDisabledDays";
 import { format, parse, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { actualPlan } from "../../constants/products";
 import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
+import { getAvailabilityHoursTomorrow } from "../../constants/personal";
+import PopupModal from "../../components/Modal/PopupModal/PopupModal";
 
-type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null;
+type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null;
 
 export type RescheduleAppointment = {
     agendamentoId: number;
@@ -73,32 +76,16 @@ export default function Schedule() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: isTypeReady && type?.type === "aluno"
+        enabled: isTypeReady && type?.type?.includes("aluno")
     });
 
-    const [aulaPresencial, aulaResidencial, aulaFuncional] = useQueries({
-        queries: [
-            {
-                queryKey: ["totalPRESENCIALSchedule"],
-                queryFn: () => getTotalByClassType("PRESENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            },
-
-            {
-                queryKey: ["totalRESIDENCIALSchedule"],
-                queryFn: () => getTotalByClassType("RESIDENCIAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            },
-            {
-                queryKey: ["totalFUNCIONALSchedule"],
-                queryFn: () => getTotalByClassType("FUNCIONAL"),
-                refetchOnWindowFocus: false,
-                enabled: isTypeReady && type?.type === "aluno"
-            }
-        ]
+    const classBalanceQuery = useQuery({
+        queryKey: ["totalByClassType"],
+        queryFn: () => getTotalByClassType(),
+        refetchOnWindowFocus: false,
+        enabled: isTypeReady && type?.type?.includes("aluno")
     });
+
 
 
     function handleOpenNewEventModal() {
@@ -107,7 +94,7 @@ export default function Schedule() {
             return
         }
 
-        if ((aulaPresencial?.data === 0 && aulaResidencial?.data === 0 && aulaFuncional?.data === 0)) {
+        if ((classBalanceQuery?.data?.saldoPresencial === 0 && classBalanceQuery?.data?.saldoResidencial === 0 && classBalanceQuery?.data?.saldoFuncional === 0)) {
             handleErrorModalInfo("Aulas indisponíveis", "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal.");
             return
         }
@@ -169,10 +156,8 @@ export default function Schedule() {
         queryFn: (page) => findPersonalRequests(page).then(res => res.data),
     });
 
-    console.log("userRescheduleAppointments", userRescheduleAppointments);
-
     const appointmentsUser: RescheduleAppointment[] =
-        type?.type === "aluno"
+        type?.type?.includes("aluno")
             ? userRescheduleAppointments.filter(
                 appointment => appointment.status === "PENDENTE_CLIENTE_APROVACAO"
             )
@@ -217,13 +202,32 @@ export default function Schedule() {
         });
     }
 
+    const personalList = useQuery({
+        queryKey: ["personalList"],
+        queryFn: getPersonalList,
+        select: (res) => res.data,
+        refetchOnWindowFocus: false,
+    });
+
+    const targetId = personalList.data?.content?.[0]?.id;
+
+    const availabilityHoursTomorrowQuery = useQuery({
+        queryKey: ["availabilityHoursTomorrow"],
+        queryFn: () => getAvailabilityHoursTomorrow(targetId),
+        refetchOnWindowFocus: false,
+        enabled: !!type?.type?.includes("aluno")
+    })
+
+
+    const { disabledDays } = useDisabledDays(!!type?.type?.includes("aluno") ? targetId : undefined);
+
     return (
         <>
             {!isTypeReady ? (
                 <div className={styles.loadingContainer}>
                     <div className={styles.spinner}></div>
                 </div>
-            ) : type.type === "personal" ? (
+            ) : !type?.type?.includes("aluno") ? (
                 <CalendarWeek
                     insertedEvents={appointmentsUser || []}
                     openModal={() => setOpenModal("newEvent")}
@@ -239,9 +243,14 @@ export default function Schedule() {
                                 isMobile={isMobile}
                                 events={appointments.data?.data}
                                 isUserAuthorizedToInteract={actualPlanQuery?.data?.data ? true : false}
-                                canMakeAppointment={aulaPresencial?.data > 0 || aulaResidencial?.data > 0 || aulaFuncional?.data > 0}
+                                canMakeAppointment={classBalanceQuery?.data?.saldoPresencial > 0 || classBalanceQuery?.data?.saldoResidencial > 0 || classBalanceQuery?.data?.saldoFuncional > 0}
                                 modalInfo={setModalInfo}
                                 modalType={setOpenModal}
+                                availabilityHoursTomorrow={availabilityHoursTomorrowQuery?.data?.data}
+                                clickDate={(date) => {
+                                    setClickedDate(date);
+                                }}
+                                disabledDays={disabledDays}
                             />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>
@@ -306,6 +315,16 @@ export default function Schedule() {
                     </div>
                 </div>
             )}
+
+            {
+                openModal === "popup" && (
+                    <PopupModal
+                        closeThen={() => setOpenModal(null)}
+                        date={clickedDate}
+                        onNewEvent={() => setOpenModal("newEvent")}
+                    />
+                )
+            }
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(selectedEventId!)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
 

@@ -6,44 +6,30 @@ import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { format, startOfDay } from "date-fns";
 import { TypeContext } from "../../../App";
-import { useQuery } from "@tanstack/react-query";
-import { getPersonalHours } from "../../../constants/personal";
 import { ptBR } from "date-fns/locale";
-import { getPersonalList } from "../../../constants/schedule";
-
 type Props = {
   events?: { agendamentoId: number; data: string; status: string }[];
   isMobile?: boolean;
   isUserAuthorizedToInteract?: boolean;
   canMakeAppointment?: boolean;
   modalInfo?: React.Dispatch<React.SetStateAction<{ title: string; description: string }>>;
-  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | null>>;
-  hasClassTomorrow?: boolean;
-
+  modalType?: React.Dispatch<React.SetStateAction<"cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null>>;
+  availabilityHoursTomorrow?: {
+    inicio: string;
+    fim: string;
+  }[];
+  clickDate?: (date: string) => void;
+  disabledDays?: string[];
 }
 
-export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, hasClassTomorrow }: Props) {
+const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+
+export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthorizedToInteract, canMakeAppointment, modalInfo, modalType, availabilityHoursTomorrow, clickDate, disabledDays }: Props) {
   const type = useContext(TypeContext);
 
   const nav = useNavigate();
 
-  const personal = useQuery({
-    queryKey: ["personalList"],
-    queryFn: getPersonalList,
-    select: (res) => res.data[0].id,
-  });
-
-
-  const tomorrow = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
-  console.log("tomorrow", tomorrow);
-
-  const availabilityHoursTomorrow = useQuery({
-    queryKey: ["availabilityHours"],
-    queryFn: () => getPersonalHours(personal.data, tomorrow ? tomorrow : ""),
-    select: (res) => res.data,
-  });
-
-
+  console.log("disabledDays:", disabledDays)
 
   return (
     <div className={styles.containerCalendar}>
@@ -64,7 +50,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div>{arg.dayNumberText}</div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "6px" }}>
                   {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}
@@ -73,11 +59,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
                         height: "8px",
                         borderRadius: "50%",
                         backgroundColor:
-                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR" || event.status === "APROVADO"
+                          event.status === "PENDENTE_PERSONAL_APROVACAO" || event.status === "PENDENTE_CLIENTE_APROVACAO" || event.status === "PENDENTE_PERSONAL_CONCLUIR"
                             ? "#F2B138"
                             : event.status === "CANCELADO_PERSONAL" || event.status === "CANCELADO_CLIENTE" || event.status === "AUSENCIA_PERSONAL" || event.status === "AUSENCIA_CLIENTE"
                               ? "#B3393A"
-                              : event.status === "CONCLUIDO"
+                              : event.status === "CONCLUIDO" || event.status === "APROVADO"
                                 ? "green"
                                 : "gray",
                       }}
@@ -98,32 +84,39 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             console.log(today)
 
 
-            if (type?.type === "personal" && appointment && appointment.length > 1) {
+            if (type?.type?.includes("aluno") && appointment && appointment.length > 1) {
               nav(`/personal/check-schedule/?date=${clickedDate}`);
               return
             }
 
             if (appointment && appointment.length > 1) {
-              nav(`/schedule-history/?date=${clickedDate}`);
+              clickDate?.(clickedDate);
+              modalInfo?.({
+                title: "Múltiplos agendamentos",
+                description: "Este dia possui mais de um agendamento. Consulte o histórico para visualizar todos.",
+              });
+              modalType?.("popup");
               return
             }
 
             const findAppointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
 
             if (findAppointment !== null) {
-              nav(`/schedule-details?id=${findAppointment.agendamentoId}`);
+              console.log(findAppointment)
+              clickDate?.(clickedDate);
+              modalType?.("popup");
               return
             }
 
-            if (!canMakeAppointment && type?.type === "aluno") {
+            if (!canMakeAppointment && type?.type?.includes("aluno")) {
               modalInfo?.({ title: "Aulas indisponíveis", description: "Você não possui aulas disponíveis para agendamento. Por favor, adquira um plano ou entre em contato com o personal." });
               modalType?.("error");
               return;
             }
 
-            if (clickedDate === tomorrow && availabilityHoursTomorrow?.data?.length === 0) return;
+            if (clickedDate === tomorrow && (!availabilityHoursTomorrow || availabilityHoursTomorrow.length === 0)) return;
 
-            if (canMakeAppointment && isUserAuthorizedToInteract && type?.type === "aluno" && clickedDate > today.toISOString().split("T")[0]) {
+            if (canMakeAppointment && isUserAuthorizedToInteract && type?.type?.includes("aluno") && clickedDate > today.toISOString().split("T")[0]) {
               nav(`/schedule/?date=${clickedDate}`);
             }
 
@@ -133,11 +126,11 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dayCellClassNames={(arg) => {
             const cellDate = arg.date.toISOString().split("T")[0];
             const todayDate = startOfDay(new Date()).toISOString().split("T")[0];
-            const tomorrowDate = format(new Date(Date.now() + 86400000), "yyyy-MM-dd", { locale: ptBR });
+            const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-            
+            if (disabledDays?.includes(weekday)) return [styles.fcTodayCustom];
 
-            if (!hasClassTomorrow && cellDate === tomorrowDate) return [styles.fcTodayCustom];
+            if (cellDate === tomorrow && availabilityHoursTomorrow && availabilityHoursTomorrow.length === 0) return [styles.fcTodayCustom];
 
             if (cellDate <= todayDate) {
               return [styles.fcTodayCustom];

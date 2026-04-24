@@ -33,9 +33,20 @@ export function findUserAppointments() {
     return api.get("/agendamentos/me");
 }
 
-export async function findPersonalRequests(pageParam = 1, size = "10") {
-    return api.get(`/agendamentos/solicitacoes?page=${pageParam}&size=${size}`);
+export async function findPersonalRequests(pageParam = 0, size = "10", initialDate?: string, finalDate?: string, status?: string, classType?: string, name?: string) {
+    return api.get(`/agendamentos/solicitacoes`, {
+        params: {
+            ...(initialDate && { dataInic: initialDate }),
+            ...(finalDate && { dataFim: finalDate }),
+            ...(status && { status: status }),
+            ...(classType && { tipoAgendamento: classType }),
+            ...(name && { nomeDoAluno: name }),
+            page: pageParam,
+            size
+        }
+    });
 }
+
 
 export function findUserRescheduleRequests() {
     return api.get(`/agendamentos/solicitacoes`);
@@ -43,6 +54,10 @@ export function findUserRescheduleRequests() {
 
 export function appointmentAtCalendar() {
     return api.get("/agendamentos/calendario");
+}
+
+export function disabledPersonalDays(id: number) {
+    return api.get(`/personais/dias-semana/${id}`);
 }
 
 export async function findAppointmentById(id: number) {

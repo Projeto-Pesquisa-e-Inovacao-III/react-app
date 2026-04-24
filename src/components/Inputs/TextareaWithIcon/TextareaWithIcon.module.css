@@ -1,0 +1,67 @@
+.wrapperTextarea {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: none;
+    gap: 8px;
+}
+
+.wrapperTextarea textarea {
+    padding: 12px 16px;
+    background-color: #ffffff !important;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    font-size: .95rem;
+    min-height: 100px;
+    resize: vertical;
+    outline: none;
+    font-family: "Poppins", sans-serif;
+    color: #334155 !important;
+    font-weight: 500;
+}
+
+.wrapperTextarea textarea::placeholder {
+    color: #666 !important;
+}
+
+.wrapperTextarea label {
+    font-size: 14px;
+}
+
+.inputIcon {
+    display: flex;
+    position: absolute;
+    left: 0.75rem;
+    top: 0.95rem;
+    color: var(--muted-foreground);
+    height: 1rem;
+    width: 1rem;
+}
+
+.inputIcon svg {
+    height: 100%;
+    width: 100%;
+}
+
+.withIcon {
+    padding-left: 40px !important;
+}
+
+.counter {
+    align-self: flex-end;
+    font-size: 12px;
+    color: #666;
+    line-height: 1;
+}
+
+@media (max-width: 1360px) {
+    .wrapperTextarea {
+        width: 100% !important;
+    }
+
+    .wrapperTextarea textarea {
+        width: 100% !important;
+    }
+}

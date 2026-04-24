@@ -1,0 +1,56 @@
+.container {
+    padding: 40px;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.containerMobile {
+    padding: 20px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pageHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #4b5563;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.backLink:hover {
+    color: #111;
+}
+
+.pageTitle {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+}
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+}

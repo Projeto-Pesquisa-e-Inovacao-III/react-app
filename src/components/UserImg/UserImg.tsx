@@ -1,5 +1,4 @@
-import { Oval } from 'react-loader-spinner';
-import './UserImg.css';
+import styles from './UserImg.module.css';
 
 type UserImgProps = {
     Source : string;
@@ -13,7 +12,7 @@ export function UserImg({Source, Alt, Height, Width, classname}: UserImgProps) {
     return (
         <>
             <img
-                className={`user-img ${classname}`}
+                className={`${styles.userImg} ${classname}`}
                 src={Source}
                 alt={Alt}
                 style={{

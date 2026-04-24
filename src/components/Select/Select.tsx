@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import InputWithIcon from '../Inputs/InputWithIcon/InputWithIcon';
 import styles from './Select.module.css';
 import useClickOutside from '../../hooks/useClickOutside';
+import classNames from 'classnames';
 
 type Props = {
   id: string;
@@ -10,14 +11,16 @@ type Props = {
   setOpenSelectId: (id: string | null) => void;
   onSelectStatusChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
   selectStatusValue?: string;
-  values?: Array<{ icon?: React.ReactNode; label: string; value: string }>;
+  values?: Array<{ icon?: React.ReactNode; label: string; value: string; disabled?: boolean }>;
+
   selectPlaceholder?: string;
+  iconPlaceholder?: React.ReactNode;
 
   showSelectAll?: boolean;
   showSearchInput?: boolean;
   defaultValue?: string;
   fixedText?: string;
-  label?: string;
+  label?: React.ReactNode;
 
   labelClassName?: string;
   dropDownClassName?: string
@@ -25,23 +28,15 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
+  
+  clear?: boolean;
 }
 
-export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName }: Props) {
+export default function Select({ id, openSelectId, setOpenSelectId, onSelectStatusChange, selectStatusValue, values, selectPlaceholder, defaultValue, fixedText, showSelectAll = true, showSearchInput = true, dropDownClassName, label, labelClassName, triggerClassName, triggerWrapperClassName, selectWrapperClassName, containerClassName, iconPlaceholder, clear }: Props) {
   const isOpen = openSelectId === id;
   const [textSearch, setTextSearch] = useState<{ icon?: React.ReactNode; text: string }>({ icon: undefined, text: "" });
 
-  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
-
-
   const [selectValue, setSelectValue] = useState<{ icon: React.ReactNode, text: string }>({ icon: undefined, text: "" });
-  useEffect(() => {
-    if (defaultValue && onSelectStatusChange) {
-      onSelectStatusChange(defaultValue);
-      const defaultOption = values?.find(option => option.value === defaultValue);
-      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
-    }
-  }, [defaultValue]);
 
   const selectRef = useRef<HTMLDivElement>(null);
 
@@ -54,24 +49,48 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   });
 
+  useEffect(() => {
+    if (clear && clear === true) {
+      setSelectValue({ icon: undefined, text: "" });
+      if (onSelectStatusChange) {
+        onSelectStatusChange("");
+      }
+
+      setTextSearch({ icon: undefined, text: "" });
+
+    }
+  }, [clear])
+
+  useEffect(() => {
+    if (defaultValue) {
+      const defaultOption = values?.find(option => option.value === defaultValue);
+      setSelectValue({ icon: defaultOption?.icon, text: defaultOption?.label || "" });
+    } else {
+      setSelectValue({ icon: undefined, text: "" });
+    }
+  }, [defaultValue]);
+
   return (
     <div className={containerClassName}>
       {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
-      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{...(label && {marginTop: "8px"}), ...(isOpen && { border: "1px solid #c3c3c3" })}} >
+      <div ref={selectRef} className={`${styles.selectWrapper} ${selectWrapperClassName || ""}`} style={{ ...(label && { marginTop: "8px" }), ...(isOpen && { border: "1px solid #c3c3c3" }) }} >
         <div className={`${styles.triggerWrapper} ${triggerWrapperClassName || ""}`}>
-          <span
+          <div
             className={`${styles.trigger} ${triggerClassName || ""}`}
             onClick={() => setOpenSelectId(isOpen ? null : id)}
           >
             <span className={styles.iconPlaceholder}>
+              {iconPlaceholder && !selectValue.icon && <span className={styles.iconOption}>{iconPlaceholder}</span>}
               {selectValue.icon && <span className={styles.iconOption}>{selectValue.icon}</span>}
-              {fixedText ? fixedText : ""} {(selectStatusValue === "" ? selectPlaceholder : selectValue.text)}
+              <span className={styles.textContent}>
+                {fixedText ? fixedText : ""} {selectValue?.text || selectPlaceholder}
+              </span>
             </span>
             <ChevronDown
               className={`${styles.chevronIcon} ${isOpen ? styles.rotate180 : ""}`}
               size={16}
             />
-          </span>
+          </div>
         </div>
         {isOpen && (
           <div className={`${styles.dropdownContainer} ${dropDownClassName}`}>
@@ -80,7 +99,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
                 icon={<Search size={16} />}
                 placeholder='O que você procura?'
                 value={textSearch.text}
-                onInputChange={(value) => setTextSearch({ icon: textSearch.icon, text: value })}
+                onInputChange={(value: string) => setTextSearch({ icon: textSearch.icon, text: value })}
                 type='text'
                 customClassName={"p-3"}
               />
@@ -89,18 +108,16 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
               {showSelectAll !== false && (
                 <span
                   className={styles.optionItem}
-                  onMouseEnter={() => setHoveredOption("")}
-                  onMouseLeave={() => setHoveredOption(null)}
                   onClick={() => onSelectStatusChange && onSelectStatusChange("")}
                 >
-                  {selectStatusValue !== "" &&
-                    (hoveredOption === "" ?
-                      <SquareCheck color='#093A5D' />
-                      :
-                      <Square className={styles.iconBorderIndigo} color='#093A5D' />
-                    )
-                  }
-                  {selectStatusValue === "" && <SquareCheck color='#093A5D' />}
+                  {selectStatusValue !== "" ? (
+                    <>
+                      <Square className={`${styles.iconBorderIndigo || ""} ${styles.defaultIcon}`} color='#093A5D' />
+                      <SquareCheck className={styles.hoverIcon} color='#093A5D' />
+                    </>
+                  ) : (
+                    <SquareCheck color='#093A5D' />
+                  )}
 
                   Selecionar todos
                 </span>
@@ -108,27 +125,28 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
               {values && values.map((option) => (
                 (textSearch.text === "" || option.label.toLowerCase().includes(textSearch.text.toLowerCase())) && (
                   <span
-                    className={styles.optionItem}
+                    className={classNames(styles.optionItem, { [styles.disabled]: option.disabled })}
                     key={option.value}
-                    onMouseEnter={() => setHoveredOption(option.value)}
-                    onMouseLeave={() => setHoveredOption(null)}
                     onClick={() => {
-                      setSelectValue({ icon: option.icon, text: option.label });
+                      if(setSelectValue && !option.disabled) {
+                        setSelectValue({ icon: option.icon, text: option.label });
+                      }
                       if (onSelectStatusChange) {
                         onSelectStatusChange(option.value);
+                        setOpenSelectId(isOpen ? null : id)
                       }
-                      setOpenSelectId(isOpen ? null : id)
                     }}
                   >
                     {!option.icon && (
-                      selectStatusValue !== option.value &&
-                      (hoveredOption === option.value ?
+                      selectStatusValue !== option.value ? (
+                        <>
+                          <Square className={`${styles.iconBorderIndigo || ""} ${styles.defaultIcon}`} color='#093A5D' />
+                          <SquareCheck className={styles.hoverIcon} color='#093A5D' />
+                        </>
+                      ) : (
                         <SquareCheck color='#093A5D' />
-                        :
-                        <Square className={styles.iconBorderIndigo} color='#093A5D' />
                       )
                     )}
-                    {!option.icon && selectStatusValue === option.value && <SquareCheck color='#093A5D' />}
                     {option.icon && <span className={styles.iconOption}>{option.icon}</span>}
                     {option.label}
                   </span>

@@ -9,6 +9,9 @@ import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import styles from './Login.module.css';
 import useMobile from "../../../hooks/isMobile";
+import { useQuery } from "@tanstack/react-query";
+import { isAuthenticated } from "../../../constants/user";
+
 
 const initialLoginState = {
   email: "",
@@ -17,22 +20,65 @@ const initialLoginState = {
 
 
 export default function Login() {
+  const { data: isUserAuthenticated } = useQuery({
+    queryKey: ["isAuthenticated"],
+    queryFn: () => isAuthenticated(),
+    retry: false,
+    refetchOnWindowFocus: false,
+    select: (res) => res.data,
+  });
+
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (isUserAuthenticated?.autentificado) {
+      nav("/home");
+    }
+  }, [isUserAuthenticated]);
+
   const isMobile = useMobile();
 
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
-  const nav = useNavigate();
-
   const [loading, setLoading] = useState(false);
+
 
   function handleAutoFill(email?: string, password?: string) {
     setLoginInfo({ email: email || "joao.silva@example.com", password: password || "123456789aA!" });
   }
 
+  function handleAutoFill2() {
+    setLoginInfo({ email: "maria.oliveira@example.com", password: "123456789aA!" });
+  }
+
+  function handleAutoFill3() {
+    setLoginInfo({ email: "fabio.admin@email.com", password: "admin123" });
+  }
+
+
   function navToHome() {
     nav("/home");
     return;
   }
+
+  async function navToAnamnesis() {
+    const isAuthenticated = await userService.isAuthenticated();
+    const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
+    if (ativoAnamnese === false) {
+      nav("/anamnesis");
+      return;
+    }
+  }
+
+  useEffect(() => {
+    try {
+      navToAnamnesis();
+
+    } catch (err) {
+      console.log("User not authenticated");
+    }
+
+  }, [nav]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -42,7 +88,15 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
-        navToHome();
+        try {
+          await navToAnamnesis();
+        } catch {
+          navToHome();
+          return;
+        }
+
+        nav("/home");
+
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -89,6 +143,15 @@ export default function Login() {
               <h1>Bem-vindo</h1>
             </div>
             <form onSubmit={handleSubmit}>
+              <button className={styles.btnAutoFill} onClick={() => handleAutoFill("joao.silva@example.com", "123456789aA!")}>
+                AUTO PREENCHER
+              </button>
+              <button className={styles.btnAutoFill} onClick={handleAutoFill2}>
+                AUTO PREENCHER 2
+              </button>
+              <button className={styles.btnAutoFill} onClick={handleAutoFill3}>
+                AUTO PREENCHER DONO
+              </button>
               <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
                 <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />

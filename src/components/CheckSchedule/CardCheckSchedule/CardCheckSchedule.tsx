@@ -94,7 +94,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
                 </div>
                 <div className={classNames(styles.high, { [styles.highStatusWithoutBorder]: cardData.status !== "PENDENTE_PERSONAL_APROVACAO" })}>
                     <div className={styles.photograph}>
-                        <UserAvatar foto={cardData.foto ? `${cardData.foto}` : undefined} />
+                        <UserAvatar useUserImage={true} foto={cardData.foto ? `${cardData.foto}` : undefined} />
                     </div>
                     <div className={styles.content}>
                         <div className={styles.titleName}>
@@ -103,7 +103,7 @@ export function CardCheckSchedule({ RescheduleClick, AcceptScheduleClick, Conclu
 
                         <div className={styles.textInTheRowCheckSchedule}>
                             <span>Data: <span className={styles.textInRowCheckSchedule}>{format(parseISO(cardData.dataInicio), "dd/MM/yyyy")}</span></span>
-                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.dataInicio?.split("T")[1].slice(0, 5)} - {cardData.dataFim?.split("T")[1].slice(0, 5)}</span></span>
+                            <span>Hora: <span className={styles.textInRowCheckSchedule}>{cardData.dataInicio?.split("T")[1]?.slice(0, 5) || "--:--"} - {cardData.dataFim?.split("T")[1]?.slice(0, 5) || "--:--"}</span></span>
                         </div>
                         <div className={styles.textInTheRowCheckSchedule}>
                             <span>Nome: <span className={styles.textInRowCheckSchedule}>{cardData.nome}</span></span>

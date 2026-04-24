@@ -3,10 +3,10 @@ import Button from "../../../components/Button/Button.tsx";
 import { UserImg } from "../../../components/UserImg/UserImg.tsx";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { IdCard, Phone, Shield, Upload, User } from "lucide-react";
+import { IdCard, Phone, Upload, User } from "lucide-react";
 import { useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
-import { findUserData, insertUserImage, removerUserImage, update, softDelete, changePassword, getUserImage } from "../../../constants/user.ts";
+import { findUserData, insertUserImage, removerUserImage, update, softDelete } from "../../../constants/user.ts";
 import type { UpdateUserDTO } from "../../../models/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
@@ -15,8 +15,7 @@ import { TypeContext } from "../../../App.tsx";
 import type { PersonalDTO } from "../../../models/personal.ts";
 import { editPersonalProfile } from "../../../constants/personal.ts";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
-import { Link, useNavigate } from "react-router-dom";
-import { validatePassword } from "../../../utils/validacao.ts";
+import { useNavigate } from "react-router-dom";
 import useModal from "../../../hooks/useModal.tsx";
 import useClickOutside from "../../../hooks/useClickOutside.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +23,8 @@ import classNames from "classnames";
 import Select from "../../../components/Select/Select.tsx";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
 import { BASE_URL } from "../../../system.ts";
+import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
+import UserAvatar from "../../../components/UserAvatar/UserAvatar.tsx";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -135,13 +136,7 @@ export default function EditUser() {
     setTextModal
   } = useModal(null, { title: "", content: "" })
 
-  const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
-    currentPassword: "",
-    confirmPassword: "",
-  }
-  )
   const [userImage, setUserImage] = useState<string>("");
-  const [userImageFormData, setUserImageFormData] = useState<FormData>(new FormData());
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
@@ -150,7 +145,13 @@ export default function EditUser() {
   useClickOutside({
     ref: imagePreviewModal,
     callback: () => {
+      if (openModal === "adjustAvatar") {
+        setPreviewImage("");
+        setPreviewImageFormData(new FormData());
+      }
+
       setOpenModal(null);
+
     }
   });
 
@@ -174,7 +175,6 @@ export default function EditUser() {
     setUserImage("");
     const formData = new FormData();
     formData.append("imagem", "");
-    setUserImageFormData(formData);
     removerUserImage().then(() => {
       console.log("Imagem do usuário removida com sucesso!");
       setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
@@ -215,7 +215,25 @@ export default function EditUser() {
 
 
 
-  function handleUpdateUserInfo() {
+  async function handleUpdateUserInfo() {
+
+    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+      insertUserImage(previewImageFormData).then(async () => {
+        setUserImage(previewImage);
+        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+        setOpenModal("success");
+        return
+
+      })
+        .catch((error) => {
+          console.error("Erro ao atualizar imagem do usuário:", error);
+          setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
+          setOpenModal("error");
+          return
+        });
+      return
+    }
+
     console.log(state.phone.substring(5).replace("-", ""))
     const options: UpdateUserDTO = {
       nome: state.firstName,
@@ -223,37 +241,17 @@ export default function EditUser() {
       sexo: state.gender,
       email: state.email,
     };
-    console.log("options", userImageFormData);
+    console.log("options", options);
+
     update(options)
       .then(async () => {
+        await queryClient.refetchQueries({
+          queryKey: ["userData"]
+        });
 
-        if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
-          insertUserImage(previewImageFormData)
-            .then(async () => {
-              if (previewImage) {
-                console.log("Imagem do usuário atualizada com sucesso!", previewImage);
-                setUserImage(previewImage);
-                setUserImageFormData(previewImageFormData);
-              }
-              console.log("Imagem do usuário atualizada com sucesso!");
-              setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-              setOpenModal("success");
-              await queryClient.refetchQueries({
-                queryKey: ["userData"]
-              });
-            })
-            .catch((error) => {
-              console.error("Erro ao atualizar imagem do usuário:", error);
-              setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception });
-              setOpenModal("error");
-            });
-          await queryClient.refetchQueries({
-            queryKey: ["userData"]
-          });
-        } else {
-          setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
-          setOpenModal("success");
-        }
+        setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
+
+        setOpenModal("success");
       })
       .catch((error) => {
         console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
@@ -267,14 +265,36 @@ export default function EditUser() {
   }
 
   function handleUpdatePersonalInfo() {
+
+    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
+      console.log("inserting image");
+      insertUserImage(previewImageFormData).then(async () => {
+        console.log("Imagem do usuário atualizada com sucesso!");
+        setUserImage(previewImage);
+        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+        setOpenModal("success");
+        return;
+      }).catch((error) => {
+        console.log("previewImageFormData", previewImageFormData);
+        console.error("Erro ao atualizar imagem do usuário:", error);
+        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
+        setOpenModal("error");
+        return;
+      });
+      return;
+
+    }
     console.log(state.phone.substring(5).replace("-", ""))
     const options: PersonalDTO = {
       nome: state.firstName,
-      telefone: { numero: state.phone, ddd: "11", pais: "55" },
+      telefones: [{ numero: state.phone.substring(5).replace("-", ""), ddd: "11", pais: "55", id: 1 }],
       sexo: state.gender,
       email: state.email,
+      dataNascimento: userInfo.data?.dataNascimento || undefined,
+      caminhoFoto: userInfo.data?.caminhoFoto || undefined,
     }
 
+    console.log("options", options);
     editPersonalProfile(options).then(async () => {
       setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setOpenModal("success");
@@ -287,27 +307,6 @@ export default function EditUser() {
       setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
       setOpenModal("error");
     });
-
-    if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
-      console.log("inserting image");
-      insertUserImage(previewImageFormData).then(async () => {
-        console.log("Imagem do usuário atualizada com sucesso!");
-        setUserImage(previewImage);
-        setUserImageFormData(previewImageFormData);
-        setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
-        setOpenModal("success");
-        await queryClient.refetchQueries({
-          queryKey: ["userData"]
-        });
-      }).catch((error) => {
-        console.log("previewImageFormData", previewImageFormData);
-        console.error("Erro ao atualizar imagem do usuário:", error);
-        setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
-        setOpenModal("error");
-        return;
-      });
-    }
-
 
     setOpenModal("success");
   }
@@ -325,45 +324,6 @@ export default function EditUser() {
       });
   }
 
-  function updatePassword() {
-    const current = password.currentPassword ?? "";
-    const newP = password.confirmPassword ?? "";
-
-    if (!current) {
-      setTextModal({ title: "Houve um erro", content: "Senha atual obrigatória." });
-      setOpenModal("error");
-      return;
-    }
-
-    if (!newP) {
-      setTextModal({ title: "Houve um erro", content: "Preencha a nova senha." });
-      setOpenModal("error");
-      return;
-    }
-
-    const validation = validatePassword(newP);
-    if (validation !== "password válida!") {
-      setTextModal({ title: "Houve um erro", content: "Senha inválida. A senha deve conter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e caracteres especiais." });
-      setOpenModal("error");
-      return;
-    }
-    changePassword(current, newP)
-      .then(() => {
-        setPassword({
-          currentPassword: "",
-          confirmPassword: ""
-        })
-        setTextModal({ title: "Senha atualizada", content: "Sua senha foi atualizada com sucesso." });
-        setOpenModal("success");
-      })
-      .catch((error) => {
-        console.error("Erro ao atualizar senha:", error);
-        setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar sua senha." });
-        setOpenModal("error");
-      });
-  }
-
-
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
   function handleUndoChanges() {
@@ -372,11 +332,6 @@ export default function EditUser() {
         type: "hydrateForm",
         payload: userInfo.data,
       });
-      if (userInfo.data.caminhoFoto) {
-        setUserImage(userInfo.data.caminhoFoto);
-      } else {
-        setUserImage("");
-      }
     }
   }
 
@@ -396,7 +351,7 @@ export default function EditUser() {
             <div className={styles.fotoArea} >
               <div className={classNames("flex gap-8 items-center", { ["flex flex-col text-center gap-8 items-center"]: isMobile })}>
                 <div className="bg-gray-300 flex items-center rounded-full ">
-                  {userImage ? (
+                  {/* {userImage ? (
                     <div className="w-max">
                       <UserImg
                         classname="border-2 border-gray-300"
@@ -408,7 +363,8 @@ export default function EditUser() {
                     </div>
                   ) : (
                     <User width={150} height={150} />
-                  )}
+                  )} */}
+                  <UserAvatar withUsernameClassName="w-32! h-32! text-3xl!" imgClassName="w-40! h-40!" isLoading={userInfo.isLoading} userName={state.firstName}/>
                 </div>
 
                 <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>
@@ -425,14 +381,12 @@ export default function EditUser() {
                     </div>
 
                     {userImage && (
-                      <div >
-                        <Button
-                          typeButton="other"
+                      <div className={classNames("w-1/3!", { ["w-full!"]: isMobile })}>
+                        <SmallerButton
                           title="Remover Foto"
                           type="button"
-                          classNameDiv=""
-                          classNameVariable="buttonRemoveImage "
-                          onClick={() => {
+                          classname="flex items-center h-12! gap-4  border-2! border-red-800!  bg-red-200! text-black! rounded-2xl!"
+                          handleButtonClick={() => {
                             setConfirmingDelete(false);
                             setOpenModal("timer");
                           }}
@@ -457,7 +411,7 @@ export default function EditUser() {
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
             ></InputWithIcon>
-            {type?.type === "aluno" ? (
+            {type?.type?.includes("aluno") ? (
               <InputWithIcon
                 id="cpf"
                 type="text"
@@ -559,12 +513,12 @@ export default function EditUser() {
                   type="button"
                   classname="w-full! transition "
                   title="Salvar Alterações"
-                  onClick={type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
+                  handleButtonClick={type?.type?.includes("aluno") ? handleUpdateUserInfo : handleUpdatePersonalInfo} />
                 <SmallerButton
                   title="Descartar alterações"
                   type="button"
                   classname="w-full! bg-white! text-gray-500! transition hover:bg-gray-100! border! border-gray-300!"
-                  onClick={() => handleUndoChanges()}
+                  handleButtonClick={() => handleUndoChanges()}
                 />
               </div>
             </div>
@@ -573,23 +527,7 @@ export default function EditUser() {
 
         <div className={styles.profileSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
-            <aside className={styles.aside}>
-              <nav className={styles.nav}>
-                <Link to="/edit-user"
-                  className={classNames(styles.link, styles.linkActive)}
-                >
-                  <User />
-                  Informações Pessoais
-                </Link>
-
-                <Link to="/edit-user/security" 
-                  className={classNames(styles.link, styles.linkInactive)}
-                >
-                  <Shield />
-                  Segurança
-                </Link>
-              </nav>
-            </aside>
+            <AsideEditUser activeTab="edituser" />
           </WhiteContainer>
         </div>
 
@@ -645,16 +583,14 @@ export default function EditUser() {
           <div className={`overlay z-auto!`}></div>
           <div
             ref={imagePreviewModal}
-            className="w-3/4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
+            className="w-full p-5 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
           >
             <div className={styles.profileSection + "max-w-full! max-h-full!"}>
               <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
                 {previewImage &&
                   <UserImg
+                    classname={styles.userImg}
                     Source={previewImage}
-                    classname="h-fit! border-2 border-gray-300"
-                    Height={500}
-                    Width={500}
                     Alt="foto"
                   />
                 }
@@ -667,7 +603,7 @@ export default function EditUser() {
                       type="button"
                       classNameVariable="buttonRemoveImage"
                       onClick={() => {
-                        (type?.type === "aluno" ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
+                        (type?.type?.includes("aluno") ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
                       }}
                     />
                   </div>

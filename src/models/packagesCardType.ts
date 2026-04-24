@@ -7,5 +7,5 @@ export type PackagesCardType = {
     benefits: string[];
     titlebtn: string;
     onClick: () => void;
-    typeUser: "personal" | "usuario";
+    typeUser: "personal" | "admin" | "usuario";
 }

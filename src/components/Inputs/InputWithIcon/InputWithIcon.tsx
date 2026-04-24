@@ -5,24 +5,88 @@ import Skeleton from "react-loading-skeleton";
 
 type Props = {
     type: string;
-    placeholder: string;
+    placeholder?: string;
     icon: React.ReactNode;
-    label?: string;
+    label?: React.ReactNode;
     id?: string;
     onInputChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     onInputClick?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void);
     isPassword?: boolean;
-    value?: string;
-    mask?: (input: React.FormEvent<HTMLInputElement>) => void
+    value?: string | number | undefined | null;
+    mask?: (input: React.InputEvent<HTMLInputElement>) => void
     disabled?: boolean;
-
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
+    hasError?: boolean;
+    hasSuccess?: boolean;
+
+    allowDecimals?: boolean;
+    maxLength?: number;
+    maxDecimalPlaces?: number;
+    decimalSeparator?: "." | ",";
+
+    onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, onInputClick, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, decimalSeparator = ".", hasError, hasSuccess, onBlur }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (type === "number") {
+            let value = e.target.value.replace(",", ".");
+            if (allowDecimals) {
+                value = value.replace(/[^\d.]/g, "");
+                const parts = value.split(".");
+                if (parts.length > 2) {
+                    value = parts[0] + "." + parts.slice(1).join("");
+                }
+
+                if (typeof maxDecimalPlaces === "number" && maxDecimalPlaces >= 0) {
+                    const [integerPart, decimalPart = ""] = value.split(".");
+
+                    if (value.includes(".")) {
+                        if (maxDecimalPlaces === 0) {
+                            value = integerPart;
+                        } else {
+                            value = `${integerPart}.${decimalPart.slice(0, maxDecimalPlaces)}`;
+                        }
+                    }
+                }
+            } else {
+                value = value.replace(/\D/g, "");
+            }
+
+            const displayedValue = decimalSeparator === "," ? value.replace(".", ",") : value;
+            e.target.value = displayedValue;
+            onInputChange?.(displayedValue);
+            return;
+        }
+        onInputChange?.(e.target.value);
+    }
+
+    function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+        if (type === "number") {
+            const allowed = [
+                "Backspace", "Delete", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Tab"
+            ];
+
+            if (allowed.includes(e.key)) return;
+            if (e.ctrlKey || e.metaKey) return;
+
+            if (e.key === "." || e.key === ",") {
+                if (!allowDecimals || e.currentTarget.value.includes(".") || e.currentTarget.value.includes(",")) {
+                    e.preventDefault();
+                }
+                return;
+            }
+
+            if (!/^\d$/.test(e.key)) {
+                e.preventDefault();
+            }
+        }
+    }
+
 
     return (
         <div className={`${styles.wrapperInp} ${customClassName || ""}`} id={id}>
@@ -37,14 +101,17 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                     <>
                         <input
                             id={`${id}-input`}
-                            type={isPassword && showPassword ? "text" : type}
-                            className={`${isPassword ? styles.passwordInput : undefined} ${classNameInput || ""}`}
+                            type={isPassword && showPassword ? "text" : (type === "number" ? "text" : type)}
+                            inputMode={type === "number" ? "decimal" : undefined}
+                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""} ${!icon ? styles.noIconInput : ""}`}
                             placeholder={placeholder}
-                            onChange={onInputChange ? (e) => onInputChange(e.target.value) : undefined}
-                            onClick={onInputClick ? (e) => onInputClick(e.currentTarget.value) : undefined}
                             onInput={(e) => mask ? mask(e) : undefined}
-                            value={value}
+                            value={value ?? undefined}
+                            onChange={handleChange}
+                            onKeyDown={handleKeyDown}
                             disabled={disabled}
+                            maxLength={maxLength}
+                            onBlur={onBlur}
                         />
                         {isPassword && (
                             <button

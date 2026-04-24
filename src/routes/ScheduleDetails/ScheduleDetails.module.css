@@ -19,7 +19,7 @@
 .container .title {
     font-size: 30px;
     font-weight: 500;
-    padding: 36px 0;
+    padding: 24px 0;
     padding-bottom: 0;
     display: flex;
     align-items: center;
@@ -206,4 +206,268 @@
 .buttonGroupStudent {
     width: 100%;
     justify-content: flex-end;
+}
+
+.mainGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 20px 0;
+}
+
+.professionalCard {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: fit-content;
+}
+
+.cardLabel {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+}
+
+.avatarSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar,
+.avatarInitials {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}
+
+.avatarInitials {
+    background: #dbe8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 500;
+    color: #2a6bbf;
+}
+
+.professionalName {
+    font-size: 22px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.professionalSub {
+    font-size: 16px;
+    color: #888;
+    text-align: center;
+}
+
+.ageDivider {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ageLabel {
+    font-size: 14px;
+    color: #888;
+}
+
+.ageValue {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.contactButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.contactBtn {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.infoColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.typeAmbientRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.infoCard {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.infoCardLabel {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+}
+
+.infoCardValue {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.mapCard {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.mapCardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.directionsLink {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #2a6bbf;
+    text-decoration: none;
+}
+
+.addressText {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.mapPlaceholder {
+    height: 110px;
+    background: #d4e4c8;
+    border-radius: 8px;
+}
+
+.buttonsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .typeAmbientRow {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .buttonsGrid {
+        grid-template-columns: 1fr;
+        flex-direction: column-reverse;
+    }
+}
+
+.dateTimeRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .bottomRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dateTimeCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 10px 16px;
+}
+
+.dateTimeLabel {
+  display: block;
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 500;
+}
+
+.dateTimeValue {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    width: 100%;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dateTimeRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dateTimeCard {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f5f5f5;
+    border: solid 1px #50505050;
+    border-radius: 8px;
+    padding: 10px 16px;
+    width: 100%;
 }

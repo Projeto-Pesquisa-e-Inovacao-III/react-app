@@ -4,10 +4,6 @@ export default function GoBackButton({ to }: { to?: string }) {
 
     const navigate = useNavigate();
 
-    function handleGoBack() {
-        navigate(-1);
-    }
-
     return (
         <div className={styles.goBackLogin}>
             <Link to={to || "#"} onClick={(e) => {

@@ -1,38 +1,63 @@
 import { ArrowRight, CalendarIcon } from "lucide-react"
+import styles from "./OverviewCardPackageStatus.module.css"
+import { useNavigate } from "react-router-dom";
+import { differenceInDays, subYears } from "date-fns";
 
 type Props = {
-    actualPlan?: string | null;
+    actualPlan?: {
+        nome: string;
+        dataExpiracao: string;
+    } | null;
 }
 
 export default function OverviewCardPackageStatus({ actualPlan }: Props) {
+    function calculateRemainingDays(dueDate: string): number {
+        const today = new Date();
+        const expiration = new Date(dueDate);
+        return Math.max(0, differenceInDays(expiration, today));
+    }
+
+    function calculateProgress(dueDate: string): number {
+        const expiration = new Date(dueDate);
+        const initial = subYears(expiration, 1);
+        const totalDays = differenceInDays(expiration, initial);
+        const remainingDays = differenceInDays(expiration, new Date());
+        if (totalDays <= 0) return 0;
+        return Math.min(100, Math.max(0, Math.round((remainingDays / totalDays) * 100)));
+    }
+
+    const remainingDays = actualPlan ? calculateRemainingDays(actualPlan.dataExpiracao) : 0;
+    const progress = actualPlan ? calculateProgress(actualPlan.dataExpiracao) : 0;
+    const nav = useNavigate();
+
+
     return (
-        <section className="bg-indigo rounded-xl shadow-lg p-6 text-white relative overflow-hidden group w-full">
-            <div className="absolute right-0 top-0 text-white/10 transition-transform duration-500">
-                <span className="material-icons-outlined text-9xl">
-                    <svg width="83" height="99" viewBox="0 0 83 99" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M30.5 49L42.75 39.75L55 49L50.5 33.75L62.75 24H47.5L42.75 9L38 24H22.75L35 33.75L30.5 49ZM85.5 29.25C85.5 5.75 66.25 -13.25 42.75 -13.25C19.25 -13.25 0 5.75 0 29.25C0 40.25 4.25 50 10.75 57.5V98.75L42.75 88L74.75 98.75V57.5C81.25 50 85.5 40.25 85.5 29.25ZM42.75 -2.75C60.5 -2.75 74.75 11.75 74.75 29.25C74.75 47 60.5 61.25 42.75 61.25C25 61.25 10.75 47 10.75 29.25C10.75 11.75 25 -2.75 42.75 -2.75ZM42.75 77.25L21.5 82.75V66.25C27.75 69.75 35 72 42.75 72C50.5 72 57.75 69.75 64 66.25V82.75L42.75 77.25Z" fill="white" fill-opacity="0.1" />
-                    </svg>
-                </span>
+        <section className={styles.section}>
+            <div className={styles.iconBackground}>
+                <svg width="83" height="99" viewBox="0 0 83 99" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30.5 49L42.75 39.75L55 49L50.5 33.75L62.75 24H47.5L42.75 9L38 24H22.75L35 33.75L30.5 49ZM85.5 29.25C85.5 5.75 66.25 -13.25 42.75 -13.25C19.25 -13.25 0 5.75 0 29.25C0 40.25 4.25 50 10.75 57.5V98.75L42.75 88L74.75 98.75V57.5C81.25 50 85.5 40.25 85.5 29.25ZM42.75 -2.75C60.5 -2.75 74.75 11.75 74.75 29.25C74.75 47 60.5 61.25 42.75 61.25C25 61.25 10.75 47 10.75 29.25C10.75 11.75 25 -2.75 42.75 -2.75ZM42.75 77.25L21.5 82.75V66.25C27.75 69.75 35 72 42.75 72C50.5 72 57.75 69.75 64 66.25V82.75L42.75 77.25Z" fill="white" fillOpacity="0.1" />
+                </svg>
             </div>
-            <div className="relative z-10">
-                <span className="bg-white/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-4 inline-block">Plano Ativo</span>
-                <h3 className="text-2xl font-black mb-1">{actualPlan}</h3>
-                <p className="text-white/70 text-sm mb-6 flex items-center gap-2">
-                    <span className="material-icons-outlined text-sm"><CalendarIcon size={17} /></span>
-                    Expira em 24/11/2026
+
+             <div className={styles.content}>
+                <span className={styles.badge}>Plano Ativo</span>
+                <h3 className={styles.planName}>{actualPlan?.nome}</h3>
+                <p className={styles.expiryDate}>
+                    <CalendarIcon size={17} />
+                    Expira em {actualPlan?.dataExpiracao ? new Date(actualPlan.dataExpiracao).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" }) : "N/A"}
                 </p>
-                <div className="bg-white/10 backdrop-blur-md rounded-lg p-3 mb-6 border border-white/10">
-                    <div className="flex justify-between items-center text-sm mb-1">
-                        <span>Progresso restante</span>
-                        <span className="font-bold">80%</span>
+                <div className={styles.progressBox}>
+                    <div className={styles.progressHeader}>
+                        <span className={styles.progressLabel}>Dias restantes</span>
+                        <span className={styles.progressValue}>{remainingDays} dias</span>
                     </div>
-                    <div className="w-full bg-white/20 rounded-full h-1.5 overflow-hidden">
-                        <div className="bg-white h-full w-[80%]"></div>
+                    <div className={styles.progressTrack}>
+                        <div className={styles.progressBar} style={{ width: `${progress}%` }} />
                     </div>
                 </div>
-                <button className="h-11! text-indigo cursor-pointer w-full py-3 bg-white font-bold rounded-xl shadow-md hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+                <button className={styles.button} onClick={() => nav("/plans-history")}>
                     Histórico de compras
-                    <span className="material-icons-outlined text-sm"><ArrowRight size={17} /></span>
+                    <ArrowRight size={17} />
                 </button>
             </div>
         </section>

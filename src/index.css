@@ -19,6 +19,7 @@
   --link-text: #2e5580;
 
   --btn-bg: #2e5580;
+  --bg-blue-hover: #2c6888;
   --btn-color: white;
   --btn-border: none;
   --btn-border-radius: 4px;
@@ -27,11 +28,14 @@
   --indigo: #093A5D;
   --lapis-lazuli: #0C6291;
   --carol: #82adc5;
+  --carol-light: #b6d0dd;
 
   --color-gigant-orange: #f26430;
 
   --font-poppins: 'Poppins', sans-serif;
   --font-bebas: 'Bebas Neue', cursive;
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-inter: 'Inter', sans-serif;
 
   --calendar-width: 180px;
 
@@ -55,4 +59,5 @@
   z-index: 999;
   transition: opacity 0.3s ease;
   opacity: 1;
+  backdrop-filter: blur(10px);
 }

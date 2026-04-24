@@ -34,6 +34,7 @@ export default function UserScheduleCard({ additionalInfo, isReschedule, data, d
                 <p>{isReschedule ? "Horário reagendado" : ""}</p>
                 <div className="schedule-page-user">
                     <UserAvatar
+                        userName={data.personalNome ?? additionalInfo?.nome ?? ""}
                         foto={data.caminhoFoto ?? additionalInfo?.foto }
                         useUserImage={false}
                     />

@@ -28,7 +28,7 @@ export default function HeaderMobile() {
         </div>
 
         {burgerActive && (
-          <nav className="flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
+          <nav className="z-10 flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
             <a href="#main-section-mobile">Inicio</a>
             <a href="#about-section-mobile">Quem sou?</a>
             <a href="#services-section-mobile">Bora treinar!</a>

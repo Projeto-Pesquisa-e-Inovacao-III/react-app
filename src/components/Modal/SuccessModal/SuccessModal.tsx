@@ -1,29 +1,36 @@
-import "./successModalMobile.css";
-import "./successModal.css";
+import styles from "./SuccessModal.module.css";
 import SmallerButton from "../../SmallerButton/SmallerButton";
 import { useEffect } from "react";
+import classnames from "classnames";
+import useModalClose from "../../../hooks/useModalClose";
 
 export default function SuccessModal({ isMobile, closeThen, title, content }: { isMobile: boolean; closeThen: React.Dispatch<React.SetStateAction<boolean>>; title?: string; content?: string }) {
 
-    function handleCloseModal() {
-        document.body.style.overflow = 'auto';
-        closeThen(false);
-    }
+    const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
+        onClose: () => closeThen(false)
+    });
 
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
         console.log("Modal aberto");
     }, []);
 
     return (
         <>
-            <div className="overlay"></div>
-            <div className={`modal-event-created${isMobile ? "-mobile" : ""}`}>
+            <div className={classnames("overlay", {
+                [styles.backdropEnter]: !isClosing,
+                [styles.closingBackdrop]: isClosing,
+            })}></div>
+            <div className={classnames({
+                [styles.modalEventCreated]: !isMobile,
+                [styles.modalEventCreatedMobile]: isMobile,
+                [styles.modalCard]: !isClosing,
+                [styles.closing]: isClosing,
+            })}>
                 <h2>{title || "Evento criado com sucesso!"}</h2>
-                <p className="content-modal">{content || "Seu evento foi criado com sucesso."}</p>
+                <p className={styles.contentModal}>{content || "Seu evento foi criado com sucesso."}</p>
                 <svg width="52" height="51" viewBox="0 0 52 51" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="0.5" width="51" height="51" rx="25.5" fill="#22C55E" />
-                    <path d="M19.625 25.5L23.875 29.75L32.375 21.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M19.625 25.5L23.875 29.75L32.375 21.25" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
 
                 <SmallerButton classname="h-12" type="button" title="Fechar" handleButtonClick={handleCloseModal} />
@@ -32,3 +39,4 @@ export default function SuccessModal({ isMobile, closeThen, title, content }: { 
         </>
     );
 }
+

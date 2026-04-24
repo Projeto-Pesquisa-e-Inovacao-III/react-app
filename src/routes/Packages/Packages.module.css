@@ -6,7 +6,7 @@
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
-    
+
 }
 
 .packagesTitleContainer {
@@ -62,6 +62,7 @@
 }
 
 .addTitle {
+    text-align: center;
     font-size: 1.25rem;
     font-weight: 700;
     color: #64748b;
@@ -153,7 +154,7 @@
 }
 
 .emblaSlideUser {
-    flex: 0 0 24%;
+    flex: 0 0 30%;
 }
 
 
@@ -220,13 +221,21 @@
     grid-column: 1 / -1;
 }
 
+.addCardLimit, .addIconWrapperLimit {
+    cursor: not-allowed;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.5);
+}
+
+.addCardLimit:hover, .addIconWrapperLimit:hover {
+    cursor: not-allowed;
+    background-color: rgba(255, 0, 0, 0.1);
+    border-color: rgba(255, 0, 0, 0.5);
+}
+
 @media (max-width: 1536px) {
     .emblaSlide {
-        flex: 0 0 70% !important;
-    }
-
-    .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 45% !important;
     }
 
     .emblaSlideAdd {
@@ -236,6 +245,11 @@
     .addCard {
         width: 30rem;
     }
+
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(2, 1fr);
+
+    }
 }
 
 @media (max-width: 1440px) {
@@ -244,7 +258,7 @@
     }
 
     .emblaSlideUser {
-        flex: 0 0 30% !important;
+        flex: 0 0 40% !important;
     }
 
     .emblaSlideAdd {
@@ -272,6 +286,9 @@
         width: 30rem;
     }
 
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 
@@ -373,10 +390,6 @@
         width: 120px;
         min-height: 250px;
         padding: 1rem;
-    }
-
-    .addTitle {
-        font-size: 0.875rem;
     }
 
     .addText {

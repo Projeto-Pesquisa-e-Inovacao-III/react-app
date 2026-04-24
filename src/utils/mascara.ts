@@ -1,4 +1,4 @@
-export function cpfMask(input: React.FormEvent<HTMLInputElement>): void {
+export function cpfMask(input: React.InputEvent<HTMLInputElement>): void {
     // \D - Apenas números
     // /g - string toda
     let value: string = input.currentTarget.value.replace(/\D/g, '');
@@ -13,18 +13,13 @@ export function cpfMask(input: React.FormEvent<HTMLInputElement>): void {
         .replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
 }
 
-export function cepMask(input: React.FormEvent<HTMLInputElement>): void {
-    let value: string = input.currentTarget.value.replace(/\D/g, '');
-
-    if (value.length > 8) {
-        value = value.slice(0, 8);
-    }
-
-    input.currentTarget.value = value
-        .replace(/^(\d{5})(\d)/, '$1-$2')
+export function cepMask(value: string): string {
+    value = value.replace(/\D/g, '').slice(0, 8);
+    console.log(value, "value")
+    return value.replace(/^(\d{5})(\d)/, '$1-$2');
 }
 
-export function cellphoneMask(input: React.FormEvent<HTMLInputElement>): void {
+export function cellphoneMask(input: React.InputEvent<HTMLInputElement>): void {
     let value: string = input.currentTarget.value.replace(/\D/g, '');
 
     if (value.length > 11) {
@@ -34,4 +29,13 @@ export function cellphoneMask(input: React.FormEvent<HTMLInputElement>): void {
         .replace(/^(\d{2})(\d)/, '($1) $2')
         .replace(/(\d{5})(\d)/, '$1-$2');
 }
+
+export function crefMask(input: React.InputEvent<HTMLInputElement>): void {
+  const v = input.currentTarget.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+  input.currentTarget.value = v
+    .replace(/^(\d{6})(\w)/, "$1-$2")      
+    .replace(/-(\w{1})(\w)/, "-$1/$2")   
+    .substring(0, 11);                 
+};
 

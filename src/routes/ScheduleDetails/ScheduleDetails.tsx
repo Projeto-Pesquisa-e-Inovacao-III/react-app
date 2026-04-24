@@ -2,33 +2,42 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { CalendarDays, Clock } from 'lucide-react';
-import CardInfo from '../../components/CardInfo/CardInfo';
+import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
-import NewEvent from '../../components/NewEvent/NewEvent';
+import NewEvent from '../../components/Modal/NewEvent/NewEvent';
 import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
 import type { AbsenceAppointment } from '../../models/schedule';
 import Skeleton from 'react-loading-skeleton';
 import { TypeContext } from '../../App';
+import UserAvatar from '../../components/UserAvatar/UserAvatar';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
+
+const STATUS_CONFIG: Record<string, { text: string; color: string; textColor?: string; class: string }> = {
+    CONCLUIDO: { text: "Concluído", color: "#0ea500", class: "statusDone" },
+    PENDENTE_PERSONAL_CONCLUIR: { text: "Pendente", color: "#FFA500", class: "statusPending" },
+    APROVADO: { text: "Marcado", color: "#0ea500", class: "statusPending" },
+    PENDENTE_PERSONAL_APROVACAO: { text: "Em análise", color: "#ffcc00d8", textColor: "#9c5120", class: "statusPending" },
+    PENDENTE_CLIENTE_APROVACAO: { text: "Aprovação pendente", color: "#FFA500", class: "statusPending" },
+    CANCELADO_PERSONAL: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
+    CANCELADO_CLIENTE: { text: "Cancelado", color: "#FF0000", class: "statusCancelled" },
+    AUSENCIA_PERSONAL: { text: "Ausência", color: "#FF0000", class: "statusCancelled" },
+    AUSENCIA_CLIENTE: { text: "Ausência", color: "#FF0000", class: "statusCancelled" },
+};
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
     const queryClient = useQueryClient();
 
     const type = useContext(TypeContext);
-
-
-    console.log("User type in ScheduleDetails:", type);
 
     const [searchParams] = useSearchParams();
 
@@ -57,12 +66,6 @@ export default function ScheduleDetails() {
         setButtonsActionsCondition(today >= appt);
     }, [location.pathname, appointment.data?.dataInicio]);
 
-    const formattedDate = `${new Date(`${appointment.data?.dataInicio}`).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    })} das ${appointment.data?.dataInicio.split('T')[1].slice(0, 5)} às ${appointment.data?.dataFim.split('T')[1].slice(0, 5)}`;
-
     const [successModalInfo, setSuccessModalInfo] = useState<{
         title: string;
         content: string;
@@ -83,73 +86,70 @@ export default function ScheduleDetails() {
     }
 
 
+    const handleActionSuccess = async (title: string, content: string) => {
+        handleSuccessModal(title, content);
+        await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
+        await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
+    };
+
+    const handleActionError = (title: string, error: any, defaultMessage: string) => {
+        console.error(`${title}:`, error);
+        handleErrorModal(title, error?.response?.data?.Exception || defaultMessage);
+    };
+
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then(async (res) => {
-            console.log("Agendamento aceito:", res);
-            handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao concluir o agendamento:", error);
-        });
+        try {
+            await acceptUserAppointment(id);
+            await handleActionSuccess("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
+        } catch (error) {
+            console.error("Erro ao aceitar o agendamento:", error);
+        }
     }
 
     async function declineAppointment(id: number) {
-        await refuseAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Recusado", "O agendamento foi recusado.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao recusar o agendamento:", error);
-            handleErrorModal("Erro ao recusar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao recusar o agendamento.");
-        });
+        try {
+            await refuseAppointment(id);
+            await handleActionSuccess("Agendamento Recusado", "O agendamento foi recusado.");
+        } catch (error) {
+            handleActionError("Erro ao recusar o agendamento", error, "Ocorreu um erro ao recusar o agendamento.");
+        }
     }
 
     async function cancelAppointment(id: number) {
-        await refuseAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Cancelado", "O agendamento foi cancelado.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-        }).catch((error) => {
-            console.error("Erro ao cancelar o agendamento:", error);
-            handleErrorModal("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
-        });
+        try {
+            await refuseAppointment(id);
+            await handleActionSuccess("Agendamento Cancelado", "O agendamento foi cancelado.");
+        } catch (error) {
+            handleActionError("Erro ao cancelar o agendamento", error, "Ocorreu um erro ao cancelar o agendamento.");
+        }
     }
 
     async function registerAbsenceAppointment(data: { type: string; description: string }) {
         const payload: AbsenceAppointment = {
             idAgendamento: appointmentId,
             tipoUsuario: data.type,
-            descricaoCancelamento: data.description === "" ? "" : data.description
+            descricaoCancelamento: data.description || ""
         };
 
-        console.log("Payload de ausência:", payload);
-        await reportAbsencePersonal(payload).then(async () => {
-            handleSuccessModal("Ausência Registrada", "A ausência foi registrada com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        }).catch((error) => {
+        try {
+            await reportAbsencePersonal(payload);
+            await handleActionSuccess("Ausência Registrada", "A ausência foi registrada com sucesso.");
+        } catch (error) {
             console.error("Erro ao registrar a ausência:", error);
-        });
+        }
     }
 
-    function handleConcludeAppointment(id: number) {
-        concludeAppointment(id).then(async () => {
-            handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
-            await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-            await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        }).catch((error) => {
+    async function handleConcludeAppointment(id: number) {
+        try {
+            await concludeAppointment(id);
+            await handleActionSuccess("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+        } catch (error) {
             console.error("Erro ao concluir o agendamento:", error);
-        });
+        }
     }
 
     async function handleSuccessReschedule() {
-        await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
-        await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
-
-        handleSuccessModal("Reagendado com sucesso", "Horário reagendado com sucesso");
+        await handleActionSuccess("Reagendado com sucesso", "Horário reagendado com sucesso");
     }
 
     function handleModal(id: number, type: modalTypes) {
@@ -158,105 +158,150 @@ export default function ScheduleDetails() {
     }
 
 
+    console.log("Dados do agendamento:", appointment.data);
 
+    interface MapProps {
+        endereco: string;
+    }
+
+    function GoogleMapEmbed({ endereco }: MapProps) {
+        const encodedAddress = encodeURIComponent(endereco);
+        const mapUrl = `https://www.google.com/maps?q=${encodedAddress}&output=embed`;
+
+        return (
+            <div style={{ width: '100%', height: '400px', borderRadius: '8px', overflow: 'hidden' }}>
+                <iframe
+                    title="Mapa do Endereço"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    src={mapUrl}
+                />
+            </div>
+        );
+    };
+
+    function handleWhatsAppClick() {
+        window.open(`https://api.whatsapp.com/send?phone=5511945584686&text=Ol%C3%A1%2C%20tudo%20bem%3F`, "_blank");
+    }
+
+    function handleGoogleMapsClick() {
+        const encodedAddress = encodeURIComponent(appointment.data?.endereco?.cep?.logradouro + ", " + appointment.data?.endereco?.cep?.bairro + ", " + appointment.data?.endereco?.numero + " – " + appointment.data?.endereco?.cep?.uf);
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, "_blank");
+    }
 
     return (
         <>
             <div className={classNames(styles.container, { [styles.containerMobile]: isMobile })}>
-                <GoBackButton />
+                <div className={styles.header}>
+                    <GoBackButton />
+                    {appointment.data?.status && STATUS_CONFIG[appointment.data.status] && (
+                        <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: STATUS_CONFIG[appointment.data.status].color, color: STATUS_CONFIG[appointment.data.status].textColor, padding: "6px 12px", borderRadius: "8px" }}>
+                            <span className={styles[STATUS_CONFIG[appointment.data.status].class]}>
+                                {STATUS_CONFIG[appointment.data.status].text}
+                            </span>
+                        </div>
+                    )}
+                </div>
                 <div className={styles.wrapperContent}>
                     <div className={styles.title}>
                         <h1>Detalhes do agendamento</h1>
-                        {appointment.data?.status === "CONCLUIDO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#0ea500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusDone}>Concluído</span>
-                            </div>
-                        }
-
-                        {appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
-                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Pendente</span>
-                            </div>)
-                        }
-
-                        {appointment.data?.status === "APROVADO" &&
-                            (<div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Marcado</span>
-                            </div>)
-                        }
-
-
-                        {appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Em análise</span>
-                            </div>
-                        }
-
-                        {appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO" &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FFA500", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusPending}>Aprovação pendente</span>
-                            </div>
-                        }
-
-                        {(appointment.data?.status === "CANCELADO_PERSONAL" || appointment.data?.status === "CANCELADO_CLIENTE") &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusCancelled}>Cancelado</span>
-                            </div>
-                        }
-
-                        {(appointment.data?.status === "AUSENCIA_PERSONAL" || appointment.data?.status === "AUSENCIA_CLIENTE") &&
-                            <div className={styles.statusIndicatorCheckSchedule} style={{ backgroundColor: "#FF0000", padding: "6px 12px", borderRadius: "8px", color: "#fff" }}>
-                                <span className={styles.statusCancelled}>Ausência</span>
-                            </div>
-                        }
                     </div>
-                    <div className={classNames(styles.contentRow)}>
-                        <div className={styles.content}>
-                            <div className={styles.textWithIcon}>
-                                <span><CalendarDays /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : formattedDate}</span>
+                    <div className={styles.mainGrid}>
+
+                        <div className={styles.bottomRow}>
+                            <div className={styles.leftColumn}>
+                                <div className={styles.professionalCard}>
+
+                                    <div className={styles.avatarSection}>
+                                        <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={!type?.type?.includes("aluno") ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
+                                        <div className={styles.professionalName}>
+                                            {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                        </div>
+                                        <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
+                                    </div>
+                                    <div className={styles.ageDivider}>
+                                        <span className={styles.ageLabel}>Idade</span>
+                                        <span className={styles.ageValue}>
+                                            {!type?.type?.includes("aluno")
+                                                ? appointment.data?.aluno?.idade
+                                                : appointment.data?.personal?.idade} anos
+                                        </span>
+                                    </div>
+
+                                    {type?.type?.includes("aluno") && (
+                                        <div className={styles.contactButtons}>
+                                            <button className={styles.contactBtn} onClick={handleWhatsAppClick}>
+                                                <MessageSquare size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+
+                                </div>
+                                <div className={styles.dateTimeRow}>
+                                    <div className={styles.dateTimeCard}>
+                                        <CalendarDays size={18} />
+                                        <div>
+                                            <span className={styles.dateTimeLabel}>Data</span>
+                                            <span className={styles.dateTimeValue}>
+                                                {appointment.isLoading ? <Skeleton width={100} /> :
+                                                    new Date(appointment.data?.dataInicio).toLocaleDateString('pt-BR', {
+                                                        day: '2-digit', month: 'short', year: 'numeric'
+                                                    })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className={styles.dateTimeCard}>
+                                        <Clock size={18} />
+                                        <div>
+                                            <span className={styles.dateTimeLabel}>Horário</span>
+                                            <span className={styles.dateTimeValue}>
+                                                {appointment.isLoading ? <Skeleton width={80} /> :
+                                                    `${appointment.data?.dataInicio?.split('T')[1]?.slice(0, 5) || '--:--'} - ${appointment.data?.dataFim?.split('T')[1]?.slice(0, 5) || '--:--'}`}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className={styles.textWithIcon}>
-                                <span><Clock /></span><span>{appointment.isLoading ? <Skeleton width={250} /> : `${appointment.data?.duracaoMinutos} minutos`}</span>
+                            <div className={styles.infoColumn}>
+                                <div className={styles.typeAmbientRow}>
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.infoCardLabel}><Building2 size={14} /> Tipo de Atendimento</div>
+                                        <div className={styles.infoCardValue}>
+                                            {appointment.data?.tipoAula?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
+                                        </div>
+                                    </div>
+                                    <div className={styles.infoCard}>
+                                        <div className={styles.infoCardLabel}><MapPin size={14} /> Ambiente</div>
+                                        <div className={styles.infoCardValue}>
+                                            {appointment.data?.endereco?.tipo?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className={styles.mapCard}>
+                                    <div className={styles.mapCardHeader}>
+                                        <span className={styles.infoCardLabel}>Endereço Completo</span>
+                                        <a onClick={() => handleGoogleMapsClick()} className={styles.directionsLink}><Navigation size={13} /> Direções</a>
+                                    </div>
+                                    <div className={styles.addressText}>
+                                        {appointment.data?.endereco?.cep?.logradouro} – {appointment.data?.endereco?.cep?.bairro}, {appointment.data?.endereco?.numero} – {appointment.data?.endereco?.cep?.uf}
+                                    </div>
+                                    {appointment.isLoading ? (
+                                        <Skeleton height={400} borderRadius={8} />
+                                    ) : (
+                                        <GoogleMapEmbed endereco={`${appointment.data?.endereco?.cep?.logradouro} ${appointment.data?.endereco?.cep?.bairro} ${appointment.data?.endereco?.numero} ${appointment.data?.endereco?.cep?.uf}`} />
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {!type || type?.type === null &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={<Skeleton width={150} height={20} />} subtitle={<Skeleton width={150} height={20} />} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
 
-                    {type?.type === "aluno" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Personal" title={appointment.data?.personal?.nome} subtitle={`Idade: ${appointment.data?.personal?.idade} anos`} includeImg={true} imgUrl={appointment.data?.personal?.avatarUrl ? appointment.data?.personal?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
-
-                    {type?.type === "personal" &&
-                        <CardInfo isMobile={isMobile} HeaderTitle="Aluno" title={appointment.data?.aluno?.nome} subtitle={`Idade: ${appointment.data?.aluno?.idade} anos`} includeImg={true} imgUrl={appointment.data?.aluno?.avatarUrl ? appointment.data?.aluno?.avatarUrl : undefined} isLoading={appointment.isLoading} />
-                    }
-
-                    <div className={styles.contentDetails}>
-                        <h2 className={styles.subtitle}>Detalhes</h2>
-                        <div className={styles.planDetails}>
-                            <span className={styles.planDetailsDescription}>
-                                Tipo:
-                                <span className={styles.planDetailsText}>{appointment.isLoading ? <Skeleton width={250} className='mb-2' /> : appointment.data?.tipoAula
-                                    ?.toLowerCase()
-                                    ?.replace(/^\w/, (c: string) => c.toUpperCase())}
-                                </span>
-                            </span>
-                            <span className={styles.planDetailsDescription}>
-                                Local:
-                                <span className={styles.planDetailsText}>
-                                    {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.tipo?.toLowerCase()
-                                        ?.replace(/^\w/, (c: string) => c.toUpperCase())}
-                                </span>
-                            </span>
-                            <span className={styles.planDetailsDescription}>Endereço: {appointment.isLoading ? <Skeleton width={250} className='mb-1 mt-1' /> : appointment.data?.endereco.cep.logradouro} - {appointment.data?.endereco.cep.bairro}, {appointment.data?.endereco.numero} - {appointment.data?.endereco.cep.uf}</span>
-                            {appointment.data?.endereco.complemento && <span className={styles.planDetailsDescription}>Complemento: {appointment.data?.endereco.complemento}</span>}
-                        </div>
                     </div>
                 </div>
 
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
-                    {type?.type === "personal" && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
+                    {type?.type?.includes("personal") && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
 
                             <div className={styles.buttonAbsence}>
@@ -281,14 +326,14 @@ export default function ScheduleDetails() {
 
                     {
                         (
-                            (type?.type === "personal" && (
+                            (!type?.type?.includes("aluno") && (
 
                                 appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO"
                             ))
                             ||
-                            (type?.type === "aluno" && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
+                            (type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
-                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type === "personal" || type?.type === "aluno" })}>
+                            <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type?.includes("personal") || type?.type?.includes("admin") || type?.type?.includes("aluno") })}>
                                 <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />
@@ -310,6 +355,18 @@ export default function ScheduleDetails() {
                     )}
 
                     {appointment.data?.status === "APROVADO" && (
+                        <div className={classNames(styles.buttonGroup)}>
+                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "reschedule");
+                            }} />
+                            <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                handleModal(appointment.data?.id, "cancel");
+                            }} />
+                        </div>
+                    )}
+
+
+                    {type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
                         <div className={classNames(styles.buttonGroup)}>
                             <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");
@@ -349,10 +406,10 @@ export default function ScheduleDetails() {
                             buttonTitle="Reagendar"
                             isReschedule={true}
                             rescheduleId={appointmentId}
-                            clickedDate={appointment.data?.dataInicio.split("T")[0] || ""}
-                            typeUser={type}
+                            clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
+                            typeUser={type?.type || []}
                             appoitmentData={appointment.data}
-                            goToNextStep={type === "personal" ? false : true}
+                            goToNextStep={!type?.type?.includes("aluno")}
                         />
                     </>
                 )}

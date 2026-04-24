@@ -1,19 +1,19 @@
 import styles from "./SecurityInformations.module.css";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
-import { HeartCrack, Lock, Mail, Shield, User } from "lucide-react";
+import { HeartCrack, Lock, Mail, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import { findUserData, softDelete, changePassword } from "../../../constants/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal.tsx";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { validatePassword } from "../../../utils/validacao.ts";
 import useModal from "../../../hooks/useModal.tsx";
 import { useQuery } from "@tanstack/react-query";
-import classNames from "classnames";
 import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
+import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 
 type UserPhone = {
   id: number;
@@ -35,10 +35,10 @@ type UserDataResponse = {
   telefones: UserPhone[];
 };
 
-export default function EditUser() {
+export default function SecurityInformations() {
   const isMobile = useMobile();
   const navigator = useNavigate();
-
+  
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState<{ currentPassword: string; confirmPassword: string }>({
@@ -118,10 +118,10 @@ export default function EditUser() {
       });
   }
   useEffect(() => {
-  if (userInfo.data?.email) {
-    setEmail(userInfo.data.email);
-  }
-}, [userInfo.data]);
+    if (userInfo.data?.email) {
+      setEmail(userInfo.data.email);
+    }
+  }, [userInfo.data]);
 
   return (
     <>
@@ -140,7 +140,9 @@ export default function EditUser() {
               placeholder="Digite seu email"
               icon={<Mail size={22} />}
               label="Email"
+              disabled={true}
               isLoading={userInfo.isLoading}
+              classNameInput="bg-gray-100! cursor-not-allowed!"
               value={email}
               onInputChange={(value: string) => setEmail(value)}
             ></InputWithIcon>
@@ -214,24 +216,7 @@ export default function EditUser() {
 
         <div className={styles.pagesSection}>
           <WhiteContainer containerClassName={styles.profileWhiteContainer} title="" titleMarginBottom={25} gap={30}>
-            <aside className={styles.aside}>
-              <nav className={styles.nav}>
-                <Link to="/edit-user"
-                  className={classNames(styles.link, styles.linkInactive)}
-                >
-                  <User />
-                  Informações Pessoais
-                </Link>
-
-                <Link
-                  to="/edit-user/security"
-                  className={classNames(styles.link, styles.linkActive)}
-                >
-                  <Shield />
-                  Segurança
-                </Link>
-              </nav>
-            </aside>
+            <AsideEditUser activeTab="security" />
           </WhiteContainer>
         </div>
       </div>
