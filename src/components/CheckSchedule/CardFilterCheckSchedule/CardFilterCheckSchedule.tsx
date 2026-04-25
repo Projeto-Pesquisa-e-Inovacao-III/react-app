@@ -72,13 +72,15 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             selectStatusValue={selectStatusValue}
                             selectPlaceholder="Selecionar status"
                             values={[
-                                { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
+                                { label: "Pendente personal", value: "PENDENTE_PERSONAL_APROVACAO" },
+                                { label: "Pendente aluno", value: "PENDENTE_CLIENTE_APROVACAO" },
                                 { label: "Aprovado", value: "APROVADO" },
                                 { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
                             ]}
                             setOpenSelectId={setOpenSelectId}
                             openSelectId={openSelectId}
                             id="status"
+                            
                         />
                         <Select
                             onSelectStatusChange={onSelectTypeClassChange}
@@ -205,7 +207,8 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             selectStatusValue={selectStatusValue}
                             selectPlaceholder="Status"
                             values={[
-                                { label: "Pendente", value: "PENDENTE_PERSONAL_APROVACAO" },
+                                { label: "Pendente personal", value: "PENDENTE_PERSONAL_APROVACAO" },
+                                { label: "Pendente aluno", value: "PENDENTE_CLIENTE_APROVACAO" },
                                 { label: "Aprovado", value: "APROVADO" },
                                 { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
                             ]}

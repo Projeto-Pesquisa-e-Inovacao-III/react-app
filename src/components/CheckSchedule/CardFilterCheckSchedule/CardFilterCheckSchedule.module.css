@@ -27,6 +27,10 @@
     border: 1px solid #ccc;
 }
 
+.dropDownSelectStatus {
+    width: 300%;
+}
+
 .divButtonFilter {
     display: flex;
     justify-content: flex-end;
@@ -157,6 +161,7 @@
 
     .dropdownStatus {
         left: 0 !important;
+        width: 300%;
     }
 }
 

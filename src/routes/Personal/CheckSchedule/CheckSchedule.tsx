@@ -85,13 +85,15 @@ export function CheckSchedule() {
         data: infinitePaginationMobile,
         loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
-        queryKey: ["userRescheduleAppointmentsMobile"],
+        queryKey: ["userRescheduleAppointmentsMobile", filterStatus, filterTypeClass, studentName, selectedDateRange.start, selectedDateRange.end, linesPerPageValue],
         queryFn: () => findPersonalRequests(
             page,
             linesPerPageValue,
             selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
-            selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined
-
+            selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
+            filterStatus,
+            filterTypeClass,
+            studentName
         ).then(res => res.data),
         enable: isMobile,
     });
@@ -340,7 +342,7 @@ export function CheckSchedule() {
 
                     {isLoadingAppointments ? renderKpisSkeleton() : (
                         <div className={styles.gridContainer}>
-                            
+
                             <CheckScheduleKpis
                                 title="Total pendente"
                                 value={dataKpi.data?.totalPendente || 0}
@@ -573,155 +575,155 @@ export function CheckSchedule() {
                                     <tbody className={styles.tbody}>
                                         {(appointmentsList ?? []).length !== 0 &&
                                             (appointmentsList ?? []).map((card) => (
-                                                    <tr
-                                                        key={card.agendamentoId}
-                                                        className={styles.row}
-                                                        onClick={() => handleOpenScheduleDetails(card.agendamentoId)}
-                                                        style={{ cursor: "pointer" }}
-                                                    >
-                                                        <td className={styles.cell}>
-                                                            <span
-                                                                className={`${styles.statusSpan} ${statusProperties.find(
+                                                <tr
+                                                    key={card.agendamentoId}
+                                                    className={styles.row}
+                                                    onClick={() => handleOpenScheduleDetails(card.agendamentoId)}
+                                                    style={{ cursor: "pointer" }}
+                                                >
+                                                    <td className={styles.cell}>
+                                                        <span
+                                                            className={`${styles.statusSpan} ${statusProperties.find(
+                                                                (status) => status.cardStatus === card.status
+                                                            )?.cardColor || ""
+                                                                }`}
+                                                        >
+                                                            {
+                                                                statusProperties.find(
                                                                     (status) => status.cardStatus === card.status
-                                                                )?.cardColor || ""
-                                                                    }`}
+                                                                )?.cardDescription
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                    <td className={styles.cell}>
+                                                        <div className={styles.userWrapper}>
+                                                            <div
+                                                                className={styles.userAvatar}
                                                             >
-                                                                {
-                                                                    statusProperties.find(
-                                                                        (status) => status.cardStatus === card.status
-                                                                    )?.cardDescription
-                                                                }
-                                                            </span>
-                                                        </td>
-                                                        <td className={styles.cell}>
-                                                            <div className={styles.userWrapper}>
-                                                                <div
-                                                                    className={styles.userAvatar}
+                                                                <UserAvatar withUsernameClassName="w-9! h-9!" userName={card.nome} imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+
+                                                            </div>
+                                                            <span className={styles.userName}>{card.nome}</span>
+                                                        </div>
+                                                    </td>
+
+                                                    <td className={styles.cell}>
+                                                        {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")}
+                                                    </td>
+
+                                                    <td className={styles.cell}>{card.tipoAula}</td>
+
+                                                    <td className={styles.cell}>
+                                                        <div className="flex items-center justify-start">
+                                                            <span className="w-fit">{card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                                {card.endereco.cep.bairro} - {card.endereco.cep.uf}</span>
+                                                            <MapPin
+                                                                fill="#000"
+                                                                color="#fff"
+                                                                className="cursor-pointer"
+                                                                size={30}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`);
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    </td>
+
+                                                    {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
+                                                        <td className={styles.actionsCell} onClick={(e) => e.stopPropagation()}>
+                                                            <div className={styles.actionsWrapper}>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "accept")
+                                                                    }
+                                                                    title="Aceitar agendamento"
                                                                 >
-                                                                    <UserAvatar withUsernameClassName="w-9! h-9!" userName={card.nome} imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
+                                                                    <CircleCheck className="text-green-500" />
+                                                                </button>
 
-                                                                </div>
-                                                                <span className={styles.userName}>{card.nome}</span>
-                                                            </div>
-                                                        </td>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "decline")
+                                                                    }
+                                                                    title="Rejeitar agendamento"
+                                                                >
+                                                                    <CircleX className="text-red-500" />
+                                                                </button>
 
-                                                        <td className={styles.cell}>
-                                                            {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")}
-                                                        </td>
-
-                                                        <td className={styles.cell}>{card.tipoAula}</td>
-
-                                                        <td className={styles.cell}>
-                                                            <div className="flex items-center justify-start">
-                                                                <span className="w-fit">{card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
-                                                                    {card.endereco.cep.bairro} - {card.endereco.cep.uf}</span>
-                                                                <MapPin
-                                                                    fill="#000"
-                                                                    color="#fff"
-                                                                    className="cursor-pointer"
-                                                                    size={30}
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        handleOpenMap(`${card.endereco.cep.logradouro}, ${card.endereco.numero}, ${card.endereco.cep.bairro}, ${card.endereco.cep.uf}`);
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() => {
+                                                                        setClickedDate(
+                                                                            card.dataInicio?.split("T")[0] || ""
+                                                                        );
+                                                                        handleModal(card.agendamentoId, "reschedule");
                                                                     }}
-                                                                />
+                                                                    title="Reagendar agendamento"
+                                                                >
+                                                                    <CalendarClock className="text-blue-500" />
+                                                                </button>
                                                             </div>
                                                         </td>
+                                                    )}
+                                                    {card.status && (card.status === "APROVADO") && (
+                                                        <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
+                                                            <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "decline")
+                                                                    }
+                                                                    title="Cancelar agendamento"
+                                                                >
+                                                                    <CircleX className="text-red-500" />
+                                                                </button>
 
-                                                        {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
-                                                            <td className={styles.actionsCell} onClick={(e) => e.stopPropagation()}>
-                                                                <div className={styles.actionsWrapper}>
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() =>
-                                                                            handleModal(card.agendamentoId, "accept")
-                                                                        }
-                                                                        title="Aceitar agendamento"
-                                                                    >
-                                                                        <CircleCheck className="text-green-500" />
-                                                                    </button>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() => {
+                                                                        setClickedDate(
+                                                                            card.dataInicio?.split("T")[0] || ""
+                                                                        );
+                                                                        handleModal(card.agendamentoId, "reschedule");
+                                                                    }}
+                                                                    title="Reagendar agendamento"
+                                                                >
+                                                                    <CalendarClock className="text-blue-500" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
 
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() =>
-                                                                            handleModal(card.agendamentoId, "decline")
-                                                                        }
-                                                                        title="Rejeitar agendamento"
-                                                                    >
-                                                                        <CircleX className="text-red-500" />
-                                                                    </button>
+                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                        <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
+                                                            <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "concludeAppointment")
+                                                                    }
+                                                                    title="Concluir agendamento"
+                                                                >
+                                                                    <User className="text-green-600" />
+                                                                </button>
 
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() => {
-                                                                            setClickedDate(
-                                                                                card.dataInicio?.split("T")[0] || ""
-                                                                            );
-                                                                            handleModal(card.agendamentoId, "reschedule");
-                                                                        }}
-                                                                        title="Reagendar agendamento"
-                                                                    >
-                                                                        <CalendarClock className="text-blue-500" />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        )}
-                                                        {card.status && (card.status === "APROVADO") && (
-                                                            <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
-                                                                <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() =>
-                                                                            handleModal(card.agendamentoId, "decline")
-                                                                        }
-                                                                        title="Cancelar agendamento"
-                                                                    >
-                                                                        <CircleX className="text-red-500" />
-                                                                    </button>
+                                                                <button
+                                                                    className={styles.button}
+                                                                    onClick={() =>
+                                                                        handleModal(card.agendamentoId, "registerAbsence")
+                                                                    }
+                                                                    title="Registrar ausência"
+                                                                >
+                                                                    <UserX className="text-red-500" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    )}
 
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() => {
-                                                                            setClickedDate(
-                                                                                card.dataInicio?.split("T")[0] || ""
-                                                                            );
-                                                                            handleModal(card.agendamentoId, "reschedule");
-                                                                        }}
-                                                                        title="Reagendar agendamento"
-                                                                    >
-                                                                        <CalendarClock className="text-blue-500" />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        )}
-
-                                                        {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
-                                                            <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
-                                                                <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() =>
-                                                                            handleModal(card.agendamentoId, "concludeAppointment")
-                                                                        }
-                                                                        title="Concluir agendamento"
-                                                                    >
-                                                                        <User className="text-green-600" />
-                                                                    </button>
-
-                                                                    <button
-                                                                        className={styles.button}
-                                                                        onClick={() =>
-                                                                            handleModal(card.agendamentoId, "registerAbsence")
-                                                                        }
-                                                                        title="Registrar ausência"
-                                                                    >
-                                                                        <UserX className="text-red-500" />
-                                                                    </button>
-                                                                </div>
-                                                            </td>
-                                                        )}
-
-                                                    </tr>
+                                                </tr>
                                             ))}
 
 

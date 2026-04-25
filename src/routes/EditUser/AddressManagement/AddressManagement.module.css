@@ -342,9 +342,10 @@
 }
 
 .formGrid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 16px;
+  column-gap: 12px;
   margin-bottom: 24px;
 }
 
@@ -539,18 +540,14 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
 @media (max-width: 1280px) {
   .formGrid {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "cep"
-      "logradouro"
-      "numero"
-      "complemento"
-      "bairro"
-      "cidade"
-      "estado";
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+
   }
 }
 
