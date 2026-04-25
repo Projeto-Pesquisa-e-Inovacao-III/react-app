@@ -13,6 +13,10 @@
 
 }
 
+.appointmentCard {
+    margin-top: 40px;
+}
+
 .schedulePageUserActions {
     flex: 1;
 }

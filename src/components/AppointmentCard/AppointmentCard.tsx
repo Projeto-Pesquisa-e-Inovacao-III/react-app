@@ -131,15 +131,17 @@ export function AppointmentCard(props: Props) {
 
       </div>
 
-      {(isPendingPersonal && typeContext?.type?.includes("personal") || isPendingStudent && typeContext?.type?.includes("aluno")) && (
+      {((isPendingPersonal && typeContext?.type?.includes("personal")) || (isPendingStudent && typeContext?.type?.includes("aluno")) || props.status === "APROVADO") && (
         <div className={styles.sessionCardActions}>
-          <button
-            className={classNames(styles.actionBtn, styles.actionConfirm)}
-            onClick={stopPropagation(onConfirm)}
-          >
-            <Check size={12} />
-            Confirmar
-          </button>
+          {props.status !== "APROVADO" && (
+            <button
+              className={classNames(styles.actionBtn, styles.actionConfirm)}
+              onClick={stopPropagation(onConfirm)}
+            >
+              <Check size={12} />
+              Confirmar
+            </button>
+          )}
           <button
             className={styles.actionBtn}
             onClick={stopPropagation(onReschedule)}

@@ -27,6 +27,10 @@
     border: 1px solid #ccc;
 }
 
+.dropDownSelectStatus {
+    width: 300%;
+}
+
 .divButtonFilter {
     display: flex;
     justify-content: flex-end;
@@ -72,6 +76,10 @@
     z-index: 50;
     width: 18rem;
     max-width: 48rem;
+}
+
+.containerSelect {
+    width: 100%;
 }
 
 
@@ -155,9 +163,6 @@
         right: 0;
     }
 
-    .dropdownStatus {
-        left: 0 !important;
-    }
 }
 
 
@@ -174,10 +179,14 @@
         gap: 8px !important;
     }
 
-    .cardFilterMobile span{
+    .cardFilterMobile span {
         font-size: 14px !important;
     }
 
+    .dropdownStatus {
+        left: 0 !important;
+        width: 200%;
+    }
 
 }
 
