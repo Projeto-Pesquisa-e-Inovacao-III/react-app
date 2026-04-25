@@ -753,7 +753,12 @@ export default function NewEvent(
                                 {isMobile && (
                                     <>
                                         {typeUser?.includes("personal") ? (
-                                            <CardInfo isMobile={isMobile} classname="bg-white!" HeaderTitle="Aluno" title={appoitmentData ? appoitmentData.aluno?.nome : ""} subtitle={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`} includeImg={true} imgUrl={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />
+                                            <InformationCard
+                                                icon={<UserAvatar userName={appoitmentData ? appoitmentData.aluno?.nome : ""} foto={appoitmentData ? appoitmentData.aluno?.avatarUrl : ""} />}
+                                                title="Aluno"
+                                                subtitle={appoitmentData ? appoitmentData.aluno?.nome : ""}
+                                                subtitle2={`Idade: ${appoitmentData ? appoitmentData.aluno?.idade : "N/A"} anos`}
+                                            />
                                         ) : (
                                             <InformationCard
                                                 icon={

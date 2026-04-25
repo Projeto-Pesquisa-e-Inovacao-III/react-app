@@ -216,6 +216,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             openSelectId={openSelectId}
                             id="status"
                             dropDownClassName={styles.dropdownStatus}
+                            containerClassName={styles.containerSelect}
                         />
                         <Select
                             onSelectStatusChange={onSelectTypeClassChange}
@@ -230,6 +231,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             openSelectId={openSelectId}
                             id="tipoAula"
                             dropDownClassName={styles.dropdownTipoAula}
+                            containerClassName={styles.containerSelect}
                         />
 
                         <div ref={calendarRef} className={styles.calendarWrapper}>

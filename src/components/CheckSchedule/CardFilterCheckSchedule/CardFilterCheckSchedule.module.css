@@ -78,6 +78,10 @@
     max-width: 48rem;
 }
 
+.containerSelect {
+    width: 100%;
+}
+
 
 @media (max-width: 1360px) {
     .cardFilter {
@@ -159,10 +163,6 @@
         right: 0;
     }
 
-    .dropdownStatus {
-        left: 0 !important;
-        width: 300%;
-    }
 }
 
 
@@ -179,10 +179,14 @@
         gap: 8px !important;
     }
 
-    .cardFilterMobile span{
+    .cardFilterMobile span {
         font-size: 14px !important;
     }
 
+    .dropdownStatus {
+        left: 0 !important;
+        width: 200%;
+    }
 
 }
 
