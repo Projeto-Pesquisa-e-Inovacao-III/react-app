@@ -11,6 +11,7 @@ import PaginatedList from "../../../components/PaginatedList/PaginatedList";
 import { useState, useEffect, useContext } from "react";
 import { TypeContext } from "../../../App";
 import { getUsers } from "../../../constants/admin";
+import Select from "../../../components/Select/Select";
 
 export default function ListUsers() {
     const isMobile = useMobile();
@@ -30,26 +31,39 @@ export default function ListUsers() {
         return () => clearTimeout(timer);
     }, [filterSearch]);
 
+
+    const [students, setStudents] = useState<[]>([]);
+
     const { data: response, isLoading } = useQuery({
         queryKey: ["students", page, debouncedSearch],
         queryFn: () =>
             debouncedSearch.trim()
                 ? searchStudent(page, 10, debouncedSearch)
                 : listStudents(page, 10),
-        enabled: type?.type?.includes("personal") && !type?.type?.includes("admin"),
+        enabled: !!type?.type && type?.type?.includes("personal") && !type?.type?.includes("admin")
     });
 
-    const students = response?.data?.content ?? [];
+    useEffect(() => {
+        if (response?.data?.content) {
+            setStudents(response.data.content);
+        }
+    }, [response]);
+
     const pagination = response?.data?.page ?? null;
+    
+    const [filterRole, setFilterRole] = useState<string>("");
 
     const { data: responseAdmin, isLoading: isLoadingAdmin } = useQuery({
-        queryKey: ["users", page, debouncedSearch],
-        queryFn: () => getUsers(page, 10, debouncedSearch.trim()),
+        queryKey: ["users", page, debouncedSearch, filterRole],
+        queryFn: () => getUsers(page, 10, debouncedSearch.trim(), undefined, filterRole || undefined),
         enabled: type?.type?.includes("admin"),
     });
 
     const users = responseAdmin?.data?.content ?? [];
     const paginationAdmin = responseAdmin?.data?.page ?? null;
+
+    const [openSelectId, setOpenSelectId] = useState<string | null>(null);
+
 
     return (
         <div className={classNames(styles.listUserContainer, { [styles.listUserContainerMobile]: isMobile })}>
@@ -62,6 +76,22 @@ export default function ListUsers() {
                     value={filterSearch}
                     onInputChange={setFilterSearch}
                 />
+                {type?.type?.includes("admin") && (
+                    <Select
+                        onSelectStatusChange={setFilterRole}
+                        selectStatusValue={filterRole}
+                        selectPlaceholder="Filtrar por role"
+                        values={[
+                            { label: "Aluno", value: "ALUNO" },
+                            { label: "Personal", value: "PERSONAL" },
+                            { label: "Admin", value: "ADMIN" },
+                        ]}
+                        setOpenSelectId={setOpenSelectId}
+                        openSelectId={openSelectId}
+                        id="role"
+                        showSearchInput={false}
+                    />
+                )}
             </div>
 
             <PaginatedList

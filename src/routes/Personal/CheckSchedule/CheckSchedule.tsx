@@ -141,11 +141,12 @@ export function CheckSchedule() {
 
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-        await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
-        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
-        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
+        await queryClient.refetchQueries({ queryKey: ["personal-requests"] });
+        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         await queryClient.invalidateQueries({ queryKey: ["dataKpi"] });
+
     }
 
     async function handleSuccessReschedule() {
@@ -415,8 +416,6 @@ export function CheckSchedule() {
                                     <div className={styles.mobileCard}>
 
                                         <div className={styles.mobileCardHeader}
-
-
                                         >
                                             <span
                                                 className={`${styles.mobileStatusBadge} ${statusProperties.find(
@@ -464,35 +463,79 @@ export function CheckSchedule() {
                                         </div>
 
                                         <div className={styles.mobileActions}>
-                                            <button
-                                                className={styles.button}
-                                                onClick={() =>
-                                                    handleModal(card.agendamentoId, "accept")
-                                                }
-                                            >
-                                                <CircleCheck className={styles.iconAccept} />
-                                            </button>
+                                            {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
+                                                <>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => handleModal(card.agendamentoId, "accept")}
+                                                        title="Aceitar agendamento"
+                                                    >
+                                                        <CircleCheck className={styles.iconAccept} />
+                                                    </button>
 
-                                            <button
-                                                className={styles.button}
-                                                onClick={() =>
-                                                    handleModal(card.agendamentoId, "decline")
-                                                }
-                                            >
-                                                <CircleX className={styles.iconDecline} />
-                                            </button>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => handleModal(card.agendamentoId, "decline")}
+                                                        title="Rejeitar agendamento"
+                                                    >
+                                                        <CircleX className={styles.iconDecline} />
+                                                    </button>
 
-                                            <button
-                                                className={styles.button}
-                                                onClick={() => {
-                                                    setClickedDate(
-                                                        card.dataInicio?.split("T")[0] || ""
-                                                    );
-                                                    handleModal(card.agendamentoId, "reschedule");
-                                                }}
-                                            >
-                                                <CalendarClock className={styles.iconReschedule} />
-                                            </button>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => {
+                                                            setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                            handleModal(card.agendamentoId, "reschedule");
+                                                        }}
+                                                        title="Reagendar agendamento"
+                                                    >
+                                                        <CalendarClock className={styles.iconReschedule} />
+                                                    </button>
+                                                </>
+                                            )}
+
+                                            {card.status === "APROVADO" && (
+                                                <>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => handleModal(card.agendamentoId, "decline")}
+                                                        title="Cancelar agendamento"
+                                                    >
+                                                        <CircleX className={styles.iconDecline} />
+                                                    </button>
+
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => {
+                                                            setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                            handleModal(card.agendamentoId, "reschedule");
+                                                        }}
+                                                        title="Reagendar agendamento"
+                                                    >
+                                                        <CalendarClock className={styles.iconReschedule} />
+                                                    </button>
+                                                </>
+                                            )}
+
+                                            {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                <>
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => handleModal(card.agendamentoId, "concludeAppointment")}
+                                                        title="Concluir agendamento"
+                                                    >
+                                                        <User className="text-green-600" />
+                                                    </button>
+
+                                                    <button
+                                                        className={styles.button}
+                                                        onClick={() => handleModal(card.agendamentoId, "registerAbsence")}
+                                                        title="Registrar ausência"
+                                                    >
+                                                        <UserX className="text-red-500" />
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
 
                                     </div>
@@ -554,7 +597,6 @@ export function CheckSchedule() {
                                                             <div className={styles.userWrapper}>
                                                                 <div
                                                                     className={styles.userAvatar}
-                                                                    data-alt={`Client ${card.nome}`}
                                                                 >
                                                                     <UserAvatar withUsernameClassName="w-9! h-9!" userName={card.nome} imgClassName={"w-[2.25rem]! h-[2.25rem]!"} useUserImage={true} foto={card.foto ? `${card.foto}` : undefined} />
 

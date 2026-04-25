@@ -18,7 +18,7 @@ export default function UserHeaderMobile({ type }: Props) {
         if (type?.includes("personal") && !type?.includes("admin")) {
             return (<>
                 <Link to="/home">
-                    <HeaderIconsMobile icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <HeaderIconsMobile icon={<svg width="24" height="24" stroke="#B3B3B3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15 21V13C15 12.7348 14.8946 12.4804 14.7071 12.2929C14.5196 12.1054 14.2652 12 14 12H10C9.73478 12 9.48043 12.1054 9.29289 12.2929C9.10536 12.4804 9 12.7348 9 13V21" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         <path d="M3 9.99999C2.99993 9.70906 3.06333 9.42161 3.18579 9.15771C3.30824 8.8938 3.4868 8.65979 3.709 8.47199L10.709 2.47199C11.07 2.1669 11.5274 1.99951 12 1.99951C12.4726 1.99951 12.93 2.1669 13.291 2.47199L20.291 8.47199C20.5132 8.65979 20.6918 8.8938 20.8142 9.15771C20.9367 9.42161 21.0001 9.70906 21 9.99999V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V9.99999Z" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>} pageTitle="Início" />
@@ -71,17 +71,17 @@ export default function UserHeaderMobile({ type }: Props) {
         if (type?.includes("admin")) {
             return (<>
                 <Link to="/home">
-                    <HeaderIconsMobile icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15 21V13C15 12.7348 14.8946 12.4804 14.7071 12.2929C14.5196 12.1054 14.2652 12 14 12H10C9.73478 12 9.48043 12.1054 9.29289 12.2929C9.10536 12.4804 9 12.7348 9 13V21" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M3 9.99999C2.99993 9.70906 3.06333 9.42161 3.18579 9.15771C3.30824 8.8938 3.4868 8.65979 3.709 8.47199L10.709 2.47199C11.07 2.1669 11.5274 1.99951 12 1.99951C12.4726 1.99951 12.93 2.1669 13.291 2.47199L20.291 8.47199C20.5132 8.65979 20.6918 8.8938 20.8142 9.15771C20.9367 9.42161 21.0001 9.70906 21 9.99999V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V9.99999Z" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <HeaderIconsMobile icon={<svg width="24" height="24" stroke="#B3B3B3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 21V13C15 12.7348 14.8946 12.4804 14.7071 12.2929C14.5196 12.1054 14.2652 12 14 12H10C9.73478 12 9.48043 12.1054 9.29289 12.2929C9.10536 12.4804 9 12.7348 9 13V21" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M3 9.99999C2.99993 9.70906 3.06333 9.42161 3.18579 9.15771C3.30824 8.8938 3.4868 8.65979 3.709 8.47199L10.709 2.47199C11.07 2.1669 11.5274 1.99951 12 1.99951C12.4726 1.99951 12.93 2.1669 13.291 2.47199L20.291 8.47199C20.5132 8.65979 20.6918 8.8938 20.8142 9.15771C20.9367 9.42161 21.0001 9.70906 21 9.99999V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V9.99999Z" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>} pageTitle="Início" />
                 </Link>
 
                 <Link to="/dashboard">
                     <HeaderIconsMobile icon={
-                        <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3.5 3V19C3.5 19.5304 3.71071 20.0391 4.08579 20.4142C4.46086 20.7893 4.96957 21 5.5 21H21.5" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M19 10L14 15L10 11L7 14" stroke="#F8F8F8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <svg width="25" height="24" stroke="#B3B3B3" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.5 3V19C3.5 19.5304 3.71071 20.0391 4.08579 20.4142C4.46086 20.7893 4.96957 21 5.5 21H21.5" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M19 10L14 15L10 11L7 14" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
 
                     }
@@ -90,13 +90,13 @@ export default function UserHeaderMobile({ type }: Props) {
 
                 <Link to="/packages">
                     <HeaderIconsMobile icon={
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-dollar-sign-icon lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="#B3B3B3" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-dollar-sign-icon lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
                     } pageTitle="Pacotes" />
                 </Link>
 
                 <Link to="/users">
                     <HeaderIconsMobile icon={
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg width="24" height="24" stroke="#B3B3B3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M16 3.12799C16.8578 3.35036 17.6174 3.85125 18.1597 4.55205C18.702 5.25285 18.9962 6.11388 18.9962 6.99999C18.9962 7.8861 18.702 8.74713 18.1597 9.44793C17.6174 10.1487 16.8578 10.6496 16 10.872" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13" stroke="#B3B3B3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -124,7 +124,7 @@ export default function UserHeaderMobile({ type }: Props) {
                 <>
                     <Link to="/home">
 
-                        <HeaderIconsMobile icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <HeaderIconsMobile icon={<svg width="24" height="24" stroke="#B3B3B3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M15 21V13C15 12.7348 14.8946 12.4804 14.7071 12.2929C14.5196 12.1054 14.2652 12 14 12H10C9.73478 12 9.48043 12.1054 9.29289 12.2929C9.10536 12.4804 9 12.7348 9 13V21" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             <path d="M3 9.99999C2.99993 9.70906 3.06333 9.42161 3.18579 9.15771C3.30824 8.8938 3.4868 8.65979 3.709 8.47199L10.709 2.47199C11.07 2.1669 11.5274 1.99951 12 1.99951C12.4726 1.99951 12.93 2.1669 13.291 2.47199L20.291 8.47199C20.5132 8.65979 20.6918 8.8938 20.8142 9.15771C20.9367 9.42161 21.0001 9.70906 21 9.99999V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V9.99999Z" stroke="#E5E7EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>}
@@ -132,7 +132,7 @@ export default function UserHeaderMobile({ type }: Props) {
                     </Link>
                     <Link to="/schedule">
                         <HeaderIconsMobile icon={
-                            <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="25" height="24" stroke="#B3B3B3" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8.5 2V6" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 <path d="M16.5 2V6" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 <path d="M19.5 4H5.5C4.39543 4 3.5 4.89543 3.5 6V20C3.5 21.1046 4.39543 22 5.5 22H19.5C20.6046 22 21.5 21.1046 21.5 20V6C21.5 4.89543 20.6046 4 19.5 4Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -144,7 +144,7 @@ export default function UserHeaderMobile({ type }: Props) {
 
                     <Link to="/packages">
                         <HeaderIconsMobile icon={
-                            <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="25" height="24" viewBox="0 0 25 24" stroke="#B3B3B3" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9.5 3H4.5C3.94772 3 3.5 3.44772 3.5 4V9C3.5 9.55228 3.94772 10 4.5 10H9.5C10.0523 10 10.5 9.55228 10.5 9V4C10.5 3.44772 10.0523 3 9.5 3Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" />
                                 <path d="M9.5 14H4.5C3.94772 14 3.5 14.4477 3.5 15V20C3.5 20.5523 3.94772 21 4.5 21H9.5C10.0523 21 10.5 20.5523 10.5 20V15C10.5 14.4477 10.0523 14 9.5 14Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" />
                                 <path d="M20.5 3H15.5C14.9477 3 14.5 3.44772 14.5 4V9C14.5 9.55228 14.9477 10 15.5 10H20.5C21.0523 10 21.5 9.55228 21.5 9V4C21.5 3.44772 21.0523 3 20.5 3Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" />
@@ -157,7 +157,7 @@ export default function UserHeaderMobile({ type }: Props) {
 
                     <Link to="/more-options">
                         <HeaderIconsMobile icon={
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <svg width="24" height="24" viewBox="0 0 24 24" stroke="#B3B3B3" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M19 21V19C19 17.9391 18.5786 16.9217 17.8284 16.1716C17.0783 15.4214 16.0609 15 15 15H9C7.93913 15 6.92172 15.4214 6.17157 16.1716C5.42143 16.9217 5 17.9391 5 19V21" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="#B8B8B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>

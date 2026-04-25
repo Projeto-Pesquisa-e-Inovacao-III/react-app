@@ -217,11 +217,22 @@
   padding: 20px;
   box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.05);
   border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
+.addressCard:hover {
+  background: #f8fafc;
+}
 
 .addressCardBorder {
   border-left: 5px solid var(--bg-blue, #093a5d);
+}
+
+.addressCardSelected {
+  background: #eff6ff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2), 0 4px 14px -4px rgba(0, 0, 0, 0.08);
 }
 
 .cardHeader {
@@ -298,7 +309,6 @@
   box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
   width: 100%;
-  min-width: 320px;
 }
 
 .formHeader {
@@ -332,10 +342,9 @@
 }
 
 .formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  row-gap: 16px;
-  column-gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -529,6 +538,20 @@
 .btnSave:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+@media (max-width: 1280px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "cep"
+      "logradouro"
+      "numero"
+      "complemento"
+      "bairro"
+      "cidade"
+      "estado";
+    gap: 12px;
+  }
 }
 
 

@@ -591,6 +591,7 @@
 
 .overlayEnter {
   animation: overlayEnter 0.2s ease-out forwards;
+  z-index: 999;
 }
 
 .newEventFormEnter {
