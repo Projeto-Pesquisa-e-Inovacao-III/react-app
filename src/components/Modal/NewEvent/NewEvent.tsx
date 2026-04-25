@@ -7,7 +7,6 @@ import classnames from 'classnames';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { cepMask } from "../../../utils/mascara";
 import { ArrowLeft, Calendar, Clock, History, Info, MapPin, Sun, SunMoon, Sunset } from "lucide-react";
-import CardInfo from "../../CardInfo/CardInfo";
 import { getPersonalList, insertAppointment, rescheduleAppointment } from "../../../constants/schedule";
 import { useDisabledDays } from "../../../hooks/useDisabledDays";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";

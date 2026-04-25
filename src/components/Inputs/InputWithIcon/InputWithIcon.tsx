@@ -34,35 +34,65 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         if (type === "number") {
-            let value = e.target.value.replace(",", ".");
+            let val = e.target.value.replace(/\./g, ",");
+            
             if (allowDecimals) {
-                value = value.replace(/[^\d.]/g, "");
-                const parts = value.split(".");
+                val = val.replace(/[^\d,]/g, "");
+                
+                const parts = val.split(",");
                 if (parts.length > 2) {
-                    value = parts[0] + "." + parts.slice(1).join("");
+                    val = parts[0] + "," + parts.slice(1).join("");
                 }
 
-                if (typeof maxDecimalPlaces === "number" && maxDecimalPlaces >= 0) {
-                    const [integerPart, decimalPart = ""] = value.split(".");
+                let [integerPart, decimalPart] = val.split(",");
 
-                    if (value.includes(".")) {
-                        if (maxDecimalPlaces === 0) {
-                            value = integerPart;
+                if (typeof maxDecimalPlaces === "number" && maxDecimalPlaces >= 0 && decimalPart !== undefined) {
+                    decimalPart = decimalPart.slice(0, maxDecimalPlaces);
+                }
+
+                if (maxLength && maxLength > 0) {
+                    const currentDigits = integerPart.length + (decimalPart ? decimalPart.length : 0);
+                    if (currentDigits > maxLength) {
+                        const excess = currentDigits - maxLength;
+                        if (decimalPart !== undefined && decimalPart.length >= excess) {
+                            decimalPart = decimalPart.slice(0, decimalPart.length - excess);
                         } else {
-                            value = `${integerPart}.${decimalPart.slice(0, maxDecimalPlaces)}`;
+                            const remainingExcess = decimalPart !== undefined ? excess - decimalPart.length : excess;
+                            decimalPart = undefined;
+                            integerPart = integerPart.slice(0, integerPart.length - remainingExcess);
+                            val = val.replace(",", "");
                         }
+                    }
+
+                    if (integerPart.length >= maxLength && decimalPart === "") {
+                        decimalPart = undefined;
+                    }
+                }
+
+                val = decimalPart !== undefined ? `${integerPart},${decimalPart}` : integerPart;
+                if (e.target.value.endsWith(",") && !val.includes(",")) {
+                    if (!maxLength || integerPart.length < maxLength) {
+                        val += ",";
                     }
                 }
             } else {
-                value = value.replace(/\D/g, "");
+                val = val.replace(/\D/g, "");
+                if (maxLength && maxLength > 0) {
+                    val = val.slice(0, maxLength);
+                }
             }
 
-            const displayedValue = decimalSeparator === "," ? value.replace(".", ",") : value;
-            e.target.value = displayedValue;
-            onInputChange?.(displayedValue);
+            e.target.value = val;
+            onInputChange?.(val);
             return;
         }
-        onInputChange?.(e.target.value);
+
+        let val = e.target.value;
+        if (maxLength && maxLength > 0) {
+            val = val.slice(0, maxLength);
+            e.target.value = val;
+        }
+        onInputChange?.(val);
     }
 
     function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -103,14 +133,14 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             id={`${id}-input`}
                             type={isPassword && showPassword ? "text" : (type === "number" ? "text" : type)}
                             inputMode={type === "number" ? "decimal" : undefined}
-                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""} ${!icon ? styles.noIconInput : ""}`}
+                            className={`${isPassword ? styles.passwordInput : ""} ${classNameInput || ""} ${hasError ? styles.errorInput : ""} ${hasSuccess ? styles.successInput : ""} ${!icon ? styles.noIconInput : ""} ${maxLength != null ? styles.limitInput : ""}`}
                             placeholder={placeholder}
                             onInput={(e) => mask ? mask(e) : undefined}
                             value={value ?? undefined}
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             disabled={disabled}
-                            maxLength={maxLength}
+                            maxLength={type === "number" && allowDecimals && maxLength != null ? maxLength + 1 : maxLength}
                             onBlur={onBlur}
                         />
                         {isPassword && (
@@ -122,6 +152,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                                 {showPassword ? <EyeOff /> : <Eye />}
                             </button>
                         )}
+                        {maxLength != null && <span className={styles.inputLimit}>{type === "number" ? String(value || "").replace(/\D/g, "").length : (value != null ? String(value).length : 0)}/{maxLength}</span>}
                     </>
                 )}
             </div>
