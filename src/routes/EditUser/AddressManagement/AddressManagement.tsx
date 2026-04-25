@@ -76,6 +76,7 @@ export default function AddressManagement() {
   const [showForm, setShowForm] = useState(false);
   const [isClosingForm, setIsClosingForm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const [form, setForm] = useState<AddressForm>(emptyForm);
   const [cepLoading, setCepLoading] = useState(false);
@@ -280,9 +281,17 @@ export default function AddressManagement() {
                       const { logradouro, bairro, cidade, estado, cepId } = extractAddressFields(addr);
 
                       return (
-                        <div key={addr.id} className={classNames(styles.addressCard, {
-                          [styles.addressCardBorder]: addr.padrao,
-                        })}>
+                        <div
+                          key={addr.id}
+                          className={classNames(styles.addressCard, {
+                            [styles.addressCardBorder]: addr.padrao,
+                            [styles.addressCardSelected]: selectedId === addr.id,
+                          })}
+                          onClick={() => {
+                            setSelectedId(prev => prev === addr.id ? null : addr.id ?? null);
+                            handleOpenEdit(addr);
+                          }}
+                        >
                           <div className={styles.cardHeader}>
                             <div className={styles.cardTitleLine}>
                               {getAddressIcon(addr.tipo)}
@@ -402,7 +411,7 @@ export default function AddressManagement() {
                       type="button"
                       classname={styles.btnDiscard}
                       handleButtonClick={handleCancelForm}
-                      title="Descartar"
+                      title={isMobile ? "Voltar" : "Descartar"}
                     />
                     <SmallerButton
                       type="button"
