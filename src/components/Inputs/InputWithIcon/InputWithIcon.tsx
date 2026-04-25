@@ -24,12 +24,11 @@ type Props = {
     allowDecimals?: boolean;
     maxLength?: number;
     maxDecimalPlaces?: number;
-    decimalSeparator?: "." | ",";
 
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, decimalSeparator = ".", hasError, hasSuccess, onBlur }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, hasError, hasSuccess, onBlur }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -44,7 +43,9 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                     val = parts[0] + "," + parts.slice(1).join("");
                 }
 
-                let [integerPart, decimalPart] = val.split(",");
+                const splitParts = val.split(",");
+                let integerPart = splitParts[0];
+                let decimalPart: string | undefined = splitParts[1];
 
                 if (typeof maxDecimalPlaces === "number" && maxDecimalPlaces >= 0 && decimalPart !== undefined) {
                     decimalPart = decimalPart.slice(0, maxDecimalPlaces);
@@ -60,7 +61,6 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             const remainingExcess = decimalPart !== undefined ? excess - decimalPart.length : excess;
                             decimalPart = undefined;
                             integerPart = integerPart.slice(0, integerPart.length - remainingExcess);
-                            val = val.replace(",", "");
                         }
                     }
 
@@ -105,7 +105,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
             if (e.ctrlKey || e.metaKey) return;
 
             if (e.key === "." || e.key === ",") {
-                if (!allowDecimals || e.currentTarget.value.includes(".") || e.currentTarget.value.includes(",")) {
+                if (!allowDecimals) {
                     e.preventDefault();
                 }
                 return;
