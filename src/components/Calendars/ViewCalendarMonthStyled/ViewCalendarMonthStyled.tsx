@@ -77,11 +77,17 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
           dateClick={(arg) => {
 
             const clickedDate = arg.date.toISOString().split("T")[0];
+            const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
 
             const appointment = events?.filter(event => event.data.split("T")[0] === clickedDate) || null;
 
             const today = startOfDay(new Date());
             console.log(today)
+
+            if(disabledDays?.includes(weekday)) {
+              return;
+            }
 
 
             if (type?.type?.includes("aluno") && appointment && appointment.length > 1) {

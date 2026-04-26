@@ -25,7 +25,7 @@ export default function Select({ placeholder, label, id, onInputChange, icon, va
                 <Skeleton height={40} />
             ) : (
                 <div className={`wrapper_inp ${className}`}>
-                    <label htmlFor={`${id}-select`}>{label}</label>
+                    {label && <label htmlFor={`${id}-select`}>{label}</label>}
                     {icon && <div className="select-icon">{icon}</div>}
                     <select
                         id={`${id}-select`}

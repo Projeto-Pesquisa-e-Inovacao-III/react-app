@@ -22,7 +22,7 @@ import { getTotalByClassType } from "../../constants/overview";
 import { useInfinitePagination } from "../../hooks/useInfinitePagination";
 import { getAvailabilityHoursTomorrow } from "../../constants/personal";
 import PopupModal from "../../components/Modal/PopupModal/PopupModal";
-
+import { AppointmentCard } from "../../components/AppointmentCard/AppointmentCard";
 type ModalType = "cancel" | "accept" | "reschedule" | "success" | "newEvent" | "error" | "rescheduleRequest" | "popup" | null;
 
 export type RescheduleAppointment = {
@@ -298,15 +298,43 @@ export default function Schedule() {
                                 );
                             })}
 
+{/* agendamentoId	1
+agendamentoStatus	"APROVADO"
+data	"2026-04-29T08:00:00"
+datafim	"2026-04-29T09:00:00"
+personalNome	"Fábio"
+alunoNome	"Fillipe"
+caminhoFoto	null
+tipoAula	"PRESENCIAL"
+endereco	Object { numero: "312", bairro: "Cerqueira César", cidade: "São Paulo", … }
+numero	"312"
+bairro	"Cerqueira César"
+cidade	"São Paulo"
+uf	"SP" */}
+
                             {userAppointments.data?.map((event, index) => (
-                                <div onClick={() => setSelectedEventId(event.agendamentoId)} key={`${event.title}-${index}`}>
-                                    <UserScheduleCard
-                                        data={event}
-                                        date={event?.data ? `${parse(event.data, "yyyy-MM-dd'T'HH:mm:ss", new Date()).getDate()} de ${format(parseISO(event?.data), "MMMM", { locale: ptBR })}` : ""}
-                                        initialHour={event?.data ? event?.data.replace(":", "h").split("T")[1].slice(0, 5) : ""}
-                                        finalHour={event?.datafim ? event?.datafim.replace(":", "h").split("T")[1].slice(0, 5) : ""}
-                                        handleCancel={() => setOpenModal("cancel")}
-                                        handleReschedule={() => handleOpenRescheduleRequestModal(event?.agendamentoId)}
+                                <div className={styles.appointmentCard} key={`${event.agendamentoId}-${index}`}>
+                                    <AppointmentCard
+                                        agendamentoId={event?.agendamentoId}
+                                        status={event?.agendamentoStatus || event?.status || "APROVADO"}
+                                        name={event?.personalNome || event?.nome}
+                                        photoUrl={event?.caminhoFoto || event?.foto}
+                                        onConfirm={() => {
+                                            setSelectedEventId(event?.agendamentoId);
+                                            setOpenModal("accept");
+                                        }}
+                                        onCancel={() => {
+                                            setSelectedEventId(event?.agendamentoId);
+                                            setOpenModal("cancel");
+                                        }}
+                                        onReschedule={() => {
+                                            setSelectedEventId(event?.agendamentoId);
+                                            handleOpenRescheduleRequestModal(event?.agendamentoId);
+                                        }}
+                                        type={event?.tipoAula || "Não informado"}
+                                        date={event?.data ? format(parse(event.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
+                                        time={`${event?.data ? event.data.split("T")[1]?.substring(0, 5) || "" : ""} - ${event?.datafim ? event.datafim.split("T")[1]?.substring(0, 5) || "" : ""}`}
+                                        address={event?.endereco?.bairro ? `${event.endereco.bairro}, ${event.endereco.cidade}` : ""}
                                         isMobile={isMobile}
                                     />
                                 </div>

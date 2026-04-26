@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut } from 'lucide-react';
+import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut, User } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
@@ -59,6 +59,7 @@ export default function MoreOptions() {
                             <Button icon={<Eye />} type='button' classNameVariable={styles.buttonOption} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                             <Button icon={<Boxes />} type='button' classNameVariable={styles.buttonOption} title='Pacotes' onClick={() => nav("/packages")} />
                             <Button icon={<Clock />} type='button' classNameVariable={styles.buttonOption} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
+                            <Button icon={<User />} type='button' classNameVariable={styles.buttonOption} title='Criar personal' onClick={() => nav("/create-personal")} />
                         </>
                     }
 

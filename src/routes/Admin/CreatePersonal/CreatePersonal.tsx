@@ -173,6 +173,14 @@ export default function CreatePersonal() {
           contentClassName={styles.content}
           titleClassName={styles.title}
         >
+        <button className="border" onClick={() => setForm({
+          nome: "Gabriel",
+          sexo: "Masculino",
+          dataNascimento: "01/01/2000",
+          email: "gabriel@email.com",
+          cref: "123456",
+          telefone: "11999999999",
+        })}>Auto Preencher</button>
         <p className={styles.subtitle}>
           Preencha os dados para criar um novo personal trainer no sistema.
         </p>
