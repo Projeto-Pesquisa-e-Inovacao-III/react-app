@@ -2,7 +2,7 @@ name: CI/CD
 
 on: 
   push:
-    branches: [ main, develop, feat/workflows ]
+    branches: [ main, develop]
 
 jobs:
   continuous-integration:
@@ -67,7 +67,7 @@ jobs:
 
   deploy-runner:
     runs-on: [self-hosted]
-    # if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     needs: continuous-integration
     steps:
       - uses: actions/checkout@v3
