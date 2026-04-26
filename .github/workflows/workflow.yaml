@@ -2,7 +2,7 @@ name: CI/CD
 
 on: 
   push:
-    branches: [ main, develop, feat/workflow ]
+    branches: [ main, develop, feat/workflows ]
 
 jobs:
   continuous-integration:
