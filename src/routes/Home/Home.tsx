@@ -36,7 +36,7 @@ export default function Home() {
         <>
             <Header />
             <div id="main-section">
-                {noCodeParts ? (
+                {noCodeParts && !isMobile ? (
                     <NoCodeRenderer content={noCodeParts.beforePlans} />
                 ) : (
                     <>
@@ -48,7 +48,7 @@ export default function Home() {
 
                 <PlansSection isMobile={isMobile} />
 
-                {noCodeParts ? (
+                {noCodeParts && !isMobile ? (
                     <NoCodeRenderer content={noCodeParts.afterPlans} />
                 ) : (
                     <FAQSection isMobile={isMobile} />

@@ -93,22 +93,8 @@ function App() {
               <Route path="/users/view-user-data" element={<ViewUserData />} />
               <Route path="/set-availability" element={<SetAvailability />} />
               <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-              <Route path="/no-code-tool" element={<NoCodeTool />} />
             </Route>
           </Route>
-
-
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route element={<Layout />}>
-              <Route path="/users" element={<ListUsers />} />
-              <Route path="/users/view-user-data" element={<ViewUserData />} />
-              <Route path="/users/view-personal-data" element={<ViewPersonalData />} />
-              <Route path="/set-availability" element={<SetAvailability />} />
-              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-              <Route path="/create-personal" element={<CreatePersonal />} />
-            </Route>
-          </Route>
-
 
           <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
             <Route element={<Layout />}>
@@ -122,7 +108,6 @@ function App() {
               <Route path="/no-code-tool" element={<NoCodeTool />} />
             </Route>
           </Route>
-
         </Routes>
       </BrowserRouter>
     </TypeContext.Provider>

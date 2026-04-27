@@ -9,7 +9,7 @@ import EditableAccordion from "../../../components/NoCodeToolsComponents/Editabl
 import { Save, Eye, Undo2, Redo2, History } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getNoCodeContent, createNoCodeContent } from "../../../services/noCodeService";
 import PublishModal from "../../../components/Modal/PublishModal/PublishModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
@@ -67,6 +67,7 @@ function EditorActions({ onPreview, onPublishClick, onHistoryClick }: {
 
 function NoCodeToolInner() {
   const { actions, query } = useEditor();
+  const queryClient = useQueryClient();
 
   const { openModal, setOpenModal } = useModal(null, { title: "", content: "" });
 
@@ -146,6 +147,21 @@ function NoCodeToolInner() {
             console.error('Failed to deserialize restored content:', e);
           }
         }}
+        onDelete={async (deletedId) => {
+          if (data?.id === deletedId) {
+            try {
+              const newContent = await queryClient.fetchQuery({
+                queryKey: ['noCodeContent'],
+                queryFn: getNoCodeContent,
+              });
+              if (newContent?.content) {
+                actions.deserialize(newContent.content);
+              }
+            } catch (err) {
+              console.error("Failed to load new active content after delete", err);
+            }
+          }
+        }}
       />
       {publish.isOpen && (
         <PublishModal
@@ -156,6 +172,7 @@ function NoCodeToolInner() {
               setPublish(prev => ({ ...prev, isSaving: true }));
               const json = query.serialize();
               await createNoCodeContent({ content: json, modificationName, description });
+              queryClient.invalidateQueries({ queryKey: ["noCodeContent"] });
               resetPublish();
               setOpenModal("success");
             } catch (err) {

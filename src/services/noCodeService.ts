@@ -48,3 +48,15 @@ export const restoreNoCodeContent = async (id: string): Promise<NoCodeResponse> 
   const response = await api.post(`/no-code/restore/${id}`);
   return response.data;
 };
+
+export const deleteNoCodeContent = async (id: string): Promise<void> => {
+  await api.delete(`/no-code/${id}`);
+};
+
+export const renameNoCodeContent = async (
+  id: string,
+  modificationName: string,
+): Promise<NoCodeResponse> => {
+  const response = await api.patch(`/no-code/${id}`, { modificationName });
+  return response.data;
+};

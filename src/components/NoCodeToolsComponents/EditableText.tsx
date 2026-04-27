@@ -1,4 +1,4 @@
-import { useNode } from '@craftjs/core';
+import { useNode, useEditor } from '@craftjs/core';
 import React from 'react';
 
 type TextTag = 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span';
@@ -24,6 +24,7 @@ export default function EditableText({
         connectors: { connect, drag },
         selected,
     } = useNode((state) => ({ selected: state.events.selected }));
+    const { enabled } = useEditor((state) => ({ enabled: state.options.enabled }));
 
     const Tag = tag as React.ElementType;
 
@@ -37,7 +38,7 @@ export default function EditableText({
             ref={(ref: HTMLElement | null) => {
                 if (ref) connect(drag(ref));
             }}
-            className={`${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''} cursor-pointer transition-all duration-75`}
+            className={`${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''} ${enabled ? 'cursor-pointer' : ''} transition-all duration-75`}
             style={inlineStyle}
         >
             {text}
