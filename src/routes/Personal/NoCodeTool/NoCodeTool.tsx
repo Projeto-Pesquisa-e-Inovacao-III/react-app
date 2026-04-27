@@ -352,7 +352,7 @@ function NoCodeToolInner() {
                           is={EditableText}
                           tag="h3"
                           text="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
-                          className="text-4xl font-bold text-oxford-blue mb-4"
+                          className="text-4xl font-bold text-oxford-blue mb-4 pr-20"
                         />
                         <Element
                           is={EditableText}
