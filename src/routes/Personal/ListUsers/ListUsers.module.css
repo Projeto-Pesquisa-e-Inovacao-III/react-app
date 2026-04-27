@@ -16,8 +16,10 @@
 }
 
 .listUsersSearchBar {
-    width: 25%;
+    width: 100%;
     border-radius: 8px;
+    display: flex;
+    gap: 12px;
 }
 
 
