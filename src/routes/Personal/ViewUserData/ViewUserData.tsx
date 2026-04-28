@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useSearchParams, Link, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
