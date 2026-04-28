@@ -87,7 +87,7 @@ export default function NewEvent(
     const [newEventDate, setNewEventDate] = useState<string>(clickedDate || "");
     const [newEventStartHour, setNewEventStartHour] = useState<string>();
     const [selectedType, setSelectedType] = useState<string>("PRESENCIAL");
-    const [selectedLocation] = useState<string>("");
+    const [selectedLocation, setSelectedLocation] = useState<string>("CASA");
     const [loading, setLoading] = useState<boolean>(false);
 
     const personalList = useQuery({
@@ -105,7 +105,12 @@ export default function NewEvent(
     ) ?? personalList.data?.content?.[0];
 
     const personalOptions = useMemo(
-        () => personalList.data?.content?.map((p: PersonalSummary) => ({ value: p.id, label: p.nome })),
+        () => personalList.data?.content?.map((p: PersonalSummary) => ({ 
+            value: p.id, 
+            label: p.nome,
+            image: p.caminhoFoto,
+            subtitle: p.dataNascimento ? `${differenceInYears(new Date(), parse(p.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""
+        })),
         [personalList.data?.content]
     );
 
@@ -630,7 +635,7 @@ export default function NewEvent(
     }, [addresses.data, addresses.isSuccess]);
 
     function renderPersonalCard(withNav = true) {
-        
+
         return (
             <InformationCard
                 icon={
@@ -723,25 +728,6 @@ export default function NewEvent(
                                     />
 
                                 </div>
-                                {/* <div className={classnames(styles.inputGroup, { [styles.inputGroupMobile]: isMobile })}>
-                                    <Select
-                                        defaultValue="PRESENCIAL"
-                                        id="type-select"
-                                        openSelectId={openSelectId}
-                                        setOpenSelectId={setOpenSelectId}
-                                        onSelectStatusChange={setSelectedLocation}
-                                        values={scheduleTypes}
-                                        containerClassName="w-full!"
-                                        triggerClassName="p-3 w-full!"
-                                        selectWrapperClassName="bg-white! rounded-xl! w-full!"
-                                        selectPlaceholder="Selecione o local"
-                                        labelClassName="text-slate-500! font-bold text-sm uppercase"
-                                        label="Local"
-                                        showSelectAll={false}
-                                        showSearchInput={false}
-                                    />
-
-                                </div> */}
                             </div>
                         )}
                         {step === 1 && (
@@ -1066,22 +1052,63 @@ export default function NewEvent(
                                 }}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                                     <div className={styles.inputGroupAddress}>
-                                        <div className={classnames(styles.inputGroup, styles.labelInput)}>
-                                            <label htmlFor="cep">CEP</label>
-                                            <input
-                                                type="text"
-                                                id="cep"
-                                                placeholder="00000-000"
-                                                onChange={(e) => {
-                                                    const masked = cepMask(e.target.value);
-                                                    setAddressData({ ...addressData, postalCode: masked });
-                                                }}
-                                                value={addressData.postalCode || ""}
+                                        <div className={classnames(styles.inputCEPRow)}>
+                                            <div style={{flex: 2, marginBottom: "none!"}} className={classnames(styles.inputGroup, styles.labelInput)}>
+                                                <label htmlFor="cep" className={styles.inputLabel}>CEP</label>
+                                                <input
+                                                    type="text"
+                                                    id="cep"
+                                                    placeholder="00000-000"
+                                                    onChange={(e) => {
+                                                        const masked = cepMask(e.target.value);
+                                                        setAddressData({ ...addressData, postalCode: masked });
+                                                    }}
+                                                    value={addressData.postalCode || ""}
+                                                />
+                                            </div>
+                                            <Select
+                                                defaultValue="PRESENCIAL"
+                                                id="type-select"
+                                                openSelectId={openSelectId}
+                                                setOpenSelectId={setOpenSelectId}
+                                                onSelectStatusChange={setSelectedLocation}
+                                                values={[
+                                                    {
+                                                        label: "Casa",
+                                                        value: "CASA"
+                                                    },
+                                                    {
+                                                        label: "Academia",
+                                                        value: "ACADEMIA"
+                                                    },
+                                                    {
+                                                        label: "Parque",
+                                                        value: "PARQUE"
+                                                    },
+                                                    {
+                                                        label: "Rua",
+                                                        value: "RUA"
+                                                    },
+                                                    {
+                                                        label: "Outro",
+                                                        value: "OUTRO"
+                                                    }
+                                                ]}
+                                                containerClassName="w-full! flex-1"
+                                                triggerClassName="p-3 w-full!"
+                                                selectWrapperClassName="mt-0! bg-white! rounded-md! w-full! border border-[#b1b1b194]!"
+                                                selectPlaceholder="Selecione o local"
+                                                labelClassName={styles.inputLabel}
+                                                label="Local"
+                                                showSelectAll={false}
+                                                showSearchInput={false}
+                                                
                                             />
                                         </div>
+                                        <div className="rounded-md"></div>
                                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
                                             <div className={styles.labelInput}>
-                                                <label htmlFor="city">Cidade</label>
+                                                <label htmlFor="city" className={styles.inputLabel}>Cidade</label>
                                                 <input
                                                     type="text"
                                                     id="city"
@@ -1093,7 +1120,7 @@ export default function NewEvent(
 
                                             </div>
                                             <div className={classnames(styles.labelInput, styles.smallInput)}>
-                                                <label htmlFor="state">UF</label>
+                                                <label htmlFor="state" className={styles.inputLabel}>UF</label>
                                                 <input
                                                     className={classnames(styles.inputNumber, styles.disabled)}
                                                     type="text"
@@ -1107,7 +1134,7 @@ export default function NewEvent(
                                         </div>
                                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
                                             <div className={styles.labelInput}>
-                                                <label htmlFor="address">Endereço</label>
+                                                <label htmlFor="address" className={styles.inputLabel}>Endereço</label>
                                                 <input
                                                     type="text"
                                                     id="address"
@@ -1119,7 +1146,7 @@ export default function NewEvent(
                                             </div>
 
                                             <div className={classnames(styles.labelInput, styles.smallInput)}>
-                                                <label htmlFor="number">N°</label>
+                                                <label htmlFor="number" className={styles.inputLabel}>N°</label>
                                                 <input
                                                     className={styles.inputNumber}
                                                     type="text"
@@ -1132,7 +1159,7 @@ export default function NewEvent(
                                         </div>
                                         <div className={classnames(styles.inputGroup, styles.doubleInput)}>
                                             <div className={styles.labelInput}>
-                                                <label htmlFor="complement">Complemento</label>
+                                                <label htmlFor="complement" className={styles.inputLabel}>Complemento</label>
                                                 <input
                                                     type="text"
                                                     id="complement"
