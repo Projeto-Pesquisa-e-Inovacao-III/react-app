@@ -363,6 +363,7 @@
     font-size: 13px;
     color: #2a6bbf;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .addressText {
