@@ -19,21 +19,19 @@ export default function EditableAccordion({
     } = useNode((state) => ({ selected: state.events.selected }));
 
     return (
-        <div
+        <Accordion
             ref={(ref: HTMLElement | null) => {
                 if (ref) connect(drag(ref));
             }}
             className={`${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''}`}
         >
-            <Accordion>
-                <AccordionSummary expandIcon={<ChevronDown />}>
-                    <h3 className="font-semibold text-gray-800 text-lg">{title}</h3>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography className="text-gray-600">{content}</Typography>
-                </AccordionDetails>
-            </Accordion>
-        </div>
+            <AccordionSummary expandIcon={<ChevronDown />}>
+                <h3>{title}</h3>
+            </AccordionSummary>
+            <AccordionDetails>
+                <Typography>{content}</Typography>
+            </AccordionDetails>
+        </Accordion>
     );
 }
 

@@ -1,6 +1,6 @@
 import { useEditor } from "@craftjs/core";
 import { useState } from "react";
-import { Eye, Layers, Settings2, ChevronDown, ChevronUp } from "lucide-react";
+import { Eye, Layers, Settings2, ChevronDown, ChevronUp, Upload } from "lucide-react";
 
 function Label({ children }: { children: React.ReactNode }) {
   return <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">{children}</label>;
@@ -27,6 +27,42 @@ function TextInput({ label, value, onChange }: { label: string; value: string; o
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
+    </div>
+  );
+}
+
+function ImageInput({ label, value, onChange, onError }: { label: string; value: string; onChange: (v: string) => void, onError?: (title: string, msg: string) => void }) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        onError?.("Imagem muito grande", "A imagem deve ter no máximo 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target?.result as string;
+        onChange(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="mb-4">
+      <Label>{label}</Label>
+      <div className="flex flex-col gap-2">
+        <label className="cursor-pointer flex justify-center items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm py-2 px-3 rounded-lg transition-colors">
+          <Upload size={14} />
+          Escolher Imagem do Computador
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </label>
+      </div>
     </div>
   );
 }
@@ -88,7 +124,7 @@ function TextareaInput({ label, value, onChange }: { label: string; value: strin
 }
 
 // main
-export default function Toolbox({ onPreview }: { onPreview: () => void }) {
+export default function Toolbox({ onPreview, onError }: { onPreview: () => void, onError?: (title: string, msg: string) => void }) {
   const [activeTab, setActiveTab] = useState<'properties' | 'layers'>('properties');
   const [propsOpen, setPropsOpen] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -210,7 +246,7 @@ export default function Toolbox({ onPreview }: { onPreview: () => void }) {
 
               {displayName === 'Imagem' && (
                 <>
-                  <TextInput label="URL da Imagem" value={props.src ?? ''} onChange={(v) => setProp('src', v)} />
+                  <ImageInput label="Imagem (URL ou Upload)" value={props.src ?? ''} onChange={(v) => setProp('src', v)} onError={onError} />
                   <TextInput label="Texto Alternativo (Alt)" value={props.alt ?? ''} onChange={(v) => setProp('alt', v)} />
                   <TextInput label="Arredondamento (border-radius)" value={props.borderRadius ?? ''} onChange={(v) => setProp('borderRadius', v)} />
                 </>
@@ -219,9 +255,9 @@ export default function Toolbox({ onPreview }: { onPreview: () => void }) {
               {displayName === 'Seção' && (
                 <>
                   {/* <ColorInput label="Cor de Fundo" value={props.backgroundColor ?? ''} onChange={(v) => setProp('backgroundColor', v)} /> */}
-                  <TextInput label="Imagem de Fundo (URL)" value={props.backgroundImage ?? ''} onChange={(v) => setProp('backgroundImage', v)} />
-                  <TextInput label="Padding Superior" value={props.paddingTop ?? ''} onChange={(v) => setProp('paddingTop', v)} />
-                  <TextInput label="Padding Inferior" value={props.paddingBottom ?? ''} onChange={(v) => setProp('paddingBottom', v)} />
+                  <ImageInput label="Imagem de Fundo (URL ou Upload)" value={props.backgroundImage ?? ''} onChange={(v) => setProp('backgroundImage', v)} onError={onError} />
+                  <TextInput label="Espaçamento Vertical" value={props.paddingTop ?? ''} onChange={(v) => setProp('paddingTop', v)} />
+                  <TextInput label="Espaçamento Horizontal" value={props.paddingBottom ?? ''} onChange={(v) => setProp('paddingBottom', v)} />
                 </>
               )}
 
@@ -309,7 +345,7 @@ export default function Toolbox({ onPreview }: { onPreview: () => void }) {
         <div className="space-y-1">
           {treeNodes.map(([id, node]) => (
             <button
-               key={id}
+              key={id}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm cursor-pointer transition-colors flex items-center gap-2
                 ${selected?.id === id ? 'bg-[#0C6291]/40 text-white border border-[#0C6291]/60' : 'text-gray-300 hover:bg-white/10'}`}
               onClick={() => actions.selectNode(id)}

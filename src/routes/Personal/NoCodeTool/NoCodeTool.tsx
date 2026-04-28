@@ -5,7 +5,6 @@ import EditableText from "../../../components/NoCodeToolsComponents/EditableText
 import EditableImage from "../../../components/NoCodeToolsComponents/EditableImage";
 import EditableButton from "../../../components/NoCodeToolsComponents/EditableButton";
 import { EditableSection } from "../../../components/NoCodeToolsComponents/EditableSection";
-import EditableAccordion from "../../../components/NoCodeToolsComponents/EditableAccordion";
 import { Save, Eye, Undo2, Redo2, History } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
@@ -16,6 +15,7 @@ import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import useModal from "../../../hooks/useModal";
 import HistoryDrawer from "../../../components/NoCodeToolsComponents/HistoryDrawer";
+import EditableAccordion from "../../../components/NoCodeToolsComponents/EditableAccordion";
 
 const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
@@ -69,7 +69,7 @@ function NoCodeToolInner() {
   const { actions, query } = useEditor();
   const queryClient = useQueryClient();
 
-  const { openModal, setOpenModal } = useModal(null, { title: "", content: "" });
+  const { openModal, setOpenModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
 
   const [init, setInit] = useState({ done: false });
   const [publish, setPublish] = useState({ isOpen: false, isSaving: false });
@@ -126,9 +126,9 @@ function NoCodeToolInner() {
       >
         <div className="flex items-center gap-3">
           <div className="w-7 h-7 rounded-md bg-[#0C6291] flex items-center justify-center">
-            <span className="text-white font-bold text-xs">NC</span>
+            <button onClick={() => window.location.href = '/'} className="cursor-pointer text-white font-bold text-xs">CSF</button>
           </div>
-          <h1 className="text-white font-bold text-lg tracking-tight">NoCode Tool (BETA)</h1>
+          <h1 className="text-white font-bold text-lg tracking-tight">Editor de Página CSF</h1>
         </div>
         <EditorActions
           onPreview={() => setIsPreviewMode(true)}
@@ -187,15 +187,15 @@ function NoCodeToolInner() {
       {openModal === "success" && (
         <SuccessModal
           closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
-          title="Página publicada com sucesso!"
-          content="As modificações foram salvas e estão disponíveis."
+          title={textModal.title || "Página publicada com sucesso!"}
+          content={textModal.content || "As modificações foram salvas e estão disponíveis."}
         />
       )}
       {openModal === "error" && (
         <ErrorModal
           closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
-          title="Erro ao publicar"
-          content="Não foi possível salvar as modificações. Tente novamente."
+          title={textModal.title || "Erro ao publicar"}
+          content={textModal.content || "Não foi possível salvar as modificações. Tente novamente."}
         />
       )}
 
@@ -401,12 +401,12 @@ function NoCodeToolInner() {
                   className="px-5"
                 >
                   
-                  <Element is={Container} canvas className="bg-white rounded-lg p-8 ml-20 mr-20">
+                  <Element is={Container} canvas className="text-black bg-white rounded-lg p-5 ml-20 mr-20">
                     <Element
                       is={EditableText}
                       tag="h2"
                       text="Perguntas Frequentes"
-                      className="text-black text-2xl mb-5 font-bold"
+                      className="text-black text-2xl mb-5"
                     />
                     <Element is={Container} canvas>
                       <Element 
@@ -416,13 +416,23 @@ function NoCodeToolInner() {
                       />
                       <Element 
                         is={EditableAccordion} 
-                        title="Quais as formas de pagamento disponíveis?" 
+                        title="Quais as formas de pagamento disponivéis?" 
                         content="Atualmente, o pagamento é feito via PIX. Alguns bancos digitais oferecem a opção de parcelamento diretamente pelo aplicativo." 
                       />
                       <Element 
                         is={EditableAccordion} 
                         title="A consultoria é para todos ou apenas para quem já treina?" 
                         content="A consultoria é indicada para todos os perfis, inclusive para quem nunca treinou ou não tem experiência com atividades físicas." 
+                      />
+                      <Element 
+                        is={EditableAccordion} 
+                        title="Quais as formas de contato com o personal?" 
+                        content="O contato é realizado principalmente pelo WhatsApp, além de telefone e Instagram." 
+                      />
+                      <Element 
+                        is={EditableAccordion} 
+                        title="Como funciona a consultoria após a contratação do pacote?" 
+                        content="Após a contratação, o personal entrará em contato para entender seu perfil, seus objetivos e sua experiência com treinos. Dependendo do pacote contratado, você terá direito a aulas presenciais mensais para agendamento." 
                       />
                       <Element 
                         is={EditableAccordion} 
@@ -447,7 +457,13 @@ function NoCodeToolInner() {
             backdropFilter: 'blur(16px)',
           }}
         >
-          <Toolbox onPreview={() => setIsPreviewMode(true)} />
+          <Toolbox 
+            onPreview={() => setIsPreviewMode(true)} 
+            onError={(title, msg) => {
+              setTextModal({ title, content: msg });
+              setOpenModal("error");
+            }}
+          />
         </div>
 
         {/* Voltar animado */}
