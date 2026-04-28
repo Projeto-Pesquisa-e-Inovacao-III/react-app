@@ -322,8 +322,7 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background-color: #ffedd5;
-    color: #c2410c;
+    width: 60%;
 }
 
 .mobileCardType {

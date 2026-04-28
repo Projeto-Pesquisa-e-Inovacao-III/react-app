@@ -54,6 +54,20 @@
  padding-left: 12px !important;
 }
 
+.inputLimit {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--muted-foreground, #64748b);
+    pointer-events: none;
+}
+
+.limitInput {
+    padding-right: 45px !important;
+}
+
 .inputIcon svg {
     height: 100%;
     width: 100%;

@@ -39,19 +39,18 @@ export function Packages() {
 
     const isPersonal = type?.type?.includes("personal");
 
-    function handleBuyClick(id: number) {
+    function handleBuyClick(id: number, packageTitle: string) {
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
             window.location.href = response.data;
-            // setSuccessModalInfos({
-            //     title: "Compra Concluída",
-            //     content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-            // });
-            // TODO: return with data?
-            // setOpenModal("success");
+            setSuccessModalInfos({
+                title: "Compra Concluída",
+                content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
+            });
+            setOpenModal("success");
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
-            // handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
+            handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
         });
     };
 
@@ -300,7 +299,7 @@ const slidesToRender = activePackages.length > 0
                                                         <PackageCard
                                                             {...pacote}
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                            onClick={() => handleBuyClick(pacote.id!)}
+                                                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
                                                             isMobile={isMobile}
                                                             isAdmin={type?.type?.includes("admin")}
                                                             isPersonal={isPersonal}
@@ -335,7 +334,7 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
@@ -441,7 +440,7 @@ const slidesToRender = activePackages.length > 0
                                                     <PackageCard
                                                         {...pacote}
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                        onClick={() => handleBuyClick(pacote.id!)}
+                                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
                                                         isMobile={isMobile}
                                                         isAdmin={type?.type?.includes("admin")}
                                                         isPersonal={isPersonal}
@@ -475,7 +474,7 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!)}
+                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}

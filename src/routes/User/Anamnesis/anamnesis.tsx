@@ -60,7 +60,7 @@ export default function Anamnesis() {
     const MAX_DAILY_ROUTINE_CHARACTERS = 500;
     const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
     const MAX_HEIGHT_CHARACTERS = 3;
-    const MAX_WEIGHT_CHARACTERS = 6;
+    const MAX_WEIGHT_CHARACTERS = 4;
 
     const isMobile = useMobile();
     const navigate = useNavigate();
@@ -321,7 +321,6 @@ export default function Anamnesis() {
                                         type="number"
                                         allowDecimals={true}
                                         maxDecimalPlaces={2}
-                                        decimalSeparator=","
                                         placeholder="Ex: 70"
                                         maxLength={MAX_WEIGHT_CHARACTERS}
                                         onInputChange={(value: string) => {
