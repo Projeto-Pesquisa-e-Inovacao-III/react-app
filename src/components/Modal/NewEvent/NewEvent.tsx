@@ -1052,8 +1052,8 @@ export default function NewEvent(
                                 }}>
                                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                                     <div className={styles.inputGroupAddress}>
-                                        <div className={classnames(styles.inputCEPRow)}>
-                                            <div style={{flex: 2, marginBottom: "none!"}} className={classnames(styles.inputGroup, styles.labelInput)}>
+                                        <div className={classnames(styles.inputCEPRow, { [styles.inputCEPRowMobile]: isMobile })}>
+                                            <div style={!isMobile ? {flex: 2, marginBottom: "none!"} : {width: "100%", margin: "none!"}} className={classnames(styles.inputGroup, styles.labelInput, {["m-0!"]: isMobile})}>
                                                 <label htmlFor="cep" className={styles.inputLabel}>CEP</label>
                                                 <input
                                                     type="text"

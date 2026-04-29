@@ -55,7 +55,9 @@ export default function CardDropdown({ options, selectedValue, onOptionChange }:
             </button>
 
             {isOpen && (
-                <div className={classnames(styles.dropdownMenu, { [styles.closing]: isClosing })}>
+                <>
+                    <div className={classnames(styles.overlayMobile, { [styles.closingOverlay]: isClosing })} onClick={closeDropdown} />
+                    <div className={classnames(styles.dropdownMenu, { [styles.closing]: isClosing })}>
                     {options.map((option) => (
                         <div 
                             key={option.value} 
@@ -75,6 +77,7 @@ export default function CardDropdown({ options, selectedValue, onOptionChange }:
                         </div>
                     ))}
                 </div>
+                </>
             )}
         </div>
     );

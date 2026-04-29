@@ -23,6 +23,11 @@
   align-items: center !important;
 }
 
+.inputCEPRowMobile {
+  flex-direction: column-reverse !important;
+  align-items: stretch !important;
+}
+
 .overlay {
   position: fixed;
   top: 0;
