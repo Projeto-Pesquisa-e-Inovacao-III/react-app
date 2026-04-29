@@ -5,7 +5,7 @@ import useMobile from '../../hooks/isMobile';
 import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -214,13 +214,25 @@ export default function ScheduleDetails() {
                             <div className={styles.leftColumn}>
                                 <div className={styles.professionalCard}>
 
-                                    <div className={styles.avatarSection}>
-                                        <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={!type?.type?.includes("aluno") ? appointment.data?.aluno?.avatarUrl : appointment.data?.personal?.avatarUrl} userName={!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome} />
-                                        <div className={styles.professionalName}>
-                                            {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                    {type?.type?.includes("personal") ? (
+                                        <Link className="cursor-pointer" style={{ textDecoration: 'none', color: 'inherit' }} to={`/users/view-user-data?id=${appointment.data?.aluno.id}`}>
+                                            <div className={styles.avatarSection}>
+                                                <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={appointment.data?.aluno?.avatarUrl} userName={appointment.data?.aluno?.nome} />
+                                                <div className={styles.professionalName}>
+                                                    {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                                </div>
+                                                <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
+                                            </div>
+                                        </Link>
+                                    ) : (
+                                        <div className={styles.avatarSection}>
+                                            <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={appointment.data?.personal?.avatarUrl} userName={appointment.data?.personal?.nome} />
+                                            <div className={styles.professionalName}>
+                                                {!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}
+                                            </div>
+                                            <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
                                         </div>
-                                        <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
-                                    </div>
+                                    )}
                                     <div className={styles.ageDivider}>
                                         <span className={styles.ageLabel}>Idade</span>
                                         <span className={styles.ageValue}>
