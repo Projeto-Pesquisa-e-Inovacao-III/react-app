@@ -42,8 +42,8 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, []);
 
     const data = isPackagesSelected
-        ? packages.data?.filter((pkg: Package) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
-        : packages.data?.filter((pkg: Package) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
+        ? (packages.data ?? [])?.filter((pkg: Package) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
+        : (packages.data ?? [])?.filter((pkg: Package) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
 
     const shouldUseCarousel = data?.length > 4
 
