@@ -687,7 +687,7 @@ export default function NewEvent(
                                     </h1>
                                 )}
 
-                                {renderPersonalCard()}
+                                {renderPersonalCard(step === 1)}
                             </>
                         )}
                         {step === 2 && (
