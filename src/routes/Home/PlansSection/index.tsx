@@ -41,9 +41,12 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
         checkAuth();
     }, []);
 
-    const data = isPackagesSelected
-        ? packages.data?.filter((pkg: Package) => pkg.tipoProduto === "PACOTE" && pkg.status === "ATIVO")
-        : packages.data?.filter((pkg: Package) => pkg.tipoProduto === "ADICIONAL" && pkg.status === "ATIVO")
+    const rawData = Array.isArray(packages.data) ? packages.data : [];
+
+    const data = rawData.filter((pkg: Package) => {
+        const targetType = isPackagesSelected ? "PACOTE" : "ADICIONAL";
+        return pkg.tipoProduto === targetType && pkg.status === "ATIVO";
+    });
 
     const shouldUseCarousel = data?.length > 4
 

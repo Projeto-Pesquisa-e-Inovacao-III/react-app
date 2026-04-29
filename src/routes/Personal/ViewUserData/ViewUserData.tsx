@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
@@ -53,6 +53,11 @@ export default function ViewUserData() {
 
     const isSedentario = anamnesis.data?.nivelDeAtividade === "SEDENTARIO";
     const roles: string[] = user.data?.roles || [];
+    const nav = useNavigate();
+
+    function handleBack() {
+        nav(-1);
+    }
 
     return (
         <>
@@ -60,10 +65,10 @@ export default function ViewUserData() {
                 <div className={styles.content}>
 
                     <div className={styles.pageHeader}>
-                        <Link to="/users" className={styles.backLink}>
+                        <button className={styles.backLink} onClick={handleBack}>
                             <ArrowLeft size={16} />
                             Voltar
-                        </Link>
+                        </button>
                         <h1 className={styles.pageTitle}>Dados &amp; Anamnese</h1>
                     </div>
 
@@ -181,7 +186,7 @@ export default function ViewUserData() {
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {isAdmin && userId && (
                                 <AdminActionsCard
                                     userId={Number(userId)}
