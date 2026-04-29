@@ -12,7 +12,7 @@ export default function HeaderDesktop() {
 
     const verify = !!userLoggedIn.data?.data?.autentificado;
 
-    const userName = userLoggedIn.data?.data?.user.nome || "Usuário";
+    const userName = userLoggedIn.data?.data?.user?.nome || "Usuário";
 
     return (
         <>
