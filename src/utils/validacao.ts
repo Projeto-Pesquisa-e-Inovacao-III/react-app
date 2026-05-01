@@ -62,7 +62,7 @@ export function validatePassword(password: string): string{
         response += "A senha deve conter pelo menos um caractere especial.\n"
     }
     
-    if (password.length <= 8) {
+    if (password.length < 8) {
         response += "A senha deve ter no mínimo 8 caracteres.\n"
     }
 

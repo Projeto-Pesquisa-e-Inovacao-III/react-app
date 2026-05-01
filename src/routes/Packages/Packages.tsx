@@ -146,8 +146,8 @@ export function Packages() {
 
 
     function handleDeletePackage(id: number) {
-        desactivateProductExhibition(id).then((response) => {
-            console.log("Pacote desativado com sucesso! ", response);
+        desactivateProductExhibition(id).then(() => {
+            
             setProductsExhibitions(prev => prev.filter(pkg => pkg.id !== id));
             setProductsExhibitionsAdicional(prev => prev.filter(pkg => pkg.id !== id));
             setPackageId(null);
@@ -161,7 +161,7 @@ export function Packages() {
     }
 
     function handleUpdatePackage(id: number, isAdicional: boolean = false) {
-        console.log("Editing package with id:", id);
+        
         if (!packageId) {
             setPackageId(id)
             setOpenModal(isAdicional ? "editAdditional" : "edit");
@@ -258,7 +258,7 @@ const slidesToRender = activePackages.length > 0
                                     Pacotes Atuais
                                 </h1>
                                 <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                    <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                                    <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activePackages.length > 1 ? "pacotes ativos" : "pacote ativo"}</span>
                                 </div>
                             </>
                         ) : (
@@ -399,7 +399,7 @@ const slidesToRender = activePackages.length > 0
                             </h1>
 
                             <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "adicionais ativos" : "adicional ativo"}</span>
+                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "pacotes adicionais ativos" : "pacote adicional ativo"}</span>
                             </div>
                         </>
                     ) : (

@@ -29,13 +29,13 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
         select: (res) => res.data,
     });
 
-    console.log(packages.data);
+    
 
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
     useEffect(() => {
         const checkAuth = async () => {
             const auth = await isAuthenticated();
-            console.log("User authenticated:", auth.data.autentificado);
+            
             setIsUserAuthenticated(auth.data.autentificado);
         };
         checkAuth();

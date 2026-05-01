@@ -120,7 +120,7 @@ export default function CreatePersonal() {
         telefone: "",
       });
     } catch (err: any) {
-      console.log(err);
+      
       setTextModal({
         title: "Erro ao Cadastrar Personal!",
         content: err.response?.data.Exception || "Ocorreu um erro ao cadastrar o personal trainer. Tente novamente."
