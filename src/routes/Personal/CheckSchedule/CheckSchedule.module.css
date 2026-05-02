@@ -421,6 +421,10 @@
         gap: 1.25rem;
     }
 
+    .gridContainer > div:last-child {
+        grid-column: span 2;
+    }
+
 }
 
 

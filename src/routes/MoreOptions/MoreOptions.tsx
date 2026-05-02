@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, Eye, HistoryIcon, IdCard, LogOut, User, ChevronRight } from 'lucide-react';
+import { Banknote, Boxes, Clock, HistoryIcon, IdCard, LogOut, User, ChevronRight } from 'lucide-react';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
 import { useContext, useEffect } from 'react';
@@ -73,7 +73,6 @@ export default function MoreOptions() {
                         {/* personal não admin */}
                         {type?.type?.includes("personal") && !type?.type?.includes("admin") && (
                             <>
-                                <OptionItem icon={<Eye size={22} />} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                                 <OptionItem icon={<Clock size={22} />} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
                             </>
                         )}
@@ -81,7 +80,6 @@ export default function MoreOptions() {
                         {/* personal e admin */}
                         {type?.type?.includes("personal") && type?.type?.includes("admin") && (
                             <>
-                                <OptionItem icon={<Eye size={22} />} title='Solicitações' onClick={() => nav("/personal/check-schedule")} />
                                 <OptionItem icon={<Boxes size={22} />} title='Pacotes' onClick={() => nav("/packages")} />
                                 <OptionItem icon={<Clock size={22} />} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
                                 <OptionItem icon={<User size={22} />} title='Criar personal' onClick={() => nav("/create-personal")} />
