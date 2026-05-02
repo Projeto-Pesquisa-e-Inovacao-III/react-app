@@ -1,6 +1,6 @@
 import { useEditor } from "@craftjs/core";
 import { useState } from "react";
-import { Eye, Layers, Settings2, ChevronDown, ChevronUp, Upload } from "lucide-react";
+import { Eye, Layers, Settings2, ChevronDown, ChevronUp, Upload, FileText, Save } from "lucide-react";
 
 function Label({ children }: { children: React.ReactNode }) {
   return <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">{children}</label>;
@@ -31,7 +31,7 @@ function TextInput({ label, value, onChange }: { label: string; value: string; o
   );
 }
 
-function ImageInput({ label, value, onChange, onError }: { label: string; value: string; onChange: (v: string) => void, onError?: (title: string, msg: string) => void }) {
+function ImageInput({ label, onChange, onError }: { label: string; onChange: (v: string) => void, onError?: (title: string, msg: string) => void }) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -152,273 +152,161 @@ export default function Toolbox({ onPreview, onError }: { onPreview: () => void,
     });
   }
 
-  function renderProperties() {
-    if (!selected) {
-      return (
-        <div className="flex flex-col items-center justify-center p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-            <Settings2 size={28} className="text-gray-500" />
-          </div>
-          <p className="text-gray-400 text-sm">Selecione um elemento na tela para editar suas propriedades.</p>
-        </div>
-      );
-    }
-
-    const { displayName, props } = selected;
-
-    return (
-      <div>
-        <div className="px-4 py-3 border-b border-white/10">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#0C6291]">Elemento</span>
-          <p className="text-white font-semibold text-base">{displayName}</p>
-        </div>
-
-        <div>
-          <SectionHeader title="Propriedades" open={propsOpen} onToggle={() => setPropsOpen(!propsOpen)} />
-          {propsOpen && (
-            <div className="p-4">
-              {displayName === 'Texto' && (
-                <>
-                  <TextareaInput
-                    label="Conteúdo do Texto"
-                    value={String(props.text ?? '')}
-                    onChange={(v) => setProp('text', v)}
-                  />
-                  <SelectInput
-                    label="Tipo de Tag"
-                    value={props.tag ?? props.type ?? 'p'}
-                    onChange={(v) => { setProp('tag', v); setProp('type', v); }}
-                    options={[
-                      { value: 'h1', label: 'Título 1 (H1)' },
-                      { value: 'h2', label: 'Título 2 (H2)' },
-                      { value: 'h3', label: 'Título 3 (H3)' },
-                      { value: 'h4', label: 'Título 4 (H4)' },
-                      { value: 'p', label: 'Parágrafo (P)' },
-                      { value: 'span', label: 'Inline (SPAN)' },
-                    ]}
-                  />
-                  {/* <ColorInput
-                    label="Cor do Texto"
-                    value={props.color ?? ''}
-                    onChange={(v) => setProp('color', v)}
-                  /> */}
-                  <SelectInput
-                    label="Tamanho da Fonte"
-                    value={props.fontSize ?? ''}
-                    onChange={(v) => setProp('fontSize', v)}
-                    options={[
-                      { value: '', label: '— padrão —' },
-                      { value: '0.875rem', label: 'Pequeno (14px)' },
-                      { value: '1rem', label: 'Normal (16px)' },
-                      { value: '1.25rem', label: 'Médio (20px)' },
-                      { value: '1.5rem', label: 'Grande (24px)' },
-                      { value: '2rem', label: 'Muito Grande (32px)' },
-                      { value: '3rem', label: 'Enorme (48px)' },
-                      { value: '4rem', label: 'Xl (64px)' },
-                      { value: '5rem', label: 'Xxl (80px)' },
-                    ]}
-                  />
-                  <SelectInput
-                    label="Peso da Fonte"
-                    value={props.fontWeight ?? ''}
-                    onChange={(v) => setProp('fontWeight', v)}
-                    options={[
-                      { value: '', label: '— padrão —' },
-                      { value: '400', label: 'Normal' },
-                      { value: '500', label: 'Medium' },
-                      { value: '600', label: 'Semibold' },
-                      { value: '700', label: 'Bold' },
-                      { value: '800', label: 'Extrabold' },
-                      { value: '900', label: 'Black' },
-                    ]}
-                  />
-                </>
-              )}
-
-              {displayName === 'Botão' && (
-                <>
-                  <TextInput label="Texto do Botão" value={props.title ?? ''} onChange={(v) => setProp('title', v)} />
-                  <TextInput label="Link (URL)" value={props.href ?? ''} onChange={(v) => setProp('href', v)} />
-                  {/* <ColorInput label="Cor de Fundo" value={props.bgColor ?? ''} onChange={(v) => setProp('bgColor', v)} />
-                  <ColorInput label="Cor do Texto" value={props.textColor ?? ''} onChange={(v) => setProp('textColor', v)} /> */}
-                </>
-              )}
-
-              {displayName === 'Imagem' && (
-                <>
-                  <ImageInput label="Imagem (URL ou Upload)" value={props.src ?? ''} onChange={(v) => setProp('src', v)} onError={onError} />
-                  <TextInput label="Texto Alternativo (Alt)" value={props.alt ?? ''} onChange={(v) => setProp('alt', v)} />
-                  <TextInput label="Arredondamento (border-radius)" value={props.borderRadius ?? ''} onChange={(v) => setProp('borderRadius', v)} />
-                </>
-              )}
-
-              {displayName === 'Seção' && (
-                <>
-                  {/* <ColorInput label="Cor de Fundo" value={props.backgroundColor ?? ''} onChange={(v) => setProp('backgroundColor', v)} /> */}
-                  <ImageInput label="Imagem de Fundo (URL ou Upload)" value={props.backgroundImage ?? ''} onChange={(v) => setProp('backgroundImage', v)} onError={onError} />
-                  <TextInput label="Espaçamento Vertical" value={props.paddingTop ?? ''} onChange={(v) => setProp('paddingTop', v)} />
-                  <TextInput label="Espaçamento Horizontal" value={props.paddingBottom ?? ''} onChange={(v) => setProp('paddingBottom', v)} />
-                </>
-              )}
-
-              {displayName === 'Container' && (
-                <>
-                  <SelectInput
-                    label="Direção (Layout)"
-                    value={props.flexDirection ?? ''}
-                    onChange={(v) => setProp('flexDirection', v)}
-                    options={[
-                      { value: '', label: 'Padrão (Bloco)' },
-                      { value: 'row', label: 'Lado a Lado (Linha)' },
-                      { value: 'col', label: 'Empilhado (Coluna)' },
-                    ]}
-                  />
-                  <SelectInput
-                    label="Alinhamento Horizontal"
-                    value={props.justifyContent ?? ''}
-                    onChange={(v) => setProp('justifyContent', v)}
-                    options={[
-                      { value: '', label: 'Padrão' },
-                      { value: 'start', label: 'Início' },
-                      { value: 'center', label: 'Centro' },
-                      { value: 'end', label: 'Fim' },
-                      { value: 'between', label: 'Espaçado' },
-                    ]}
-                  />
-                  <SelectInput
-                    label="Alinhamento Vertical"
-                    value={props.alignItems ?? ''}
-                    onChange={(v) => setProp('alignItems', v)}
-                    options={[
-                      { value: '', label: 'Padrão' },
-                      { value: 'start', label: 'Topo' },
-                      { value: 'center', label: 'Centro' },
-                      { value: 'end', label: 'Fundo' },
-                    ]}
-                  />
-                </>
-              )}
-
-              {displayName === 'Accordion' && (
-                <>
-                  <TextInput label="Título da Pergunta" value={props.title ?? ''} onChange={(v) => setProp('title', v)} />
-                  <TextareaInput label="Conteúdo da Resposta" value={props.content ?? ''} onChange={(v) => setProp('content', v)} />
-                </>
-              )}
-
-              {!['Texto', 'Botão', 'Imagem', 'Seção', 'Container', 'Accordion'].includes(displayName) && (
-                <p className="text-gray-400 text-sm">Nenhuma propriedade editável disponível para este elemento.</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <SectionHeader title="Avançado" open={advancedOpen} onToggle={() => setAdvancedOpen(!advancedOpen)} />
-          {advancedOpen && (
-            <div className="p-4">
-              <TextInput label="Classe CSS nativa (Tailwind)" value={props.className ?? ''} onChange={(v) => setProp('className', v)} />
-              <div className="mb-2">
-                <Label>ID do Elemento</Label>
-                <p className="text-gray-500 text-xs font-mono">{selected.id}</p>
-              </div>
-              <button
-                className="w-full mt-2 bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg px-3 py-2 text-sm hover:bg-red-500/30 transition-colors"
-                onClick={() => actions.delete(selected.id)}
-              >
-                Deletar Elemento
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  function renderLayers() {
-    const allNodes = Object.entries(nodes);
-    const treeNodes = allNodes.filter(([, node]) => node.data.displayName !== 'ROOT');
-
-    return (
-      <div className="p-3">
-        <p className="text-xs text-gray-400 mb-3 uppercase tracking-wider font-semibold px-1">Hierarquia de Elementos</p>
-        <div className="space-y-1">
-          {treeNodes.map(([id, node]) => (
-            <button
-              key={id}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm cursor-pointer transition-colors flex items-center gap-2
-                ${selected?.id === id ? 'bg-[#0C6291]/40 text-white border border-[#0C6291]/60' : 'text-gray-300 hover:bg-white/10'}`}
-              onClick={() => actions.selectNode(id)}
-            >
-              <span className="text-[#0C6291] text-xs">▸</span>
-              {node.data.displayName}
-            </button>
-          ))}
-          {treeNodes.length === 0 && (
-            <p className="text-gray-500 text-sm text-center py-4">Nenhum elemento encontrado.</p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="h-full flex flex-col text-white">
-      {/* header */}
-      <div className="px-4 py-4 border-b border-white/10">
-        <h2 className="font-bold text-lg text-white">Painel de Controle</h2>
-        <p className="text-gray-400 text-xs mt-0.5">Clique em qualquer elemento para editá-lo</p>
-      </div>
-
-      {/* tabs */}
-      <div className="flex border-b border-white/10">
+    <div className="flex flex-col h-full">
+      <div className="flex items-center px-4 h-12 border-b border-white/10 bg-white/5">
         <button
-          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors
-            ${activeTab === 'properties' ? 'text-white border-b-2 border-[#0C6291]' : 'text-gray-400 hover:text-gray-200'}`}
           onClick={() => setActiveTab('properties')}
+          className={`flex-1 h-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors ${activeTab === 'properties' ? 'text-white border-b-2 border-[#0C6291]' : 'text-gray-400 hover:text-gray-200'
+            }`}
         >
-          <Settings2 size={15} />
+          <Settings2 size={14} />
           Propriedades
         </button>
         <button
-          className={`flex-1 flex items-center justify-center gap-2 py-3 text-sm font-semibold transition-colors
-            ${activeTab === 'layers' ? 'text-white border-b-2 border-[#0C6291]' : 'text-gray-400 hover:text-gray-200'}`}
           onClick={() => setActiveTab('layers')}
+          className={`flex-1 h-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider transition-colors ${activeTab === 'layers' ? 'text-white border-b-2 border-[#0C6291]' : 'text-gray-400 hover:text-gray-200'
+            }`}
         >
-          <Layers size={15} />
+          <Layers size={14} />
           Camadas
         </button>
       </div>
 
-      {/* content */}
-      <div className="flex-1 overflow-y-auto">
-        {activeTab === 'properties' ? renderProperties() : renderLayers()}
+      <div className="flex-1 overflow-y-auto custom-scrollbar p-0">
+        {activeTab === 'properties' ? (
+          <div className="divide-y divide-white/5">
+            {selected ? (
+              <>
+                <SectionHeader title={selected.displayName} open={propsOpen} onToggle={() => setPropsOpen(!propsOpen)} />
+                {propsOpen && (
+                  <div className="p-4">
+                    {selected.displayName === 'Texto' && (
+                      <>
+                        <TextareaInput label="Conteúdo do Texto" value={selected.props.text ?? ''} onChange={(v) => setProp('text', v)} />
+                        <SelectInput
+                          label="Tag HTML"
+                          value={selected.props.tag ?? 'p'}
+                          onChange={(v) => setProp('tag', v)}
+                          options={[
+                            { value: 'h1', label: 'Título 1 (H1)' },
+                            { value: 'h2', label: 'Título 2 (H2)' },
+                            { value: 'h3', label: 'Título 3 (H3)' },
+                            { value: 'p', label: 'Parágrafo (P)' },
+                            { value: 'span', label: 'Texto Simples (SPAN)' },
+                          ]}
+                        />
+                        {/* <ColorInput label="Cor do Texto" value={selected.props.color ?? ''} onChange={(v) => setProp('color', v)} /> */}
+                      </>
+                    )}
+
+                    {selected.displayName === 'Botão' && (
+                      <>
+                        <TextInput label="Texto do Botão" value={selected.props.title ?? ''} onChange={(v) => setProp('title', v)} />
+                        <TextInput label="Link (URL)" value={selected.props.href ?? ''} onChange={(v) => setProp('href', v)} />
+                        {/* <ColorInput label="Cor de Fundo" value={selected.props.bgColor ?? ''} onChange={(v) => setProp('bgColor', v)} />
+                        <ColorInput label="Cor do Texto" value={selected.props.textColor ?? ''} onChange={(v) => setProp('textColor', v)} /> */}
+                      </>
+                    )}
+
+                    {selected.displayName === 'Imagem' && (
+                      <>
+                        <ImageInput label="Imagem (URL ou Upload)" onChange={(v) => setProp('src', v)} onError={onError} />
+                        <TextInput label="Texto Alternativo (Alt)" value={selected.props.alt ?? ''} onChange={(v) => setProp('alt', v)} />
+                        <TextInput label="Arredondamento (border-radius)" value={selected.props.borderRadius ?? ''} onChange={(v) => setProp('borderRadius', v)} />
+                      </>
+                    )}
+
+                    {selected.displayName === 'Seção' && (
+                      <>
+                        {/* <ColorInput label="Cor de Fundo" value={selected.props.backgroundColor ?? ''} onChange={(v) => setProp('backgroundColor', v)} /> */}
+                        <ImageInput label="Imagem de Fundo (URL ou Upload)" onChange={(v) => setProp('backgroundImage', v)} onError={onError} />
+                        <TextInput label="Espaçamento Vertical" value={selected.props.paddingTop ?? ''} onChange={(v) => setProp('paddingTop', v)} />
+                        <TextInput label="Espaçamento Horizontal" value={selected.props.paddingBottom ?? ''} onChange={(v) => setProp('paddingBottom', v)} />
+                      </>
+                    )}
+
+                    {selected.displayName === 'Container' && (
+                      <>
+                        <SelectInput
+                          label="Direção (Layout)"
+                          value={selected.props.flexDirection ?? ''}
+                          onChange={(v) => setProp('flexDirection', v)}
+                          options={[
+                            { value: '', label: 'Padrão (Bloco)' },
+                            { value: 'row', label: 'Lado a Lado (Linha)' },
+                            { value: 'col', label: 'Empilhado (Coluna)' },
+                          ]}
+                        />
+                        <TextInput label="Espaçamento (Gap)" value={selected.props.gap ?? ''} onChange={(v) => setProp('gap', v)} />
+                      </>
+                    )}
+
+                    {selected.displayName === 'Acordeão' && (
+                      <>
+                        <TextInput label="Título da Pergunta" value={selected.props.title ?? ''} onChange={(v) => setProp('title', v)} />
+                        <TextareaInput label="Conteúdo da Resposta" value={selected.props.content ?? ''} onChange={(v) => setProp('content', v)} />
+                      </>
+                    )}
+                  </div>
+                )}
+
+                <SectionHeader title="Avançado" open={advancedOpen} onToggle={() => setAdvancedOpen(!advancedOpen)} />
+                {advancedOpen && (
+                  <div className="p-4">
+                    <TextInput label="Classes CSS (Tailwind)" value={selected.props.className ?? ''} onChange={(v) => setProp('className', v)} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center p-8 text-center">
+                <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-4 text-gray-500">
+                  <Settings2 size={24} />
+                </div>
+                <h3 className="text-white font-semibold mb-1">Nenhum elemento selecionado</h3>
+                <p className="text-gray-500 text-xs leading-relaxed">
+                  Clique em um elemento na tela para editar suas propriedades.
+                </p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="p-4">
+            <div className="space-y-1">
+              {Object.entries(nodes).map(([id, node]) => (
+                <button
+                  key={id}
+                  onClick={() => actions.selectNode(id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs transition-colors ${selected?.id === id ? 'bg-[#0C6291] text-white' : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
+                    }`}
+                >
+                  <div className="w-4 flex justify-center opacity-50">
+                    {node.data.displayName === 'Texto' && <FileText size={14} />}
+                    {node.data.displayName === 'Botão' && <Save size={14} />}
+                    {node.data.displayName === 'Imagem' && <Upload size={14} />}
+                    {node.data.displayName === 'Seção' && <Layers size={14} />}
+                    {node.data.displayName === 'Container' && <Settings2 size={14} />}
+                  </div>
+                  <span className="truncate">{node.data.displayName}</span>
+                  <span className="ml-auto text-[10px] opacity-30 font-mono">{id.substring(0, 4)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* save */}
-      <div className="p-4 border-t border-white/10">
-        {/*
-        <button
-          className="w-full flex items-center justify-center gap-2 bg-[#0C6291] hover:bg-[#0a5278] text-white font-semibold py-3 rounded-xl transition-colors"
-          onClick={() => {
-            const json = query.serialize();
-            console.log('Saved state:', json);
-            onSave?.();
-            alert('Estado salvo no console! (integração com backend em breve)');
-          }}
-        >
-          <Save size={16} />
-          Salvar Alterações
-        </button>
-        */}
-        <button
-          className="w-full flex items-center justify-center gap-2 mt-2 border border-white/20 text-gray-300 hover:text-white hover:border-white/50 font-semibold py-2.5 rounded-xl transition-colors text-sm"
-          onClick={() => onPreview ? onPreview() : window.open('/', '_blank')}
-        >
-          <Eye size={15} />
-          Visualizar Site
-        </button>
-      </div>
+      {!selected && (
+        <div className="p-4 border-t border-white/10 bg-black/20">
+          <button
+            onClick={onPreview}
+            className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors"
+          >
+            <Eye size={16} />
+            Visualizar Página
+          </button>
+        </div>
+      )}
     </div>
   );
 }

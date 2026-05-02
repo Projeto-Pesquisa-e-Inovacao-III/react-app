@@ -36,6 +36,18 @@ export const createNoCodeContent = async (body: CreateNoCodeRequest): Promise<No
   return response.data;
 };
 
+export type UpdateNoCodeRequest = {
+  id: string;
+  content: string;
+  modificationName: string;
+  description: string;
+};
+
+export const updateNoCodeContent = async (body: UpdateNoCodeRequest): Promise<NoCodeResponse> => {
+  const response = await api.put("/no-code", body);
+  return response.data;
+};
+
 export const getNoCodeHistory = async (
   page = 0,
   size = 10,
@@ -58,5 +70,21 @@ export const renameNoCodeContent = async (
   modificationName: string,
 ): Promise<NoCodeResponse> => {
   const response = await api.patch(`/no-code/${id}`, { modificationName });
+  return response.data;
+};
+
+export const uploadNoCodeImage = async (
+  image: File,
+  section: string,
+): Promise<{ url: string }> => {
+  const formData = new FormData();
+  formData.append("image", image);
+  formData.append("section", section);
+
+  const response = await api.post("/no-code/image", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };

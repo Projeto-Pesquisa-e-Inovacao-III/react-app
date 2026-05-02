@@ -9,13 +9,27 @@ import { Save, Eye, Undo2, Redo2, History } from "lucide-react";
 import { useEditor } from "@craftjs/core";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getNoCodeContent, createNoCodeContent } from "../../../services/noCodeService";
+import { getNoCodeContent, createNoCodeContent, updateNoCodeContent, uploadNoCodeImage } from "../../../services/noCodeService";
 import PublishModal from "../../../components/Modal/PublishModal/PublishModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import useModal from "../../../hooks/useModal";
 import HistoryDrawer from "../../../components/NoCodeToolsComponents/HistoryDrawer";
 import EditableAccordion from "../../../components/NoCodeToolsComponents/EditableAccordion";
+import { BASE_URL } from "../../../system";
+
+function base64ToFile(base64: string, filename: string): File {
+  const arr = base64.split(',');
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/png';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
 
 const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
@@ -71,7 +85,6 @@ function NoCodeToolInner() {
 
   const { openModal, setOpenModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
 
-  const [init, setInit] = useState({ done: false });
   const [publish, setPublish] = useState({ isOpen: false, isSaving: false });
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
@@ -86,26 +99,12 @@ function NoCodeToolInner() {
   });
 
   useEffect(() => {
-    if (!init.done && !isLoading) {
-      if (data && data.content) {
-        try {
-          actions.deserialize(data.content);
-        } catch (e) {
-          console.error('Failed to deserialize content:', e);
-          setOpenModal("error");
-        }
-      }
-      setInit({ done: true });
-    }
-  }, [data, isLoading, actions, init.done, setOpenModal]);
-
-  useEffect(() => {
     actions.setOptions((options) => {
       options.enabled = !isPreviewMode;
     });
   }, [isPreviewMode, actions]);
 
-  if (isLoading && !init.done) {
+  if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
         <span className="text-xl">Carregando conteúdo...</span>
@@ -170,9 +169,52 @@ function NoCodeToolInner() {
           onConfirm={async (modificationName, description) => {
             try {
               setPublish(prev => ({ ...prev, isSaving: true }));
-              const json = query.serialize();
-              await createNoCodeContent({ content: json, modificationName, description });
-              queryClient.invalidateQueries({ queryKey: ["noCodeContent"] });
+              const serialized = query.serialize();
+              const parsed = JSON.parse(serialized);
+
+              // Step 1: create the NoCode record first so the API can associate images with it
+              const created = await createNoCodeContent({
+                content: serialized,
+                modificationName,
+                description,
+              });
+
+              // Step 2: upload base64 images now that a NoCode record exists
+              let hasImages = false;
+              for (const nodeId in parsed) {
+                const node = parsed[nodeId];
+                const props = node.props;
+                const displayName = node.displayName;
+
+                const imageProps = ['src', 'backgroundImage'];
+                for (const propName of imageProps) {
+                  const value = props[propName];
+                  if (typeof value === 'string' && value.startsWith('data:image')) {
+                    const file = base64ToFile(value, `upload_${nodeId}_${propName}.png`);
+                    const section = displayName === 'Seção' ? 'Seção' : 'Imagem';
+                    const { url } = await uploadNoCodeImage(file, section);
+                    props[propName] = `${BASE_URL}/usuarios/foto/${url}`;
+                    hasImages = true;
+                  }
+                }
+              }
+
+              // Step 3: if images were uploaded, update the record with the final URLs
+              if (hasImages) {
+                const finalJson = JSON.stringify(parsed);
+                console.log("Updating record with final JSON (server URLs):", finalJson);
+                await updateNoCodeContent({
+                  id: created.id,
+                  content: finalJson,
+                  modificationName,
+                  description,
+                });
+              }
+
+              // Small delay to ensure DB consistency before refetch
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              await queryClient.invalidateQueries({ queryKey: ["noCodeContent"] });
               resetPublish();
               setOpenModal("success");
             } catch (err) {
@@ -202,7 +244,7 @@ function NoCodeToolInner() {
       <div className="flex flex-1 overflow-hidden relative">
         <div className="flex-1 overflow-y-auto" style={{ minWidth: 0 }}>
           <div className="min-h-full">
-            <Frame>
+            <Frame data={data?.content}>
               <Element is={Container} canvas className="w-full">
 
                 {/* section 1: Hero / Main */}
