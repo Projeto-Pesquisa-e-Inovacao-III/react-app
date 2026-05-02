@@ -4,7 +4,7 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
     return (
         <section
             id="about-section"
-            className={`bg-oxford-blue flex justify-center p-5 ${isMobile ? 'pt-10 pb-10' : 'pt-20 pb-20'
+            className={`scroll-mt-20 bg-oxford-blue flex justify-center p-5 ${isMobile ? 'pt-10 pb-10' : 'pt-20 pb-20'
                 }`}
         >
             <div
