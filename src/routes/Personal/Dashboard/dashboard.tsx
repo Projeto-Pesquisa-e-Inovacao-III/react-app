@@ -26,7 +26,7 @@ export default function Dashboard() {
         }
     });
 
-    console.log("quantitySessionInMonth", quantitySessionInMonth);
+    
 
     const plansSalesQuantity = useQuery({
         queryKey: ['plansSales'],
@@ -36,7 +36,7 @@ export default function Dashboard() {
         }
     });
 
-    console.log("plansSalesQuantity", plansSalesQuantity);
+    
 
     const sallesCount = useQuery({
         queryKey: ['sales'],
@@ -49,7 +49,7 @@ export default function Dashboard() {
         }
     });
 
-    console.log("salesCount", sallesCount);
+    
 
     const activeStudentsCount = useQuery({
         queryKey: ['activeStudents'],
@@ -59,7 +59,7 @@ export default function Dashboard() {
         }
     });
 
-    console.log("activeStudentsCount", activeStudentsCount);
+    
 
     const inactiveStudents = useQuery({
         queryKey: ['inactiveStudents'],
@@ -72,7 +72,7 @@ export default function Dashboard() {
         }
     });
 
-    console.log("inactiveStudents", inactiveStudents);
+    
 
     return (
         <>

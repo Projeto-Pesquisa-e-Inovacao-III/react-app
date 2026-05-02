@@ -29,7 +29,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
 
   const nav = useNavigate();
 
-  console.log("disabledDays:", disabledDays)
+  
 
   return (
     <div className={styles.containerCalendar}>
@@ -83,7 +83,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const appointment = events?.filter(event => event.data.split("T")[0] === clickedDate) || null;
 
             const today = startOfDay(new Date());
-            console.log(today)
+            
 
             if(disabledDays?.includes(weekday)) {
               return;
@@ -108,7 +108,7 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             const findAppointment = events?.find(event => event.data.split("T")[0] === clickedDate) || null;
 
             if (findAppointment !== null) {
-              console.log(findAppointment)
+              
               clickDate?.(clickedDate);
               modalType?.("popup");
               return

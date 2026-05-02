@@ -176,7 +176,7 @@ export default function EditUser() {
     const formData = new FormData();
     formData.append("imagem", "");
     removerUserImage().then(() => {
-      console.log("Imagem do usuário removida com sucesso!");
+      
       setTextModal({ title: "Imagem removida!", content: "Sua imagem de perfil foi removida com sucesso." });
       setOpenModal("success");
     }).catch((error) => {
@@ -234,14 +234,14 @@ export default function EditUser() {
       return
     }
 
-    console.log(state.phone.substring(5).replace("-", ""))
+    
     const options: UpdateUserDTO = {
       nome: state.firstName,
       telefones: [{ numero: state.phone.substring(5).replace("-", ""), ddd: state.phone.substring(1, 3), id: 1 }],
       sexo: state.gender,
       email: state.email,
     };
-    console.log("options", options);
+    
 
     update(options)
       .then(async () => {
@@ -255,7 +255,7 @@ export default function EditUser() {
       })
       .catch((error) => {
         console.error("Erro ao atualizar dados do usuário:", error.response?.data?.Exception);
-        console.log("previewImageFormData", previewImageFormData);
+        
         setTextModal({
           title: "Houve um erro",
           content: error.response?.data?.Exception || "Não foi possível atualizar seu perfil.",
@@ -267,15 +267,15 @@ export default function EditUser() {
   function handleUpdatePersonalInfo() {
 
     if (previewImageFormData.has("imagem") && previewImageFormData.get("imagem") !== "") {
-      console.log("inserting image");
+      
       insertUserImage(previewImageFormData).then(async () => {
-        console.log("Imagem do usuário atualizada com sucesso!");
+        
         setUserImage(previewImage);
         setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
         setOpenModal("success");
         return;
       }).catch((error) => {
-        console.log("previewImageFormData", previewImageFormData);
+        
         console.error("Erro ao atualizar imagem do usuário:", error);
         setTextModal({ title: "Houve um erro", content: "A imagem é muito pesada para ser carregada." });
         setOpenModal("error");
@@ -284,7 +284,7 @@ export default function EditUser() {
       return;
 
     }
-    console.log(state.phone.substring(5).replace("-", ""))
+    
     const options: PersonalDTO = {
       nome: state.firstName,
       telefones: [{ numero: state.phone.substring(5).replace("-", ""), ddd: "11", pais: "55", id: 1 }],
@@ -294,7 +294,7 @@ export default function EditUser() {
       caminhoFoto: userInfo.data?.caminhoFoto || undefined,
     }
 
-    console.log("options", options);
+    
     editPersonalProfile(options).then(async () => {
       setTextModal({ title: "Perfil atualizado!", content: "Seu perfil foi atualizado com sucesso." });
       setOpenModal("success");
@@ -302,7 +302,7 @@ export default function EditUser() {
         queryKey: ["userData"]
       });
     }).catch((error) => {
-      console.log("previewImageFormData", previewImageFormData);
+      
       console.error("Erro ao atualizar dados do usuário:", error);
       setTextModal({ title: "Houve um erro", content: error.response.data.Exception || "Não foi possível atualizar seu perfil." });
       setOpenModal("error");
@@ -335,7 +335,7 @@ export default function EditUser() {
     }
   }
 
-  console.log(userImage)
+  
 
   return (
     <>

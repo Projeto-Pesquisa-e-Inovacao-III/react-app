@@ -1,6 +1,8 @@
-
 import type { UpdateUserDTO, UserDTO } from "../models/user";
 import { api } from "../system";
+import { isAuthenticated as authServiceIsAuthenticated } from "../services/authService";
+
+export const isAuthenticated = authServiceIsAuthenticated;
 
 export function findByEmail(email: string) {
    return api.get(`/usuarios/email/${email}`)
@@ -67,9 +69,4 @@ export function changePassword(oldPassword: string, newPassword: string) {
 
 export function forgotPassword(number: string, newPassword: string, token: string) {
    return api.post(`/api/password-reset/reset-password`, { pais: `55`, ddd: number.slice(0, 2), numero: number.slice(2), newPassword: newPassword, token: token });
-}
-
-
-export async function isAuthenticated() {
-   return await api.get(`/usuarios/auth`)
 }

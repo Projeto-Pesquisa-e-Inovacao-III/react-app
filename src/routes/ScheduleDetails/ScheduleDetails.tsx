@@ -158,7 +158,7 @@ export default function ScheduleDetails() {
     }
 
 
-    console.log("Dados do agendamento:", appointment.data);
+    
 
     interface MapProps {
         endereco: string;

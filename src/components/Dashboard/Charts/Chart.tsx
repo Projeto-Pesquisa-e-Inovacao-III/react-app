@@ -33,7 +33,7 @@ export default function Chart({ data, type, title, titleY, legend, ooffsetY, isL
     }, []);
 
 
-    console.log("data", data);
+    
 
     return (
         <div ref={containerRef} className={classNames(styles.chartBarPersonal, useMobile() && styles.chartBarPersonalMobile)}>
