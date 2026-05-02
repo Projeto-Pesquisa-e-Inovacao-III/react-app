@@ -17,7 +17,7 @@ export default function Home() {
     return (
         <>
             <Header />
-            <div id="main-section">
+            <div id="main-section" className={isMobile ? "pt-20" : ""}>
                 {/* main */}
                 <MainSection isMobile={isMobile} />
 

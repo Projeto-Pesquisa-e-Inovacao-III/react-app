@@ -1,0 +1,65 @@
+.header {
+    background-color: white;
+    border-bottom: 1px solid #eee;
+}
+
+.burgerButton {
+    height: 24px;
+    width: 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    position: relative;
+    z-index: 100;
+}
+
+.bar {
+    height: 3px;
+    width: 100%;
+    background-color: black;
+    border-radius: 4px;
+    transition: all 0.3s ease-in-out;
+}
+
+.barActive:nth-child(1) {
+    transform: translateY(10.5px) rotate(45deg);
+}
+
+.barActive:nth-child(2) {
+    opacity: 0;
+}
+
+.barActive:nth-child(3) {
+    transform: translateY(-10.5px) rotate(-45deg);
+}
+
+.dropdown {
+    animation: dropdownEnter 0.3s ease-out forwards;
+}
+
+.dropdownClosing {
+    animation: dropdownLeave 0.3s ease-in forwards !important;
+}
+
+@keyframes dropdownEnter {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes dropdownLeave {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
