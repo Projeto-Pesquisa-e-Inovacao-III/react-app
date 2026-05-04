@@ -32,7 +32,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
 
 
     useEffect(() => {
-        console.log("Inserted events changed:", insertedEvents);
+        
         const formattedEvents = insertedEvents.map((event: any) => ({
             id: event.agendamentoId?.toString() || "",
             title: event.tipoAula,
@@ -127,7 +127,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
                             }}
                             eventClassNames={(arg) => {
                                 const eventData = insertedEvents.find(event => event.agendamentoId.toString() === arg.event.id);
-                                console.log("Event Data:", eventData);
+                                
 
                                 if (eventData) {
                                     if (eventData.status === "PENDENTE_PERSONAL_APROVACAO" || eventData.status === "PENDENTE_CLIENTE_APROVACAO" || eventData.status === "APROVADO") {

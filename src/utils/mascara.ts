@@ -15,7 +15,7 @@ export function cpfMask(input: React.InputEvent<HTMLInputElement>): void {
 
 export function cepMask(value: string): string {
     value = value.replace(/\D/g, '').slice(0, 8);
-    console.log(value, "value")
+    
     return value.replace(/^(\d{5})(\d)/, '$1-$2');
 }
 

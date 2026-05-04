@@ -75,7 +75,7 @@ export default function Login() {
       navToAnamnesis();
 
     } catch (err) {
-      console.log("User not authenticated");
+      
     }
 
   }, [nav]);
@@ -115,11 +115,11 @@ export default function Login() {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "[") {
-        console.log("Auto-filling login credentials");
+        
         handleAutoFill("EdsonArantes@email.com", "fmc123456");
       }
       if (e.key === "]") {
-        console.log("Auto-filling login credentials");
+        
         handleAutoFill("rodolfo.abrantes@personal.com", "fmc123456");
       }
     };

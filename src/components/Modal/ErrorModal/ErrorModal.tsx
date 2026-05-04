@@ -14,7 +14,7 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
     });
 
     useEffect(() => {
-        console.log("Modal aberto");
+        
     }, []);
 
     const packagePageRef = useRef<HTMLDivElement>(null);

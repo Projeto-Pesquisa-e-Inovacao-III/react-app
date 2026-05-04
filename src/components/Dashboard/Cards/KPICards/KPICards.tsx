@@ -21,7 +21,7 @@ export default function KPICards({
     title,
     isFull = false,
 }: Props) {
-    console.log("value", value);
+    
     return (
         <div
             className={classNames(styles.kpiCardDashboard, { [styles.full]: isFull }, { [styles.kpiMobile]: isMobile && isFull })}

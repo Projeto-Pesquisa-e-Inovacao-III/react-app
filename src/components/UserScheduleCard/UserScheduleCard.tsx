@@ -23,7 +23,7 @@ type UserScheduleCardProps = {
 }
 
 export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, handleAcceptReschedule, isMobile }: UserScheduleCardProps) {
-    console.log("dataCardProps", finalHour);
+    
 
     const skeleton = <Skeleton count={1} width={100} height={20} baseColor="#e5e7eb" highlightColor="#f3f4f6" />
 

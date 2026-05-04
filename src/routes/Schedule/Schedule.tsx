@@ -67,7 +67,7 @@ export default function Schedule() {
     }
 
     function handleErrorModalInfo(title: string, description: string) {
-        console.log("Erro ao agendar/reagendar");
+        
         setModalInfo({ title, description });
         setOpenModal("error");
     }
@@ -143,7 +143,7 @@ export default function Schedule() {
         refetchOnWindowFocus: false,
         enabled: isTypeReady,
         select: (res) => {
-            console.log("Fetched user appointments:", res.data);
+            
             return [...res.data].sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
         }
     })
@@ -163,7 +163,7 @@ export default function Schedule() {
             )
             : userRescheduleAppointments;
 
-    console.log("appointmentsUser", appointmentsUser);
+    
 
     //todo:
     // const rescheduleRequests = useQuery({
@@ -189,8 +189,8 @@ export default function Schedule() {
     }
 
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then(async (res) => {
-            console.log("Agendamento aceito:", res);
+        await acceptUserAppointment(id).then(async () => {
+            
             handleSuccessModalInfo("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
             await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
@@ -250,7 +250,7 @@ export default function Schedule() {
                                 clickDate={(date) => {
                                     setClickedDate(date);
                                 }}
-                                disabledDays={disabledDays}
+                                disabledDays={disabledDays as string[]}
                             />
                         </div>
                         <div className={classnames(styles.schedulePageUserActions, { [styles.mobile]: isMobile })}>

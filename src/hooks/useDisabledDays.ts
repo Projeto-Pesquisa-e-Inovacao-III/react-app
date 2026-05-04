@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { disabledPersonalDays } from "../constants/schedule";
 
@@ -9,8 +8,6 @@ import { disabledPersonalDays } from "../constants/schedule";
  *                   When undefined/null the query is skipped.
  */
 export function useDisabledDays(targetId: number | undefined) {
-    const [disabledDays, setDisabledDays] = useState<string[]>([]);
-
     const checkDays = useQuery({
         queryKey: ["disabledDays", targetId],
         queryFn: () => disabledPersonalDays(targetId!),
@@ -19,14 +16,13 @@ export function useDisabledDays(targetId: number | undefined) {
         refetchOnWindowFocus: false,
     });
 
-    useEffect(() => {
-        if (checkDays.data?.data) {
-            const inactiveDays: string[] = checkDays.data.data
+    const disabledDays: string[] = checkDays.data?.data
+        ? Array.from(new Set(
+            checkDays.data.data
                 .filter((day: { ativo: boolean }) => !day.ativo)
-                .map((day: { diaSemana: string }) => day.diaSemana.toLowerCase());
-            setDisabledDays(Array.from(new Set(inactiveDays)));
-        }
-    }, [checkDays.data]);
+                .map((day: { diaSemana: string }) => day.diaSemana.toLowerCase()) as string[]
+          ))
+        : [];
 
     return { disabledDays, isLoading: checkDays.isLoading };
 }
