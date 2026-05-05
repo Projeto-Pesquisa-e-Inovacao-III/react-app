@@ -265,7 +265,7 @@ export default function NewEvent({
                 tipo: form.location,
                 cep: { id: addressData.postalCode, logradouro: addressData.address, bairro: "", localidade: addressData.city, uf: addressData.state }
             },
-            personalId: selectedPersonal?.id,
+            personalId: Number(selectedPersonal?.id),
             tipoAulaProdutoContratado: form.type.toUpperCase()
         };
 
