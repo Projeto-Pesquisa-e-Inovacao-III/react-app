@@ -25,6 +25,7 @@ type AddPackagePlanProps = {
     packageValues?: {
         id?: number;
         titulo: string;
+        subtitulo: string;
         tipoAula: string;
         preco: string;
         duracaoMes: number | string;
@@ -46,8 +47,9 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         lockScroll: false
     });
 
-    const [packageInfo, setPackageInfo] = useState<{ name: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number | null }>({
+    const [packageInfo, setPackageInfo] = useState<{ name: string; subtitle: string; type: string; price: string; deadline: string; benefits: string[]; quantity: number | null }>({
         name: packageValues?.titulo || "",
+        subtitle: packageValues?.subtitulo || "",
         type: packageValues?.tipoAula || "",
         price: packageValues?.preco || "",
         deadline: packageValues?.duracaoMes?.toString() || "",
@@ -58,6 +60,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
     function handleAutoFill() {
         setPackageInfo({
             name: "Pacote Exemplo",
+            subtitle: "Esse pacote é adquirido de forma única e não possui cobrança automática.",
             type: "PRESENCIAL",
             price: "100",
             deadline: "12",
@@ -151,7 +154,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         setPackageInfo(prev => ({ ...prev, benefits: filteredBenefits }));
 
         newProductExhibition(data).then((res) => {
-            console.log("Pacote adicionado com sucesso!", res);
+
             if (packageCreated) {
                 packageCreated(prev => [...prev, res.data]);
             }
@@ -180,8 +183,8 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         }
 
         updateProductExhibition(packageValues?.id, data).then((res) => {
-            console.log("Pacote editado com sucesso!");
-            console.log("Response:", res);
+
+
             callSuccessModal();
 
             if (packageCreated && packageValues?.id) {
@@ -356,7 +359,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             id="name"
                                             classNameInput="bg-gray-100! rounded-xl border-none!"
                                             label="Nome do Pacote"
-                                            placeholder={isMobile ? "Ex: Hipertrofia Avançada" : ""}
+                                            placeholder={"Ex: Hipertrofia Avançada"}
                                             value={packageInfo.name}
                                             type="text"
                                             maxLength={20}
@@ -364,7 +367,19 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             icon={<Tag color='#093a5d' />}
                                         />
                                     </div>
-
+                                    <div className={styles.inputContainer}>
+                                        <InputWithIcon
+                                            id="name"
+                                            classNameInput="bg-gray-100! rounded-xl border-none!"
+                                            label="Subtítulo do Pacote"
+                                            placeholder={"Ex: Esse pacote é adquirido de forma única e não possui cobrança automática."}
+                                            value={packageInfo.subtitle}
+                                            type="text"
+                                            maxLength={80}
+                                            onInputChange={(subtitle: string) => setPackageInfo({ ...packageInfo, subtitle})}
+                                            icon={<Tag color='#093a5d' />}
+                                        />
+                                    </div>
 
                                     {isMobile ? (
                                         <div className={styles.inputContainer}>
@@ -558,6 +573,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     duracaoMes={packageInfo.deadline || "X"}
                                     quantidadeAula={packageInfo.quantity || "X"}
                                     tipoAula={packageInfo.type || "PRESENCIAL"}
+                                    subtitulo={packageInfo.subtitle || "Esse pacote é adquirido de forma única e não possui cobrança automática."}
                                     descricao={packageInfo.benefits ?? ["Benefício 1", "Benefício 2", "Benefício 3"]}
                                     isMobile={isMobile}
                                     classNameContainer={styles.packagePreviewCard}

@@ -26,11 +26,11 @@ export default function InputCalendar({ selectedDate, setSelectedDate, paramData
 
     function handleDateSelect(date: string) {
         if (date != null && date !== "") {
-            console.log("Data selecionada no InputCalendar:", date);
+            
             const formattedDate = new Date(date + "T00:00:00").toLocaleDateString("pt-BR", {
                 timeZone: "UTC"
             })
-            console.log("Data formatada:", formattedDate);
+            
             setSelectedDate(formattedDate);
             handleCloseCalendar()
             return;
@@ -39,7 +39,7 @@ export default function InputCalendar({ selectedDate, setSelectedDate, paramData
     
     useEffect(() => {
         if (paramData) {
-            console.log("Param data exists:", paramData);
+            
             setSelectedDate(paramData);
             handleCloseCalendar()
             return;

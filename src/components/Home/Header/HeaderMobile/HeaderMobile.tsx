@@ -1,53 +1,129 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { LogoHeaderMobile } from "../../../LogoHeaderMobile/LogoHeaderMobile";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; 
 import { isAuthenticated } from "../../../../constants/user";
 import { useQuery } from "@tanstack/react-query";
+import { User } from "lucide-react";
+import UserAvatar from "../../../UserAvatar/UserAvatar";
+import useModalClose from "../../../../hooks/useModalClose";
+import useClickOutside from "../../../../hooks/useClickOutside";
+import styles from "./HeaderMobile.module.css";
+import classNames from "classnames";
 
 export default function HeaderMobile() {
-
   const [burgerActive, setBurgerActive] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+  
   const userLoggedIn = useQuery({
     queryKey: ["isAuthenticated"],
     queryFn: isAuthenticated,
   });
 
+  const { isClosing, handleAnimatedClose } = useModalClose({
+    onClose: () => setBurgerActive(false),
+    duration: 300,
+    lockScroll: false,
+  });
+
+  useClickOutside({
+    ref: headerRef,
+    callback: () => {
+      if (burgerActive && !isClosing) {
+        handleAnimatedClose();
+      }
+    },
+    disabled: !burgerActive
+  });
+
   const verify = !!userLoggedIn.data?.data?.autentificado;
+  const userName = userLoggedIn.data?.data?.user?.nome || "Usuário";
+
+  const handleToggle = () => {
+    if (burgerActive) {
+      handleAnimatedClose();
+    } else {
+      setBurgerActive(true);
+    }
+  };
 
   return (
-    <>
-      <header className="flex justify-between items-center border-b h-20 p-[20px]">
-        <div>
+    <div ref={headerRef}>
+      <header className="fixed top-0 left-0 w-full z-50 bg-white text-black h-20 px-5 flex items-center justify-between border-b border-[#eee] shadow-sm">
+        {/* Burger Button (Left) */}
+        <div 
+          className={styles.burgerButton}
+          onClick={handleToggle}
+        >
+          <div className={classNames(styles.bar, { [styles.barActive]: burgerActive })}></div>
+          <div className={classNames(styles.bar, { [styles.barActive]: burgerActive })}></div>
+          <div className={classNames(styles.bar, { [styles.barActive]: burgerActive })}></div>
+        </div>
+
+        {/* Logo (Center) */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <LogoHeaderMobile />
         </div>
 
-        <div className="h-6 flex flex-col justify-between cursor-pointer" onClick={() => setBurgerActive(!burgerActive)}>
-          <div className="border-2 w-7"></div>
-          <div className="border-2 w-7"></div>
-          <div className="border-2 w-7"></div>
+        {/* Auth/Profile (Right) */}
+        <div className="flex items-center">
+          {verify ? (
+            <Link to="/home" className="border border-gray-200 rounded-full overflow-hidden">
+              <UserAvatar userName={userName} useUsername={false} useUserImage={true} />
+            </Link>
+          ) : (
+            <Link to="/login" className="px-4 py-2 rounded-md bg-indigo text-white text-sm font-semibold hover:bg-[#2c6888] transition-colors">
+              Entrar
+            </Link>
+          )}
         </div>
-
-        {burgerActive && (
-          <nav className="z-10 flex absolute top-20 left-0 w-full flex-col bg-white p-7 border-b">
-            <a href="#main-section-mobile">Inicio</a>
-            <a href="#about-section-mobile">Quem sou?</a>
-            <a href="#services-section-mobile">Bora treinar!</a>
-            <a href="#plans-section">Pacotes de Consultoria</a>
-
-            {verify ? (
-              <>
-                <Link to="/home" className=" bg-white text-black h-full rounded-md">Perfil</Link>
-                <Link to="/logout" className=" bg-white text-black h-full rounded-md">Sair</Link>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="mt-5 h-full rounded-md">Entrar</Link>
-                <Link to="/register" className=" bg-white text-black h-full rounded-md">Cadastro</Link>
-              </>
-            )}
-          </nav>
-        )}
       </header>
-    </>
+
+      {/* Dropdown Menu */}
+      {burgerActive && (
+        <nav className={classNames(
+          "fixed top-20 left-0 w-full bg-white text-[#1E1E1E] shadow-xl border-t border-[#eee] flex flex-col z-40 overflow-y-auto max-h-[calc(100vh-5rem)]",
+          styles.dropdown,
+          { [styles.dropdownClosing]: isClosing }
+        )}>
+          {/* Greeting Header */}
+          {verify && (
+            <div className="bg-[#051128] text-white p-5 flex items-center gap-3">
+              <div className="bg-[#ffffff20] p-2 rounded-full">
+                <User size={20} />
+              </div>
+              <span className="font-bold text-lg">
+                Olá, {userName.split(' ')[0]}
+              </span>
+            </div>
+          )}
+
+          {/* Links List */}
+          <div className="flex flex-col py-2">
+            <a href="#main-section" onClick={handleAnimatedClose} className="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors">
+              Inicio
+            </a>
+            <a href="#about-section" onClick={handleAnimatedClose} className="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors">
+              Quem sou?
+            </a>
+            <a href="#services-section" onClick={handleAnimatedClose} className="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors">
+              Bora treinar!
+            </a>
+            <a href="#plans-section" onClick={handleAnimatedClose} className="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors">
+              Pacotes de Consultoria
+            </a>
+            
+            {!verify ? (
+              <Link to="/register" onClick={handleAnimatedClose} className="px-6 py-4 text-[#F26430] font-bold hover:bg-gray-50 transition-colors">
+                Cadastre-se agora
+              </Link>
+            ) : (
+              <Link to="/logout" onClick={handleAnimatedClose} className="px-6 py-4 text-red-500 hover:bg-gray-50 transition-colors">
+                Sair
+              </Link>
+            )}
+          </div>
+        </nav>
+      )}
+    </div>
   );
 }

@@ -134,7 +134,7 @@ export function CheckSchedule() {
 
     useEffect(() => {
         if (searchParams.get("date")) {
-            console.log("Appointments data:", searchParams.get("date"));
+            
             const dateParam = searchParams.get("date") || "";
             setSelectedDateRange({ start: dateParam, end: dateParam });
         }
@@ -157,8 +157,8 @@ export function CheckSchedule() {
     }
 
     async function acceptAppointment(id: number) {
-        await acceptUserAppointment(id).then(async (res) => {
-            console.log("Agendamento aceito:", res);
+        await acceptUserAppointment(id).then(async () => {
+            
             await handleInvalidateQueries();
             handleSuccessModal("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
         }).catch((error) => {
@@ -190,8 +190,8 @@ export function CheckSchedule() {
     }
 
     async function handleConcludeAppointment(id: number) {
-        await concludeAppointment(id).then(async (res) => {
-            console.log("Agendamento concluído:", res);
+        await concludeAppointment(id).then(async () => {
+            
             await handleInvalidateQueries();
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
         }).catch((error) => {
@@ -218,7 +218,7 @@ export function CheckSchedule() {
         refetchOnWindowFocus: false,
     })
 
-    console.log(dataKpi.data)
+    
 
     function renderTableSkeleton() {
         return (
