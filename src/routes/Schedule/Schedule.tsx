@@ -31,6 +31,7 @@ export type RescheduleAppointment = {
     dataFim: string;
     nome: string;
     foto: string;
+    tipoAula: string;
     endereco: {
         cep: {
             bairro: string
@@ -280,25 +281,25 @@ export default function Schedule() {
                                     <div key={event.agendamentoId}>
                                         <div className={styles.appointmentCard}>
                                             <AppointmentCard
-                                                agendamentoId={event.agendamentoId}
-                                                status={event.status as any}
-                                                name={event.nome}
-                                                photoUrl={event.foto}
-                                                date={format(parseISO(event.dataInicio), "dd/MM/yyyy", { locale: ptBR })}
-                                                time={`${format(parseISO(event.dataInicio), "HH:mm")} - ${format(parseISO(event.dataFim), "HH:mm")}`}
-                                                address={event.endereco?.cep?.bairro ? `${event.endereco.cep.bairro}, ${event.endereco.cep.localidade}` : ""}
-                                                type={"Não informado"}
+                                                agendamentoId={event?.agendamentoId}
+                                                status={event?.status as any}
+                                                name={event?.nome}
+                                                photoUrl={event?.foto}
+                                                date={format(parseISO(event?.dataInicio), "dd/MM/yyyy", { locale: ptBR })}
+                                                time={`${format(parseISO(event?.dataInicio), "HH:mm")} - ${format(parseISO(event?.dataFim), "HH:mm")}`}
+                                                address={event?.endereco?.cep?.bairro ? `${event?.endereco.cep.bairro}, ${event?.endereco.cep.localidade}` : ""}
+                                                type={event?.tipoAula || "Não informado"}
                                                 onConfirm={() => {
-                                                    setSelectedEventId(event.agendamentoId);
+                                                    setSelectedEventId(event?.agendamentoId);
                                                     setOpenModal("accept");
                                                 }}
                                                 onCancel={() => {
-                                                    setSelectedEventId(event.agendamentoId);
+                                                    setSelectedEventId(event?.agendamentoId);
                                                     setOpenModal("cancel");
                                                 }}
                                                 onReschedule={() => {
-                                                    setSelectedEventId(event.agendamentoId);
-                                                    handleOpenRescheduleRequestModal(event.agendamentoId, true);
+                                                    setSelectedEventId(event?.agendamentoId);
+                                                    handleOpenRescheduleRequestModal(event?.agendamentoId, true);
                                                 }}
                                                 isMobile={isMobile}
                                             />
