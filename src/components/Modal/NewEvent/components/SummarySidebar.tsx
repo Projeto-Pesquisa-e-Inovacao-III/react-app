@@ -12,7 +12,6 @@ type SummarySidebarProps = {
     step: number;
     typeUser?: string[];
     appoitmentData: any;
-    personalList: any;
     formattedDate: any;
     selectedType: string;
     setSelectedType: (type: string) => void;
@@ -20,6 +19,9 @@ type SummarySidebarProps = {
     openSelectId: string | null;
     setOpenSelectId: (id: string | null) => void;
     isReschedule?: boolean;
+    selectedPersonal?: any;
+    personalOptions?: any[];
+    handlePersonalChange?: (val: string | number) => void;
 };
 
 export const SummarySidebar: React.FC<SummarySidebarProps> = ({
@@ -27,14 +29,16 @@ export const SummarySidebar: React.FC<SummarySidebarProps> = ({
     step,
     typeUser,
     appoitmentData,
-    personalList,
     formattedDate,
     selectedType,
     setSelectedType,
     scheduleTypes,
     openSelectId,
     setOpenSelectId,
-    isReschedule
+    isReschedule,
+    selectedPersonal,
+    personalOptions,
+    handlePersonalChange
 }) => {
     if (isMobile) return null;
 
@@ -55,10 +59,13 @@ export const SummarySidebar: React.FC<SummarySidebarProps> = ({
                         </h1>
                     )}
                     <InformationCard
-                        icon={<UserAvatar useUserImage={true} foto={personalList.data?.content[0]?.caminhoFoto} userName={personalList.data?.content[0]?.nome} />}
+                        icon={<UserAvatar useUserImage={true} foto={selectedPersonal?.caminhoFoto} userName={selectedPersonal?.nome} />}
                         title="Personal Trainer"
-                        subtitle={personalList.data?.content[0]?.nome || ""}
-                        subtitle2={!personalList.isLoading && personalList.data?.content[0].dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                        subtitle={selectedPersonal?.nome || ""}
+                        subtitle2={selectedPersonal?.dataNascimento ? `${differenceInYears(new Date(), parse(selectedPersonal?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                        options={step === 1 ? personalOptions : undefined}
+                        selectedValue={step === 1 ? selectedPersonal?.id : undefined}
+                        onOptionChange={step === 1 ? handlePersonalChange : undefined}
                     />
                 </>
             )}

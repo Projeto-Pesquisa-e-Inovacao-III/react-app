@@ -327,7 +327,7 @@ export default function AddressManagement() {
                             [styles.addressCardSelected]: selectedId === addr.id,
                           })}
                           onClick={() => {
-                            setSelectedId(prev => prev === addr.id ? null : addr.id ?? null);
+                            setSelectedId(prev => prev === addr.id ? addr.id : addr.id ?? null);
                             handleOpenEdit(addr);
                           }}
                         >

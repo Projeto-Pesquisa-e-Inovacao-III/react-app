@@ -9,6 +9,7 @@ import InformationCard from '../InformationCard/InformationCard';
 import styles from '../NewEvent.module.css';
 import type { AddressState } from '../hooks/useAddressLookup';
 import { cepMask } from '../../../../utils/mascara';
+import { LOCATION_OPTIONS } from '../constants';
 
 type AddressStepProps = {
     isMobile: boolean;
@@ -23,10 +24,12 @@ type AddressStepProps = {
     setOpenSelectId: (id: string | null) => void;
     loading: boolean;
     onSubmit: (e: React.FormEvent) => void;
+    location: string;
+    setLocation: (loc: string) => void;
+    selectedType: string;
     // Mobile-specific props
-    personalList?: any;
     formattedDate?: any;
-    selectedType?: string;
+    selectedPersonal?: any;
 };
 
 export const AddressStep: React.FC<AddressStepProps> = ({
@@ -42,10 +45,14 @@ export const AddressStep: React.FC<AddressStepProps> = ({
     setOpenSelectId,
     loading,
     onSubmit,
-    personalList,
+    location,
+    setLocation,
+    selectedType,
     formattedDate,
-    selectedType
+    selectedPersonal
 }) => {
+    const locationOptions = LOCATION_OPTIONS[selectedType] || [];
+
     return (
         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
             {isMobile && (
@@ -54,10 +61,10 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                         Resumo do agendamento
                     </h1>
                     <InformationCard
-                        icon={<UserAvatar useUserImage={true} foto={personalList?.data?.content[0]?.caminhoFoto} userName={personalList?.data?.content[0]?.nome} />}
+                        icon={<UserAvatar useUserImage={true} foto={selectedPersonal?.caminhoFoto} userName={selectedPersonal?.nome} />}
                         title="Personal Trainer"
-                        subtitle={personalList?.data?.content[0]?.nome || ""}
-                        subtitle2={!personalList?.isLoading && personalList?.data?.content[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                        subtitle={selectedPersonal?.nome || ""}
+                        subtitle2={selectedPersonal?.dataNascimento ? `${differenceInYears(new Date(), parse(selectedPersonal?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
                     />
 
                     <InformationCard
@@ -74,6 +81,8 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                     />
                 </div>
             )}
+
+
             <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
                 <div className="flex justify-between mb-2">
                     <div className="flex items-center gap-2">
@@ -105,6 +114,16 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                     onSelectStatusChange={(addressId: string) => {
                         const selected = addresses.data?.find((address: any) => address?.id === addressId);
                         setSelectedAddress(selected || null);
+                        if (selected?.cep?.cep) {
+                            setAddressData({
+                                postalCode: cepMask(selected.cep.cep),
+                                address: `${selected.cep.logradouro} - ${selected.cep.bairro}`,
+                                city: selected.cep.localidade,
+                                state: selected.cep.uf,
+                                number: selected.numero,
+                                complement: selected.complemento
+                            });
+                        }
                     }}
                     values={addresses.data?.map((address: any) => ({
                         label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
@@ -127,15 +146,50 @@ export const AddressStep: React.FC<AddressStepProps> = ({
             <form className={classnames(styles.inputInfosForm, { [styles.inputInfosFormMobile]: isMobile })} onSubmit={onSubmit}>
                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                     <div className={styles.inputGroupAddress}>
-                        <div className={classnames(styles.inputGroup, styles.labelInput)}>
-                            <label htmlFor="cep">CEP</label>
-                            <input
-                                type="text"
-                                id="cep"
-                                placeholder="00000-000"
-                                onChange={(e) => setAddressData({ ...addressData, postalCode: cepMask(e.target.value) })}
-                                value={addressData.postalCode || ""}
-                            />
+                        <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
+                            
+                            <div className={classnames(styles.labelInput, "flex-2")}>
+                                <label htmlFor="cep">CEP</label>
+                                <input
+                                    type="text"
+                                    id="cep"
+                                    placeholder="00000-000"
+                                    onChange={(e) => setAddressData({ ...addressData, postalCode: cepMask(e.target.value) })}
+                                    value={addressData.postalCode || ""}
+                                />
+                            </div>
+
+                            {selectedType !== "PRESENCIAL" && selectedType !== "RESIDENCIAL" && (
+                                <div className={classnames(styles.labelInput, "flex-1")}>
+                                    <label htmlFor="location">Local de Atendimento</label>
+                                    {locationOptions.length === 1 ? (
+                                        <input 
+                                            type="text" 
+                                            id="location"
+                                            className={classnames(styles.inputAddress, styles.disabled)} 
+                                            disabled 
+                                            value={locationOptions[0].label} 
+                                        />
+                                    ) : (
+                                        <div className="w-full">
+                                            <Select
+                                                id="location-select"
+                                                openSelectId={openSelectId}
+                                                setOpenSelectId={setOpenSelectId}
+                                                onSelectStatusChange={(val: string) => setLocation(val)}
+                                                values={locationOptions}
+                                                defaultValue={location}
+                                                containerClassName="w-full!"
+                                                triggerClassName="w-full! h-[50px] p-[16px] rounded-[6px]! border-none!"
+                                                selectWrapperClassName="bg-white! rounded-[6px]! w-full! border border-[#b1b1b194]!"
+                                                selectPlaceholder="Selecione o local..."
+                                                showSelectAll={false}
+                                                showSearchInput={false}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
                             <div className={styles.labelInput}>
