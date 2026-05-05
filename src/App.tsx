@@ -3,6 +3,7 @@ import "./App.css";
 import { useState, createContext, lazy, Suspense } from "react";
 import Layout from "./components/Layout/Layout";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
+import DevSeed from "./routes/Dev/DevSeed";
 
 const Login = lazy(() => import("./routes/User/Login/Login"));
 const Home = lazy(() => import("./routes/Home/Home"));
