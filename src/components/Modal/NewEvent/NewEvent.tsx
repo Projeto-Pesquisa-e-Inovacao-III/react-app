@@ -62,6 +62,12 @@ type AddressOption = {
     }
 } | null;
 
+const LOCATION_OPTIONS: Record<string, { label: string; value: string }[]> = {
+    PRESENCIAL: [{ label: "Academia", value: "ACADEMIA" }],
+    RESIDENCIAL: [{ label: "Casa", value: "CASA" }],
+    FUNCIONAL: [{ label: "Academia", value: "ACADEMIA" }],
+};
+
 export default function NewEvent({
     isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents,
     title = "Novo Evento", buttonTitle, rescheduleId, isReschedule, clickedDate,
@@ -73,8 +79,18 @@ export default function NewEvent({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
         type: "PRESENCIAL",
-        location: "CASA"
+        location: "ACADEMIA"
     });
+
+    useEffect(() => {
+        const options = LOCATION_OPTIONS[form.type];
+        if (options && options.length > 0) {
+            // If current location is not valid for the new type, reset to the first option
+            if (!options.some(opt => opt.value === form.location)) {
+                setForm(prev => ({ ...prev, location: options[0].value }));
+            }
+        }
+    }, [form.type]);
 
     const [ui, setUi] = useState({
         step: 1,
