@@ -28,6 +28,8 @@ import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/Anamn
 import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
 import ViewPersonalData from "./routes/Personal/ViewPersonalData/ViewPersonalData";
 import CreatePersonal from "./routes/Admin/CreatePersonal/CreatePersonal";
+// TODO: remover antes do deploy final
+import DevSeed from "./routes/Dev/DevSeed";
 
 // todo: 
 // safari support // deixa baixo
@@ -61,6 +63,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/logout" element={<Logout />} />
+            {/* TODO: remover antes do deploy final */}
+            <Route path="/dev/seed" element={<DevSeed />} />
           </Route>
 
           <Route element={<PrivateRoute />}>

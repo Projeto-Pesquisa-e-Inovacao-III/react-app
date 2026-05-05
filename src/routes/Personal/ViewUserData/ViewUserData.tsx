@@ -13,6 +13,7 @@ import { TypeContext } from "../../../App";
 import AdminActionsCard from "../../../components/AdminActionsCard/AdminActionsCard";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import MetricCard from "../../../components/MetricCard/MetricCard";
+import OverviewCardPackageStatus from "../../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
@@ -74,31 +75,43 @@ export default function ViewUserData() {
 
                     <div className={styles.mainGrid}>
 
-                        <ProfileCard
-                            name={user.data?.nome}
-                            photoUrl={user.data?.caminhoFoto}
-                            isLoading={user.isLoading}
-                            fields={[
-                                {
-                                    icon: <Calendar size={16} />,
-                                    label: "IDADE",
-                                    value: `${age} anos`,
-                                    isLoading: user.isLoading
-                                },
-                                {
-                                    icon: <Mail size={16} />,
-                                    label: "EMAIL",
-                                    value: user.data?.email,
-                                    isLoading: user.isLoading
-                                },
-                                {
-                                    icon: <Phone size={16} />,
-                                    label: "TELEFONE",
-                                    value: user.data?.telefones?.[0]?.numeroCompleto || "-",
-                                    isLoading: user.isLoading
-                                }
-                            ]}
-                        />
+                        <div className={styles.leftColumn}>
+                            <ProfileCard
+                                name={user.data?.nome}
+                                photoUrl={user.data?.caminhoFoto}
+                                isLoading={user.isLoading}
+                                fields={[
+                                    {
+                                        icon: <Calendar size={16} />,
+                                        label: "IDADE",
+                                        value: `${age} anos`,
+                                        isLoading: user.isLoading
+                                    },
+                                    {
+                                        icon: <Mail size={16} />,
+                                        label: "EMAIL",
+                                        value: user.data?.email,
+                                        isLoading: user.isLoading
+                                    },
+                                    {
+                                        icon: <Phone size={16} />,
+                                        label: "TELEFONE",
+                                        value: user.data?.telefones?.[0]?.numeroCompleto || "-",
+                                        isLoading: user.isLoading
+                                    }
+                                ]}
+                            />
+
+                            {user.data?.produtoContratado && (
+                                <OverviewCardPackageStatus
+                                    actualPlan={{
+                                        nome: user.data.produtoContratado.produtoExibicao?.titulo,
+                                        dataExpiracao: user.data.produtoContratado.dataExpiracao
+                                    }}
+                                    hideHistoryButton={type?.type?.includes("personal")}
+                                />
+                            )}
+                        </div>
 
                         <div className={styles.rightColumn}>
                             <div className={styles.metricsRow}>

@@ -66,7 +66,9 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
           )}
 
           {!isLoading && type && (
+
             <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
+
               {type.includes('personal') && !type.includes('admin') && (
                 <>
                   <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
@@ -112,6 +114,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
             </div>
           )}
 
+              <NavLink to="/dev/seed" className={`${navLinkClass} border border-white`} onClick={handleNavClick}>dev/seed</NavLink>
 
         </nav>
 
