@@ -53,7 +53,7 @@ export const AddressStep: React.FC<AddressStepProps> = ({
     formattedDate,
     selectedPersonal
 }) => {
-    const locationOptions = (LOCATION_OPTIONS as any)[selectedType] || [];
+    const locationOptions = LOCATION_OPTIONS[selectedType] || [];
 
     return (
         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
