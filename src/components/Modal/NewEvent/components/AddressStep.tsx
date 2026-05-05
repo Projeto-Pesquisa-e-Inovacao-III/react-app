@@ -9,6 +9,7 @@ import InformationCard from '../InformationCard/InformationCard';
 import styles from '../NewEvent.module.css';
 import type { AddressState } from '../hooks/useAddressLookup';
 import { cepMask } from '../../../../utils/mascara';
+import { LOCATION_OPTIONS } from '../constants';
 
 type AddressStepProps = {
     isMobile: boolean;
@@ -23,10 +24,12 @@ type AddressStepProps = {
     setOpenSelectId: (id: string | null) => void;
     loading: boolean;
     onSubmit: (e: React.FormEvent) => void;
+    location: string;
+    setLocation: (loc: string) => void;
+    selectedType: string;
     // Mobile-specific props
     personalList?: any;
     formattedDate?: any;
-    selectedType?: string;
     selectedPersonal?: any;
 };
 
@@ -43,11 +46,15 @@ export const AddressStep: React.FC<AddressStepProps> = ({
     setOpenSelectId,
     loading,
     onSubmit,
+    location,
+    setLocation,
+    selectedType,
     personalList,
     formattedDate,
-    selectedType,
     selectedPersonal
 }) => {
+    const locationOptions = (LOCATION_OPTIONS as any)[selectedType] || [];
+
     return (
         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
             {isMobile && (
@@ -76,6 +83,30 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                     />
                 </div>
             )}
+
+            <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                    {!isMobile && <MapPin />}
+                    <span className="uppercase font-medium tracking-tight">Local de Atendimento</span>
+                </div>
+                <Select
+                    id="location-select"
+                    openSelectId={openSelectId}
+                    setOpenSelectId={setOpenSelectId}
+                    onSelectStatusChange={(val) => setLocation(val)}
+                    values={locationOptions}
+                    defaultValue={location}
+                    containerClassName="w-full!"
+                    triggerClassName="p-3 w-full!"
+                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
+                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
+                    selectPlaceholder="Selecione o local..."
+                    labelClassName="text-slate-500! font-bold text-sm uppercase"
+                    showSelectAll={false}
+                    showSearchInput={false}
+                />
+            </div>
+
             <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
                 <div className="flex justify-between mb-2">
                     <div className="flex items-center gap-2">

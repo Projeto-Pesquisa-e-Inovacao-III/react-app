@@ -28,6 +28,7 @@ import { useFormattedDate, useTimeOfDay } from "./hooks/useSchedulingUtils";
 import { SummarySidebar } from "./components/SummarySidebar";
 import { DateTimeStep } from "./components/DateTimeStep";
 import { AddressStep } from "./components/AddressStep";
+import { LOCATION_OPTIONS } from "./constants";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -61,12 +62,6 @@ type AddressOption = {
         uf: string
     }
 } | null;
-
-const LOCATION_OPTIONS: Record<string, { label: string; value: string }[]> = {
-    PRESENCIAL: [{ label: "Academia", value: "ACADEMIA" }],
-    RESIDENCIAL: [{ label: "Casa", value: "CASA" }],
-    FUNCIONAL: [{ label: "Academia", value: "ACADEMIA" }],
-};
 
 export default function NewEvent({
     isMobile, appoitmentData, close, openModalExtern, errorModal, insertedEvents,
@@ -395,6 +390,7 @@ export default function NewEvent({
                             onSubmit={isReschedule ? handleRescheduleEvent : handleNewEvent}
                             personalList={personalList} formattedDate={formattedDate} selectedType={form.type}
                             selectedPersonal={selectedPersonal}
+                            location={form.location} setLocation={(val) => setForm(prev => ({ ...prev, location: val }))}
                         />
                     )}
                 </div>
