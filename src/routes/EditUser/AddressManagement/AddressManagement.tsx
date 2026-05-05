@@ -116,6 +116,7 @@ export default function AddressManagement() {
 
   function handleOpenCreate() {
     setEditingAddress(null);
+    setSelectedId(null);
     setForm(emptyForm);
     setFormErrors({});
     setShowForm(true);
@@ -141,6 +142,7 @@ export default function AddressManagement() {
 
   function handleCancelForm() {
     setIsClosingForm(true);
+    setSelectedId(null);
     setTimeout(() => {
       setShowForm(false);
       setIsClosingForm(false);
@@ -217,6 +219,7 @@ export default function AddressManagement() {
   }
 
   const addresses = addressesQuery.data ?? [];
+  const isLimitReached = addresses.length >= 6;
 
   return (
     <>
@@ -226,14 +229,27 @@ export default function AddressManagement() {
           <div className={styles.goBackContainer}>
             <h1 className={styles.pageTitle}>Editar Perfil</h1>
             {(!showForm || !isMobile) && (
-              <SmallerButton
-                type="button"
-                title="Adicionar Novo Endereço"
-                icon={<Plus size={18} />}
-                iconPosition="left"
-                classname={styles.btnAddGlobal}
-                handleButtonClick={handleOpenCreate}
-              />
+              <div className="flex flex-col items-end gap-2">
+                <SmallerButton
+                  type="button"
+                  title="Adicionar Novo Endereço"
+                  icon={<Plus size={18} />}
+                  iconPosition="left"
+                  classname={classNames(styles.btnAddGlobal, { "opacity-50! cursor-not-allowed!": isLimitReached })}
+                  handleButtonClick={() => {
+                    if (isLimitReached) {
+                      setTextModal({
+                        title: "Limite atingido",
+                        content: "Você atingiu o limite máximo de 6 endereços cadastrados. Remova um para adicionar um novo."
+                      });
+                      setOpenModal("error");
+                    } else {
+                      handleOpenCreate();
+                    }
+                  }}
+                />
+                {isLimitReached && <span className="text-xs text-red-600 font-medium">Limite de 6 endereços atingido</span>}
+              </div>
             )}
           </div>
         )}
@@ -253,6 +269,29 @@ export default function AddressManagement() {
 
             {(!isMobile || !showForm) && (
               <div className={styles.cardsArea}>
+                {isMobile && (
+                  <div className="mb-6">
+                    <SmallerButton
+                      type="button"
+                      title="Adicionar Novo Endereço"
+                      icon={<Plus size={18} />}
+                      iconPosition="left"
+                      classname={classNames(styles.btnAddGlobal, { "opacity-50! cursor-not-allowed!": isLimitReached })}
+                      handleButtonClick={() => {
+                        if (isLimitReached) {
+                          setTextModal({
+                            title: "Limite atingido",
+                            content: "Você atingiu o limite máximo de 6 endereços cadastrados. Remova um para adicionar um novo."
+                          });
+                          setOpenModal("error");
+                        } else {
+                          handleOpenCreate();
+                        }
+                      }}
+                    />
+                    {isLimitReached && <p className="text-xs text-red-600 font-medium mt-2 text-center">Limite de 6 endereços atingido</p>}
+                  </div>
+                )}
                 {addressesQuery.isLoading ? (
                   <>
                     <Skeleton height={140} borderRadius={12} className="mb-4" />
@@ -352,8 +391,10 @@ export default function AddressManagement() {
                       <span className={styles.label}>Logradouro</span>
                       <InputWithIcon
                         id="logradouro" type="text" placeholder="Alameda dos Anjos" icon={<Route size={18} />}
+                        maxLength={100}
                         value={form.logradouro} hasError={!!formErrors.logradouro} onInputChange={(v: string) => setForm(p => ({ ...p, logradouro: v }))}
                         classNameInput={styles.grayInput}
+                        readOnly={true}
                       />
                       {formErrors.logradouro && <span className={styles.error}>{formErrors.logradouro}</span>}
                     </div>
@@ -361,9 +402,10 @@ export default function AddressManagement() {
                     <div className={styles.fieldNumero}>
                       <span className={styles.label}>Número</span>
                       <InputWithIcon
-                        id="numero" type="text" placeholder="123" icon={<Hash size={18} />}
+                        id="numero" type="number" placeholder="123" icon={<Hash size={18} />}
                         value={form.numero} hasError={!!formErrors.numero} onInputChange={(v: string) => setForm(p => ({ ...p, numero: v }))}
                         classNameInput={styles.grayInput}
+                        maxLength={5}
                       />
                       {formErrors.numero && <span className={styles.error}>{formErrors.numero}</span>}
                     </div>
@@ -374,6 +416,7 @@ export default function AddressManagement() {
                         id="complemento" type="text" placeholder="Ex: Sala 2" icon={<DoorOpen size={18} />}
                         value={form.complemento} onInputChange={(v: string) => setForm(p => ({ ...p, complemento: v }))}
                         classNameInput={styles.grayInput}
+                        maxLength={50}
                       />
                     </div>
 
@@ -383,6 +426,8 @@ export default function AddressManagement() {
                         id="bairro" type="text" placeholder="Vila Olimpia" icon={<MapPinned size={18} />}
                         value={form.bairro} hasError={!!formErrors.bairro} onInputChange={(v: string) => setForm(p => ({ ...p, bairro: v }))}
                         classNameInput={styles.grayInput}
+                        maxLength={50}
+                        readOnly={true}
                       />
                       {formErrors.bairro && <span className={styles.error}>{formErrors.bairro}</span>}
                     </div>
@@ -393,6 +438,8 @@ export default function AddressManagement() {
                         id="cidade" type="text" placeholder="Nome da cidade" icon={<Building2 size={18} />}
                         value={form.cidade} onInputChange={(v: string) => setForm(p => ({ ...p, cidade: v }))}
                         classNameInput={styles.grayInput}
+                        maxLength={40}
+                        readOnly={true}
                       />
                     </div>
 
@@ -402,6 +449,7 @@ export default function AddressManagement() {
                         id="estado" type="text" placeholder="UF" icon={<Flag size={18} />} maxLength={2}
                         value={form.estado} onInputChange={(v: string) => setForm(p => ({ ...p, estado: v.toUpperCase() }))}
                         classNameInput={styles.grayInput}
+                        readOnly={true}
                       />
                     </div>
                   </div>

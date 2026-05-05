@@ -366,7 +366,7 @@
 }
 
 .fieldApelido {
-  grid-column: span 1;
+  grid-column: span 2;
 }
 
 .fieldCep {
@@ -508,19 +508,18 @@
 }
 
 .btnDiscard {
-  background: transparent;
-  border: none;
-  color: #64748b;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: 10px 16px;
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  padding: 10px 16px !important;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 8px !important;
 }
 
 .btnDiscard:hover {
-  color: #334155;
-  text-decoration: underline;
+  color: #334155 !important;
 }
 
 .btnSave {

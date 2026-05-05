@@ -15,6 +15,7 @@ type Props = {
     value?: string | number | undefined | null;
     mask?: (input: React.InputEvent<HTMLInputElement>) => void
     disabled?: boolean;
+    readOnly?: boolean;
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
@@ -28,7 +29,7 @@ type Props = {
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, hasError, hasSuccess, onBlur }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, readOnly, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, hasError, hasSuccess, onBlur }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -140,6 +141,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             disabled={disabled}
+                            readOnly={readOnly}
                             maxLength={type === "number" && allowDecimals && maxLength != null ? maxLength + 1 : maxLength}
                             onBlur={onBlur}
                         />
