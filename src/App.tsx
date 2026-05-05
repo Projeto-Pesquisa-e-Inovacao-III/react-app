@@ -1,41 +1,35 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import Login from "./routes/User/Login/Login";
-import Home from "./routes/Home/Home";
-import Register from "./routes/User/Register/Register";
-import EditUser from "./routes/EditUser/UserInfomartations/EditUser";
-import Logout from "./routes/User/Logout/Logout";
-import ViewSchedule from "./routes/Schedule/Schedule";
-import ForgotPassword from "./routes/User/ForgotPassword/ForgotPassword";
-import { CheckSchedule } from "./routes/Personal/CheckSchedule/CheckSchedule";
-import { Overview } from "./routes/Overview/Overview";
-import { Packages } from "./routes/Packages/Packages";
-import ListUsers from "./routes/Personal/ListUsers/ListUsers"
+import { useState, createContext, lazy, Suspense } from "react";
 import Layout from "./components/Layout/Layout";
-import { useState, createContext } from "react";
-import PlansHistory from "./routes/PlansHistory/PlansHistory";
-import Dashboard from "./routes/Personal/Dashboard/dashboard";
-import PlansHistoryDetails from "./routes/PlansHistoryDetails/PlansHistoryDetails";
-import ViewUserData from "./routes/Personal/ViewUserData/ViewUserData";
-import MoreOptions from "./routes/MoreOptions/MoreOptions";
-import ScheduleHistory from "./routes/ScheduleHistory/ScheduleHistory";
-import ScheduleDetails from "./routes/ScheduleDetails/ScheduleDetails";
-import SetAvailability from "./routes/Personal/SetAvailability/SetAvailability";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
-import SecurityInformations from "./routes/EditUser/SecurityInformations/SecurityInformations";
-import Anamnesis from "./routes/User/Anamnesis/anamnesis";
-import AnamnesisInformations from "./routes/EditUser/AnamnesisInformations/AnamnesisInformations";
-import AddressManagement from "./routes/EditUser/AddressManagement/AddressManagement";
-import ViewPersonalData from "./routes/Personal/ViewPersonalData/ViewPersonalData";
-import CreatePersonal from "./routes/Admin/CreatePersonal/CreatePersonal";
 
-// todo: 
-// safari support // deixa baixo
+const Login = lazy(() => import("./routes/User/Login/Login"));
+const Home = lazy(() => import("./routes/Home/Home"));
+const Register = lazy(() => import("./routes/User/Register/Register"));
+const EditUser = lazy(() => import("./routes/EditUser/UserInfomartations/EditUser"));
+const Logout = lazy(() => import("./routes/User/Logout/Logout"));
+const ViewSchedule = lazy(() => import("./routes/Schedule/Schedule"));
+const ForgotPassword = lazy(() => import("./routes/User/ForgotPassword/ForgotPassword"));
+const CheckSchedule = lazy(() => import("./routes/Personal/CheckSchedule/CheckSchedule").then(m => ({ default: m.CheckSchedule })));
+const Overview = lazy(() => import("./routes/Overview/Overview").then(m => ({ default: m.Overview })));
+const Packages = lazy(() => import("./routes/Packages/Packages").then(m => ({ default: m.Packages })));
+const ListUsers = lazy(() => import("./routes/Personal/ListUsers/ListUsers"));
+const PlansHistory = lazy(() => import("./routes/PlansHistory/PlansHistory"));
+const Dashboard = lazy(() => import("./routes/Personal/Dashboard/dashboard"));
+const PlansHistoryDetails = lazy(() => import("./routes/PlansHistoryDetails/PlansHistoryDetails"));
+const ViewUserData = lazy(() => import("./routes/Personal/ViewUserData/ViewUserData"));
+const MoreOptions = lazy(() => import("./routes/MoreOptions/MoreOptions"));
+const ScheduleHistory = lazy(() => import("./routes/ScheduleHistory/ScheduleHistory"));
+const ScheduleDetails = lazy(() => import("./routes/ScheduleDetails/ScheduleDetails"));
+const SetAvailability = lazy(() => import("./routes/Personal/SetAvailability/SetAvailability"));
+const SecurityInformations = lazy(() => import("./routes/EditUser/SecurityInformations/SecurityInformations"));
+const Anamnesis = lazy(() => import("./routes/User/Anamnesis/anamnesis"));
+const AnamnesisInformations = lazy(() => import("./routes/EditUser/AnamnesisInformations/AnamnesisInformations"));
+const AddressManagement = lazy(() => import("./routes/EditUser/AddressManagement/AddressManagement"));
+const ViewPersonalData = lazy(() => import("./routes/Personal/ViewPersonalData/ViewPersonalData"));
+const CreatePersonal = lazy(() => import("./routes/Admin/CreatePersonal/CreatePersonal"));
 
-// profiles:
-// alunos = continua as mesmas rotas
-// personal = não pode: dash e criar e editar pacotes
-// admin = pode tudo que personal podia antes, usuários ao inves de alunos, cadastrar personal
 export type Roles = "aluno" | "personal" | "admin";
 export type UserType = Roles;
 
@@ -52,63 +46,65 @@ function App() {
   return (
     <TypeContext.Provider value={{ type, setType }}>
       <BrowserRouter>
-        <Routes>
+        <Suspense>
+          <Routes>
 
-          <Route element={<Layout />}>
-            <Route path="/" element={<Home />} />
-            {/* temp */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/logout" element={<Logout />} />
-          </Route>
-
-          <Route element={<PrivateRoute />}>
             <Route element={<Layout />}>
-              <Route path="/home" element={<Overview />} />
-              <Route path="/packages" element={<Packages />} />
-              <Route path="/schedule-details" element={<ScheduleDetails />} />
-              <Route path="/more-options" element={<MoreOptions />} />
-              <Route path="/schedule" element={<ViewSchedule />} />
-              <Route path="/edit-user" element={<EditUser />} />
-              <Route path="/edit-user/security" element={<SecurityInformations />} />
+              <Route path="/" element={<Home />} />
+              {/* temp */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/logout" element={<Logout />} />
             </Route>
-          </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["aluno"]} />}>
-            <Route element={<Layout />}>
-              <Route path="/anamnesis" element={<Anamnesis />} />
-              <Route path="/edit-user/anamnesis" element={<AnamnesisInformations />} />
-              <Route path="/plans-history" element={<PlansHistory />} />
-              <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
-              <Route path="/schedule-history" element={<ScheduleHistory />} />
-              <Route path="/edit-user/addresses" element={<AddressManagement />} />
+            <Route element={<PrivateRoute />}>
+              <Route element={<Layout />}>
+                <Route path="/home" element={<Overview />} />
+                <Route path="/packages" element={<Packages />} />
+                <Route path="/schedule-details" element={<ScheduleDetails />} />
+                <Route path="/more-options" element={<MoreOptions />} />
+                <Route path="/schedule" element={<ViewSchedule />} />
+                <Route path="/edit-user" element={<EditUser />} />
+                <Route path="/edit-user/security" element={<SecurityInformations />} />
+              </Route>
             </Route>
-          </Route>
 
-          <Route element={<PrivateRoute allowedRoles={["personal"]} />}>
-            <Route element={<Layout />}>
-              <Route path="/users" element={<ListUsers />} />
-              <Route path="/users/view-user-data" element={<ViewUserData />} />
-              <Route path="/set-availability" element={<SetAvailability />} />
-              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+            <Route element={<PrivateRoute allowedRoles={["aluno"]} />}>
+              <Route element={<Layout />}>
+                <Route path="/anamnesis" element={<Anamnesis />} />
+                <Route path="/edit-user/anamnesis" element={<AnamnesisInformations />} />
+                <Route path="/plans-history" element={<PlansHistory />} />
+                <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
+                <Route path="/schedule-history" element={<ScheduleHistory />} />
+                <Route path="/edit-user/addresses" element={<AddressManagement />} />
+              </Route>
             </Route>
-          </Route>
 
-
-          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
-            <Route element={<Layout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/users" element={<ListUsers />} />
-              <Route path="/users/view-user-data" element={<ViewUserData />} />
-              <Route path="/users/view-personal-data" element={<ViewPersonalData />} />
-              <Route path="/set-availability" element={<SetAvailability />} />
-              <Route path="/personal/check-schedule" element={<CheckSchedule />} />
-              <Route path="/create-personal" element={<CreatePersonal />} />
+            <Route element={<PrivateRoute allowedRoles={["personal"]} />}>
+              <Route element={<Layout />}>
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/users/view-user-data" element={<ViewUserData />} />
+                <Route path="/set-availability" element={<SetAvailability />} />
+                <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+              </Route>
             </Route>
-          </Route>
 
-        </Routes>
+
+            <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+              <Route element={<Layout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/users/view-user-data" element={<ViewUserData />} />
+                <Route path="/users/view-personal-data" element={<ViewPersonalData />} />
+                <Route path="/set-availability" element={<SetAvailability />} />
+                <Route path="/personal/check-schedule" element={<CheckSchedule />} />
+                <Route path="/create-personal" element={<CreatePersonal />} />
+              </Route>
+            </Route>
+
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </TypeContext.Provider>
   );

@@ -134,6 +134,11 @@
     .title {
         padding: 44px 0 !important;
     }
+
+    .buttonsMobile .buttonGroup {
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .planDetailsDescription {
@@ -390,7 +395,8 @@
     }
 
     .typeAmbientRow {
-        grid-template-columns: 1fr 1fr;
+        display: flex;
+        flex-direction: column;
     }
 
     .buttonsGrid {
@@ -400,46 +406,46 @@
 }
 
 .dateTimeRow {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .bottomRow {
-  display: grid;
-  grid-template-columns: 1fr 1.8fr;
-  gap: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 16px;
 }
 
 @media (max-width: 768px) {
-  .bottomRow {
-    grid-template-columns: 1fr;
-  }
+    .bottomRow {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dateTimeCard {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 10px 16px;
 }
 
 .dateTimeLabel {
-  display: block;
-  font-size: 10px;
-  color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-weight: 500;
+    display: block;
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 500;
 }
 
 .dateTimeValue {
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  color: #333;
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
 }
 
 .header {
