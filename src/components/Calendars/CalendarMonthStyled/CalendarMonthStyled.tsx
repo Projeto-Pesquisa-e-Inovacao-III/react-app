@@ -43,7 +43,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   }, [databaseEvents]);
 
   useEffect(() => {
-    clickedDate(newEventDate || clickedDateStr || "");
+    const valueToSync = newEventDate || clickedDateStr || "";
+    if (valueToSync && valueToSync !== clickedDateStr) {
+      clickedDate(valueToSync);
+    }
   }, [newEventDate, clickedDate, clickedDateStr]);
 
   useEffect(() => {

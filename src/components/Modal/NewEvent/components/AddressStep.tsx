@@ -82,28 +82,6 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                 </div>
             )}
 
-            <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                    {!isMobile && <MapPin />}
-                    <span className="uppercase font-medium tracking-tight">Local de Atendimento</span>
-                </div>
-                <Select
-                    id="location-select"
-                    openSelectId={openSelectId}
-                    setOpenSelectId={setOpenSelectId}
-                    onSelectStatusChange={(val: string) => setLocation(val)}
-                    values={locationOptions}
-                    defaultValue={location}
-                    containerClassName="w-full!"
-                    triggerClassName="p-3 w-full!"
-                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
-                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
-                    selectPlaceholder="Selecione o local..."
-                    labelClassName="text-slate-500! font-bold text-sm uppercase"
-                    showSelectAll={false}
-                    showSearchInput={false}
-                />
-            </div>
 
             <div className="bg-gray-300/25 p-4 pt-2 rounded-2xl border border-gray-300 not-xl:mt-10">
                 <div className="flex justify-between mb-2">
@@ -136,6 +114,16 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                     onSelectStatusChange={(addressId: string) => {
                         const selected = addresses.data?.find((address: any) => address?.id === addressId);
                         setSelectedAddress(selected || null);
+                        if (selected?.cep?.cep) {
+                            setAddressData({
+                                postalCode: cepMask(selected.cep.cep),
+                                address: `${selected.cep.logradouro} - ${selected.cep.bairro}`,
+                                city: selected.cep.localidade,
+                                state: selected.cep.uf,
+                                number: selected.numero,
+                                complement: selected.complemento
+                            });
+                        }
                     }}
                     values={addresses.data?.map((address: any) => ({
                         label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
@@ -158,15 +146,50 @@ export const AddressStep: React.FC<AddressStepProps> = ({
             <form className={classnames(styles.inputInfosForm, { [styles.inputInfosFormMobile]: isMobile })} onSubmit={onSubmit}>
                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                     <div className={styles.inputGroupAddress}>
-                        <div className={classnames(styles.inputGroup, styles.labelInput)}>
-                            <label htmlFor="cep">CEP</label>
-                            <input
-                                type="text"
-                                id="cep"
-                                placeholder="00000-000"
-                                onChange={(e) => setAddressData({ ...addressData, postalCode: cepMask(e.target.value) })}
-                                value={addressData.postalCode || ""}
-                            />
+                        <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
+                            
+                            <div className={classnames(styles.labelInput, "flex-2")}>
+                                <label htmlFor="cep">CEP</label>
+                                <input
+                                    type="text"
+                                    id="cep"
+                                    placeholder="00000-000"
+                                    onChange={(e) => setAddressData({ ...addressData, postalCode: cepMask(e.target.value) })}
+                                    value={addressData.postalCode || ""}
+                                />
+                            </div>
+
+                            {selectedType !== "PRESENCIAL" && selectedType !== "RESIDENCIAL" && (
+                                <div className={classnames(styles.labelInput, "flex-1")}>
+                                    <label htmlFor="location">Local de Atendimento</label>
+                                    {locationOptions.length === 1 ? (
+                                        <input 
+                                            type="text" 
+                                            id="location"
+                                            className={classnames(styles.inputAddress, styles.disabled)} 
+                                            disabled 
+                                            value={locationOptions[0].label} 
+                                        />
+                                    ) : (
+                                        <div className="w-full">
+                                            <Select
+                                                id="location-select"
+                                                openSelectId={openSelectId}
+                                                setOpenSelectId={setOpenSelectId}
+                                                onSelectStatusChange={(val: string) => setLocation(val)}
+                                                values={locationOptions}
+                                                defaultValue={location}
+                                                containerClassName="w-full!"
+                                                triggerClassName="w-full! h-[50px] p-[16px] rounded-[6px]! border-none!"
+                                                selectWrapperClassName="bg-white! rounded-[6px]! w-full! border border-[#b1b1b194]!"
+                                                selectPlaceholder="Selecione o local..."
+                                                showSelectAll={false}
+                                                showSearchInput={false}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
                             <div className={styles.labelInput}>
