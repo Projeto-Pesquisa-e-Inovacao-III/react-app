@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState, useCallback } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -345,12 +345,26 @@ export default function NewEvent({
         return form.date !== (clickedDate || "") || form.startHour !== undefined || form.type !== "PRESENCIAL";
     }
 
-    const handleSetNewEventDate = useCallback((val: any) => {
+    const handleDateChange = useCallback((val: any) => {
         setForm(prev => {
-            const newDate = typeof val === 'function' ? val(prev.date) : val;
-            if (prev.date === newDate) return prev;
-            return { ...prev, date: newDate };
+            const nextDate = typeof val === 'function' ? val(prev.date) : val;
+            if (prev.date === nextDate) return prev;
+            return { ...prev, date: nextDate };
         });
+    }, []);
+
+    const handleTypeChange = useCallback((val: string) => {
+        setForm(prev => prev.type === val ? prev : { ...prev, type: val });
+    }, []);
+
+    const handleLocationChange = useCallback((val: string) => {
+        setForm(prev => prev.location === val ? prev : { ...prev, location: val });
+    }, []);
+
+    const handleStartHourChange = useCallback((h: string | boolean) => {
+        if (typeof h === 'string') {
+            setForm(prev => prev.startHour === h ? prev : { ...prev, startHour: h });
+        }
     }, []);
 
     return (
@@ -379,7 +393,7 @@ export default function NewEvent({
                     {ui.step === 1 ? (
                         <DateTimeStep
                             isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date} 
-                            setNewEventDate={handleSetNewEventDate}
+                            setNewEventDate={handleDateChange}
                             clickedDate={clickedDate} insertedEvents={insertedEvents} availabilityHoursTomorrow={null}
                             tomorrow={tomorrow} disabledDays={finalDisabledDays} availabilityHours={availabilityHours}
                             selectedTimeOfDay={selectedTimeOfDay} setSelectedTimeOfDay={setSelectedTimeOfDay}
