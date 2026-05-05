@@ -80,7 +80,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             setOpenSelectId={setOpenSelectId}
                             openSelectId={openSelectId}
                             id="status"
-                            
+
                         />
                         <Select
                             onSelectStatusChange={onSelectTypeClassChange}

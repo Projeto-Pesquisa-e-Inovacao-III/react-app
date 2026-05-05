@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState, useCallback } from "react";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -312,6 +312,14 @@ export default function NewEvent({
         return form.date !== (clickedDate || "") || form.startHour !== undefined || form.type !== "PRESENCIAL";
     }
 
+    const handleSetNewEventDate = useCallback((val: any) => {
+        setForm(prev => {
+            const newDate = typeof val === 'function' ? val(prev.date) : val;
+            if (prev.date === newDate) return prev;
+            return { ...prev, date: newDate };
+        });
+    }, []);
+
     return (
         <>
             <div className={classnames(styles.overlay, { [styles.overlayClosing]: isClosing, [styles.overlayEnter]: !isClosing })} onClick={() => hasUnsavedChanges() ? setUi(prev => ({ ...prev, showConfirmClose: true })) : handleClose()}></div>
@@ -337,7 +345,7 @@ export default function NewEvent({
                     {ui.step === 1 ? (
                         <DateTimeStep
                             isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date} 
-                            setNewEventDate={(val: any) => setForm(prev => ({ ...prev, date: typeof val === 'function' ? val(prev.date) : val }))}
+                            setNewEventDate={handleSetNewEventDate}
                             clickedDate={clickedDate} insertedEvents={insertedEvents} availabilityHoursTomorrow={null}
                             tomorrow={tomorrow} disabledDays={finalDisabledDays} availabilityHours={availabilityHours}
                             selectedTimeOfDay={selectedTimeOfDay} setSelectedTimeOfDay={setSelectedTimeOfDay}
