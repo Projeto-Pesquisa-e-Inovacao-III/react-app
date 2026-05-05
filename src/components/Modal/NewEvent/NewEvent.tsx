@@ -76,6 +76,16 @@ export default function NewEvent({
         location: "CASA"
     });
 
+    useEffect(() => {
+        const options = LOCATION_OPTIONS[form.type];
+        if (options && options.length > 0) {
+            // If current location is not valid for the new type, reset to the first option
+            if (!options.some(opt => opt.value === form.location)) {
+                setForm(prev => prev.location === options[0].value ? prev : { ...prev, location: options[0].value });
+            }
+        }
+    }, [form.type]);
+
     const [ui, setUi] = useState({
         step: 1,
         loading: false,
@@ -234,6 +244,11 @@ export default function NewEvent({
             return;
         }
 
+        const validLocationOptions = LOCATION_OPTIONS[form.type] || [];
+        const finalLocation = validLocationOptions.some(opt => opt.value === form.location) 
+            ? form.location 
+            : (validLocationOptions[0]?.value || "ACADEMIA");
+
         const payload: Schedule = {
             data: `${form.date}T${form.startHour}`,
             descricao: `${form.date} - ${form.startHour}`,
@@ -241,7 +256,7 @@ export default function NewEvent({
                 numero: addressData.number,
                 complemento: addressData.complement,
                 unidade: "",
-                tipo: form.location,
+                tipo: finalLocation,
                 cep: { id: addressData.postalCode, logradouro: addressData.address, bairro: "", localidade: addressData.city, uf: addressData.state }
             },
             personalId: personalList.data?.content[0]?.id,
