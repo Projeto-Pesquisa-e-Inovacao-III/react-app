@@ -33,7 +33,6 @@ type DateTimeStepProps = {
     // Mobile-specific props
     typeUser?: string[];
     appoitmentData?: any;
-    personalList?: any;
     setSelectedType: (type: string) => void;
     scheduleTypes: any[];
     openSelectId: string | null;
@@ -63,7 +62,6 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     isValid,
     typeUser,
     appoitmentData,
-    personalList,
     setSelectedType,
     scheduleTypes,
     openSelectId,

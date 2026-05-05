@@ -28,7 +28,6 @@ type AddressStepProps = {
     setLocation: (loc: string) => void;
     selectedType: string;
     // Mobile-specific props
-    personalList?: any;
     formattedDate?: any;
     selectedPersonal?: any;
 };
@@ -49,7 +48,6 @@ export const AddressStep: React.FC<AddressStepProps> = ({
     location,
     setLocation,
     selectedType,
-    personalList,
     formattedDate,
     selectedPersonal
 }) => {
@@ -93,7 +91,7 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                     id="location-select"
                     openSelectId={openSelectId}
                     setOpenSelectId={setOpenSelectId}
-                    onSelectStatusChange={(val) => setLocation(val)}
+                    onSelectStatusChange={(val: string) => setLocation(val)}
                     values={locationOptions}
                     defaultValue={location}
                     containerClassName="w-full!"

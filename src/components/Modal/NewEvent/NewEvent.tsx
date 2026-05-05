@@ -350,7 +350,7 @@ export default function NewEvent({
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile, [styles.newEventFormClosing]: isClosing, [styles.newEventFormEnter]: !isClosing })}>
                 <SummarySidebar
                     isMobile={isMobile} step={ui.step} typeUser={typeUser} appoitmentData={appoitmentData}
-                    personalList={personalList} formattedDate={formattedDate} selectedType={form.type}
+                    formattedDate={formattedDate} selectedType={form.type}
                     setSelectedType={(val) => setForm(prev => ({ ...prev, type: val }))} scheduleTypes={scheduleTypes}
                     openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))} isReschedule={isReschedule}
                     selectedPersonal={selectedPersonal} personalOptions={personalOptions} handlePersonalChange={handlePersonalChange}
@@ -376,7 +376,7 @@ export default function NewEvent({
                             selectedTimeOfDay={selectedTimeOfDay} setSelectedTimeOfDay={setSelectedTimeOfDay}
                             newEventStartHour={form.startHour} handleButtonClick={(h) => typeof h === 'string' && setForm(prev => ({ ...prev, startHour: h }))}
                             handleStepChange={handleStepChange} buttonTitle={buttonTitle} isValid={!!(form.startHour && form.date)}
-                            typeUser={typeUser} appoitmentData={appoitmentData} personalList={personalList}
+                            typeUser={typeUser} appoitmentData={appoitmentData}
                             setSelectedType={(val) => setForm(prev => ({ ...prev, type: val }))} scheduleTypes={scheduleTypes}
                             openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))}
                             selectedPersonal={selectedPersonal} personalOptions={personalOptions} handlePersonalChange={handlePersonalChange}
@@ -388,7 +388,7 @@ export default function NewEvent({
                             setAddressData={setAddressData} selectDefault={ui.selectDefault} setSelectDefault={(val) => setUi(prev => ({ ...prev, selectDefault: val }))}
                             openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))} loading={ui.loading}
                             onSubmit={isReschedule ? handleRescheduleEvent : handleNewEvent}
-                            personalList={personalList} formattedDate={formattedDate} selectedType={form.type}
+                            formattedDate={formattedDate} selectedType={form.type}
                             selectedPersonal={selectedPersonal}
                             location={form.location} setLocation={(val) => setForm(prev => ({ ...prev, location: val }))}
                         />

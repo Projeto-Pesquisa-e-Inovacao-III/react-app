@@ -12,7 +12,6 @@ type SummarySidebarProps = {
     step: number;
     typeUser?: string[];
     appoitmentData: any;
-    personalList: any;
     formattedDate: any;
     selectedType: string;
     setSelectedType: (type: string) => void;
@@ -30,7 +29,6 @@ export const SummarySidebar: React.FC<SummarySidebarProps> = ({
     step,
     typeUser,
     appoitmentData,
-    personalList,
     formattedDate,
     selectedType,
     setSelectedType,
