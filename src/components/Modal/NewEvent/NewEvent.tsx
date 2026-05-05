@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -8,17 +8,18 @@ import { useDisabledDays } from "../../../hooks/useDisabledDays";
 import type { Schedule, ScheduleAfterInserted, ScheduleReschedule } from "../../../models/schedule";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import ErrorModal from "../ErrorModal/ErrorModal";
-import { format, startOfDay } from "date-fns";
+import { differenceInYears, format, parse, startOfDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { getPersonalHours } from "../../../constants/personal";
 import { getTotalByClassType } from "../../../constants/overview";
 import { TypeContext } from "../../../App";
 import { findUserData } from "../../../constants/user";
 import useModal from "../../../hooks/useModal";
-import type { HorariosPersonal } from "../../../models/personal";
+import type { HorariosPersonal, PersonalSummary } from "../../../models/personal";
 import { getUserAddresses } from "../../../constants/address";
 import useModalClose from "../../../hooks/useModalClose";
 import ConfirmCloseModal from "../ConfirmCloseModal/ConfirmCloseModal";
+import { cepMask } from "../../../utils/mascara";
 
 // Custom Hooks
 import { useAddressLookup } from "./hooks/useAddressLookup";
@@ -28,6 +29,7 @@ import { useFormattedDate, useTimeOfDay } from "./hooks/useSchedulingUtils";
 import { SummarySidebar } from "./components/SummarySidebar";
 import { DateTimeStep } from "./components/DateTimeStep";
 import { AddressStep } from "./components/AddressStep";
+import { LOCATION_OPTIONS } from "./constants";
 
 type NewEventProps = {
     isMobile: boolean;
@@ -73,7 +75,7 @@ export default function NewEvent({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
         type: "PRESENCIAL",
-        location: "CASA"
+        location: "ACADEMIA"
     });
 
     useEffect(() => {
@@ -109,7 +111,28 @@ export default function NewEvent({
         refetchOnWindowFocus: false,
     });
 
-    const internalTargetId = !propDisabledDays ? personalList.data?.content[0]?.id : undefined;
+    const [selectedPersonalId, setSelectedPersonalId] = useState<number | undefined>(undefined);
+
+    const selectedPersonal: PersonalSummary | undefined = personalList.data?.content?.find(
+        (p: PersonalSummary) => p.id === selectedPersonalId
+    ) ?? personalList.data?.content?.[0];
+
+    const personalOptions = useMemo(
+        () => personalList.data?.content?.map((p: PersonalSummary) => ({ 
+            value: p.id, 
+            label: p.nome,
+            image: p.caminhoFoto,
+            subtitle: p.dataNascimento ? `${differenceInYears(new Date(), parse(p.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""
+        })),
+        [personalList.data?.content]
+    );
+
+    const handlePersonalChange = useCallback((val: string | number) => {
+        setSelectedPersonalId(Number(val));
+        setForm(prev => ({ ...prev, startHour: undefined }));
+    }, []);
+
+    const internalTargetId = !propDisabledDays ? selectedPersonal?.id : undefined;
     const { disabledDays: disabledDaysRequest } = useDisabledDays(internalTargetId);
     const finalDisabledDays = (propDisabledDays ?? disabledDaysRequest) as string[];
 
@@ -139,10 +162,10 @@ export default function NewEvent({
     const formattedDate = useFormattedDate(form.date, form.startHour, form.type);
 
     const availabilityHours = useQuery({
-        queryKey: ["availabilityHours", typeUser, myId.data, personalList.data?.content?.[0]?.id, form.date],
-        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : personalList.data?.content?.[0]?.id, form.date ?? "", form.type.toUpperCase()),
+        queryKey: ["availabilityHours", typeUser, myId.data, selectedPersonal?.id, form.date],
+        queryFn: () => getPersonalHours(typeUser?.includes("personal") ? myId.data : selectedPersonal?.id, form.date ?? "", form.type.toUpperCase()),
         select: (res) => res.data as HorariosPersonal,
-        enabled: typeUser?.includes("personal") ? !!myId.data : !!personalList.data?.content?.[0]?.id,
+        enabled: typeUser?.includes("personal") ? !!myId.data : !!selectedPersonal?.id,
     });
 
     const defaultTimeOfDay = useTimeOfDay(availabilityHours.data);
@@ -160,26 +183,26 @@ export default function NewEvent({
         select: (res) => res.data,
     });
 
-    useEffect(() => {
-        if (ui.selectedAddress?.cep?.cep) {
-            const cep = ui.selectedAddress.cep.cep;
-            setAddressData({
-                postalCode: cep.length === 8 ? cep.slice(0, 5) + "-" + cep.slice(5) : cep,
-                address: `${ui.selectedAddress.cep.logradouro} - ${ui.selectedAddress.cep.bairro}`,
-                city: ui.selectedAddress.cep.localidade,
-                state: ui.selectedAddress.cep.uf,
-                number: ui.selectedAddress.numero,
-                complement: ui.selectedAddress.complemento
-            });
-        }
-    }, [ui.selectedAddress, setAddressData]);
+    const addressInitialized = useRef(false);
 
     useEffect(() => {
-        if (addresses.isSuccess && addresses.data?.length) {
+        if (!addressInitialized.current && addresses.isSuccess && addresses.data?.length) {
+            addressInitialized.current = true;
             const last = addresses.data.at(-1);
             setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
+
+            if (last?.cep?.cep) {
+                setAddressData({
+                    postalCode: cepMask(last.cep.cep),
+                    address: `${last.cep.logradouro} - ${last.cep.bairro}`,
+                    city: last.cep.localidade,
+                    state: last.cep.uf,
+                    number: last.numero,
+                    complement: last.complemento
+                });
+            }
         }
-    }, [addresses.data, addresses.isSuccess]);
+    }, [addresses.isSuccess, addresses.data, setAddressData]);
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
@@ -188,9 +211,9 @@ export default function NewEvent({
     });
 
     const [scheduleTypes, setScheduleTypes] = useState([
-        { label: "Presencial", value: "PRESENCIAL", disabled: false },
-        { label: "Residencial", value: "RESIDENCIAL", disabled: false },
-        { label: "Funcional", value: "FUNCIONAL", disabled: false }
+        { label: "Presencial (Academia)", value: "PRESENCIAL", disabled: false },
+        { label: "Residencial (Casa)", value: "RESIDENCIAL", disabled: false },
+        { label: "Funcional (Parque/Academia)", value: "FUNCIONAL", disabled: false }
     ]);
 
     useEffect(() => {
@@ -259,7 +282,7 @@ export default function NewEvent({
                 tipo: finalLocation,
                 cep: { id: addressData.postalCode, logradouro: addressData.address, bairro: "", localidade: addressData.city, uf: addressData.state }
             },
-            personalId: personalList.data?.content[0]?.id,
+            personalId: Number(selectedPersonal?.id),
             tipoAulaProdutoContratado: form.type.toUpperCase()
         };
 
@@ -287,7 +310,7 @@ export default function NewEvent({
             data: `${form.date}T${form.startHour}`,
             descricao: `${form.date} - ${form.startHour}`,
             endereco: null,
-            personalId: typeUser?.includes("personal") ? myId.data : personalList.data?.content[0]?.id,
+            personalId: typeUser?.includes("personal") ? myId.data : selectedPersonal?.id,
             tipoAulaProdutoContratado: form.type.toUpperCase()
         };
 
@@ -327,15 +350,38 @@ export default function NewEvent({
         return form.date !== (clickedDate || "") || form.startHour !== undefined || form.type !== "PRESENCIAL";
     }
 
+    const handleDateChange = useCallback((val: any) => {
+        setForm(prev => {
+            const nextDate = typeof val === 'function' ? val(prev.date) : val;
+            if (prev.date === nextDate) return prev;
+            return { ...prev, date: nextDate };
+        });
+    }, []);
+
+    const handleTypeChange = useCallback((val: string) => {
+        setForm(prev => prev.type === val ? prev : { ...prev, type: val });
+    }, []);
+
+    const handleLocationChange = useCallback((val: string) => {
+        setForm(prev => prev.location === val ? prev : { ...prev, location: val });
+    }, []);
+
+    const handleStartHourChange = useCallback((h: string | boolean) => {
+        if (typeof h === 'string') {
+            setForm(prev => prev.startHour === h ? prev : { ...prev, startHour: h });
+        }
+    }, []);
+
     return (
         <>
             <div className={classnames(styles.overlay, { [styles.overlayClosing]: isClosing, [styles.overlayEnter]: !isClosing })} onClick={() => hasUnsavedChanges() ? setUi(prev => ({ ...prev, showConfirmClose: true })) : handleClose()}></div>
             <div className={classnames(styles.newEventForm, { [styles.newEventFormMobile]: isMobile, [styles.newEventFormClosing]: isClosing, [styles.newEventFormEnter]: !isClosing })}>
                 <SummarySidebar
                     isMobile={isMobile} step={ui.step} typeUser={typeUser} appoitmentData={appoitmentData}
-                    personalList={personalList} formattedDate={formattedDate} selectedType={form.type}
-                    setSelectedType={(val) => setForm(prev => ({ ...prev, type: val }))} scheduleTypes={scheduleTypes}
+                    formattedDate={formattedDate} selectedType={form.type}
+                    setSelectedType={handleTypeChange} scheduleTypes={scheduleTypes}
                     openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))} isReschedule={isReschedule}
+                    selectedPersonal={selectedPersonal} personalOptions={personalOptions} handlePersonalChange={handlePersonalChange}
                 />
 
                 <div className={classnames(styles.container, { [styles.containerMobile]: isMobile })}>
@@ -352,15 +398,16 @@ export default function NewEvent({
                     {ui.step === 1 ? (
                         <DateTimeStep
                             isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date} 
-                            setNewEventDate={(val: any) => setForm(prev => ({ ...prev, date: typeof val === 'function' ? val(prev.date) : val }))}
+                            setNewEventDate={handleDateChange}
                             clickedDate={clickedDate} insertedEvents={insertedEvents} availabilityHoursTomorrow={null}
                             tomorrow={tomorrow} disabledDays={finalDisabledDays} availabilityHours={availabilityHours}
                             selectedTimeOfDay={selectedTimeOfDay} setSelectedTimeOfDay={setSelectedTimeOfDay}
-                            newEventStartHour={form.startHour} handleButtonClick={(h) => typeof h === 'string' && setForm(prev => ({ ...prev, startHour: h }))}
+                            newEventStartHour={form.startHour} handleButtonClick={handleStartHourChange}
                             handleStepChange={handleStepChange} buttonTitle={buttonTitle} isValid={!!(form.startHour && form.date)}
-                            typeUser={typeUser} appoitmentData={appoitmentData} personalList={personalList}
-                            setSelectedType={(val) => setForm(prev => ({ ...prev, type: val }))} scheduleTypes={scheduleTypes}
+                            typeUser={typeUser} appoitmentData={appoitmentData}
+                            setSelectedType={handleTypeChange} scheduleTypes={scheduleTypes}
                             openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))}
+                            selectedPersonal={selectedPersonal} personalOptions={personalOptions} handlePersonalChange={handlePersonalChange}
                         />
                     ) : (
                         <AddressStep
@@ -369,7 +416,9 @@ export default function NewEvent({
                             setAddressData={setAddressData} selectDefault={ui.selectDefault} setSelectDefault={(val) => setUi(prev => ({ ...prev, selectDefault: val }))}
                             openSelectId={ui.openSelectId} setOpenSelectId={(val) => setUi(prev => ({ ...prev, openSelectId: val }))} loading={ui.loading}
                             onSubmit={isReschedule ? handleRescheduleEvent : handleNewEvent}
-                            personalList={personalList} formattedDate={formattedDate} selectedType={form.type}
+                            formattedDate={formattedDate} selectedType={form.type}
+                            selectedPersonal={selectedPersonal}
+                            location={form.location} setLocation={handleLocationChange}
                         />
                     )}
                 </div>

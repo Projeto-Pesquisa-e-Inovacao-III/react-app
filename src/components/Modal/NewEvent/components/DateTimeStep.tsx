@@ -33,11 +33,13 @@ type DateTimeStepProps = {
     // Mobile-specific props
     typeUser?: string[];
     appoitmentData?: any;
-    personalList?: any;
     setSelectedType: (type: string) => void;
     scheduleTypes: any[];
     openSelectId: string | null;
     setOpenSelectId: (id: string | null) => void;
+    selectedPersonal?: any;
+    personalOptions?: any[];
+    handlePersonalChange?: (val: string | number) => void;
 };
 
 export const DateTimeStep: React.FC<DateTimeStepProps> = ({
@@ -60,11 +62,13 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
     isValid,
     typeUser,
     appoitmentData,
-    personalList,
     setSelectedType,
     scheduleTypes,
     openSelectId,
-    setOpenSelectId
+    setOpenSelectId,
+    selectedPersonal,
+    personalOptions,
+    handlePersonalChange
 }) => {
     const renderHourBlock = (hourBlock: any, index: number, selectedType: string) => {
         const [hours, minutes] = hourBlock.inicio.split(":");
@@ -103,10 +107,13 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
                             />
                         ) : (
                             <InformationCard
-                                icon={<UserAvatar useUserImage={true} foto={personalList?.data?.content[0]?.caminhoFoto} userName={personalList?.data?.content[0]?.nome} />}
+                                icon={<UserAvatar useUserImage={true} foto={selectedPersonal?.caminhoFoto} userName={selectedPersonal?.nome} />}
                                 title="Personal Trainer"
-                                subtitle={personalList?.data?.content[0]?.nome || ""}
-                                subtitle2={!personalList?.isLoading && personalList?.data?.content[0]?.dataNascimento ? `${differenceInYears(new Date(), parse(personalList.data.content[0]?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                subtitle={selectedPersonal?.nome || ""}
+                                subtitle2={selectedPersonal?.dataNascimento ? `${differenceInYears(new Date(), parse(selectedPersonal?.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""}
+                                options={personalOptions}
+                                selectedValue={selectedPersonal?.id}
+                                onOptionChange={handlePersonalChange}
                             />
                         )}
                         {!isReschedule && (

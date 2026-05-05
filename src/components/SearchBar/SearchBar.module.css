@@ -1,16 +1,16 @@
-.search-bar {
+.searchBar {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
 
-    .wrapper_inp {
+    .wrapperInp {
         width: 100%;
     }
 }
 
-.search-icon {
+.searchIcon {
     position: absolute;
     left: 18px;
     top: 50%;
@@ -20,7 +20,7 @@
     pointer-events: none;
 }
 
-.search-input {
+.searchInput {
     width:100%;
     padding: 8px 12px 8px 40px;
     border-radius: 6px;
@@ -28,9 +28,8 @@
     background-color: var(--btn-border);
 }
 
-.search-input {
+.searchInput {
     caret-color: #333; 
     color: #333;      
     background-color: var(--btn-border);
 }
-

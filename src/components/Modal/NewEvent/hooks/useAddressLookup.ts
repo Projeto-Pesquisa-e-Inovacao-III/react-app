@@ -13,7 +13,7 @@ export type AddressState = {
 export function useAddressLookup(initialData: AddressState) {
     const [addressData, setAddressData] = useState<AddressState>(initialData);
     const [loading, setLoading] = useState(false);
-    const debounceTimer = useRef<any>(null);
+    const debounceTimer = useRef<NodeJS.Timeout>(null);
 
     useEffect(() => {
         const cleanCep = addressData.postalCode.replace(/\D/g, "");

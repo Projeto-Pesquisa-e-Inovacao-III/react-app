@@ -73,6 +73,12 @@
     width: 100%;
 }
 
+.wrapperInp input:read-only {
+    background-color: #f1f5f9 !important;
+    color: #64748b !important;
+    cursor: default;
+}
+
 .wrapperInp label {
     font-size: 16px !important;
 }

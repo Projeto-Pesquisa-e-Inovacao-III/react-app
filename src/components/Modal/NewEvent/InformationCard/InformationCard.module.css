@@ -4,11 +4,23 @@
   gap: .5rem;
 }
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .label {
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
   color: #64748b;
+}
+
+.counter {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
 }
 
 .card {
@@ -25,6 +37,7 @@
 .iconWrapper {
   width: 3rem;
   height: 3rem;
+  flex-shrink: 0;
   border-radius: 999px;
   background: #e2e8f0;
   display: flex;
@@ -33,18 +46,52 @@
   overflow: hidden;
 }
 
+.textWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
 .subtitle {
   font-weight: 600;
   color: #0f172a;
-    white-space: nowrap;
-    text-wrap: wrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 200px;
-
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .subtitle2 {
   font-size: 1rem;
   color: #64748b;
+}
+
+.navButtons {
+  display: flex;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.navBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.navBtn:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

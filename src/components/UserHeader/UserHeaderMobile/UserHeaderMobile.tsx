@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import HeaderIconsMobile from "../../HeaderIconsMobile/HeaderIconsMobile";
-import "./style.css"
+import styles from "./UserHeaderMobile.module.css"
 import type { UserType } from "../../../App";
 import { Eye } from "lucide-react";
 
@@ -170,7 +170,7 @@ export default function UserHeaderMobile({ type }: Props) {
     }
 
     return (
-        <header className={type?.includes('personal') ? "header-personal-mobile" : "user-header-mobile"}>
+        <header className={type?.includes('personal') ? styles.headerPersonalMobile : styles.userHeaderMobile}>
             {getIcons()}
         </header >
     );

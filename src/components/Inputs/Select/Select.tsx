@@ -1,5 +1,5 @@
 import Skeleton from "react-loading-skeleton";
-import "./style.css"
+import styles from "./Select.module.css"
 
 type Props = {
     placeholder: string;
@@ -24,15 +24,15 @@ export default function Select({ placeholder, label, id, onInputChange, icon, va
             {isLoading ? (
                 <Skeleton height={40} />
             ) : (
-                <div className={`wrapper_inp ${className}`}>
+                <div className={`${styles.wrapperInp} ${className}`}>
                     {label && <label htmlFor={`${id}-select`}>{label}</label>}
-                    {icon && <div className="select-icon">{icon}</div>}
+                    {icon && <div className={styles.selectIcon}>{icon}</div>}
                     <select
                         id={`${id}-select`}
                         name={name}
                         value={value}
                         onChange={(e) => onInputChange(e.target.value)}
-                        className={`input-with-icon ${!icon ? "dont-has-icon" : ""}`}
+                        className={`input-with-icon ${!icon ? styles.dontHasIcon : ""}`}
                     >
                         <option value="" disabled>{placeholder}</option>
                         {options?.map((option, index) => (
