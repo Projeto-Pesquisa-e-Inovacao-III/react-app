@@ -7,7 +7,7 @@ export const api = axios.create({
     withCredentials: true
 })
 
-const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/dev-seed"];
 
 api.interceptors.response.use(
     response => response,

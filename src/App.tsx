@@ -3,6 +3,7 @@ import "./App.css";
 import { useState, createContext, lazy, Suspense } from "react";
 import Layout from "./components/Layout/Layout";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";
+import DevSeed from "./routes/Dev/DevSeed";
 
 const Login = lazy(() => import("./routes/User/Login/Login"));
 const Home = lazy(() => import("./routes/Home/Home"));
@@ -56,6 +57,8 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/logout" element={<Logout />} />
+              {/* TODO: remover antes do deploy final */}
+              <Route path="/dev-seed" element={<DevSeed />} />
             </Route>
 
             <Route element={<PrivateRoute />}>

@@ -51,6 +51,12 @@
     align-items: start;
 }
 
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .rightColumn {
     display: flex;
     flex-direction: column;
