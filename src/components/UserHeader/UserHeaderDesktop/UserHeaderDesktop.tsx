@@ -114,7 +114,7 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
             </div>
           )}
 
-              <NavLink to="/dev/seed" className={`${navLinkClass} border border-white`} onClick={handleNavClick}>dev/seed</NavLink>
+          <NavLink to="/dev-seed" className={`${navLinkClass} border border-white`} onClick={handleNavClick}>dev/seed</NavLink>
 
         </nav>
 

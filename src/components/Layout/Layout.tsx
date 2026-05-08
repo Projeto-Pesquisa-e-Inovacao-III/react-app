@@ -38,9 +38,11 @@ const titles = {
     "/set-availability": "Definir Horário | CSF Treinamentos",
     "/anamnesis": "Anamnese | CSF Treinamentos",
     "/edit-user/anamnesis": "Editar Anamnese | CSF Treinamentos",
+    "/no-code-tool": "Ferramenta No-Code | CSF Treinamentos",
+    "/dev-seed": "Seed | CSF Treinamentos",
 };
 
-const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout"];
 
 const exceptionsWithoutHeader = [...exceptions, "/anamnesis"];
 
@@ -54,7 +56,7 @@ export default function Layout() {
     const queryClient = useQueryClient();
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
+        document.title = titles[location.pathname as keyof typeof titles] || "CSF Treinamentos";
     }, [location.pathname]);
 
     const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
