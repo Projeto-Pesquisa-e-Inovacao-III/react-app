@@ -29,13 +29,13 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
         select: (res) => res.data,
     });
 
-    console.log(packages.data);
+    
 
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
     useEffect(() => {
         const checkAuth = async () => {
             const auth = await isAuthenticated();
-            console.log("User authenticated:", auth.data.autentificado);
+            
             setIsUserAuthenticated(auth.data.autentificado);
         };
         checkAuth();
@@ -62,7 +62,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
 
 
     return (
-        <section id="plans-section" className={`bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
+        <section id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
             <div className={`${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
                 <div className="flex justify-center mt-10  mb-10">

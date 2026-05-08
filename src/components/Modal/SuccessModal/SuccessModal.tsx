@@ -11,7 +11,7 @@ export default function SuccessModal({ isMobile, closeThen, title, content }: { 
     });
 
     useEffect(() => {
-        console.log("Modal aberto");
+        
     }, []);
 
     return (

@@ -4,7 +4,7 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
   return (
     <section
       id={isMobile ? "services-section-mobile" : "services-section"}
-      className={`${isMobile ? "mt-10 mb-10" : "mt-10"} p-5`}
+      className={`scroll-mt-20 ${isMobile ? "mt-10 mb-10" : "mt-10"} p-5`}
     >
       <div className={isMobile ? "" : "ml-20 mr-20"}>
         <div

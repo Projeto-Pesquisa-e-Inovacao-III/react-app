@@ -1,4 +1,4 @@
-import "./style.css"
+import styles from "./InputRowTriple.module.css"
 
 type Props = {
     firstPlaceholder: string;
@@ -20,10 +20,10 @@ type Props = {
 
 export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, thirdPlaceholder, firstIcon, secondIcon, thirdIcon, thirdIsSelect, setFirstOnChange, setSecondOnChange, setThirdOnChange, valueFirst, valueSecond, valueThird, validatorFirst, validatorSecond }: Props) {
     return (
-        <div className="triple-row-input">
-            <div className="input-block">
-                <div className="wrapper_inp">
-                    <div className="input-icon">{firstIcon}</div>
+        <div className={styles.tripleRowInput}>
+            <div className={styles.inputBlock}>
+                <div className={styles.wrapperInp}>
+                    <div className={styles.inputIcon}>{firstIcon}</div>
                     <input
                         type="text"
                         name="name"
@@ -34,9 +34,9 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
                     />
                 </div>
             </div>
-            <div className="input-block">
-                <div className="wrapper_inp">
-                    <div className="input-icon">{secondIcon}</div>
+            <div className={styles.inputBlock}>
+                <div className={styles.wrapperInp}>
+                    <div className={styles.inputIcon}>{secondIcon}</div>
                     <input
                         type="text"
                         placeholder={secondPlaceholder}
@@ -49,9 +49,9 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
 
 
             {thirdIsSelect ? (
-                <div className="input-block">
-                    <div className="wrapper_inp">
-                        <div className="input-icon">{thirdIcon}</div>
+                <div className={styles.inputBlock}>
+                    <div className={styles.wrapperInp}>
+                        <div className={styles.inputIcon}>{thirdIcon}</div>
                         <select defaultValue={valueThird} onChange={(e) => setThirdOnChange(e.target.value)}>
                             <option value="#" disabled selected>{thirdPlaceholder}</option>
                             <option value="male">Masculino</option>
@@ -61,9 +61,9 @@ export default function InputRowTriple({ firstPlaceholder, secondPlaceholder, th
                     </div>
                 </div>
             ) : (
-                <div className="input-block">
-                    <div className="wrapper_inp">
-                        <div className="input-icon">{thirdIcon}</div>
+                <div className={styles.inputBlock}>
+                    <div className={styles.wrapperInp}>
+                        <div className={styles.inputIcon}>{thirdIcon}</div>
                         <input
                             type="text"
                             placeholder={thirdPlaceholder}

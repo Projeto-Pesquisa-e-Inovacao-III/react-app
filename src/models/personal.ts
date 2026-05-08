@@ -1,5 +1,5 @@
 export type PersonalDTO = {
-        nome: string;
+    nome: string;
     sexo: string;
     email: string;
     telefones?: {
@@ -10,6 +10,13 @@ export type PersonalDTO = {
     }[];
     dataNascimento?: string;
     caminhoFoto?: string;
+};
+
+export type PersonalSummary = {
+    id: number;
+    nome: string;
+    caminhoFoto?: string;
+    dataNascimento?: string;
 };
 
 
