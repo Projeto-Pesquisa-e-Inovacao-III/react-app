@@ -16,6 +16,10 @@
     gap: 24px;
 }
 
+.link {
+    width: 100%;
+}
+
 .cardFilter {
     width: 100%;
     display: flex;
