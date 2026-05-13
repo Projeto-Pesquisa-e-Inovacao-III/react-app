@@ -410,7 +410,7 @@ export function CheckSchedule() {
                         ) : (
                             (appointmentsList ?? []).map((card) => (
 
-                                <Link to={`/schedule-details?id=${card.agendamentoId}`}>
+                                <Link className={styles.link} to={`/schedule-details?id=${card.agendamentoId}`}>
                                     <div className={styles.mobileCardWrapper}
                                         key={card.agendamentoId}
                                         ref={loadMoreRef}
