@@ -1,7 +1,7 @@
 .packageCardContainer {
     background-color: #ffffff;
     border-radius: 30px;
-    box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08); */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -222,6 +222,20 @@
 
 .cardBtn:hover {
     background-color: var(--btn-hover-bg);
+}
+
+.cardBtnDisabled {
+    background-color: #cbd5e1 !important;
+    color: #64748b !important;
+    cursor: not-allowed !important;
+    border: 1px solid #94a3b8 !important;
+
+    border-bottom-right-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+}
+
+.cardBtnDisabled:hover {
+    background-color: #cbd5e1 !important;
 }
 
 

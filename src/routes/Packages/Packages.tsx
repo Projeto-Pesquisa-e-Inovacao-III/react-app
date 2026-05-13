@@ -10,7 +10,7 @@ import AddPackagePlan from "../../components/Modal/AddPackagePlan/AddPackagePlan
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import PagBankModal from "../../components/Modal/PagBankModal/PagBankModal";
 import type { ProductExhibition } from "../../models/products";
-import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
+import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages, actualPlan } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
 import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
@@ -39,7 +39,19 @@ export function Packages() {
 
     const isPersonal = type?.type?.includes("personal");
 
-    function handleBuyClick(id: number, packageTitle: string) {
+    const actualPlanQuery = useQuery({
+        queryKey: ["total", "actualPlan"],
+        queryFn: () => actualPlan(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type?.includes("aluno")
+    });
+
+    function handleBuyClick(id: number, packageTitle: string, isAdditional: boolean = false) {
+        if (isAdditional && !actualPlanQuery.data?.data) {
+            handleErrorModalInfos("Atenção", "Para adquirir um pacote adicional, você precisa ter um plano principal ativo.");
+            return;
+        }
+
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
             window.location.href = response.data;
@@ -236,7 +248,13 @@ export function Packages() {
         emblaApiPackage?.scrollNext()
     }, [emblaApiPackage])
 
-const slidesToRender = activePackages.length > 0
+    const isStudentAndNoPlan = !!type?.type?.includes("aluno") && !actualPlanQuery.data?.data;
+
+    function handleDisabledClick() {
+        handleErrorModalInfos("Atenção", "Para adquirir um pacote adicional, você precisa ter um plano principal ativo.");
+    }
+
+    const slidesToRender = activePackages.length > 0
   ? [...activePackages, ...activePackages, ...activePackages]
   : activePackages;
 
@@ -299,7 +317,7 @@ const slidesToRender = activePackages.length > 0
                                                         <PackageCard
                                                             {...pacote}
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, false)}
                                                             isMobile={isMobile}
                                                             isAdmin={type?.type?.includes("admin")}
                                                             isPersonal={isPersonal}
@@ -334,7 +352,7 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, false)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
@@ -440,12 +458,14 @@ const slidesToRender = activePackages.length > 0
                                                     <PackageCard
                                                         {...pacote}
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, true)}
                                                         isMobile={isMobile}
                                                         isAdmin={type?.type?.includes("admin")}
                                                         isPersonal={isPersonal}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                                        isDisabled={isStudentAndNoPlan}
+                                                        onDisabledClick={handleDisabledClick}
                                                     />
                                                 </div>
                                             ))}
@@ -474,12 +494,14 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, true)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                        isDisabled={isStudentAndNoPlan}
+                                        onDisabledClick={handleDisabledClick}
                                     />
                                 ))}
                                 {isAdmin && !isMobile && (

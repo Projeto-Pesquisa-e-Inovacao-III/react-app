@@ -183,7 +183,7 @@ export default function AnamnesisInformations() {
 
         <div className={styles.personalInfo} ref={ref}>
           <WhiteContainer title="Anamnese / Saúde" icon={<HeartPulse size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
-            <div id="personalData">
+            <div id="personalData" className="w-full!">
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Dados pessoais</h3>
