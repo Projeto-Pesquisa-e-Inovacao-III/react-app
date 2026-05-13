@@ -87,6 +87,10 @@
     padding-right: 40px !important;
 }
 
+.passwordInput.limitInput {
+    padding-right: 75px !important;
+}
+
 .passwordToggle {
     position: absolute;
     right: 0.75rem;

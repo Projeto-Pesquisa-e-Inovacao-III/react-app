@@ -42,35 +42,26 @@ export default function CalendarMini({ clickedDate, dateRange, selectedDateRange
                         const start = selectedDateRange?.start;
                         const end = selectedDateRange?.end;
 
-                        if (start && end) {
-                            setSelectedDateRange({
-                                start: info.dateStr,
-                                end: ""
-                            });
+                        if (start && end && start !== end) {
+                            setSelectedDateRange({ start: info.dateStr, end: info.dateStr });
                             return;
                         }
-
                         if (!start) {
-                            setSelectedDateRange(prev => ({
-                                ...prev,
-                                start: info.dateStr
-                            }));
+                            setSelectedDateRange({ start: info.dateStr, end: info.dateStr });
                             return;
                         }
 
+                        if (info.dateStr === start) {
+                            setSelectedDateRange({ start: "", end: "" });
+                            return;
+                        }
                         const startMs = new Date(`${start}T00:00:00`).getTime();
                         const clickedMs = new Date(`${info.dateStr}T00:00:00`).getTime();
 
                         if (clickedMs < startMs) {
-                            setSelectedDateRange({
-                                start: info.dateStr,
-                                end: start
-                            });
+                            setSelectedDateRange({ start: info.dateStr, end: start });
                         } else {
-                            setSelectedDateRange(prev => ({
-                                ...prev,
-                                end: info.dateStr
-                            }));
+                            setSelectedDateRange({ start, end: info.dateStr });
                         }
                     }}
                     dayCellClassNames={(arg) => {

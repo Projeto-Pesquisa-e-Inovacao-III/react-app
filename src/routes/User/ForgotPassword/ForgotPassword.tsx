@@ -191,7 +191,7 @@ export default function ForgotPassword() {
                     <p>Para continuar, digite o número do seu celular com DDD no campo abaixo. Nós vamos enviar um código de confirmação para o seu WhatsApp.</p>
                   </div>
                   <div className={styles.wrapperInputsForgotPasswordPage}>
-                    <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} onInputChange={(value: string) => setPhoneNumber(value)} mask={cellphoneMask} />
+                    <InputWithIcon type={"text"} placeholder={"00 00000-0000"} icon={<Phone />} onInputChange={(value: string) => setPhoneNumber(value)} mask={cellphoneMask} maxLength={15} />
 
                   </div>
                 </>
@@ -211,7 +211,7 @@ export default function ForgotPassword() {
                     ) : (
                       <p>{timer}s para reenviar código</p>
                     )}
-                    <InputWithIcon type={"text"} placeholder={"Código de confirmação"} icon={<Lock />} onInputChange={(value: string) => setInputCode(value)} />
+                    <InputWithIcon type={"text"} placeholder={"Código de confirmação"} icon={<Lock />} onInputChange={(value: string) => setInputCode(value)} maxLength={6} />
                   </div>
                 </>
 

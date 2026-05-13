@@ -119,10 +119,9 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
                             eventClick={(arg) => {
                                 if (!arg.event.start) return;
                                 const dataISO = format(arg.event.start, "yyyy-MM-dd'T'HH:mm:ss", { locale: ptBR });
-                                const isEventPresent = events.some(event => event.start === dataISO);
-
+                                const isEventPresent = events.some(event => event.start?.toString().includes(dataISO));
                                 if (isEventPresent) {
-                                    navigate(`/schedule-details?id=${events.find(event => event.start === dataISO)?.id}`);
+                                    navigate(`/schedule-details?id=${events.find(event => event.start?.toString().includes(dataISO))?.id}`);
                                 }
                             }}
                             eventClassNames={(arg) => {

@@ -40,7 +40,7 @@ export async function findPersonalRequests(pageParam = 0, size = "10", initialDa
             ...(finalDate && { dataFim: finalDate }),
             ...(status && { status: status }),
             ...(classType && { tipoAgendamento: classType }),
-            ...(name && { nomeDoAluno: name }),
+            ...(name && { nome: name }),
             page: pageParam,
             size
         }

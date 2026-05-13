@@ -49,7 +49,7 @@ const steps = [
     run: async (_ctx: Record<string, unknown>) => {
       const res = await api.post("/controle/admin/dev/usuarios/personal", {
         nome: "Fillipe",
-        sexo: "M",
+        sexo: "Masculino",
         dataNascimento: "2005-12-27",
         email: "fillipemcoelho@hotmail.com",
         cref: "01415069031",

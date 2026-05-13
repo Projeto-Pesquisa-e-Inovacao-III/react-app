@@ -15,11 +15,12 @@ interface UserAvatarProps {
   withUsernameClassName?: string;
   isLoading?: boolean;
   rightIcon?: React.ReactNode;
+  customImageUrl?: string;
 }
 
-export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, withUsernameClassName, isLoading = false, rightIcon }: UserAvatarProps) {
+export default function UserAvatar({ foto, userName, useUserImage, useUsername = false, imgClassName, withUsernameClassName, isLoading = false, rightIcon, customImageUrl }: UserAvatarProps) {
   const userImage = useQuery({
-    queryKey: ['userImage'],
+    queryKey: ['userImage', foto ?? userName],
     queryFn: () => getUserImage(),
     select: (response) => {
 
@@ -31,21 +32,20 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
     enabled: useUserImage,
     retry: false,
   })
-  
+
   function getInitials(name: string) {
     return name.charAt(0).toUpperCase()
   }
-
+  const resolvedImage = useUserImage ? userImage.data : undefined;
 
   return (
     <div className={classNames(styles.userAvatar, { [styles.withUsername]: useUsername })}>
       {useUsername && !isLoading && <p className={styles.username}>{userName}</p>}
       {useUsername && isLoading && <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />}
 
-      {userImage.data || foto ?
+      {customImageUrl || resolvedImage || foto ?
         <UserImg
-          Source={`${foto ? `${BASE_URL}/usuarios/foto/${foto}` : userImage.data || ""}`}
-          Height={216}
+          Source={customImageUrl ?? (foto ? `${BASE_URL}/usuarios/foto/${foto}` : resolvedImage ?? "")} Height={216}
           Width={216}
           Alt="foto"
           classname={imgClassName}

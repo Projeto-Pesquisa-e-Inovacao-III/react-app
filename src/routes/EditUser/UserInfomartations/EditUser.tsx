@@ -364,7 +364,7 @@ export default function EditUser() {
                   ) : (
                     <User width={150} height={150} />
                   )} */}
-                  <UserAvatar withUsernameClassName="w-32! h-32! text-3xl!" imgClassName="w-40! h-40!" isLoading={userInfo.isLoading} userName={state.firstName}/>
+                  <UserAvatar customImageUrl={userImage} withUsernameClassName="w-32! h-32! text-3xl!" imgClassName="w-40! h-40!" isLoading={userInfo.isLoading} userName={state.firstName}/>
                 </div>
 
                 <div className={classNames("flex flex-col justify-between gap-4", { ["text-center w-full"]: isMobile })}>
@@ -410,6 +410,7 @@ export default function EditUser() {
               isLoading={userInfo.isLoading}
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
+              maxLength={100}
             ></InputWithIcon>
             {type?.type?.includes("aluno") ? (
               <InputWithIcon
@@ -423,6 +424,7 @@ export default function EditUser() {
                 onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
                 mask={cpfMask}
                 disabled={true}
+                maxLength={14}
               />
             ) : (
               <InputWithIcon
@@ -435,6 +437,7 @@ export default function EditUser() {
                 value={state.cref}
                 onInputChange={(value: string) => dispatch({ type: "setCREF", payload: value })}
                 disabled={true}
+                maxLength={11}
               />
             )}
 
@@ -448,6 +451,7 @@ export default function EditUser() {
               value={state.phone}
               onInputChange={(value: string) => dispatch({ type: "setPhone", payload: value })}
               mask={cellphoneMask}
+              maxLength={15}
             ></InputWithIcon>
             {/* <Select
               id="genero"
@@ -491,9 +495,9 @@ export default function EditUser() {
                 label="Gênero"
                 selectPlaceholder="Selecione o gênero"
                 values={[
-                  { label: "Masculino", value: "M" },
-                  { label: "Feminino", value: "F" },
-                  { label: "Outro", value: "O" },
+                  { label: "Masculino", value: "Masculino" },
+                  { label: "Feminino", value: "Feminino" },
+                  { label: "Outro", value: "Outro" },
                 ]}
                 onSelectStatusChange={(value: string) => dispatch({ type: "setGender", payload: value })}
                 openSelectId={openSelectId}

@@ -359,8 +359,17 @@ export default function NewEvent({
     }, []);
 
     const handleTypeChange = useCallback((val: string) => {
+        const selectedOption = scheduleTypes.find(t => t.value === val);
+        if (selectedOption?.disabled) {
+            setTextModal({ 
+                title: "Tipo de atendimento indisponível", 
+                content: `Você não possui saldo para aulas do tipo ${selectedOption.label.split(' (')[0].toLowerCase()}.` 
+            });
+            setOpenModal("error");
+            return;
+        }
         setForm(prev => prev.type === val ? prev : { ...prev, type: val });
-    }, []);
+    }, [scheduleTypes, setOpenModal, setTextModal]);
 
     const handleLocationChange = useCallback((val: string) => {
         setForm(prev => prev.location === val ? prev : { ...prev, location: val });

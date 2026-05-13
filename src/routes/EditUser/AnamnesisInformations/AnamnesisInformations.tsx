@@ -102,7 +102,7 @@ export default function AnamnesisInformations() {
   const MAX_WEIGHT_KG = 350;
   const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
   const MAX_HEIGHT_CHARACTERS = 3;
-  const MAX_WEIGHT_CHARACTERS = 6;
+  const MAX_WEIGHT_CHARACTERS = 3;
 
   function handleModal(type: "success" | "error", title: string, content: string) {
     setTextModal({ title, content });
@@ -125,7 +125,8 @@ export default function AnamnesisInformations() {
     }
 
     if (anamnesisData.peso) {
-      if (anamnesisData.peso < MIN_WEIGHT_KG || anamnesisData.peso > MAX_WEIGHT_KG) {
+      const pesoNum = Number(String(anamnesisData.peso).replace(",", "."));
+      if (pesoNum < MIN_WEIGHT_KG || pesoNum > MAX_WEIGHT_KG) {
         errors.peso = `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.`;
       }
     }
@@ -143,7 +144,12 @@ export default function AnamnesisInformations() {
 
     setUpdateLoading(true);
 
-    updateAnamnesis(anamnesisData).then(() => {
+    const payload = { ...anamnesisData };
+    if (payload.peso) {
+      payload.peso = Number(String(payload.peso).replace(",", "."));
+    }
+    
+    updateAnamnesis(payload).then(() => {
       setUpdateLoading(false);
       handleModal("success", "Anamnese atualizada!", "Suas informações de anamnese foram atualizadas com sucesso.");
     }).catch(() => {
@@ -223,6 +229,7 @@ export default function AnamnesisInformations() {
                   classNameInput="text-[#334155]! font-medium"
                   type="number"
                   allowDecimals={true}
+                  maxDecimalPlaces={2}
                   maxLength={MAX_WEIGHT_CHARACTERS}
                   placeholder="Ex: 70"
                   icon={<Weight />}
@@ -231,8 +238,8 @@ export default function AnamnesisInformations() {
                   value={anamnesisData.peso || ""}
                   hasError={!!validationErrors.peso}
                   onInputChange={(value: string) => {
-                    const num = Number(value);
-                    setAnamnesisData({ ...anamnesisData, peso: num });
+                    const num = Number(value.replace(",", "."));
+                    setAnamnesisData({ ...anamnesisData, peso: value as any });
                     if (value && (num < MIN_WEIGHT_KG || num > MAX_WEIGHT_KG)) {
                       setValidationErrors(prev => ({ ...prev, peso: `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.` }));
                     } else {

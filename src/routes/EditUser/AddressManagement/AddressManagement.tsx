@@ -1,4 +1,5 @@
 import styles from "./AddressManagement.module.css";
+import Select from "../../../components/Select/Select";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
 import { Home, MapPin, Search, Trash2, Edit2, Briefcase, Building2, Map, Plus, Route, Hash, DoorOpen, MapPinned, Flag } from "lucide-react";
 import { useState } from "react";
@@ -23,7 +24,7 @@ import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContaine
 import { cepMask } from "../../../utils/mascara";
 
 type AddressForm = {
-  apelido: string;
+  tipo: string;
   cep: string;
   logradouro: string;
   numero: string;
@@ -35,7 +36,7 @@ type AddressForm = {
 };
 
 const emptyForm: AddressForm = {
-  apelido: "",
+  tipo: "",
   cep: "",
   logradouro: "",
   numero: "",
@@ -77,6 +78,7 @@ export default function AddressManagement() {
   const [isClosingForm, setIsClosingForm] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
   const [form, setForm] = useState<AddressForm>(emptyForm);
   const [cepLoading, setCepLoading] = useState(false);
@@ -126,7 +128,7 @@ export default function AddressManagement() {
     setEditingAddress(address);
     const { logradouro, bairro, cidade, estado, cepId } = extractAddressFields(address);
     setForm({
-      apelido: address.apelido || address.tipo || "",
+      tipo: address.tipo || "",
       cep: cepId,
       logradouro,
       numero: address.numero || "",
@@ -167,8 +169,7 @@ export default function AddressManagement() {
     setSaveLoading(true);
 
     const payload: Address = {
-      apelido: form.apelido || "Endereço",
-      tipo: form.apelido || "Endereço",
+      tipo: form.tipo || "Endereço",
       numero: form.numero,
       complemento: form.complemento,
       logradouro: form.logradouro,
@@ -334,7 +335,7 @@ export default function AddressManagement() {
                           <div className={styles.cardHeader}>
                             <div className={styles.cardTitleLine}>
                               {getAddressIcon(addr.tipo)}
-                              <strong>{addr.apelido || addr.tipo}</strong>
+                              <strong>{addr.tipo}</strong>
                               {addr.padrao && <span className={styles.badgePadrao}>PADRÃO</span>}
                             </div>
                             <div className={styles.cardActions}>
@@ -369,6 +370,30 @@ export default function AddressManagement() {
                   </div>
 
                   <div className={styles.formGrid}>
+                    <div className={styles.fieldApelido}>
+                      <Select
+                        id="tipo-select"
+                        openSelectId={openSelectId}
+                        setOpenSelectId={setOpenSelectId}
+                        onSelectStatusChange={(v: string) => setForm(p => ({ ...p, tipo: v }))}
+                        values={[
+                          { label: "Presencial (Academia)", value: "PRESENCIAL" },
+                          { label: "Residencial (Casa)", value: "RESIDENCIAL" },
+                          { label: "Funcional (Parque/Academia)", value: "FUNCIONAL" }
+                        ]}
+                        defaultValue={form.tipo}
+                        containerClassName="w-full!"
+                        triggerClassName="p-3 w-full! text-[#334155]!"
+                        selectWrapperClassName="bg-white! rounded-[4px]! w-full! border border-[#cbd5e1]!"
+                        selectPlaceholder="Selecione o tipo"
+                        labelClassName="text-slate-500! font-bold text-sm uppercase"
+                        label="Local (Tipo)"
+                        showSelectAll={false}
+                        showSearchInput={false}
+                        iconPlaceholder={<Home size={18} />}
+                      />
+                    </div>
+
                     <div className={styles.fieldCep}>
                       <span className={styles.label}>CEP</span>
                       <div className={styles.cepFlex}>
