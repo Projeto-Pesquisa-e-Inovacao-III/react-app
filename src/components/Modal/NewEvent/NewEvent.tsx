@@ -70,7 +70,7 @@ export default function NewEvent({
     newAppointmentCreated, goToNextStep = true, typeUser, disabledDays: propDisabledDays
 }: NewEventProps) {
     const { setOpenModal, openModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
-    
+
     const [form, setForm] = useState({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
@@ -118,8 +118,8 @@ export default function NewEvent({
     ) ?? personalList.data?.content?.[0];
 
     const personalOptions = useMemo(
-        () => personalList.data?.content?.map((p: PersonalSummary) => ({ 
-            value: p.id, 
+        () => personalList.data?.content?.map((p: PersonalSummary) => ({
+            value: p.id,
             label: p.nome,
             image: p.caminhoFoto,
             subtitle: p.dataNascimento ? `${differenceInYears(new Date(), parse(p.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""
@@ -268,8 +268,8 @@ export default function NewEvent({
         }
 
         const validLocationOptions = LOCATION_OPTIONS[form.type] || [];
-        const finalLocation = validLocationOptions.some(opt => opt.value === form.location) 
-            ? form.location 
+        const finalLocation = validLocationOptions.some(opt => opt.value === form.location)
+            ? form.location
             : (validLocationOptions[0]?.value || "ACADEMIA");
 
         const payload: Schedule = {
@@ -361,9 +361,9 @@ export default function NewEvent({
     const handleTypeChange = useCallback((val: string) => {
         const selectedOption = scheduleTypes.find(t => t.value === val);
         if (selectedOption?.disabled) {
-            setTextModal({ 
-                title: "Tipo de atendimento indisponível", 
-                content: `Você não possui saldo para aulas do tipo ${selectedOption.label.split(' (')[0].toLowerCase()}.` 
+            setTextModal({
+                title: "Tipo de atendimento indisponível",
+                content: `Você não possui saldo para aulas do tipo ${selectedOption.label.split(' (')[0].toLowerCase()}.`
             });
             setOpenModal("error");
             return;
@@ -406,7 +406,7 @@ export default function NewEvent({
 
                     {ui.step === 1 ? (
                         <DateTimeStep
-                            isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date} 
+                            isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date}
                             setNewEventDate={handleDateChange}
                             clickedDate={clickedDate} insertedEvents={insertedEvents} availabilityHoursTomorrow={null}
                             tomorrow={tomorrow} disabledDays={finalDisabledDays} availabilityHours={availabilityHours}

@@ -415,13 +415,13 @@ export default function ScheduleDetails() {
                             errorModal={() => handleErrorModal("Erro ao reagendar", "Não foi possível reagendar o horário")}
                             insertedEvents={appointments.data?.data}
                             title="Reagendar horário"
-                            buttonTitle="Reagendar"
+                            buttonTitle={!type?.type?.includes("personal") ? "Avançar" : "Reagendar"}
                             isReschedule={true}
                             rescheduleId={appointmentId}
                             clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
                             typeUser={type?.type || []}
                             appoitmentData={appointment.data}
-                            goToNextStep={!type?.type?.includes("aluno")}
+                            goToNextStep={!type?.type?.includes("personal")}
                         />
                     </>
                 )}
