@@ -50,6 +50,8 @@ export default function AnamnesisInformations() {
     observacaoSaude: "",
   });
 
+  const [isOtherChecked, setIsOtherChecked] = useState(false);
+
 
   const anamnesisInfo = useQuery<AnamnesisData>({
     queryKey: ["anamnesisInfo"],
@@ -57,6 +59,7 @@ export default function AnamnesisInformations() {
     queryFn: async () => {
       const response = await getAnamnesis();
       setAnamnesisData(response.data);
+      setIsOtherChecked(response.data.condicoes.some((c: { tipo: string }) => c.tipo === "OUTRO"));
 
       const isPredefined = valuesAtSelect.some((v) => v.value === response.data.objectivoPrincipal);
       if (!isPredefined) {
@@ -70,6 +73,11 @@ export default function AnamnesisInformations() {
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
   function handleConditionToggle(situacao: string) {
+    if (situacao === "Outro") {
+      setIsOtherChecked(prev => !prev);
+      return;
+    }
+
     setAnamnesisData(prev => {
       const exists = prev.condicoes.some(c => c.situacao === situacao);
       return {
@@ -93,7 +101,7 @@ export default function AnamnesisInformations() {
     return Array.from(new Set(trimmedTags));
   }
 
-  const isOtherConditionSelected = anamnesisData.condicoes.some(c => c.tipo === "OUTRO");
+  const isOtherConditionSelected = isOtherChecked;
 
   // const MAX_DAILY_ROUTINE_CHARACTERS = 500;
   const MIN_HEIGHT_CM = 100;
@@ -145,10 +153,13 @@ export default function AnamnesisInformations() {
     setUpdateLoading(true);
 
     const payload = { ...anamnesisData };
+    if (!isOtherChecked) {
+      payload.condicoes = payload.condicoes.filter(c => c.tipo !== "OUTRO");
+    }
     if (payload.peso) {
       payload.peso = Number(String(payload.peso).replace(",", "."));
     }
-    
+
     updateAnamnesis(payload).then(() => {
       setUpdateLoading(false);
       handleModal("success", "Anamnese atualizada!", "Suas informações de anamnese foram atualizadas com sucesso.");
@@ -161,13 +172,14 @@ export default function AnamnesisInformations() {
   function handleUndoChanges() {
     if (anamnesisInfo.data) {
       setAnamnesisData(anamnesisInfo.data);
+      setIsOtherChecked(anamnesisInfo.data.condicoes.some((c: { tipo: string }) => c.tipo === "OUTRO"));
     }
   }
 
-    //   { icon: <Weight />, label: "Emagrecimento", value: "EMAGRECIMENTO" },
-    // { icon: <HeartPulse />, label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
-    // { icon: <Sparkles />, label: "Estética", value: "ESTETICA" },
-    // { icon: <BicepsFlexed />, label: "Ganho de massa", value: "GANHO_MASSA" },
+  //   { icon: <Weight />, label: "Emagrecimento", value: "EMAGRECIMENTO" },
+  // { icon: <HeartPulse />, label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
+  // { icon: <Sparkles />, label: "Estética", value: "ESTETICA" },
+  // { icon: <BicepsFlexed />, label: "Ganho de massa", value: "GANHO_MASSA" },
 
   const valuesAtSelect = [
     { label: "Ganho de massa muscular", value: "GANHO_MASSA" },

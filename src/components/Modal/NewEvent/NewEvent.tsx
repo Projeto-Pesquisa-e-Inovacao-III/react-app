@@ -188,18 +188,24 @@ export default function NewEvent({
     useEffect(() => {
         if (!addressInitialized.current && addresses.isSuccess && addresses.data?.length) {
             addressInitialized.current = true;
-            const last = addresses.data.at(-1);
-            setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
-
-            if (last?.cep?.cep) {
-                setAddressData({
-                    postalCode: cepMask(last.cep.cep),
-                    address: `${last.cep.logradouro} - ${last.cep.bairro}`,
-                    city: last.cep.localidade,
-                    state: last.cep.uf,
-                    number: last.numero,
-                    complement: last.complemento
-                });
+            // Pick the last address that matches the current event type; fall back to the absolute last
+            const matchingAddresses = addresses.data.filter(
+                (a: any) => a?.tipo?.toUpperCase() === form.type?.toUpperCase()
+            );
+            const last = matchingAddresses.length > 0 ? matchingAddresses.at(-1) : addresses.data.at(-1);
+            // Only pre-select if it truly matches the current type
+            if (last?.tipo?.toUpperCase() === form.type?.toUpperCase()) {
+                setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
+                if (last?.cep?.cep) {
+                    setAddressData({
+                        postalCode: cepMask(last.cep.cep),
+                        address: `${last.cep.logradouro} - ${last.cep.bairro}`,
+                        city: last.cep.localidade,
+                        state: last.cep.uf,
+                        number: last.numero,
+                        complement: last.complemento
+                    });
+                }
             }
         }
     }, [addresses.isSuccess, addresses.data, setAddressData]);

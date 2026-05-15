@@ -134,7 +134,7 @@ const steps = [
           numero: "1234",
           complemento: "Apto 101",
           unidade: "Edifício Sol",
-          tipo: "Apartamento",
+          tipo: "PRESENCIAL",
           cep: {
             id: "01001-000",
             logradouro: "Praça da Sé",
