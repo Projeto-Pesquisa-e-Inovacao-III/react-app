@@ -30,6 +30,7 @@ const AnamnesisInformations = lazy(() => import("./routes/EditUser/AnamnesisInfo
 const AddressManagement = lazy(() => import("./routes/EditUser/AddressManagement/AddressManagement"));
 const ViewPersonalData = lazy(() => import("./routes/Personal/ViewPersonalData/ViewPersonalData"));
 const CreatePersonal = lazy(() => import("./routes/Admin/CreatePersonal/CreatePersonal"));
+const PackageSuccess = lazy(() => import("./routes/Packages/PackageSuccess/PackageSuccess"));
 
 export type Roles = "aluno" | "personal" | "admin";
 export type UserType = Roles;
@@ -81,6 +82,7 @@ function App() {
                 <Route path="/plans-history-details" element={<PlansHistoryDetails />} />
                 <Route path="/schedule-history" element={<ScheduleHistory />} />
                 <Route path="/edit-user/addresses" element={<AddressManagement />} />
+                <Route path="/packages/payment-success" element={<PackageSuccess />} />
               </Route>
             </Route>
 

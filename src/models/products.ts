@@ -6,7 +6,7 @@ export type ProductExhibition = {
     beneficios: {
         valor: string
     }[],
-    preco: string,
+    preco: number,
     tipoProduto: string,
     periodo: string,
     status: string,

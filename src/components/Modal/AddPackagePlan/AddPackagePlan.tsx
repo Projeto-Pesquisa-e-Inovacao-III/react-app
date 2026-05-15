@@ -27,7 +27,7 @@ type AddPackagePlanProps = {
         titulo: string;
         subtitulo: string;
         tipoAula: string;
-        preco: string;
+        preco: number;
         duracaoMes: number | string;
         descricao: string;
         beneficios: { valor: string }[];
@@ -51,7 +51,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         name: packageValues?.titulo || "",
         subtitle: packageValues?.subtitulo || "",
         type: packageValues?.tipoAula || "",
-        price: packageValues?.preco || "",
+        price: packageValues?.preco?.toString() || "",
         deadline: packageValues?.duracaoMes?.toString() || "",
         benefits: packageValues?.beneficios ? packageValues.beneficios.map(b => b.valor) : [],
         quantity: packageValues?.quantidadeAula || null
@@ -118,6 +118,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
     function handleAddBenefit() {
         setPackageInfo(prev => ({ ...prev, benefits: [...prev.benefits, ""] }));
+        setFieldErrors(prev => ({ ...prev, benefits: undefined }));
     }
 
     function handleBenefitChange(index: number, value: string) {
@@ -130,8 +131,11 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
     const {
         openModal,
         setOpenModal,
-        textModal
+        textModal,
+        setTextModal
     } = useModal(null, { title: "", content: "" })
+
+    const [fieldErrors, setFieldErrors] = useState<{ name?: string; subtitle?: string; type?: string; price?: string; quantity?: string; deadline?: string; benefits?: string }>({});
 
     function handleAddPackage() {
         setLoading(true)
@@ -140,10 +144,10 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
 
         const data: ProductExhibition = {
             titulo: packageInfo.name,
-            subtitulo: "",
+            subtitulo: packageInfo.subtitle,
             descricao: "",
             beneficios: filteredBenefits.map(b => ({ valor: b })),
-            preco: packageInfo.price,
+            preco: parseFloat(packageInfo.price.replace(",", ".")),
             periodo: packageInfo.deadline,
             tipoProduto: typePackage,
             status: "ATIVO",
@@ -153,27 +157,53 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         }
         setPackageInfo(prev => ({ ...prev, benefits: filteredBenefits }));
 
+        const errors: { name?: string; subtitle?: string; type?: string; price?: string; quantity?: string; deadline?: string; benefits?: string } = {};
+        if (data.titulo.trim() === "") errors.name = "Preencha o nome do pacote.";
+        if (data.subtitulo.trim() === "") errors.subtitle = "Preencha o subtítulo do pacote.";
+        if (data.tipoAula === "") errors.type = "Selecione uma modalidade.";
+        if (!packageInfo.price || isNaN(data.preco)) errors.price = "Preencha o preço.";
+        if (!packageInfo.quantity) errors.quantity = "Informe a quantidade de aulas.";
+        if (!packageInfo.deadline.trim()) errors.deadline = "Informe a validade em meses.";
+        if (filteredBenefits.length === 0) errors.benefits = "Deve haver entre 1 e 8 benefícios.";
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            setLoading(false);
+            return;
+        }
+        setFieldErrors({});
+
         newProductExhibition(data).then((res) => {
+
+
+            if (res.status == 400) {
+                setLoading(false);
+                setTextModal({
+                    title: "Erro ao criar pacote",
+                    content: res.data || "Ocorreu um erro inesperado. Tente novamente."
+                });
+                setOpenModal("error");
+                return;
+            }
 
             if (packageCreated) {
                 packageCreated(prev => [...prev, res.data]);
             }
+
+
             setLoading(false);
             callSuccessModal();
-        }).catch((error) => {
-            console.error("Erro ao adicionar pacote:", error);
-            setLoading(false);
-        });
+        })
     }
 
     function handleEditPackage() {
         setLoading(true)
         const data: ProductExhibition = {
             titulo: packageInfo.name,
-            subtitulo: "",
+            subtitulo: packageInfo.subtitle,
             descricao: "",
             beneficios: packageInfo.benefits.map(b => ({ valor: b })),
-            preco: packageInfo.price,
+            preco: parseFloat(packageInfo.price.replace(",", ".")),
             periodo: packageInfo.deadline,
             tipoProduto: typePackage,
             status: "ATIVO",
@@ -197,6 +227,11 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
         }).catch((error) => {
             console.error("Erro ao editar pacote:", error);
             setLoading(false);
+            setTextModal({
+                title: "Erro ao editar pacote",
+                content: error?.response?.data?.message || "Ocorreu um erro inesperado. Tente novamente."
+            });
+            setOpenModal("error");
         });
     }
 
@@ -363,22 +398,34 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             value={packageInfo.name}
                                             type="text"
                                             maxLength={20}
-                                            onInputChange={(name: string) => setPackageInfo({ ...packageInfo, name })}
+                                            onInputChange={(name: string) => {
+                                                setPackageInfo({ ...packageInfo, name });
+                                                if (name.trim()) setFieldErrors(prev => ({ ...prev, name: undefined }));
+                                            }}
                                             icon={<Tag color='#093a5d' />}
                                         />
+                                        {fieldErrors.name && (
+                                            <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.name}</span>
+                                        )}
                                     </div>
                                     <div className={styles.inputContainer}>
                                         <InputWithIcon
-                                            id="name"
+                                            id="subtitle"
                                             classNameInput="bg-gray-100! rounded-xl border-none!"
                                             label="Subtítulo do Pacote"
                                             placeholder={"Ex: Esse pacote é adquirido de forma única e não possui cobrança automática."}
                                             value={packageInfo.subtitle}
                                             type="text"
                                             maxLength={80}
-                                            onInputChange={(subtitle: string) => setPackageInfo({ ...packageInfo, subtitle})}
+                                            onInputChange={(subtitle: string) => {
+                                                setPackageInfo({ ...packageInfo, subtitle });
+                                                if (subtitle.trim()) setFieldErrors(prev => ({ ...prev, subtitle: undefined }));
+                                            }}
                                             icon={<Tag color='#093a5d' />}
                                         />
+                                        {fieldErrors.subtitle && (
+                                            <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.subtitle}</span>
+                                        )}
                                     </div>
 
                                     {isMobile ? (
@@ -386,7 +433,10 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                             <span className={styles.mobileLabel}>Modalidade</span>
                                             <Select
                                                 id="select-type-class"
-                                                onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
+                                                onSelectStatusChange={(value: string) => {
+                                                    setPackageInfo({ ...packageInfo, type: value });
+                                                    if (value) setFieldErrors(prev => ({ ...prev, type: undefined }));
+                                                }}
                                                 defaultValue={packageInfo.type || "PRESENCIAL"}
                                                 values={classTypeValues}
                                                 triggerClassName={styles.mobileSelectTrigger}
@@ -397,26 +447,43 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                                 openSelectId={openSelectId}
                                                 showSelectAll={false}
                                             />
+                                            {fieldErrors.type && (
+                                                <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.type}</span>
+                                            )}
                                         </div>
                                     ) : (
                                         <div className={`${styles.inputContainer} ${styles.inputContainerFirst}`}>
                                             <div className="flex gap-5">
-                                                <Select
-                                                    id="select-type-class"
-                                                    label="Modalidade"
-                                                    onSelectStatusChange={(value: string) => setPackageInfo({ ...packageInfo, type: value })}
-                                                    defaultValue="PRESENCIAL"
-                                                    values={classTypeValues}
-                                                    triggerClassName="h-12! w-full!"
-                                                    triggerWrapperClassName="h-12! w-full!"
-                                                    selectWrapperClassName="h-12! w-full!"
-                                                    containerClassName="w-full flex-1"
-                                                    setOpenSelectId={setOpenSelectId}
-                                                    openSelectId={openSelectId}
-                                                    showSelectAll={false}
-                                                />
+                                                <div className="w-full flex-1">
+                                                    <Select
+                                                        id="select-type-class"
+                                                        label="Modalidade"
+                                                        onSelectStatusChange={(value: string) => {
+                                                            setPackageInfo({ ...packageInfo, type: value });
+                                                            if (value) setFieldErrors(prev => ({ ...prev, type: undefined }));
+                                                        }}
+                                                        defaultValue="PRESENCIAL"
+                                                        values={classTypeValues}
+                                                        triggerClassName="h-12! w-full!"
+                                                        triggerWrapperClassName="h-12! w-full!"
+                                                        selectWrapperClassName="h-12! w-full!"
+                                                        containerClassName="w-full!"
+                                                        setOpenSelectId={setOpenSelectId}
+                                                        openSelectId={openSelectId}
+                                                        showSelectAll={false}
+                                                    />
+                                                    {fieldErrors.type && (
+                                                        <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.type}</span>
+                                                    )}
+                                                </div>
                                                 <div className={styles.inputContainer}>
-                                                    <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" allowDecimals={true} maxLength={5} maxDecimalPlaces={2} value={packageInfo.price} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })} />
+                                                    <InputWithIcon id="price" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Banknote size={20} color='#093A5D' />} label="Preço (R$)" type="number" allowDecimals={true} maxLength={5} maxDecimalPlaces={2} value={packageInfo.price} onInputChange={(value: string) => {
+                                                        setPackageInfo({ ...packageInfo, price: value });
+                                                        if (value) setFieldErrors(prev => ({ ...prev, price: undefined }));
+                                                    }} />
+                                                    {fieldErrors.price && (
+                                                        <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.price}</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
@@ -435,10 +502,16 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                                     allowDecimals={true}
                                                     type="number"
                                                     value={packageInfo.price}
-                                                    onInputChange={(value: string) => setPackageInfo({ ...packageInfo, price: value })}
+                                                    onInputChange={(value: string) => {
+                                                        setPackageInfo({ ...packageInfo, price: value });
+                                                        if (value) setFieldErrors(prev => ({ ...prev, price: undefined }));
+                                                    }}
                                                     maxLength={4}
                                                     maxDecimalPlaces={2}
                                                 />
+                                                {fieldErrors.price && (
+                                                    <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.price}</span>
+                                                )}
                                             </div>
                                             <div className={styles.mobileFieldHalf}>
                                                 <InputWithIcon
@@ -450,8 +523,14 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                                     type="number"
                                                     maxLength={2}
                                                     value={packageInfo.deadline}
-                                                    onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })}
+                                                    onInputChange={(value: string) => {
+                                                        setPackageInfo({ ...packageInfo, deadline: value });
+                                                        if (value) setFieldErrors(prev => ({ ...prev, deadline: undefined }));
+                                                    }}
                                                 />
+                                                {fieldErrors.deadline && (
+                                                    <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.deadline}</span>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -460,10 +539,22 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     {!isMobile && (
                                         <div className="flex gap-5 mb-2!">
                                             <div className={styles.inputContainer}>
-                                                <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" maxLength={3} value={packageInfo.quantity} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value) })} />
+                                                <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" maxLength={3} value={packageInfo.quantity} onInputChange={(value: string) => {
+                                                    setPackageInfo({ ...packageInfo, quantity: Number(value) });
+                                                    if (value) setFieldErrors(prev => ({ ...prev, quantity: undefined }));
+                                                }} />
+                                                {fieldErrors.quantity && (
+                                                    <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.quantity}</span>
+                                                )}
                                             </div>
                                             <div className={styles.inputContainer}>
-                                                <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093a5d' />} label="Validade (meses)" type="number" maxLength={2} value={packageInfo.deadline} onInputChange={(value: string) => setPackageInfo({ ...packageInfo, deadline: value })} />
+                                                <InputWithIcon id="deadline" classNameInput="bg-gray-100! rounded-xl border-none!" placeholder="" icon={<Calendar size={30} color='#093a5d' />} label="Validade (meses)" type="number" maxLength={2} value={packageInfo.deadline} onInputChange={(value: string) => {
+                                                    setPackageInfo({ ...packageInfo, deadline: value });
+                                                    if (value) setFieldErrors(prev => ({ ...prev, deadline: undefined }));
+                                                }} />
+                                                {fieldErrors.deadline && (
+                                                    <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.deadline}</span>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -481,14 +572,22 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                                 type="number"
                                                 maxLength={3}
                                                 value={packageInfo.quantity}
-                                                onInputChange={(value: string) => setPackageInfo({ ...packageInfo, quantity: Number(value) })}
+                                                onInputChange={(value: string) => {
+                                                    setPackageInfo({ ...packageInfo, quantity: Number(value) });
+                                                    if (value) setFieldErrors(prev => ({ ...prev, quantity: undefined }));
+                                                }}
                                             />
+                                            {fieldErrors.quantity && (
+                                                <span style={{ color: "#dc2626", fontSize: "0.75rem", marginTop: "2px", display: "block" }}>{fieldErrors.quantity}</span>
+                                            )}
                                         </div>
                                     )}
 
                                     <div className={styles.mobileBenefitsHeader}>
                                         <span className={styles.labelBenefits}>Benefícios inclusos <span className="text-slate-500">({packageInfo.benefits.length}/8)</span></span>
-
+                                        {fieldErrors.benefits && (
+                                            <span style={{ color: "#dc2626", fontSize: "0.75rem" }}>{fieldErrors.benefits}</span>
+                                        )}
                                     </div>
 
                                     {packageInfo.benefits.map((benefit, index) => (

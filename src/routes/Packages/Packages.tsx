@@ -15,6 +15,7 @@ import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
 import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLocation } from "react-router-dom";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | null;
 
@@ -28,6 +29,7 @@ export function Packages() {
 
     const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
     const [packageId, setPackageId] = useState<number | null>(null);
+
 
     useEffect(() => {
         if (openModal) {
@@ -46,7 +48,24 @@ export function Packages() {
         enabled: type?.type?.includes("aluno")
     });
 
-    function handleBuyClick(id: number, packageTitle: string, isAdditional: boolean = false) {
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (!actualPlanQuery.data?.data) {
+            return
+        }
+
+        if (location.state?.successMessage) {
+            setSuccessModalInfos({
+                title: "Compra Concluída",
+                content: `Você adquiriu o pacote "${actualPlanQuery.data?.data.nome}" com sucesso!`,
+            });
+            setOpenModal("success");
+        }
+    }, [location, actualPlanQuery.data?.data]);
+
+    function handleBuyClick(id: number, isAdditional: boolean = false) {
         if (isAdditional && !actualPlanQuery.data?.data) {
             handleErrorModalInfos("Atenção", "Para adquirir um pacote adicional, você precisa ter um plano principal ativo.");
             return;
@@ -55,11 +74,7 @@ export function Packages() {
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
             window.location.href = response.data;
-            setSuccessModalInfos({
-                title: "Compra Concluída",
-                content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-            });
-            setOpenModal("success");
+
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
             handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
@@ -317,7 +332,7 @@ export function Packages() {
                                                         <PackageCard
                                                             {...pacote}
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, false)}
+                                                            onClick={() => handleBuyClick(pacote.id!, false)}
                                                             isMobile={isMobile}
                                                             isAdmin={type?.type?.includes("admin")}
                                                             isPersonal={isPersonal}
@@ -352,7 +367,7 @@ export function Packages() {
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, false)}
+                                        onClick={() => handleBuyClick(pacote.id!, false)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
@@ -458,7 +473,7 @@ export function Packages() {
                                                     <PackageCard
                                                         {...pacote}
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, true)}
+                                                        onClick={() => handleBuyClick(pacote.id!, true)}
                                                         isMobile={isMobile}
                                                         isAdmin={type?.type?.includes("admin")}
                                                         isPersonal={isPersonal}
@@ -494,7 +509,7 @@ export function Packages() {
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!, true)}
+                                        onClick={() => handleBuyClick(pacote.id!, true)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
