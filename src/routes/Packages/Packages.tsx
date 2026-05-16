@@ -174,7 +174,7 @@ export function Packages() {
 
     function handleDeletePackage(id: number) {
         desactivateProductExhibition(id).then(() => {
-            
+
             setProductsExhibitions(prev => prev.filter(pkg => pkg.id !== id));
             setProductsExhibitionsAdicional(prev => prev.filter(pkg => pkg.id !== id));
             setPackageId(null);
@@ -188,7 +188,7 @@ export function Packages() {
     }
 
     function handleUpdatePackage(id: number, isAdicional: boolean = false) {
-        
+
         if (!packageId) {
             setPackageId(id)
             setOpenModal(isAdicional ? "editAdditional" : "edit");
@@ -270,8 +270,8 @@ export function Packages() {
     }
 
     const slidesToRender = activePackages.length > 0
-  ? [...activePackages, ...activePackages, ...activePackages]
-  : activePackages;
+        ? [...activePackages, ...activePackages, ...activePackages]
+        : activePackages;
 
     const slidesToRenderAdicional = productsExhibitionsAdicional
 
@@ -314,9 +314,11 @@ export function Packages() {
                 </div>
 
 
-                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
-                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
-                    { [styles.packagesListWrapperMobile]: isMobile })}>
+                <div
+                    style={!shouldUseCarousel ? { '--pkg-cols': activePackages.length + (isAdmin ? 1 : 0) } as React.CSSProperties : {}}
+                    className={classnames(styles.packagesListWrapperDesktop,
+                        { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
+                        { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
                         renderPackageCardSkeleton()
                     ) : activePackages.length > 0 ? (

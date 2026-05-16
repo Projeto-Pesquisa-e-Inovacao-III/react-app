@@ -1,12 +1,10 @@
 .packagesListWrapperDesktop {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    flex-wrap: wrap;
+    grid-template-columns: repeat(var(--pkg-cols, 4), 1fr);
     gap: 40px;
     width: auto;
     padding-top: 30px;
     padding-bottom: 30px;
-
 }
 
 .packagesTitleContainer {
@@ -20,8 +18,7 @@
 }
 
 .addCard {
-    max-width: 25rem;
-    width: 100%;
+    width: 50%;
     border: 2px dashed #64748b;
     border-radius: 1.5rem;
     display: flex;
@@ -32,7 +29,8 @@
     transition: all 0.2s ease;
     min-height: 500px;
     cursor: pointer;
-    height: 800px;
+    height: 100%;
+    align-self: stretch;
 }
 
 .addCard:hover {
@@ -221,19 +219,29 @@
     grid-column: 1 / -1;
 }
 
-.addCardLimit, .addIconWrapperLimit {
+.addCardLimit,
+.addIconWrapperLimit {
     cursor: not-allowed;
     background-color: rgba(255, 0, 0, 0.1);
     border-color: rgba(255, 0, 0, 0.5);
 }
 
-.addCardLimit:hover, .addIconWrapperLimit:hover {
+.addCardLimit:hover,
+.addIconWrapperLimit:hover {
     cursor: not-allowed;
     background-color: rgba(255, 0, 0, 0.1);
     border-color: rgba(255, 0, 0, 0.5);
 }
 
 @media (max-width: 1536px) {
+    .addCard {
+        width: 50% !important;
+    }
+
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(min(var(--pkg-cols, 4), 2), 1fr) !important;
+    }
+
     .emblaSlide {
         flex: 0 0 45% !important;
     }
@@ -241,38 +249,37 @@
     .emblaSlideAdd {
         flex: 0 0 30% !important;
     }
-
-    .addCard {
-        width: 30rem;
-    }
-
-    .packagesListWrapperDesktop {
-        grid-template-columns: repeat(2, 1fr);
-
-    }
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1400px) {
+    .packagesListWrapperDesktop {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .addCard {
+        max-width: unset;
+    }
+
     .emblaSlide {
         flex: 0 0 80.33% !important;
     }
 
     .emblaSlideUser {
-        flex: 0 0 40% !important;
+        flex: 0 0 50% !important;
     }
 
     .emblaSlideAdd {
         flex: 0 0 30% !important;
     }
-
-    .addCard {
-        width: 30rem;
-    }
 }
 
 @media (max-width: 1280px) {
     .packagesListWrapperDesktop {
-        justify-content: center;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .addCard {
+        max-width: unset;
     }
 
     .emblaSlide {
@@ -281,17 +288,12 @@
         box-sizing: border-box;
     }
 
-
-    .addCard {
-        width: 30rem;
-    }
-
-    .packagesListWrapperDesktop {
-        grid-template-columns: repeat(2, 1fr);
+    .emblaSlideUser {
+        flex: 0 0 70% !important;
     }
 }
 
-
+@media (max-width: 1500px) {}
 
 @media (max-width: 1024px) {
     .addCard {
