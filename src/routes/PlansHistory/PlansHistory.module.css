@@ -22,13 +22,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-}
-
-.verticalDivider {
-    width: 0.125rem;
-    height: 100%;
-    border: 1px solid #d1d5db;
 }
 
 .calendarIcon {
