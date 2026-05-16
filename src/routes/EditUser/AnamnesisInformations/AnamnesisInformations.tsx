@@ -206,7 +206,7 @@ export default function AnamnesisInformations() {
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Dados pessoais</h3>
               </div>
-              <div>
+              <div className={classNames({ [styles.inputWrapper]: isMobile })}>
                 <InputWithIcon
                   id="height"
                   classNameInput="text-[#334155]! font-medium"
@@ -235,7 +235,7 @@ export default function AnamnesisInformations() {
                 )}
               </div>
 
-              <div>
+              <div className={classNames({ [styles.inputWrapper]: isMobile })}>
                 <InputWithIcon
                   id="weight"
                   classNameInput="text-[#334155]! font-medium"
@@ -301,7 +301,7 @@ export default function AnamnesisInformations() {
               />
 
               {!valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) && (
-                <div className="flex flex-col" id="outro">
+                <div className={classNames("flex flex-col", { [styles.inputWrapper]: isMobile })} id="outro">
                   <div className={styles.personalDataTitle}>
                     <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                     <h3>Meu objetivo principal</h3>
@@ -322,7 +322,7 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
-            <div id="healthConditions">
+            <div id="healthConditions" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Condições de saúde</h3>
@@ -365,7 +365,7 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
-            <div id="levelOfActivity">
+            <div id="levelOfActivity" className={classNames({ [styles.inputWrapper]: isMobile })}>
 
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
@@ -384,7 +384,7 @@ export default function AnamnesisInformations() {
             </div>
 
 
-            <div id="routine">
+            <div id="routine" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Descreva sua rotina diária atual (opcional)</h3>
