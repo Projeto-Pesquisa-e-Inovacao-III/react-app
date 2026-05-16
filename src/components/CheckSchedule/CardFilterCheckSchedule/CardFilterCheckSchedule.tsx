@@ -123,7 +123,6 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                                                 }
                                                 setOpenCalendar(false);
                                             }}
-                                            classname="absolute bottom-0"
                                         />
                                     )}
                                 </div>

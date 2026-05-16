@@ -1,7 +1,7 @@
 .packageCardContainer {
     background-color: #ffffff;
     border-radius: 30px;
-    box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 4px 12px 12px rgba(0, 0, 0, 0.08); */
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -224,6 +224,20 @@
     background-color: var(--btn-hover-bg);
 }
 
+.cardBtnDisabled {
+    background-color: #cbd5e1 !important;
+    color: #64748b !important;
+    cursor: not-allowed !important;
+    border: 1px solid #94a3b8 !important;
+
+    border-bottom-right-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+}
+
+.cardBtnDisabled:hover {
+    background-color: #cbd5e1 !important;
+}
+
 
 @media (max-width: 1280px) {
     .packageCardContainer {
@@ -401,17 +415,17 @@
 }
 
 .editButton {
-    width: 47%;
-    background: white;
-    color: black;
-    font-weight: 600;
-    border: 1px solid #e5e7eb;
+    width: 47% !important;
+    background: white !important;
+    color: black !important;
+    font-weight: 600 !important;
+    border: 1px solid #e5e7eb !important;
 }
 
 .deleteButton {
-    width: 47%;
-    background: #fee2e2;
-    color: #b91c1c;
-    font-weight: 600;
-    border: 1px solid #fecaca;
+    width: 47% !important;
+    background: #fee2e2 !important;
+    color: #b91c1c !important;
+    font-weight: 600 !important;
+    border: 1px solid #fecaca !important;
 }

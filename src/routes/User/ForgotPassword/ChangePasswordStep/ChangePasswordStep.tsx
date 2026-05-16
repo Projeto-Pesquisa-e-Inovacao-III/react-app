@@ -19,8 +19,8 @@ export default function ChangePasswordStep({ setNewPassword, setConfirmPassword 
       </div>
       <div className={styles.wrapperInputsForgotPasswordPage}>
         <form action="">
-          <InputWithIcon type={"password"} placeholder={"Nova senha"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setNewPassword(value)} />
-          <InputWithIcon type={"password"} placeholder={"Confirme a senha nova"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setConfirmPassword(value)} />
+          <InputWithIcon type={"password"} placeholder={"Nova senha"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setNewPassword(value)} maxLength={50} />
+          <InputWithIcon type={"password"} placeholder={"Confirme a senha nova"} icon={<Lock />} isPassword={true} onInputChange={(value: string) => setConfirmPassword(value)} maxLength={50} />
         </form>
       </div>
     </>

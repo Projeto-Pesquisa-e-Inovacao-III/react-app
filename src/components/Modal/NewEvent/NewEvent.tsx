@@ -70,7 +70,7 @@ export default function NewEvent({
     newAppointmentCreated, goToNextStep = true, typeUser, disabledDays: propDisabledDays
 }: NewEventProps) {
     const { setOpenModal, openModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
-    
+
     const [form, setForm] = useState({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
@@ -118,8 +118,8 @@ export default function NewEvent({
     ) ?? personalList.data?.content?.[0];
 
     const personalOptions = useMemo(
-        () => personalList.data?.content?.map((p: PersonalSummary) => ({ 
-            value: p.id, 
+        () => personalList.data?.content?.map((p: PersonalSummary) => ({
+            value: p.id,
             label: p.nome,
             image: p.caminhoFoto,
             subtitle: p.dataNascimento ? `${differenceInYears(new Date(), parse(p.dataNascimento, "yyyy-MM-dd", new Date()))} anos` : ""
@@ -188,18 +188,24 @@ export default function NewEvent({
     useEffect(() => {
         if (!addressInitialized.current && addresses.isSuccess && addresses.data?.length) {
             addressInitialized.current = true;
-            const last = addresses.data.at(-1);
-            setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
-
-            if (last?.cep?.cep) {
-                setAddressData({
-                    postalCode: cepMask(last.cep.cep),
-                    address: `${last.cep.logradouro} - ${last.cep.bairro}`,
-                    city: last.cep.localidade,
-                    state: last.cep.uf,
-                    number: last.numero,
-                    complement: last.complemento
-                });
+            // Pick the last address that matches the current event type; fall back to the absolute last
+            const matchingAddresses = addresses.data.filter(
+                (a: any) => a?.tipo?.toUpperCase() === form.type?.toUpperCase()
+            );
+            const last = matchingAddresses.length > 0 ? matchingAddresses.at(-1) : addresses.data.at(-1);
+            // Only pre-select if it truly matches the current type
+            if (last?.tipo?.toUpperCase() === form.type?.toUpperCase()) {
+                setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
+                if (last?.cep?.cep) {
+                    setAddressData({
+                        postalCode: cepMask(last.cep.cep),
+                        address: `${last.cep.logradouro} - ${last.cep.bairro}`,
+                        city: last.cep.localidade,
+                        state: last.cep.uf,
+                        number: last.numero,
+                        complement: last.complemento
+                    });
+                }
             }
         }
     }, [addresses.isSuccess, addresses.data, setAddressData]);
@@ -268,8 +274,8 @@ export default function NewEvent({
         }
 
         const validLocationOptions = LOCATION_OPTIONS[form.type] || [];
-        const finalLocation = validLocationOptions.some(opt => opt.value === form.location) 
-            ? form.location 
+        const finalLocation = validLocationOptions.some(opt => opt.value === form.location)
+            ? form.location
             : (validLocationOptions[0]?.value || "ACADEMIA");
 
         const payload: Schedule = {
@@ -359,8 +365,17 @@ export default function NewEvent({
     }, []);
 
     const handleTypeChange = useCallback((val: string) => {
+        const selectedOption = scheduleTypes.find(t => t.value === val);
+        if (selectedOption?.disabled) {
+            setTextModal({
+                title: "Tipo de atendimento indisponível",
+                content: `Você não possui saldo para aulas do tipo ${selectedOption.label.split(' (')[0].toLowerCase()}.`
+            });
+            setOpenModal("error");
+            return;
+        }
         setForm(prev => prev.type === val ? prev : { ...prev, type: val });
-    }, []);
+    }, [scheduleTypes, setOpenModal, setTextModal]);
 
     const handleLocationChange = useCallback((val: string) => {
         setForm(prev => prev.location === val ? prev : { ...prev, location: val });
@@ -397,7 +412,7 @@ export default function NewEvent({
 
                     {ui.step === 1 ? (
                         <DateTimeStep
-                            isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date} 
+                            isMobile={isMobile} isReschedule={isReschedule} newEventDate={form.date}
                             setNewEventDate={handleDateChange}
                             clickedDate={clickedDate} insertedEvents={insertedEvents} availabilityHoursTomorrow={null}
                             tomorrow={tomorrow} disabledDays={finalDisabledDays} availabilityHours={availabilityHours}

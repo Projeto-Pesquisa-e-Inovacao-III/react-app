@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { Building2, CalendarDays, Clock, MapPin, MessageSquare, Navigation } from 'lucide-react';
+import { Ban, Building2, CalendarDays, CalendarClock, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, UserX, X } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -320,7 +320,7 @@ export default function ScheduleDetails() {
                                 {appointment.isLoading ? (
                                     <Skeleton width="100%" height={40} />
                                 ) : (
-                                    <Button type="button" typeButton="accept" title="Concluir aula" classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")} />
+                                    <Button type="button" typeButton="accept" title="Concluir aula" icon={<ClipboardCheck size={16} strokeWidth={2.5} />} classNameVariable="btn-check-schedule accept" onClick={() => handleModal(appointment.data?.id, "conclude")} />
                                 )}
                             </div>
 
@@ -328,7 +328,7 @@ export default function ScheduleDetails() {
                                 {appointment.isLoading ? (
                                     <Skeleton width="100%" height={40} />
                                 ) : (
-                                    <Button type="button" typeButton="decline" title="Registrar ausência" classNameVariable="btn-check-schedule decline" onClick={() => {
+                                    <Button type="button" typeButton="decline" title="Registrar ausência" icon={<UserX size={16} strokeWidth={2.5} />} classNameVariable="btn-check-schedule decline" onClick={() => {
                                         handleModal(appointment.data?.id, "registerAbsence");
                                     }} />
                                 )}
@@ -346,13 +346,13 @@ export default function ScheduleDetails() {
                             (type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_CLIENTE_APROVACAO")
                         ) && (
                             <div className={classNames(styles.buttonGroup, { [styles.buttonGroupStudent]: type?.type?.includes("personal") || type?.type?.includes("admin") || type?.type?.includes("aluno") })}>
-                                <Button type="button" typeButton="accept" title="Aceitar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                <Button type="button" typeButton="accept" title="Aceitar" icon={<Check size={16} strokeWidth={2.5} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "accept");
                                 }} />
-                                <Button type="button" typeButton="decline" title="Recusar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                <Button type="button" typeButton="decline" title="Recusar" icon={<X size={16} strokeWidth={2.5} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "decline");
                                 }} />
-                                <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                                <Button type="button" typeButton="other" title="Reagendar" icon={<CalendarClock size={16} strokeWidth={2} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                     handleModal(appointment.data?.id, "reschedule");
                                 }} />
                             </div>
@@ -368,10 +368,10 @@ export default function ScheduleDetails() {
 
                     {appointment.data?.status === "APROVADO" && (
                         <div className={classNames(styles.buttonGroup)}>
-                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                            <Button type="button" typeButton="other" title="Reagendar" icon={<CalendarClock size={16} strokeWidth={2} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");
                             }} />
-                            <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                            <Button type="button" typeButton="decline" title="Cancelar" icon={<Ban size={16} strokeWidth={2.5} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "cancel");
                             }} />
                         </div>
@@ -380,10 +380,10 @@ export default function ScheduleDetails() {
 
                     {type?.type?.includes("aluno") && appointment.data?.status === "PENDENTE_PERSONAL_APROVACAO" && (
                         <div className={classNames(styles.buttonGroup)}>
-                            <Button type="button" typeButton="other" title="Reagendar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                            <Button type="button" typeButton="other" title="Reagendar" icon={<CalendarClock size={16} strokeWidth={2} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "reschedule");
                             }} />
-                            <Button type="button" typeButton="decline" title="Cancelar" classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
+                            <Button type="button" typeButton="decline" title="Cancelar" icon={<Ban size={16} strokeWidth={2.5} />} classNameDiv={styles.buttonActions} classNameVariable={styles.btnCheckSchedule} onClick={() => {
                                 handleModal(appointment.data?.id, "cancel");
                             }} />
                         </div>
@@ -415,13 +415,13 @@ export default function ScheduleDetails() {
                             errorModal={() => handleErrorModal("Erro ao reagendar", "Não foi possível reagendar o horário")}
                             insertedEvents={appointments.data?.data}
                             title="Reagendar horário"
-                            buttonTitle="Reagendar"
+                            buttonTitle={!type?.type?.includes("personal") ? "Avançar" : "Reagendar"}
                             isReschedule={true}
                             rescheduleId={appointmentId}
                             clickedDate={appointment.data?.dataInicio?.split("T")[0] || ""}
                             typeUser={type?.type || []}
                             appoitmentData={appointment.data}
-                            goToNextStep={!type?.type?.includes("aluno")}
+                            goToNextStep={!type?.type?.includes("personal")}
                         />
                     </>
                 )}

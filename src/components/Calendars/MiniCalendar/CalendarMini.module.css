@@ -15,39 +15,82 @@
 }
 
 .miniSelectedDay :global(.fc-daygrid-day-frame) {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.miniSelectedDay :global(.fc-daygrid-day-top) {
   background: var(--bg-blue, #093A5D) !important;
-  color: white !important;
-  border-radius: 50%;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(9, 58, 93, 0.25);
 }
 
-.miniStartDay :global(.fc-daygrid-day-frame) {
-  background: var(--bg-blue, #093A5D) !important;
+.miniSelectedDay :global(.fc-daygrid-day-number) {
   color: white !important;
+  padding: 0 !important;
+}
+
+.miniStartDay :global(.fc-daygrid-day-frame) {
+  background: linear-gradient(to right, transparent 50%, var(--carol-light, #b6d0dd) 50%) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.miniStartDay :global(.fc-daygrid-day-top) {
+  background: var(--bg-blue, #093A5D) !important;
   border-radius: 12px 0 0 12px !important;
-  box-shadow: 0 4px 12px rgba(9, 58, 93, 0.3);
-  font-weight: 600;
-  transform: scale(1.02);
-  transition: all 0.3s ease;
-  z-index: 10;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(9, 58, 93, 0.3);
+}
+
+.miniStartDay :global(.fc-daygrid-day-number) {
+  color: white !important;
+  font-weight: 600;
+  padding: 0 !important;
 }
 
 .miniStartDay.miniIsolatedDay :global(.fc-daygrid-day-frame) {
-  border-radius: 50% !important;
+  background: transparent !important;
 }
 
 .miniEndDay :global(.fc-daygrid-day-frame) {
+  background: linear-gradient(to left, transparent 50%, var(--carol-light, #b6d0dd) 50%) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.miniEndDay :global(.fc-daygrid-day-top) {
   background: var(--bg-blue, #093A5D) !important;
-  color: white !important;
   border-radius: 0 12px 12px 0 !important;
-  box-shadow: 0 4px 12px rgba(9, 58, 93, 0.3);
-  font-weight: 600;
-  transform: scale(1.02);
-  transition: all 0.3s ease;
-  z-index: 10;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   position: relative;
+  z-index: 2;
+  box-shadow: 0 4px 12px rgba(9, 58, 93, 0.3);
+}
+
+.miniEndDay :global(.fc-daygrid-day-number) {
+  color: white !important;
+  font-weight: 600;
+  padding: 0 !important;
 }
 
 .miniInRangeDay :global(.fc-daygrid-day-frame) {
@@ -59,8 +102,17 @@
 }
 
 .miniWrapperStyledCalendar :global(.fc .fc-daygrid-day.fc-day-today) {
+  background: transparent !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc .fc-day-today .fc-daygrid-day-top) {
   background: var(--carol-light, #b6d0dd) !important;
-  border-radius: 50%;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .miniWrapperStyledCalendar :global(.fc-col-header-cell) {
@@ -140,16 +192,31 @@
 }
 
 .miniWrapperStyledCalendar :global(.fc-daygrid-day-number) {
-  font-size: 0.95rem !important;
-  padding: 8px !important;
+  font-size: 0.9rem !important;
+  padding: 0 !important;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .miniWrapperStyledCalendar :global(.fc-daygrid-day:hover .fc-daygrid-day-frame) {
+  background: transparent !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day:hover .fc-daygrid-day-top) {
   background: var(--btn-hover-bg, #2c6888) !important;
+  border-radius: 50% !important;
+  width: 30px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.miniWrapperStyledCalendar :global(.fc-daygrid-day:hover .fc-daygrid-day-number) {
   color: white !important;
-  border-radius: 50%;
-  transform: scale(1.05);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .miniWrapperStyledCalendar :global(.fc-col-header-cell-cushion)::first-letter,

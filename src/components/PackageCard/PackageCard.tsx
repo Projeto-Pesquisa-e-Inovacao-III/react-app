@@ -25,11 +25,13 @@ type PackageCardProps = {
     isAdmin?: boolean;
     isPersonal?: boolean;
     classNameContainer?: string;
+    isDisabled?: boolean;
+    onDisabledClick?: () => void;
 };
 
 
 export function PackageCard(props: PackageCardProps) {
-    const { isMobile = false, variant = "consultoria", isLoading = false } = props;
+    const { isMobile = false, variant = "consultoria", isLoading = false, isDisabled = false } = props;
 
     function handleOpenEdit() {
         props.setHandleEdit?.(true);
@@ -217,14 +219,15 @@ export function PackageCard(props: PackageCardProps) {
                 ) : (
                     !props.isPersonal && (
                         <button
-                            className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile })}
-                            onClick={props.onClick}
+                            className={classnames(styles.cardBtn, { [styles.cardBtnMobile]: isMobile }, { [styles.cardBtnDisabled]: isDisabled })}
+                            onClick={isDisabled ? props.onDisabledClick : props.onClick}
                         >
-                            Comprar
+                            {isDisabled ? "Nenhum pacote de consultoria ativo" : "Comprar"}
                         </button>
                     )
                 )
-            )}
+                )}
+
         </div>
     );
 }

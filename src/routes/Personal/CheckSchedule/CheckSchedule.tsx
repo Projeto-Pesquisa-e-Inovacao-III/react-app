@@ -410,7 +410,7 @@ export function CheckSchedule() {
                         ) : (
                             (appointmentsList ?? []).map((card) => (
 
-                                <Link to={`/schedule-details?id=${card.agendamentoId}`}>
+                                <Link className={styles.link} to={`/schedule-details?id=${card.agendamentoId}`}>
                                     <div className={styles.mobileCardWrapper}
                                         key={card.agendamentoId}
                                         ref={loadMoreRef}
@@ -832,11 +832,11 @@ export function CheckSchedule() {
                             errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                             insertedEvents={appointments.data?.data}
                             title="Reagendar horário"
-                            buttonTitle="Reagendar"
+                            buttonTitle={!type?.includes("personal") ? "Avançar" : "Reagendar"}
                             isReschedule={true}
                             clickedDate={clickedDate}
                             rescheduleId={appointmentId}
-                            goToNextStep={false}
+                            goToNextStep={!type?.includes("personal")}
                             appoitmentData={appointment.data}
                             typeUser={type || []}
 

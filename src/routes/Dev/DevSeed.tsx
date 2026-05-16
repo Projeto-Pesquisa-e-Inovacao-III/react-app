@@ -49,7 +49,7 @@ const steps = [
     run: async (_ctx: Record<string, unknown>) => {
       const res = await api.post("/controle/admin/dev/usuarios/personal", {
         nome: "Fillipe",
-        sexo: "M",
+        sexo: "Masculino",
         dataNascimento: "2005-12-27",
         email: "fillipemcoelho@hotmail.com",
         cref: "01415069031",
@@ -134,7 +134,7 @@ const steps = [
           numero: "1234",
           complemento: "Apto 101",
           unidade: "Edifício Sol",
-          tipo: "Apartamento",
+          tipo: "PRESENCIAL",
           cep: {
             id: "01001-000",
             logradouro: "Praça da Sé",

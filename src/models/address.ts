@@ -1,6 +1,5 @@
 export type Address = {
     id?: number;
-    apelido?: string;
     tipo: string;
     numero: string;
     complemento?: string;

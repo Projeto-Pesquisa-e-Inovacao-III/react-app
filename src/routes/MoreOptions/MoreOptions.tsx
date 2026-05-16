@@ -1,4 +1,4 @@
-import { Banknote, Boxes, Clock, HistoryIcon, IdCard, LogOut, User, ChevronRight } from 'lucide-react';
+import { Banknote, Boxes, Clock, HistoryIcon, IdCard, LogOut, User, ChevronRight, Calendar } from 'lucide-react';
 import styles from './MoreOptions.module.css';
 import useMobile from '../../hooks/isMobile';
 import { useContext, useEffect } from 'react';
@@ -42,7 +42,7 @@ export default function MoreOptions() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <div className={styles.profileInfo}>
-                    <UserAvatar withUsernameClassName={"w-20! h-20! text-3xl! shadow-lg border-4 border-white"} userName={userName.data || "Usuário"} useUserImage={true} />
+                    <UserAvatar imgClassName="w-36! h-36! border-4 border-white" withUsernameClassName={"w-36! h-36! text-5xl! shadow-lg border-4 border-white"} userName={userName.data || "Usuário"} useUserImage={true} />
                     <div className={styles.userDetails}>
                         <h2 className={styles.userName}>{userName.data || "Usuário"}</h2>
                         <span className={styles.userRole}>
@@ -80,6 +80,7 @@ export default function MoreOptions() {
                         {/* personal e admin */}
                         {type?.type?.includes("personal") && type?.type?.includes("admin") && (
                             <>
+                                <OptionItem icon={<Calendar size={22} />} title='Agenda' onClick={() => nav("/schedule")} />
                                 <OptionItem icon={<Boxes size={22} />} title='Pacotes' onClick={() => nav("/packages")} />
                                 <OptionItem icon={<Clock size={22} />} title='Ajustar disponibilidade' onClick={() => nav("/set-availability")} />
                                 <OptionItem icon={<User size={22} />} title='Criar personal' onClick={() => nav("/create-personal")} />

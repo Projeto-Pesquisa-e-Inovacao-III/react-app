@@ -34,7 +34,7 @@ export default function ViewPersonalData() {
 
     const age = personal.data?.dataNascimento
         ? differenceInYears(new Date(), parse(personal.data?.dataNascimento, "yyyy-MM-dd", new Date()))
-        : "N/A";
+        : "Não informado";
 
     const userId = Number(personalId);
     const isAtivo = personal.data?.ativo ?? true;

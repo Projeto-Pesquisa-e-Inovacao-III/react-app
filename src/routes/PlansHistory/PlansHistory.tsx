@@ -91,6 +91,7 @@ export default function PlansHistory() {
                         icon={<SearchIcon />}
                         value={filterSearch}
                         onInputChange={setFilterSearch}
+                        classNameInput="!rounded-lg"
                     />
                 </div>
                 <div ref={calendarRef} className={styles.calendarWrapper}>
