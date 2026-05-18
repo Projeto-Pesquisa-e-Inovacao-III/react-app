@@ -47,6 +47,33 @@
 	margin-bottom: 12px;
 }
 
+.typeToggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px;
+	border-radius: 999px;
+	background: #f1f5f9;
+	margin-bottom: 8px;
+}
+
+.typeToggleButton {
+	background: transparent;
+	border: none;
+	color: #4a5568;
+	font-size: 0.95rem;
+	font-weight: 600;
+	padding: 8px 16px;
+	border-radius: 999px;
+	cursor: pointer;
+	transition: background 0.2s, color 0.2s;
+}
+
+.typeToggleButtonActive {
+	background: #0a2239;
+	color: #fff;
+}
+
 .rowDouble {
 	display: flex;
 	gap: 16px;

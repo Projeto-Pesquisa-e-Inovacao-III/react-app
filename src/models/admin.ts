@@ -24,7 +24,7 @@ export type ReqCreateUserDTO = {
     sexo: string;
     dataNascimento: string;
     email: string;
-    cref: string;
+    cref?: string;
     telefone: {
         pais: number;
         ddd: number;

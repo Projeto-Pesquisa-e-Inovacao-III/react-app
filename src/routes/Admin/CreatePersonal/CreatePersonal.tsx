@@ -16,9 +16,14 @@ import useModal from "../../../hooks/useModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 
+type CreateUserType = "personal" | "admin";
+
 export default function CreatePersonal() {
   const isMobile = useMobile();
   const sexOptions = ["Masculino", "Feminino", "Outro"];
+  const [userType, setUserType] = useState<CreateUserType>("personal");
+  const isPersonal = userType === "personal";
+  const roleLabel = isPersonal ? "Personal" : "Admin";
 
   const [form, setForm] = useState({
     nome: "",
@@ -34,7 +39,7 @@ export default function CreatePersonal() {
     setOpenModal,
     textModal,
     setTextModal
-  } = useModal(null, { title: "", content: "" })
+  } = useModal(null, { title: "", content: "" });
 
   const [touched, setTouched] = useState<{ [key: string]: boolean }>({
     nome: false,
@@ -71,11 +76,19 @@ export default function CreatePersonal() {
     return (
       form.nome.trim() !== "" &&
       validation.validateEmail(form.email).startsWith("Email válido") &&
-      form.cref.trim() !== "" &&
+      (!isPersonal || form.cref.trim() !== "") &&
       form.sexo.trim() !== "" &&
       form.dataNascimento.length === 10 &&
       form.telefone.replace(/\D/g, "").length === 11
     );
+  }
+
+  function handleUserTypeChange(nextType: CreateUserType) {
+    setUserType(nextType);
+    setSubmitAttempted(false);
+    setTouched({ nome: false, email: false });
+    setShowNomeError(false);
+    setShowEmailError(false);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -93,19 +106,25 @@ export default function CreatePersonal() {
     setLoading(true);
 
     try {
-      const data = {
+      const baseData = {
         nome: form.nome,
         sexo: form.sexo,
         dataNascimento: dayjs(form.dataNascimento, "DD/MM/YYYY").format("YYYY-MM-DD"),
         email: form.email,
-        cref: form.cref,
         telefone: parseTelefone(form.telefone),
       };
-      await adminService.createPersonal(data);
+      const data = isPersonal ? { ...baseData, cref: form.cref } : baseData;
+      if (isPersonal) {
+        await adminService.createPersonal(data);
+      } else {
+        await adminService.createAdmin(data);
+      }
       setTextModal({
-        title: "Personal Cadastrado!",
-        content: "O personal trainer foi cadastrado com sucesso no sistema."
-      })
+        title: `${roleLabel} Cadastrado!`,
+        content: isPersonal
+          ? "O personal trainer foi cadastrado com sucesso no sistema."
+          : "O admin foi cadastrado com sucesso no sistema."
+      });
       setOpenModal("success");
       setSubmitAttempted(false);
       setTouched({ nome: false, email: false });
@@ -119,14 +138,14 @@ export default function CreatePersonal() {
         cref: "",
         telefone: "",
       });
-    } catch (err: any) {
-      
+    } catch (err: unknown) {
       setTextModal({
-        title: "Erro ao Cadastrar Personal!",
-        content: err.response?.data.Exception || "Ocorreu um erro ao cadastrar o personal trainer. Tente novamente."
-      })
+        title: `Erro ao Cadastrar ${roleLabel}!`,
+        content: (err as Error).message || (isPersonal
+          ? "Ocorreu um erro ao cadastrar o personal trainer. Tente novamente."
+          : "Ocorreu um erro ao cadastrar o admin. Tente novamente.")
+      });
       setOpenModal("error");
-      
     } finally {
       setLoading(false);
     }
@@ -166,23 +185,45 @@ export default function CreatePersonal() {
       }
       <div className={classNames(styles.page, { [styles.pageMobile]: isMobile })}>
         <WhiteContainer
-          title="Cadastrar Personal"
+          title={`Cadastrar ${roleLabel}`}
           titleFontSize={32}
           titleMarginBottom={4}
           containerClassName={styles.container}
           contentClassName={styles.content}
           titleClassName={styles.title}
         >
-        <button className="border" onClick={() => setForm({
+        <button type="button" className="border" onClick={() => setForm({
           nome: "Gabriel",
           sexo: "Masculino",
           dataNascimento: "01/01/2000",
           email: "gabriel@email.com",
-          cref: "123456",
+          cref: isPersonal ? "123456" : "",
           telefone: "11999999999",
         })}>Auto Preencher</button>
+        <div className={styles.typeToggle} role="tablist" aria-label="Tipo de cadastro">
+          <button
+            type="button"
+            className={classNames(styles.typeToggleButton, { [styles.typeToggleButtonActive]: isPersonal })}
+            onClick={() => handleUserTypeChange("personal")}
+            role="tab"
+            aria-selected={isPersonal}
+          >
+            Personal
+          </button>
+          <button
+            type="button"
+            className={classNames(styles.typeToggleButton, { [styles.typeToggleButtonActive]: !isPersonal })}
+            onClick={() => handleUserTypeChange("admin")}
+            role="tab"
+            aria-selected={!isPersonal}
+          >
+            Admin
+          </button>
+        </div>
         <p className={styles.subtitle}>
-          Preencha os dados para criar um novo personal trainer no sistema.
+          {isPersonal
+            ? "Preencha os dados para criar um novo personal trainer no sistema."
+            : "Preencha os dados para criar um novo admin no sistema."}
         </p>
         <form className={styles.form} onSubmit={handleSubmit}>
 
@@ -301,25 +342,27 @@ export default function CreatePersonal() {
             </div>
 
             {/* CREF */}
-            <div>
-              <InputWithIcon
-                type="text"
-                label="Registro CREF"
-                placeholder="000000-G/UF"
-                icon={<Hash size={18} />}
-                value={form.cref}
-                onInputChange={(v: string) => handleChange("cref", v)}
-                id="registro-cref"
-                hasError={submitAttempted && form.cref.trim() === ""}
-                mask={crefMask}
-                maxLength={11}
-              />
-              {submitAttempted && form.cref.trim() === "" && (
-                <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
-                  O registro CREF é obrigatório.
-                </span>
-              )}
-            </div>
+            {isPersonal && (
+              <div>
+                <InputWithIcon
+                  type="text"
+                  label="Registro CREF"
+                  placeholder="000000-G/UF"
+                  icon={<Hash size={18} />}
+                  value={form.cref}
+                  onInputChange={(v: string) => handleChange("cref", v)}
+                  id="registro-cref"
+                  hasError={submitAttempted && form.cref.trim() === ""}
+                  mask={crefMask}
+                  maxLength={11}
+                />
+                {submitAttempted && form.cref.trim() === "" && (
+                  <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>
+                    O registro CREF é obrigatório.
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Telefone */}
@@ -378,7 +421,7 @@ export default function CreatePersonal() {
               className={styles.submitButton}
               disabled={loading}
             >
-              {loading ? "Cadastrando..." : "Cadastrar Personal"}
+              {loading ? "Cadastrando..." : `Cadastrar ${roleLabel}`}
             </button>
           </div>
         </form>

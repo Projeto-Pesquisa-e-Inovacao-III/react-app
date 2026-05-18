@@ -24,3 +24,7 @@ export function removeRoleFromUser(id: number, role: string) {
 export function createPersonal(data: ReqCreateUserDTO): Promise<ResCadastrarPersonalDTO> {
     return api.post("/admin/usuarios/personal", data);
 }
+
+export function createAdmin(data: ReqCreateUserDTO): Promise<ResCadastrarPersonalDTO> {
+    return api.post("/admin/usuarios/admin", data);
+}
