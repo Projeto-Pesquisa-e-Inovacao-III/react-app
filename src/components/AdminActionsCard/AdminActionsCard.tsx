@@ -9,7 +9,7 @@ import SuccessModal from "../Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import TimerModal from "../Modal/TimerModal/TimerModal";
 import InputModal from "../Modal/InputModal/InputModal";
-import { deleteUser, getVerifyNeedDataToAddRole, addRoleToUser, removeRoleFromUser } from "../../constants/admin";
+import { deleteUser, addRoleToUser, removeRoleFromUser } from "../../constants/admin";
 import { AxiosError } from "axios";
 
 interface AdminActionsCardProps {
