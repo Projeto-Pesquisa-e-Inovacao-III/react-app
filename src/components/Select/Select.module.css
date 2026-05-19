@@ -1,8 +1,14 @@
 .selectWrapper {
   position: relative;
   height: 100%;
-  background-color: #f3f4f6;
-  border-radius: 0.2rem;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.selectWrapper:hover {
+  border-color: #aaa;
 }
 
 .triggerWrapper {
@@ -11,15 +17,19 @@
 
 .trigger {
   border: 0;
+  background: transparent;
   cursor: pointer;
-  border-radius: 0.125rem;
+  border-radius: 4px;
   height: 100%;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: 16rem;
+  padding: 0 1rem;
+  width: 14rem;
+  font-size: 0.95rem;
+  color: #111;
+  gap: 0.5rem;
 }
 
 .chevronIcon {
@@ -34,28 +44,31 @@
 
 .dropdownContainer {
   position: absolute;
-  margin-top: 0.25rem;
+  top: calc(100% + 6px);
+  left: 0;
   background-color: #ffffff;
-  border-radius: 0.5rem;
+  border-radius: 8px;
   z-index: 50;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid #ccc;
-  border-left: none;
-  border-bottom: none;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
   width: 100%;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.12s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .optionsList {
   background-color: #ffffff;
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+  padding: 6px;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 2px;
   max-height: 15rem;
   overflow-y: auto;
-  /* width: 20rem; */
-  padding-top: 20px;
 }
 
 .label {
@@ -63,12 +76,19 @@
 }
 
 .optionItem {
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
+  padding: 8px 10px;
   gap: 0.5rem;
   display: flex;
   align-items: center;
   cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #111;
+  transition: background-color 0.1s ease;
+}
+
+.optionItem:hover {
+  background-color: #f3f4f6;
 }
 
 .iconPlaceholder {
@@ -100,12 +120,12 @@
 @media (max-width: 1024px) {
   .selectWrapper {
     width: 100%;
-    height: unset !important;
     border-radius: 8px;
   }
 
   .trigger {
-    padding: 12px !important;
+    padding: 10px 12px !important;
+    width: 100% !important;
   }
 }
 

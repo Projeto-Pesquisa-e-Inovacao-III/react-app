@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import classnames from 'classnames';
 import { History, MapPin, Calendar } from 'lucide-react';
 import { differenceInYears, parse } from 'date-fns';
@@ -53,6 +53,28 @@ export const AddressStep: React.FC<AddressStepProps> = ({
 }) => {
     const locationOptions = LOCATION_OPTIONS[selectedType] || [];
 
+    const filteredAddresses = addresses.data?.filter(
+        (address: any) => address?.tipo?.toUpperCase() === selectedType?.toUpperCase()
+    ) ?? [];
+
+    useEffect(() => {
+        if (
+            selectedAddress &&
+            selectedAddress.tipo?.toUpperCase() !== selectedType?.toUpperCase()
+        ) {
+            setSelectedAddress(null);
+            setSelectDefault("");
+            setAddressData({
+                postalCode: "",
+                address: "",
+                city: "",
+                state: "",
+                number: "",
+                complement: ""
+            });
+        }
+    }, [selectedType]);
+
     return (
         <div className={classnames(styles.inputInfosFormContainer, { [styles.inputInfosFormContainerMobile]: isMobile })}>
             {isMobile && (
@@ -106,39 +128,49 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                         Limpar seleção
                     </span>
                 </div>
-                <Select
-                    id="address-select"
-                    openSelectId={openSelectId}
-                    setOpenSelectId={setOpenSelectId}
-                    clear={!selectedAddress}
-                    onSelectStatusChange={(addressId: string) => {
-                        const selected = addresses.data?.find((address: any) => address?.id === addressId);
-                        setSelectedAddress(selected || null);
-                        if (selected?.cep?.cep) {
-                            setAddressData({
-                                postalCode: cepMask(selected.cep.cep),
-                                address: `${selected.cep.logradouro} - ${selected.cep.bairro}`,
-                                city: selected.cep.localidade,
-                                state: selected.cep.uf,
-                                number: selected.numero,
-                                complement: selected.complemento
-                            });
-                        }
-                    }}
-                    values={addresses.data?.map((address: any) => ({
-                        label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
-                        value: address?.id,
-                    }))}
-                    defaultValue={selectDefault}
-                    containerClassName="w-full!"
-                    triggerClassName="p-3 w-full!"
-                    selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
-                    iconPlaceholder={<MapPin fill="#000" color="#fff" />}
-                    selectPlaceholder="Selecione um endereço salvo..."
-                    labelClassName="text-slate-500! font-bold text-sm uppercase"
-                    showSelectAll={false}
-                    showSearchInput={false}
-                />
+                {filteredAddresses.length === 0 ? (
+                    <div className="flex items-center gap-2 text-sm text-slate-500 py-2 px-1">
+                        <MapPin size={16} className="shrink-0" />
+                        <span>
+                            Nenhum endereço do tipo <strong>{selectedType}</strong> encontrado.
+                            {" "}Cadastre um em <em>Editar Perfil → Endereços</em>.
+                        </span>
+                    </div>
+                ) : (
+                    <Select
+                        id="address-select"
+                        openSelectId={openSelectId}
+                        setOpenSelectId={setOpenSelectId}
+                        clear={!selectedAddress}
+                        onSelectStatusChange={(addressId: string) => {
+                            const selected = filteredAddresses.find((address: any) => address?.id === addressId);
+                            setSelectedAddress(selected || null);
+                            if (selected?.cep?.cep) {
+                                setAddressData({
+                                    postalCode: cepMask(selected.cep.cep),
+                                    address: `${selected.cep.logradouro} - ${selected.cep.bairro}`,
+                                    city: selected.cep.localidade,
+                                    state: selected.cep.uf,
+                                    number: selected.numero,
+                                    complement: selected.complemento
+                                });
+                            }
+                        }}
+                        values={filteredAddresses.map((address: any) => ({
+                            label: `${address?.cep.logradouro}, ${address?.numero} - ${address?.cep.localidade}/${address?.cep.uf}`,
+                            value: address?.id,
+                        }))}
+                        defaultValue={selectDefault}
+                        containerClassName="w-full!"
+                        triggerClassName="p-3 w-full!"
+                        selectWrapperClassName="bg-white! rounded-xl! w-full! border border-gray-300!"
+                        iconPlaceholder={<MapPin fill="#000" color="#fff" />}
+                        selectPlaceholder="Selecione um endereço salvo..."
+                        labelClassName="text-slate-500! font-bold text-sm uppercase"
+                        showSelectAll={false}
+                        showSearchInput={false}
+                    />
+                )}
             </div>
             <div className={styles.title}>
                 <span>Endereço do local</span>
@@ -147,7 +179,7 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                 <div className={classnames(styles.wrapperInputs, { [styles.wrapperInputsMobile]: isMobile })}>
                     <div className={styles.inputGroupAddress}>
                         <div className={classnames(styles.inputGroup, styles.inputGroupMax)}>
-                            
+
                             <div className={classnames(styles.labelInput, "flex-2")}>
                                 <label htmlFor="cep">CEP</label>
                                 <input
@@ -163,12 +195,12 @@ export const AddressStep: React.FC<AddressStepProps> = ({
                                 <div className={classnames(styles.labelInput, "flex-1")}>
                                     <label htmlFor="location">Local de Atendimento</label>
                                     {locationOptions.length === 1 ? (
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             id="location"
-                                            className={classnames(styles.inputAddress, styles.disabled)} 
-                                            disabled 
-                                            value={locationOptions[0].label} 
+                                            className={classnames(styles.inputAddress, styles.disabled)}
+                                            disabled
+                                            value={locationOptions[0].label}
                                         />
                                     ) : (
                                         <div className="w-full">

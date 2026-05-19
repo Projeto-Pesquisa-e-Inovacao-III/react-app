@@ -76,6 +76,13 @@
     z-index: 50;
     width: 18rem;
     max-width: 48rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    background-color: var(--gray, #f5f5f5);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .containerSelect {
@@ -120,6 +127,7 @@
 
     .cardFilterMobile {
         display: flex;
+        flex-direction: column;
         gap: 15px;
         width: 100%;
     }
@@ -159,8 +167,7 @@
     .calendarIconContainer {
         background-color: #fff;
         height: 100%;
-        padding-left: 6px;
-        padding-right: 6px;
+        padding: 6px;
         border-radius: 8px;
         display: flex;
         justify-content: center;

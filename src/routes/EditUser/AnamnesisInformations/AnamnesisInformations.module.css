@@ -12,6 +12,10 @@
   margin-bottom: 0 !important;
 }
 
+.inputWrapper {
+  width: 100%;
+}
+
 .personalDataTitle {
   display: flex;
   align-items: center;

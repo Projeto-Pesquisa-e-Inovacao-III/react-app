@@ -7,7 +7,7 @@ import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
 import Skeleton from "react-loading-skeleton";
 import { getAnamnesisById } from "../../../constants/anamnesis";
-import { Calendar, Mail, Phone, ArrowLeft } from "lucide-react";
+import { Calendar, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
 import { useContext } from "react";
 import { TypeContext } from "../../../App";
 import AdminActionsCard from "../../../components/AdminActionsCard/AdminActionsCard";
@@ -38,10 +38,10 @@ export default function ViewUserData() {
 
     const age = user.data?.dataNascimento
         ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date()))
-        : "N/A";
+        : "Não informado";
 
     const getActivityLabel = (nivel: string | undefined) => {
-        if (!nivel) return "N/A";
+        if (!nivel) return "Não informado";
         const map: Record<string, string> = {
             SEDENTARIO: "Sedentário",
             LEVE: "Leve",
@@ -174,7 +174,7 @@ export default function ViewUserData() {
 
                                 <div className={styles.activityCard}>
                                     <h2 className={styles.sectionTitle}>
-                                        <span className={styles.sectionIconCircle}>&#9654;</span> Atividade Física
+                                        <span className={styles.sectionIconCircle}><Dumbbell /></span> Atividade Física
                                     </h2>
                                     <div className={styles.activityLevelRow}>
                                         <span className={styles.fieldLabel}>NÍVEL ATUAL</span>
@@ -194,7 +194,7 @@ export default function ViewUserData() {
                                         {anamnesis.isLoading ? (
                                             <Skeleton width="100%" height={56} />
                                         ) : (
-                                            <p className={styles.rotinaText}>{anamnesis.data?.rotina ?? "N/A"}</p>
+                                            <p className={styles.rotinaText}>{anamnesis.data?.rotina ?? "Não informado"}</p>
                                         )}
                                     </div>
                                 </div>

@@ -548,10 +548,6 @@
 
   }
 
-  .pageWrapper {
-    padding: 24px 20px 100px;
-  }
-
   .contentLayout {
     flex-direction: column;
   }
@@ -631,9 +627,6 @@
     align-items: flex-start;
   }
 
-  .pageWrapper {
-    padding: 16px 16px 100px;
-  }
 
   .dayListHeader {
     display: none;

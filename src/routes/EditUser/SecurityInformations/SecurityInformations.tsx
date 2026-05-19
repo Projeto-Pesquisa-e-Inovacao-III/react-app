@@ -145,6 +145,7 @@ export default function SecurityInformations() {
               classNameInput="bg-gray-100! cursor-not-allowed!"
               value={email}
               onInputChange={(value: string) => setEmail(value)}
+              maxLength={100}
             ></InputWithIcon>
 
             <InputWithIcon
@@ -157,6 +158,7 @@ export default function SecurityInformations() {
               label="Senha atual"
               value={password.currentPassword}
               onInputChange={(value: string) => setPassword({ ...password, currentPassword: value })}
+              maxLength={50}
             ></InputWithIcon>
 
             <InputWithIcon
@@ -169,6 +171,7 @@ export default function SecurityInformations() {
               label="Nova senha"
               value={password.confirmPassword}
               onInputChange={(value: string) => setPassword({ ...password, confirmPassword: value })}
+              maxLength={50}
             ></InputWithIcon>
 
             <div className={styles.footer}>

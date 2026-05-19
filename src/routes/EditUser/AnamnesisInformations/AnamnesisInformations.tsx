@@ -50,6 +50,8 @@ export default function AnamnesisInformations() {
     observacaoSaude: "",
   });
 
+  const [isOtherChecked, setIsOtherChecked] = useState(false);
+
 
   const anamnesisInfo = useQuery<AnamnesisData>({
     queryKey: ["anamnesisInfo"],
@@ -57,6 +59,7 @@ export default function AnamnesisInformations() {
     queryFn: async () => {
       const response = await getAnamnesis();
       setAnamnesisData(response.data);
+      setIsOtherChecked(response.data.condicoes.some((c: { tipo: string }) => c.tipo === "OUTRO"));
 
       const isPredefined = valuesAtSelect.some((v) => v.value === response.data.objectivoPrincipal);
       if (!isPredefined) {
@@ -70,6 +73,11 @@ export default function AnamnesisInformations() {
   const [openSelectId, setOpenSelectId] = useState<string | null>(null);
 
   function handleConditionToggle(situacao: string) {
+    if (situacao === "Outro") {
+      setIsOtherChecked(prev => !prev);
+      return;
+    }
+
     setAnamnesisData(prev => {
       const exists = prev.condicoes.some(c => c.situacao === situacao);
       return {
@@ -93,7 +101,7 @@ export default function AnamnesisInformations() {
     return Array.from(new Set(trimmedTags));
   }
 
-  const isOtherConditionSelected = anamnesisData.condicoes.some(c => c.tipo === "OUTRO");
+  const isOtherConditionSelected = isOtherChecked;
 
   // const MAX_DAILY_ROUTINE_CHARACTERS = 500;
   const MIN_HEIGHT_CM = 100;
@@ -102,7 +110,7 @@ export default function AnamnesisInformations() {
   const MAX_WEIGHT_KG = 350;
   const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
   const MAX_HEIGHT_CHARACTERS = 3;
-  const MAX_WEIGHT_CHARACTERS = 6;
+  const MAX_WEIGHT_CHARACTERS = 3;
 
   function handleModal(type: "success" | "error", title: string, content: string) {
     setTextModal({ title, content });
@@ -125,7 +133,8 @@ export default function AnamnesisInformations() {
     }
 
     if (anamnesisData.peso) {
-      if (anamnesisData.peso < MIN_WEIGHT_KG || anamnesisData.peso > MAX_WEIGHT_KG) {
+      const pesoNum = Number(String(anamnesisData.peso).replace(",", "."));
+      if (pesoNum < MIN_WEIGHT_KG || pesoNum > MAX_WEIGHT_KG) {
         errors.peso = `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.`;
       }
     }
@@ -143,7 +152,15 @@ export default function AnamnesisInformations() {
 
     setUpdateLoading(true);
 
-    updateAnamnesis(anamnesisData).then(() => {
+    const payload = { ...anamnesisData };
+    if (!isOtherChecked) {
+      payload.condicoes = payload.condicoes.filter(c => c.tipo !== "OUTRO");
+    }
+    if (payload.peso) {
+      payload.peso = Number(String(payload.peso).replace(",", "."));
+    }
+
+    updateAnamnesis(payload).then(() => {
       setUpdateLoading(false);
       handleModal("success", "Anamnese atualizada!", "Suas informações de anamnese foram atualizadas com sucesso.");
     }).catch(() => {
@@ -155,13 +172,14 @@ export default function AnamnesisInformations() {
   function handleUndoChanges() {
     if (anamnesisInfo.data) {
       setAnamnesisData(anamnesisInfo.data);
+      setIsOtherChecked(anamnesisInfo.data.condicoes.some((c: { tipo: string }) => c.tipo === "OUTRO"));
     }
   }
 
-    //   { icon: <Weight />, label: "Emagrecimento", value: "EMAGRECIMENTO" },
-    // { icon: <HeartPulse />, label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
-    // { icon: <Sparkles />, label: "Estética", value: "ESTETICA" },
-    // { icon: <BicepsFlexed />, label: "Ganho de massa", value: "GANHO_MASSA" },
+  //   { icon: <Weight />, label: "Emagrecimento", value: "EMAGRECIMENTO" },
+  // { icon: <HeartPulse />, label: "Saúde e bem-estar", value: "SAUDE_BEM_ESTAR" },
+  // { icon: <Sparkles />, label: "Estética", value: "ESTETICA" },
+  // { icon: <BicepsFlexed />, label: "Ganho de massa", value: "GANHO_MASSA" },
 
   const valuesAtSelect = [
     { label: "Ganho de massa muscular", value: "GANHO_MASSA" },
@@ -183,12 +201,12 @@ export default function AnamnesisInformations() {
 
         <div className={styles.personalInfo} ref={ref}>
           <WhiteContainer title="Anamnese / Saúde" icon={<HeartPulse size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
-            <div id="personalData">
+            <div id="personalData" className="w-full!">
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Dados pessoais</h3>
               </div>
-              <div>
+              <div className={classNames({ [styles.inputWrapper]: isMobile })}>
                 <InputWithIcon
                   id="height"
                   classNameInput="text-[#334155]! font-medium"
@@ -217,12 +235,13 @@ export default function AnamnesisInformations() {
                 )}
               </div>
 
-              <div>
+              <div className={classNames({ [styles.inputWrapper]: isMobile })}>
                 <InputWithIcon
                   id="weight"
                   classNameInput="text-[#334155]! font-medium"
                   type="number"
                   allowDecimals={true}
+                  maxDecimalPlaces={2}
                   maxLength={MAX_WEIGHT_CHARACTERS}
                   placeholder="Ex: 70"
                   icon={<Weight />}
@@ -231,8 +250,8 @@ export default function AnamnesisInformations() {
                   value={anamnesisData.peso || ""}
                   hasError={!!validationErrors.peso}
                   onInputChange={(value: string) => {
-                    const num = Number(value);
-                    setAnamnesisData({ ...anamnesisData, peso: num });
+                    const num = Number(value.replace(",", "."));
+                    setAnamnesisData({ ...anamnesisData, peso: value as any });
                     if (value && (num < MIN_WEIGHT_KG || num > MAX_WEIGHT_KG)) {
                       setValidationErrors(prev => ({ ...prev, peso: `Peso deve estar entre ${MIN_WEIGHT_KG} e ${MAX_WEIGHT_KG} kg.` }));
                     } else {
@@ -282,7 +301,7 @@ export default function AnamnesisInformations() {
               />
 
               {!valuesAtSelect.some((v) => v.value === anamnesisData.objectivoPrincipal) && (
-                <div className="flex flex-col" id="outro">
+                <div className={classNames("flex flex-col", { [styles.inputWrapper]: isMobile })} id="outro">
                   <div className={styles.personalDataTitle}>
                     <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                     <h3>Meu objetivo principal</h3>
@@ -303,7 +322,7 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
-            <div id="healthConditions">
+            <div id="healthConditions" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Condições de saúde</h3>
@@ -346,7 +365,7 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
-            <div id="levelOfActivity">
+            <div id="levelOfActivity" className={classNames({ [styles.inputWrapper]: isMobile })}>
 
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
@@ -365,7 +384,7 @@ export default function AnamnesisInformations() {
             </div>
 
 
-            <div id="routine">
+            <div id="routine" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                 <h3>Descreva sua rotina diária atual (opcional)</h3>

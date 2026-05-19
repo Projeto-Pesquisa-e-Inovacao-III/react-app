@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export type modalTypes = "timer" | "success" | "error" | "adjustAvatar" | "popup" | "newEvent" | "accept" | "decline" | "reschedule" | null;
+export type modalTypes = "timer" | "success" | "error" | "adjustAvatar" | "popup" | "newEvent" | "accept" | "decline" | "reschedule" | "input" | null;
 //export default function useModal(type: modalTypes, text: { title: string, content: string }) {
 // example of usage:
 /*
