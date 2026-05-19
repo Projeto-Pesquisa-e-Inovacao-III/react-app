@@ -242,7 +242,7 @@ export default function Toolbox({ onPreview, onError }: { onPreview: () => void,
                       </>
                     )}
 
-                    {selected.displayName === 'Acordeão' && (
+                    {selected.displayName === 'Accordion' && (
                       <>
                         <TextInput label="Título da Pergunta" value={selected.props.title ?? ''} onChange={(v) => setProp('title', v)} />
                         <TextareaInput label="Conteúdo da Resposta" value={selected.props.content ?? ''} onChange={(v) => setProp('content', v)} />

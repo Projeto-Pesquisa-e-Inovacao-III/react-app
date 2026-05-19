@@ -217,7 +217,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                             errorModal={handleErrorModalInfo}
                             insertedEvents={agendamentos}
                             title="Reagendar horário"
-                            buttonTitle="Reagendar"
+                            buttonTitle={!type?.includes("personal") ? "Avançar" : "Reagendar"}
                             isReschedule={true}
                             rescheduleId={appointmentId}
                             appoitmentData={(() => {
@@ -234,7 +234,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                             })()}
                             typeUser={type || []}
                             clickedDate={date}
-                            goToNextStep={false}
+                            goToNextStep={!type?.includes("personal")}
                         />
                     </>
                 )

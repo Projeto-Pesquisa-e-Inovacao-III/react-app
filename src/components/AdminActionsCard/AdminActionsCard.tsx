@@ -8,6 +8,7 @@ import useMobile from "../../hooks/isMobile";
 import SuccessModal from "../Modal/SuccessModal/SuccessModal";
 import ErrorModal from "../Modal/ErrorModal/ErrorModal";
 import TimerModal from "../Modal/TimerModal/TimerModal";
+import InputModal from "../Modal/InputModal/InputModal";
 import { deleteUser, getVerifyNeedDataToAddRole, addRoleToUser, removeRoleFromUser } from "../../constants/admin";
 import { AxiosError } from "axios";
 
@@ -67,20 +68,20 @@ export default function AdminActionsCard({ userId, roles, refetch }: AdminAction
         }
     };
 
+    function handleErrorModalInfos(title: string, content: string) {
+        setTextModal({ title, content });
+        setOpenModal("error");
+    }
+
     async function handleAddRole() {
-        try {
-            const res = await getVerifyNeedDataToAddRole(userId, selectedRole);
-            if (res.needData) {
-                const cpf = prompt("Digite o CPF para esta role (opcional):");
-                const cref = prompt("Digite o CREF para esta role (opcional):");
-                await handleAddRoleConfirm({ cpf: cpf || null, cref: cref || null });
-            } else {
-                await handleAddRoleConfirm();
-            }
-        } catch (error: unknown) {
-            const err = error as AxiosError<{Exception: string}>;
-            setTextModal({ title: "Erro", content: err?.response?.data?.Exception || "Erro ao verificar necessidade de dados para role." });
-            setOpenModal("error");
+        if (!selectedRole) {
+            handleErrorModalInfos("Erro", "Selecione uma permissão.");
+            return;
+        }
+        if(selectedRole == "PERSONAL") {
+            setTextModal({ title: "CREF Necessário", content: "Digite o CREF para esta permissão:" });
+            setOpenModal("input");
+            return;
         }
     };
 
@@ -183,6 +184,24 @@ export default function AdminActionsCard({ userId, roles, refetch }: AdminAction
                     closeThen={() => setOpenModal(null)}
                     title={textModal.title}
                     content={textModal.content}
+                />
+            )}
+
+            {openModal === "input" && (
+                <InputModal
+                    isMobile={isMobile}
+                    closeThen={() => setOpenModal(null)}
+                    title={textModal.title}
+                    content={textModal.content}
+                    inputPlaceholder="000000-G/UF"
+                    buttonTitle="Confirmar"
+                    onConfirm={(value) => {
+                        if (!value) {
+                            handleErrorModalInfos("Erro", "CREF é obrigatório para esta role.");
+                            return;
+                        }
+                        handleAddRoleConfirm({ cref: value });
+                    }}
                 />
             )}
         </>

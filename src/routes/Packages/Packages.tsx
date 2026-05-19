@@ -10,11 +10,12 @@ import AddPackagePlan from "../../components/Modal/AddPackagePlan/AddPackagePlan
 import SuccessModal from "../../components/Modal/SuccessModal/SuccessModal";
 import PagBankModal from "../../components/Modal/PagBankModal/PagBankModal";
 import type { ProductExhibition } from "../../models/products";
-import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages } from "../../constants/products";
+import { buyProductExhibition, desactivateProductExhibition, getProductsExhibitions, verifyNumberOfPackages, actualPlan } from "../../constants/products";
 import ErrorModal from "../../components/Modal/ErrorModal/ErrorModal";
 import { useQuery } from "@tanstack/react-query";
 import { CircleX, LucideCircleX, LucidePlusCircle, Package, Plus } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useLocation } from "react-router-dom";
 
 type ModalType = "add" | "addAdditional" | "edit" | "editAdditional" | "delete" | "success" | "error" | "loadingPagBank" | null;
 
@@ -29,6 +30,7 @@ export function Packages() {
     const [SuccessModalInfos, setSuccessModalInfos] = useState<{ title: string; content: string }>({ title: "", content: "" });
     const [packageId, setPackageId] = useState<number | null>(null);
 
+
     useEffect(() => {
         if (openModal) {
             document.body.style.overflow = 'hidden';
@@ -39,15 +41,40 @@ export function Packages() {
 
     const isPersonal = type?.type?.includes("personal");
 
-    function handleBuyClick(id: number, packageTitle: string) {
+    const actualPlanQuery = useQuery({
+        queryKey: ["total", "actualPlan"],
+        queryFn: () => actualPlan(),
+        refetchOnWindowFocus: false,
+        enabled: type?.type?.includes("aluno")
+    });
+
+
+    const location = useLocation();
+
+    useEffect(() => {
+        if (!actualPlanQuery.data?.data) {
+            return
+        }
+
+        if (location.state?.successMessage) {
+            setSuccessModalInfos({
+                title: "Compra Concluída",
+                content: `Você adquiriu o pacote "${actualPlanQuery.data?.data.nome}" com sucesso!`,
+            });
+            setOpenModal("success");
+        }
+    }, [location, actualPlanQuery.data?.data]);
+
+    function handleBuyClick(id: number, isAdditional: boolean = false) {
+        if (isAdditional && !actualPlanQuery.data?.data) {
+            handleErrorModalInfos("Atenção", "Para adquirir um pacote adicional, você precisa ter um plano principal ativo.");
+            return;
+        }
+
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
             window.location.href = response.data;
-            setSuccessModalInfos({
-                title: "Compra Concluída",
-                content: `Você adquiriu o pacote ${packageTitle} com sucesso!`,
-            });
-            setOpenModal("success");
+
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
             handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
@@ -146,8 +173,8 @@ export function Packages() {
 
 
     function handleDeletePackage(id: number) {
-        desactivateProductExhibition(id).then((response) => {
-            console.log("Pacote desativado com sucesso! ", response);
+        desactivateProductExhibition(id).then(() => {
+
             setProductsExhibitions(prev => prev.filter(pkg => pkg.id !== id));
             setProductsExhibitionsAdicional(prev => prev.filter(pkg => pkg.id !== id));
             setPackageId(null);
@@ -161,7 +188,7 @@ export function Packages() {
     }
 
     function handleUpdatePackage(id: number, isAdicional: boolean = false) {
-        console.log("Editing package with id:", id);
+
         if (!packageId) {
             setPackageId(id)
             setOpenModal(isAdicional ? "editAdditional" : "edit");
@@ -236,9 +263,15 @@ export function Packages() {
         emblaApiPackage?.scrollNext()
     }, [emblaApiPackage])
 
-const slidesToRender = activePackages.length > 0
-  ? [...activePackages, ...activePackages, ...activePackages]
-  : activePackages;
+    const isStudentAndNoPlan = !!type?.type?.includes("aluno") && !actualPlanQuery.data?.data;
+
+    function handleDisabledClick() {
+        handleErrorModalInfos("Atenção", "Para adquirir um pacote adicional, você precisa ter um plano principal ativo.");
+    }
+
+    const slidesToRender = activePackages.length > 0
+        ? [...activePackages, ...activePackages, ...activePackages]
+        : activePackages;
 
     const slidesToRenderAdicional = productsExhibitionsAdicional
 
@@ -258,7 +291,7 @@ const slidesToRender = activePackages.length > 0
                                     Pacotes Atuais
                                 </h1>
                                 <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                    <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">pacotes ativos</span>
+                                    <span className="text-2xl font-bold">{activePackages.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activePackages.length > 1 ? "pacotes ativos" : "pacote ativo"}</span>
                                 </div>
                             </>
                         ) : (
@@ -281,9 +314,11 @@ const slidesToRender = activePackages.length > 0
                 </div>
 
 
-                <div style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${activePackages.length + (isAdmin ? 1 : 0)}, 1fr)` } : {}} className={classnames(styles.packagesListWrapperDesktop,
-                    { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
-                    { [styles.packagesListWrapperMobile]: isMobile })}>
+                <div
+                    style={!shouldUseCarousel ? { '--pkg-cols': activePackages.length + (isAdmin ? 1 : 0) } as React.CSSProperties : {}}
+                    className={classnames(styles.packagesListWrapperDesktop,
+                        { [styles.packagesListWrapperDesktopEmpty]: productsExhibitions.length === 0 || (productsExhibitions.length > 0 && !productsExhibitions.some(p => p.status === "ATIVO")) },
+                        { [styles.packagesListWrapperMobile]: isMobile })}>
                     {isLoading ? (
                         renderPackageCardSkeleton()
                     ) : activePackages.length > 0 ? (
@@ -299,7 +334,7 @@ const slidesToRender = activePackages.length > 0
                                                         <PackageCard
                                                             {...pacote}
                                                             descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                            onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                                            onClick={() => handleBuyClick(pacote.id!, false)}
                                                             isMobile={isMobile}
                                                             isAdmin={type?.type?.includes("admin")}
                                                             isPersonal={isPersonal}
@@ -334,7 +369,7 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                        onClick={() => handleBuyClick(pacote.id!, false)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
@@ -399,7 +434,7 @@ const slidesToRender = activePackages.length > 0
                             </h1>
 
                             <div className="bg-white! p-2 px-4 w-fit flex items-center rounded-2xl">
-                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "adicionais ativos" : "adicional ativo"}</span>
+                                <span className="text-2xl font-bold">{activeAdicionais.length}</span><span className="ml-3 text-slate-500 font-bold uppercase">{activeAdicionais.length > 1 ? "pacotes adicionais ativos" : "pacote adicional ativo"}</span>
                             </div>
                         </>
                     ) : (
@@ -440,12 +475,14 @@ const slidesToRender = activePackages.length > 0
                                                     <PackageCard
                                                         {...pacote}
                                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                                        onClick={() => handleBuyClick(pacote.id!, true)}
                                                         isMobile={isMobile}
                                                         isAdmin={type?.type?.includes("admin")}
                                                         isPersonal={isPersonal}
                                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                                        isDisabled={isStudentAndNoPlan}
+                                                        onDisabledClick={handleDisabledClick}
                                                     />
                                                 </div>
                                             ))}
@@ -474,12 +511,14 @@ const slidesToRender = activePackages.length > 0
                                         key={pacote.id! + pacote.titulo + index}
                                         {...pacote}
                                         descricao={pacote.beneficios?.map(b => b.valor) || []}
-                                        onClick={() => handleBuyClick(pacote.id!, pacote.titulo!)}
+                                        onClick={() => handleBuyClick(pacote.id!, true)}
                                         isMobile={isMobile}
                                         isAdmin={type?.type?.includes("admin")}
                                         isPersonal={isPersonal}
                                         setHandleDelete={() => { setPackageId(pacote.id!); setOpenModal("delete"); }}
                                         setHandleEdit={() => handleUpdatePackage(pacote.id!, true)}
+                                        isDisabled={isStudentAndNoPlan}
+                                        onDisabledClick={handleDisabledClick}
                                     />
                                 ))}
                                 {isAdmin && !isMobile && (

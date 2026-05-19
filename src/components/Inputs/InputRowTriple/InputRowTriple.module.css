@@ -1,16 +1,16 @@
-.triple-row-input {
+.tripleRowInput {
     display: flex;
     gap: 1rem;
 
-    .input-block {
-        .wrapper_inp {
+    .inputBlock {
+        .wrapperInp {
             position: relative;
         }
 
         flex: 1;
     }
 
-    .input-icon {
+    .inputIcon {
         display: flex;
         position: absolute;
         left: 0.75rem;

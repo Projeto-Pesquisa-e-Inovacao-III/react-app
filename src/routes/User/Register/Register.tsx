@@ -217,6 +217,7 @@ export default function Register() {
                                         icon={<User />}
                                         value={register.name}
                                         customClassName={styles.inputCustom}
+                                        maxLength={70}
                                     />
                                 </div>
 
@@ -232,6 +233,7 @@ export default function Register() {
                                         hasError={register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido")}
                                         hasSuccess={register.email.length > 0 && validation.validateEmail(register.email).startsWith("Email válido")}
                                         customClassName={styles.inputCustom}
+                                        maxLength={100}
                                     />
                                     {register.email.length > 0 && !validation.validateEmail(register.email).startsWith("Email válido") && (
                                         <span className={styles.inputErrorHint}>Email inválido. Tente algo como usuario@dominio.com</span>
@@ -284,6 +286,7 @@ export default function Register() {
                                             value={register.customerDocument}
                                             mask={cpfMask}
                                             customClassName={styles.inputCustom}
+                                            maxLength={14}
                                         />
                                     </div>
                                     <div className={styles.fieldGroup} style={{ flex: 1 }}>
@@ -297,6 +300,7 @@ export default function Register() {
                                             value={register.phone}
                                             mask={cellphoneMask}
                                             customClassName={styles.inputCustom}
+                                            maxLength={15}
                                         />
                                     </div>
                                 </div>
@@ -315,6 +319,7 @@ export default function Register() {
                                         value={register.password}
                                         hasError={register.password.length > 0 && !validation.validatePassword(register.password).startsWith("password válida")}
                                         hasSuccess={register.password.length > 0 && validation.validatePassword(register.password).startsWith("password válida")}
+                                        maxLength={50}
                                     />
                                     <InputWithIcon
                                         type="password"
@@ -327,6 +332,7 @@ export default function Register() {
                                         value={register.confirmPassword}
                                         hasError={register.confirmPassword.length > 0 && register.confirmPassword !== register.password}
                                         hasSuccess={register.confirmPassword.length > 0 && register.confirmPassword === register.password}
+                                        maxLength={50}
                                     />
                                 </div>
 

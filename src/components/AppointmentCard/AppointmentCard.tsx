@@ -91,7 +91,7 @@ export function AppointmentCard(props: Props) {
         })}>
           <div className={styles.sessionCardUser}>
             <UserAvatar
-            withUsernameClassName="w-10! h-10!"
+              withUsernameClassName="w-10! h-10!"
               userName={props.name}
               foto={props.photoUrl}
             />
@@ -130,6 +130,44 @@ export function AppointmentCard(props: Props) {
         </div>
 
       </div>
+
+      {(props.status === "PENDENTE_PERSONAL_APROVACAO" && !typeContext?.type?.includes("personal")) && (
+        <div className={styles.sessionCardActions}>
+          <button
+            className={styles.actionBtn}
+            onClick={stopPropagation(onReschedule)}
+          >
+            <RefreshCw size={12} />
+            Reagendar
+          </button>
+          <button
+            className={classNames(styles.actionBtn, styles.actionCancel)}
+            onClick={stopPropagation(onCancel)}
+          >
+            <X size={12} />
+            Cancelar
+          </button>
+        </div>
+      )}
+
+      {(props.status === "PENDENTE_CLIENTE_APROVACAO" && !typeContext?.type?.includes("aluno")) && (
+        <div className={styles.sessionCardActions}>
+          <button
+            className={styles.actionBtn}
+            onClick={stopPropagation(onReschedule)}
+          >
+            <RefreshCw size={12} />
+            Reagendar
+          </button>
+          <button
+            className={classNames(styles.actionBtn, styles.actionCancel)}
+            onClick={stopPropagation(onCancel)}
+          >
+            <X size={12} />
+            Cancelar
+          </button>
+        </div>
+      )}
 
       {((isPendingPersonal && typeContext?.type?.includes("personal")) || (isPendingStudent && typeContext?.type?.includes("aluno")) || props.status === "APROVADO") && (
         <div className={styles.sessionCardActions}>

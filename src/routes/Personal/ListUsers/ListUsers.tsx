@@ -75,6 +75,7 @@ export default function ListUsers() {
                     icon={<SearchIcon />}
                     value={filterSearch}
                     onInputChange={setFilterSearch}
+                    classNameInput="!rounded-lg"
                 />
                 {type?.type?.includes("admin") && (
                     <Select
@@ -90,6 +91,7 @@ export default function ListUsers() {
                         openSelectId={openSelectId}
                         id="role"
                         showSearchInput={false}
+                        selectWrapperClassName="!rounded-lg"
                     />
                 )}
             </div>

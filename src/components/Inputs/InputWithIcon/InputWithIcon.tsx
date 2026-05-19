@@ -15,6 +15,7 @@ type Props = {
     value?: string | number | undefined | null;
     mask?: (input: React.InputEvent<HTMLInputElement>) => void
     disabled?: boolean;
+    readOnly?: boolean;
     customClassName?: string;
     classNameInput?: string;
     isLoading?: boolean;
@@ -28,7 +29,7 @@ type Props = {
     onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, hasError, hasSuccess, onBlur }: Props) {
+export default function InputWithIcon({ type, placeholder, label, id, onInputChange, icon, isPassword, value, mask, disabled, readOnly, customClassName, classNameInput, isLoading, allowDecimals, maxLength, maxDecimalPlaces, hasError, hasSuccess, onBlur }: Props) {
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -52,18 +53,9 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                 }
 
                 if (maxLength && maxLength > 0) {
-                    const currentDigits = integerPart.length + (decimalPart ? decimalPart.length : 0);
-                    if (currentDigits > maxLength) {
-                        const excess = currentDigits - maxLength;
-                        if (decimalPart !== undefined && decimalPart.length >= excess) {
-                            decimalPart = decimalPart.slice(0, decimalPart.length - excess);
-                        } else {
-                            const remainingExcess = decimalPart !== undefined ? excess - decimalPart.length : excess;
-                            decimalPart = undefined;
-                            integerPart = integerPart.slice(0, integerPart.length - remainingExcess);
-                        }
+                    if (integerPart.length > maxLength) {
+                        integerPart = integerPart.slice(0, maxLength);
                     }
-
                     if (integerPart.length >= maxLength && decimalPart === "") {
                         decimalPart = undefined;
                     }
@@ -140,6 +132,7 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                             onChange={handleChange}
                             onKeyDown={handleKeyDown}
                             disabled={disabled}
+                            readOnly={readOnly}
                             maxLength={type === "number" && allowDecimals && maxLength != null ? maxLength + 1 : maxLength}
                             onBlur={onBlur}
                         />
@@ -152,7 +145,14 @@ export default function InputWithIcon({ type, placeholder, label, id, onInputCha
                                 {showPassword ? <EyeOff /> : <Eye />}
                             </button>
                         )}
-                        {maxLength != null && <span className={styles.inputLimit}>{type === "number" ? String(value || "").replace(/\D/g, "").length : (value != null ? String(value).length : 0)}/{maxLength}</span>}
+                        {maxLength != null && (
+                            <span 
+                                className={styles.inputLimit}
+                                style={isPassword ? { right: '2.5rem' } : {}}
+                            >
+                                {type === "number" ? String(value || "").replace(/\D/g, "").length : (value != null ? String(value).length : 0)}/{maxLength}
+                            </span>
+                        )}
                     </>
                 )}
             </div>

@@ -80,7 +80,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             setOpenSelectId={setOpenSelectId}
                             openSelectId={openSelectId}
                             id="status"
-                            
+
                         />
                         <Select
                             onSelectStatusChange={onSelectTypeClassChange}
@@ -123,7 +123,6 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                                                 }
                                                 setOpenCalendar(false);
                                             }}
-                                            classname="absolute bottom-0"
                                         />
                                     )}
                                 </div>

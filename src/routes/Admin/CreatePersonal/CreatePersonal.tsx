@@ -120,7 +120,7 @@ export default function CreatePersonal() {
         telefone: "",
       });
     } catch (err: any) {
-      console.log(err);
+      
       setTextModal({
         title: "Erro ao Cadastrar Personal!",
         content: err.response?.data.Exception || "Ocorreu um erro ao cadastrar o personal trainer. Tente novamente."
@@ -197,6 +197,7 @@ export default function CreatePersonal() {
               onInputChange={(v: string) => handleChange("nome", v)}
               id="nome-completo"
               hasError={nomeHasError}
+              maxLength={100}
               onBlur={() => {
                 setTouched((prev) => ({ ...prev, nome: true }));
                 setTimeout(() => setShowNomeError(true), 200);
@@ -226,6 +227,7 @@ export default function CreatePersonal() {
                   form.email.length > 0 &&
                   validation.validateEmail(form.email).startsWith("Email válido")
                 }
+                maxLength={100}
                 onBlur={() => {
                   setTouched((prev) => ({ ...prev, email: true }));
                   setTimeout(() => setShowEmailError(true), 200);
@@ -310,6 +312,7 @@ export default function CreatePersonal() {
                 id="registro-cref"
                 hasError={submitAttempted && form.cref.trim() === ""}
                 mask={crefMask}
+                maxLength={11}
               />
               {submitAttempted && form.cref.trim() === "" && (
                 <span style={{ color: "#b91c1c", fontSize: 13, marginBottom: 4, display: "block" }}>

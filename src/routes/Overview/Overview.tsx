@@ -214,7 +214,7 @@ export function Overview() {
         enabled: type?.type?.includes("aluno")
     });
 
-    console.log("Class balance data:", classBalanceQuery.data);
+    
 
     function getBalance() {
         return <ClassBalancePanel data={classBalanceQuery.data} />;
@@ -245,11 +245,11 @@ export function Overview() {
 
     const targetId = type?.type?.includes("personal") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
 
-    console.log("targetId", targetId)
+    
 
     const { disabledDays, isLoading: isLoadingDisabledDays } = useDisabledDays(targetId);
 
-    console.log("disabledDays", disabledDays)
+    
 
     const appointmentsCards = useQuery({
         queryKey: ["findUserAppointments"],
@@ -400,7 +400,7 @@ export function Overview() {
                                     modalType={setModalType}
                                     availabilityHoursTomorrow={getAvailabilityHoursTomorrowQuery.data?.data}
                                     clickDate={setClickedDate}
-                                    disabledDays={disabledDays}
+                                    disabledDays={disabledDays as string[]}
                                 />
                             )}
                         </div>

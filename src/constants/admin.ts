@@ -14,7 +14,7 @@ export function getVerifyNeedDataToAddRole(id: number, role: string): Promise<Re
 }
 
 export function addRoleToUser(id: number, role: string, extraData?: ReqAdicionarRoleDTO) {
-    return api.put(`/admin/usuarios/${id}/roles?role=${role}`, { data: extraData });
+    return api.put(`/admin/usuarios/${id}/roles?role=${role}`, extraData || {});
 }
 
 export function removeRoleFromUser(id: number, role: string) {

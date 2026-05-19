@@ -220,6 +220,7 @@ export default function SetAvailability() {
     const [hasUnsaved, setHasUnsaved] = useState(false);
     const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const dirtySlotIds = useRef<Set<string>>(new Set());
+    const dirtyDays = useRef<Set<string>>(new Set());
 
     const [globalManha, setGlobalManha] = useState({ start: "08:00", end: "12:00" });
     const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
@@ -297,7 +298,15 @@ export default function SetAvailability() {
     }
 
     function confirmToggleDay(dayIndex: number) {
-        updateWorkDay(schedule[dayIndex].day);
+        const day = schedule[dayIndex].day;
+
+        if (dirtyDays.current.has(day)) {
+            dirtyDays.current.delete(day);
+        } else {
+            dirtyDays.current.add(day);
+        }
+
+        setHasUnsaved(dirtyDays.current.size > 0 || dirtySlotIds.current.size > 0);
 
         setSchedule((prev) => {
             const next = [...prev];
@@ -369,7 +378,7 @@ export default function SetAvailability() {
     }
 
     function handleSave() {
-        if (dirtySlotIds.current.size === 0) return;
+        if (dirtySlotIds.current.size === 0 && dirtyDays.current.size === 0) return;
 
         setSaveStatus("loading");
 
@@ -393,9 +402,14 @@ export default function SetAvailability() {
             });
         });
 
+        dirtyDays.current.forEach(day => {
+            promises.push(updateWorkDay(day));
+        });
+
         Promise.all(promises)
             .then(() => {
                 dirtySlotIds.current.clear();
+                dirtyDays.current.clear();
                 showSuccess();
             })
             .catch(() => {
@@ -418,6 +432,7 @@ export default function SetAvailability() {
         setHasUnsaved(false);
         setSaveStatus("idle");
         dirtySlotIds.current.clear();
+        dirtyDays.current.clear();
         if (getInitialCronogram.data) {
             const formatted: DaySchedule[] = DAYS_OF_WEEK.map((day) => {
                 const slots: TimeSlot[] = getInitialCronogram.data.filter(

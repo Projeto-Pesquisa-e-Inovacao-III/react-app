@@ -10,7 +10,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
@@ -410,141 +410,166 @@ export function CheckSchedule() {
                         ) : (
                             (appointmentsList ?? []).map((card) => (
 
-                                <div className={styles.mobileCardWrapper}
-                                    key={card.agendamentoId}
-                                    ref={loadMoreRef}
+                                <Link className={styles.link} to={`/schedule-details?id=${card.agendamentoId}`}>
+                                    <div className={styles.mobileCardWrapper}
+                                        key={card.agendamentoId}
+                                        ref={loadMoreRef}
 
-                                >
-                                    <div className={styles.mobileCard}>
+                                    >
+                                        <div className={styles.mobileCard}>
 
-                                        <div className={styles.mobileCardHeader}
-                                        >
-                                            <span
-                                                className={`${styles.mobileStatusBadge} ${statusProperties.find(
-                                                    (status) => status.cardStatus === card.status
-                                                )?.cardColor || ""
-                                                    }`}
+                                            <div className={styles.mobileCardHeader}
                                             >
-                                                {
-                                                    statusProperties.find(
+                                                <span
+                                                    className={`${styles.mobileStatusBadge} ${statusProperties.find(
                                                         (status) => status.cardStatus === card.status
-                                                    )?.cardDescription
-                                                }
-                                            </span>
-                                            <span className={styles.mobileCardType}>
-                                                {card.tipoAula}
-                                            </span>
-                                        </div>
+                                                    )?.cardColor || ""
+                                                        }`}
+                                                >
+                                                    {
+                                                        statusProperties.find(
+                                                            (status) => status.cardStatus === card.status
+                                                        )?.cardDescription
+                                                    }
+                                                </span>
+                                                <span className={styles.mobileCardType}>
+                                                    {card.tipoAula}
+                                                </span>
+                                            </div>
 
-                                        <div className={styles.mobileUserSection}>
-                                            <div className={styles.mobileAvatarWrapper}>
-                                                {card.foto ? (
-                                                    <img
-                                                        src={card.foto}
-                                                        alt={`Client ${card.nome}`}
-                                                        className={styles.userImage}
-                                                    />
-                                                ) : (
-                                                    <UserRound />
+                                            <div className={styles.mobileUserSection}>
+                                                <div className={styles.mobileAvatarWrapper}>
+                                                    {card.foto ? (
+                                                        <img
+                                                            src={card.foto}
+                                                            alt={`Client ${card.nome}`}
+                                                            className={styles.userImage}
+                                                        />
+                                                    ) : (
+                                                        <UserRound />
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <h3 className={styles.mobileUserName}>
+                                                        {card.nome}
+                                                    </h3>
+                                                    <p className={styles.mobileUserDate}>
+                                                        {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} -{" "}
+                                                        {format(parseISO(card.dataFim), "HH:mm")}
+                                                    </p>
+                                                    <p className={styles.mobileAddress}>
+                                                        {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
+                                                        {card.endereco.cep.bairro} - {card.endereco.cep.uf}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className={styles.mobileActions}>
+                                                {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
+                                                    <>
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                handleModal(card.agendamentoId, "accept");
+                                                            }}
+                                                            title="Aceitar agendamento"
+                                                        >
+                                                            <CircleCheck className={styles.iconAccept} />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                handleModal(card.agendamentoId, "decline");
+                                                            }}
+                                                            title="Rejeitar agendamento"
+                                                        >
+                                                            <CircleX className={styles.iconDecline} />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                                handleModal(card.agendamentoId, "reschedule");
+                                                            }}
+                                                            title="Reagendar agendamento"
+                                                        >
+                                                            <CalendarClock className={styles.iconReschedule} />
+                                                        </button>
+                                                    </>
+                                                )}
+
+                                                {card.status === "APROVADO" && (
+                                                    <>
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                handleModal(card.agendamentoId, "decline");
+                                                            }}
+                                                            title="Cancelar agendamento"
+                                                        >
+                                                            <CircleX className={styles.iconDecline} />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                setClickedDate(card.dataInicio?.split("T")[0] || "");
+                                                                handleModal(card.agendamentoId, "reschedule");
+                                                            }}
+                                                            title="Reagendar agendamento"
+                                                        >
+                                                            <CalendarClock className={styles.iconReschedule} />
+                                                        </button>
+                                                    </>
+                                                )}
+
+                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                    <>
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                handleModal(card.agendamentoId, "concludeAppointment");
+                                                            }}
+                                                            title="Concluir agendamento"
+                                                        >
+                                                            <User className="text-green-600" />
+                                                        </button>
+
+                                                        <button
+                                                            className={styles.button}
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                e.stopPropagation();
+                                                                handleModal(card.agendamentoId, "registerAbsence");
+                                                            }}
+                                                            title="Registrar ausência"
+                                                        >
+                                                            <UserX className="text-red-500" />
+                                                        </button>
+                                                    </>
                                                 )}
                                             </div>
 
-                                            <div>
-                                                <h3 className={styles.mobileUserName}>
-                                                    {card.nome}
-                                                </h3>
-                                                <p className={styles.mobileUserDate}>
-                                                    {format(parseISO(card.dataInicio), "dd/MM/yyyy HH:mm")} -{" "}
-                                                    {format(parseISO(card.dataFim), "HH:mm")}
-                                                </p>
-                                                <p className={styles.mobileAddress}>
-                                                    {card.endereco.cep.logradouro}, {card.endereco.numero} -{" "}
-                                                    {card.endereco.cep.bairro} - {card.endereco.cep.uf}
-                                                </p>
-                                            </div>
                                         </div>
 
-                                        <div className={styles.mobileActions}>
-                                            {card.status === "PENDENTE_PERSONAL_APROVACAO" && (
-                                                <>
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => handleModal(card.agendamentoId, "accept")}
-                                                        title="Aceitar agendamento"
-                                                    >
-                                                        <CircleCheck className={styles.iconAccept} />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => handleModal(card.agendamentoId, "decline")}
-                                                        title="Rejeitar agendamento"
-                                                    >
-                                                        <CircleX className={styles.iconDecline} />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => {
-                                                            setClickedDate(card.dataInicio?.split("T")[0] || "");
-                                                            handleModal(card.agendamentoId, "reschedule");
-                                                        }}
-                                                        title="Reagendar agendamento"
-                                                    >
-                                                        <CalendarClock className={styles.iconReschedule} />
-                                                    </button>
-                                                </>
-                                            )}
-
-                                            {card.status === "APROVADO" && (
-                                                <>
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => handleModal(card.agendamentoId, "decline")}
-                                                        title="Cancelar agendamento"
-                                                    >
-                                                        <CircleX className={styles.iconDecline} />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => {
-                                                            setClickedDate(card.dataInicio?.split("T")[0] || "");
-                                                            handleModal(card.agendamentoId, "reschedule");
-                                                        }}
-                                                        title="Reagendar agendamento"
-                                                    >
-                                                        <CalendarClock className={styles.iconReschedule} />
-                                                    </button>
-                                                </>
-                                            )}
-
-                                            {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
-                                                <>
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => handleModal(card.agendamentoId, "concludeAppointment")}
-                                                        title="Concluir agendamento"
-                                                    >
-                                                        <User className="text-green-600" />
-                                                    </button>
-
-                                                    <button
-                                                        className={styles.button}
-                                                        onClick={() => handleModal(card.agendamentoId, "registerAbsence")}
-                                                        title="Registrar ausência"
-                                                    >
-                                                        <UserX className="text-red-500" />
-                                                    </button>
-                                                </>
-                                            )}
-                                        </div>
 
                                     </div>
-
-
-                                </div>
-
+                                </Link>
                             ))
 
                         )}
@@ -807,11 +832,11 @@ export function CheckSchedule() {
                             errorModal={() => handleErrorModalInfo("Erro ao reagendar", "Não foi possível reagendar o horário")}
                             insertedEvents={appointments.data?.data}
                             title="Reagendar horário"
-                            buttonTitle="Reagendar"
+                            buttonTitle={!type?.includes("personal") ? "Avançar" : "Reagendar"}
                             isReschedule={true}
                             clickedDate={clickedDate}
                             rescheduleId={appointmentId}
-                            goToNextStep={false}
+                            goToNextStep={!type?.includes("personal")}
                             appoitmentData={appointment.data}
                             typeUser={type || []}
 

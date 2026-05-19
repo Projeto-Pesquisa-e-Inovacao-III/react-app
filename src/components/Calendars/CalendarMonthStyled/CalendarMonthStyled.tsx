@@ -22,7 +22,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
 
   const [newEventDate, setNewEventDate] = useState<string>("");
   const calendarRef = useRef<FullCalendar>(null);
-  console.log(createdEvents)
+  
   const databaseEvents = useMemo(() => {
     return Array.isArray(createdEvents) ? createdEvents.map((event: Schedule) => {
       const eventData = event.data || (event as any).dataInicio;
@@ -43,7 +43,10 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
   }, [databaseEvents]);
 
   useEffect(() => {
-    clickedDate(newEventDate || clickedDateStr || "");
+    const valueToSync = newEventDate || clickedDateStr || "";
+    if (valueToSync && valueToSync !== clickedDateStr) {
+      clickedDate(valueToSync);
+    }
   }, [newEventDate, clickedDate, clickedDateStr]);
 
   useEffect(() => {
@@ -66,7 +69,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const clickedDate = parseISO(info.dateStr);
             const weekday = info.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-            console.log(weekday)
+            
             if (disabledDays?.includes(weekday)) return
             
             if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
@@ -94,7 +97,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             return (
               <div style={{ position: "relative", textAlign: "center" }}>
                 <div><p>{arg.dayNumberText}</p></div>
-                <div style={{ display: "flex", justifyContent: "center", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "3px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4px", position: "absolute", left: "55%", transform: "translate(-50%, -50%)", marginTop: "6px" }}>
                   {eventsOfDay.map((event) => (
                     <div
                       key={event.agendamentoId}

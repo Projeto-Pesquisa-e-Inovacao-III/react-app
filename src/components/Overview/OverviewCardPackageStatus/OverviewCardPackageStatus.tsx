@@ -8,9 +8,10 @@ type Props = {
         nome: string;
         dataExpiracao: string;
     } | null;
+    hideHistoryButton?: boolean;
 }
 
-export default function OverviewCardPackageStatus({ actualPlan }: Props) {
+export default function OverviewCardPackageStatus({ actualPlan, hideHistoryButton }: Props) {
     function calculateRemainingDays(dueDate: string): number {
         const today = new Date();
         const expiration = new Date(dueDate);
@@ -46,7 +47,7 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
                     <CalendarIcon size={17} />
                     Expira em {actualPlan?.dataExpiracao ? new Date(actualPlan.dataExpiracao).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" }) : "N/A"}
                 </p>
-                <div className={styles.progressBox}>
+                <div className={`${styles.progressBox} ${hideHistoryButton ? styles.progressBoxNoMargin : ''}`}>
                     <div className={styles.progressHeader}>
                         <span className={styles.progressLabel}>Dias restantes</span>
                         <span className={styles.progressValue}>{remainingDays} dias</span>
@@ -55,10 +56,12 @@ export default function OverviewCardPackageStatus({ actualPlan }: Props) {
                         <div className={styles.progressBar} style={{ width: `${progress}%` }} />
                     </div>
                 </div>
-                <button className={styles.button} onClick={() => nav("/plans-history")}>
-                    Histórico de compras
-                    <ArrowRight size={17} />
-                </button>
+                {!hideHistoryButton && (
+                    <button className={styles.button} onClick={() => nav("/plans-history")}>
+                        Histórico de compras
+                        <ArrowRight size={17} />
+                    </button>
+                )}
             </div>
         </section>
     )

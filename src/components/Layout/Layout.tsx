@@ -38,7 +38,8 @@ const titles = {
     "/set-availability": "Definir Horário | CSF Treinamentos",
     "/anamnesis": "Anamnese | CSF Treinamentos",
     "/edit-user/anamnesis": "Editar Anamnese | CSF Treinamentos",
-    "/no-code-tool": "Ferramenta No Code | CSF Treinamentos",
+    "/no-code-tool": "Ferramenta No-Code | CSF Treinamentos",
+    "/dev-seed": "Seed | CSF Treinamentos",
 };
 
 const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
@@ -55,7 +56,7 @@ export default function Layout() {
     const queryClient = useQueryClient();
     useEffect(() => {
         queryClient.invalidateQueries({ queryKey: ["isAuthenticated"] });
-        document.title = titles[location.pathname as keyof typeof titles] || "Meu App";
+        document.title = titles[location.pathname as keyof typeof titles] || "CSF Treinamentos";
     }, [location.pathname]);
 
     const hideLogoPaths = [...exceptions, "/more-options"].includes(location.pathname);
@@ -74,10 +75,10 @@ export default function Layout() {
 
     const { type, setType } = context;
 
-    console.log("type é: ", type)
+    
     useEffect(() => {
-        console.log("logado e nao carregando", !isLoggedIn.isLoading && !isLoggedIn.data?.autentificado)
-        console.log("erro e nao carregando", isLoggedIn.isError && !isLoggedIn.isLoading)
+        
+        
         const notAuthenticated = (!isLoggedIn.isLoading && !isLoggedIn.data?.autentificado);
         if (notAuthenticated && !exceptions.includes(location.pathname)) {
             nav("/login");

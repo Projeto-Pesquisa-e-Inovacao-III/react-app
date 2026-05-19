@@ -91,10 +91,10 @@ export default function PlansHistory() {
                         icon={<SearchIcon />}
                         value={filterSearch}
                         onInputChange={setFilterSearch}
+                        classNameInput="!rounded-lg"
                     />
                 </div>
                 <div ref={calendarRef} className={styles.calendarWrapper}>
-                    <div className={styles.verticalDivider}></div>
                     <Calendar
                         color={`${selectedDateRange?.start && selectedDateRange?.end ? "#093a5d" : "#707070"}`}
                         className={styles.calendarIcon}
@@ -116,7 +116,7 @@ export default function PlansHistory() {
                                         }
                                         setOpenCalendar(false);
                                     }}
-                                    classname="absolute bottom-8"
+                                    classname="mt-2"
                                 />
                             )}
                         </div>

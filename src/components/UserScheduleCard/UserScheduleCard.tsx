@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import SmallerButton from "../SmallerButton/SmallerButton";
-import "./style.css"
+import styles from "./UserScheduleCard.module.css"
 import type { dataCardProps } from "../CheckSchedule/CardCheckSchedule/CardCheckSchedule";
 import UserAvatar from "../UserAvatar/UserAvatar";
 import Skeleton from "react-loading-skeleton";
@@ -23,16 +23,16 @@ type UserScheduleCardProps = {
 }
 
 export default function UserScheduleCard({ additionalInfo, isReschedule, data, date, initialHour, finalHour, handleCancel, handleReschedule, handleAcceptReschedule, isMobile }: UserScheduleCardProps) {
-    console.log("dataCardProps", finalHour);
+    
 
     const skeleton = <Skeleton count={1} width={100} height={20} baseColor="#e5e7eb" highlightColor="#f3f4f6" />
 
     return (
-        <div className={classNames("schedule-view", { "schedule-view-mobile": isMobile })}>
-            <div className="left">
-                <span className="user-personal">{data.tipoAula || skeleton}</span>
+        <div className={classNames(styles.scheduleView, { [styles.scheduleViewMobile]: isMobile })}>
+            <div className={styles.left}>
+                <span className={styles.userPersonal}>{data.tipoAula || skeleton}</span>
                 <p>{isReschedule ? "Horário reagendado" : ""}</p>
-                <div className="schedule-page-user">
+                <div className={styles.schedulePageUser}>
                     <UserAvatar
                         userName={data.personalNome ?? additionalInfo?.nome ?? ""}
                         foto={data.caminhoFoto ?? additionalInfo?.foto }
@@ -44,14 +44,14 @@ export default function UserScheduleCard({ additionalInfo, isReschedule, data, d
                 </div>
                 {isReschedule &&
                     (
-                        <div className="btn-actions">
-                            <SmallerButton type="button" classname="accept" title="Aceitar" handleButtonClick={handleAcceptReschedule} />
-                            <SmallerButton type="button" classname="decline" title="Cancelar" handleButtonClick={handleCancel} />
-                            <SmallerButton type="button" classname="other" title="Reagendar" handleButtonClick={handleReschedule} />
+                        <div className={styles.btnActions}>
+                            <SmallerButton type="button" classname={styles.accept} title="Aceitar" handleButtonClick={handleAcceptReschedule} />
+                            <SmallerButton type="button" classname={styles.decline} title="Cancelar" handleButtonClick={handleCancel} />
+                            <SmallerButton type="button" classname={styles.other} title="Reagendar" handleButtonClick={handleReschedule} />
                         </div>
                     )
                 }
-                <div className="btn-actions">
+                <div className={styles.btnActions}>
                     {data.agendamentoStatus === "APROVADO" && (
                         <>
                             <SmallerButton type="button" title="Reagendar" handleButtonClick={handleReschedule} />
@@ -63,17 +63,17 @@ export default function UserScheduleCard({ additionalInfo, isReschedule, data, d
                 </div>
             </div>
             {isMobile && (
-                <div className="mobile-view">
-                    <span className="border-division"></span>
-                    <div className={classNames("right", { "right-mobile": isMobile })}>
+                <div className={styles.mobileView}>
+                    <span className={styles.borderDivision}></span>
+                    <div className={classNames(styles.right, { [styles.rightMobile]: isMobile })}>
                         <span>{date} {initialHour} - {finalHour}</span>
                     </div>
                 </div>
             )}
             {!isMobile && (
                 <>
-                    <span className="border-division"></span>
-                    <div className={classNames("right", { "right-mobile": isMobile })}>
+                    <span className={styles.borderDivision}></span>
+                    <div className={classNames(styles.right, { [styles.rightMobile]: isMobile })}>
                         <span>{date} {initialHour} - {finalHour}</span>
                     </div>
                 </>

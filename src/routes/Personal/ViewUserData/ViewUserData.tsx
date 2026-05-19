@@ -1,18 +1,19 @@
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
 import styles from "./ViewUserData.module.css";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
 import Skeleton from "react-loading-skeleton";
 import { getAnamnesisById } from "../../../constants/anamnesis";
-import { Calendar, Mail, Phone, ArrowLeft } from "lucide-react";
+import { Calendar, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
 import { useContext } from "react";
 import { TypeContext } from "../../../App";
 import AdminActionsCard from "../../../components/AdminActionsCard/AdminActionsCard";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import MetricCard from "../../../components/MetricCard/MetricCard";
+import OverviewCardPackageStatus from "../../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
@@ -37,10 +38,10 @@ export default function ViewUserData() {
 
     const age = user.data?.dataNascimento
         ? differenceInYears(new Date(), parse(user.data?.dataNascimento, "yyyy-MM-dd", new Date()))
-        : "N/A";
+        : "Não informado";
 
     const getActivityLabel = (nivel: string | undefined) => {
-        if (!nivel) return "N/A";
+        if (!nivel) return "Não informado";
         const map: Record<string, string> = {
             SEDENTARIO: "Sedentário",
             LEVE: "Leve",
@@ -53,6 +54,11 @@ export default function ViewUserData() {
 
     const isSedentario = anamnesis.data?.nivelDeAtividade === "SEDENTARIO";
     const roles: string[] = user.data?.roles || [];
+    const nav = useNavigate();
+
+    function handleBack() {
+        nav(-1);
+    }
 
     return (
         <>
@@ -60,40 +66,52 @@ export default function ViewUserData() {
                 <div className={styles.content}>
 
                     <div className={styles.pageHeader}>
-                        <Link to="/users" className={styles.backLink}>
+                        <button className={styles.backLink} onClick={handleBack}>
                             <ArrowLeft size={16} />
                             Voltar
-                        </Link>
+                        </button>
                         <h1 className={styles.pageTitle}>Dados &amp; Anamnese</h1>
                     </div>
 
                     <div className={styles.mainGrid}>
 
-                        <ProfileCard
-                            name={user.data?.nome}
-                            photoUrl={user.data?.caminhoFoto}
-                            isLoading={user.isLoading}
-                            fields={[
-                                {
-                                    icon: <Calendar size={16} />,
-                                    label: "IDADE",
-                                    value: `${age} anos`,
-                                    isLoading: user.isLoading
-                                },
-                                {
-                                    icon: <Mail size={16} />,
-                                    label: "EMAIL",
-                                    value: user.data?.email,
-                                    isLoading: user.isLoading
-                                },
-                                {
-                                    icon: <Phone size={16} />,
-                                    label: "TELEFONE",
-                                    value: user.data?.telefones?.[0]?.numeroCompleto || "-",
-                                    isLoading: user.isLoading
-                                }
-                            ]}
-                        />
+                        <div className={styles.leftColumn}>
+                            <ProfileCard
+                                name={user.data?.nome}
+                                photoUrl={user.data?.caminhoFoto}
+                                isLoading={user.isLoading}
+                                fields={[
+                                    {
+                                        icon: <Calendar size={16} />,
+                                        label: "IDADE",
+                                        value: `${age} anos`,
+                                        isLoading: user.isLoading
+                                    },
+                                    {
+                                        icon: <Mail size={16} />,
+                                        label: "EMAIL",
+                                        value: user.data?.email,
+                                        isLoading: user.isLoading
+                                    },
+                                    {
+                                        icon: <Phone size={16} />,
+                                        label: "TELEFONE",
+                                        value: user.data?.telefones?.[0]?.numeroCompleto || "-",
+                                        isLoading: user.isLoading
+                                    }
+                                ]}
+                            />
+
+                            {user.data?.produtoContratado && (
+                                <OverviewCardPackageStatus
+                                    actualPlan={{
+                                        nome: user.data.produtoContratado.produtoExibicao?.titulo,
+                                        dataExpiracao: user.data.produtoContratado.dataExpiracao
+                                    }}
+                                    hideHistoryButton={type?.type?.includes("personal")}
+                                />
+                            )}
+                        </div>
 
                         <div className={styles.rightColumn}>
                             <div className={styles.metricsRow}>
@@ -156,7 +174,7 @@ export default function ViewUserData() {
 
                                 <div className={styles.activityCard}>
                                     <h2 className={styles.sectionTitle}>
-                                        <span className={styles.sectionIconCircle}>&#9654;</span> Atividade Física
+                                        <span className={styles.sectionIconCircle}><Dumbbell /></span> Atividade Física
                                     </h2>
                                     <div className={styles.activityLevelRow}>
                                         <span className={styles.fieldLabel}>NÍVEL ATUAL</span>
@@ -176,12 +194,12 @@ export default function ViewUserData() {
                                         {anamnesis.isLoading ? (
                                             <Skeleton width="100%" height={56} />
                                         ) : (
-                                            <p className={styles.rotinaText}>{anamnesis.data?.rotina ?? "N/A"}</p>
+                                            <p className={styles.rotinaText}>{anamnesis.data?.rotina ?? "Não informado"}</p>
                                         )}
                                     </div>
                                 </div>
                             </div>
-                            
+
                             {isAdmin && userId && (
                                 <AdminActionsCard
                                     userId={Number(userId)}

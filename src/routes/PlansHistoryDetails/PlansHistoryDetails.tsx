@@ -29,7 +29,7 @@ export default function PlansHistoryDetails() {
     }
 
 
-    console.log(productDetails.data);
+    
 
     return (
         <div className={styles.container}>

@@ -16,6 +16,10 @@
     gap: 24px;
 }
 
+.link {
+    width: 100%;
+}
+
 .cardFilter {
     width: 100%;
     display: flex;
@@ -419,6 +423,10 @@
         grid-template-columns: repeat(2, 1fr) !important;
         width: 100%;
         gap: 1.25rem;
+    }
+
+    .gridContainer > div:last-child {
+        grid-column: span 2;
     }
 
 }

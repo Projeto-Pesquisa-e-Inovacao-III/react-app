@@ -1,10 +1,10 @@
-.wrapper_inp {
+.wrapperInp {
     position: relative;
     display: flex;
     flex-direction: column;
     background: none;
 
-    .select-icon {
+    .selectIcon {
         display: flex;
         position: absolute;
         left: 0.75rem;
@@ -32,7 +32,7 @@
         height: 56px;
     }
 
-    .dont-has-icon {
+    .dontHasIcon {
         padding: 10px 20px;
         display: flex;
         align-items: center;
@@ -44,4 +44,3 @@
     }
 
 }
-
