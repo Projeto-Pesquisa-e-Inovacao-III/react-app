@@ -1,3 +1,9 @@
+.outerWrapper {
+    display: block;
+    width: 100%;
+}
+
+
 .container {
     background-color: #ffffff;
     position: relative;
@@ -7,6 +13,7 @@
     justify-content: space-between;
     height: auto;
     border-radius: 8px;
+    min-width: 0;
 
     -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
     box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
@@ -37,10 +44,8 @@
     font-weight: 500;
 }
 
-
 .container .contentRow {
     padding: 12px 0;
-
 }
 
 .contentDetails {
@@ -68,7 +73,6 @@
 .textWithIcon {
     display: flex;
     gap: 12px;
-
 }
 
 .container span {
@@ -76,12 +80,9 @@
     gap: 10px;
 }
 
-
 .content h2 {
     padding-bottom: 24px;
 }
-
-
 
 .content span,
 .contentRow span {
@@ -94,7 +95,6 @@
     border: none;
     margin: 12px 0;
 }
-
 
 .contentRow .cardDetails {
     display: flex;
@@ -109,21 +109,18 @@
 
 .paymentMethodMobile {
     margin-top: 20px;
-
 }
 
 .cardDetails,
 .paymentMethod,
 .orderDetails {
     min-width: 300px;
-
 }
 
 @media (max-width: 400px) {
     .paymentMethodMobile h2 {
         width: min-content;
     }
-
 
     .cardDetails,
     .paymentMethod,
@@ -316,8 +313,9 @@
 
 .typeAmbientRow {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr auto;
     gap: 12px;
+    align-items: stretch;
 }
 
 .infoCard {
@@ -343,6 +341,35 @@
 .infoCardValue {
     font-size: 18px;
     font-weight: 500;
+}
+
+.aiTriggerCard {
+    background: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    border: 1.5px solid #e0e0e0;
+}
+
+.aiTriggerCard:hover {
+    background: #ccdcff;
+    border-color: var(--bg-blue);
+    transform: scale(1.05);
+}
+
+.aiTriggerCardActive {
+    border-color: var(--bg-blue);
+}
+
+.aiTriggerCardActive .aiTriggerIcon {
+    color: #ffffff;
+}
+
+.aiTriggerIcon {
+    color: var(--bg-blue);
+    transition: color 0.2s;
 }
 
 .mapCard {
@@ -399,6 +426,12 @@
         flex-direction: column;
     }
 
+    .aiTriggerCard {
+        flex-direction: row;
+        min-width: auto;
+        gap: 10px;
+    }
+
     .buttonsGrid {
         grid-template-columns: 1fr;
         flex-direction: column-reverse;
@@ -407,8 +440,8 @@
 
 .dateTimeRow {
     display: flex;
+    flex-direction: column;
     gap: 12px;
-    flex-wrap: wrap;
 }
 
 .bottomRow {
@@ -421,6 +454,10 @@
     .bottomRow {
         grid-template-columns: 1fr;
     }
+
+    .outerWrapperWithPanel {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dateTimeCard {
@@ -428,8 +465,10 @@
     align-items: center;
     gap: 10px;
     background: #f5f5f5;
+    border: solid 1px #50505050;
     border-radius: 8px;
     padding: 10px 16px;
+    width: 100%;
 }
 
 .dateTimeLabel {
@@ -462,19 +501,313 @@
     gap: 12px;
 }
 
-.dateTimeRow {
+.aiBackdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.18);
+    z-index: 199;
+    animation: fadeBackdrop 0.25s ease;
+}
+
+@keyframes fadeBackdrop {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.aiBackdropExit {
+    animation: fadeBackdropOut 0.28s ease forwards;
+}
+
+@keyframes fadeBackdropOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.aiPanel {
+    background: #fff;
+    border-radius: 16px 0 0 16px;
+    box-shadow: -8px 0 32px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-left: 1px solid #e9e5ff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 380px;
+    z-index: 200;
+    animation: slidePanelIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.aiPanelExit {
+    animation: slidePanelOut 0.28s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slidePanelIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@keyframes slidePanelOut {
+    from { transform: translateX(0); }
+    to { transform: translateX(100%); }
+}
+
+.aiPanelMobile {
+    width: 100%;
+    border-radius: 0;
+}
+
+.aiPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: #ecececa9;
+    border-bottom: 1px solid #b8b8b8;
+    flex-shrink: 0;
+}
+
+.aiPanelHeaderLeft {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.aiIconBadge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #2e5580, #1054c8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.aiPanelTitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a2e;
+}
+
+.aiPanelSubtitle {
+    font-size: 12px;
+    color: #2e5580;
+    font-weight: 500;
+}
+
+.aiCloseBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.aiCloseBtn:hover {
+    background: #a8c3ff;
+    color: var(--bg-blue);
+}
+
+.aiPanelBody {
+    padding: 18px 20px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.aiAnalysisSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aiAnalysisLabel {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    margin: 0;
+}
+
+.aiQuote {
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+}
+
+.aiAnalysisText {
+    font-size: 13px;
+    color: #444;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.aiTipsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.aiTipItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: #444;
+    line-height: 1.5;
+}
+
+.aiTipDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--bg-blue);
+    flex-shrink: 0;
+    margin-top: 5px;
+}
+
+.aiChat {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 12px;
 }
 
-.dateTimeCard {
+.aiChatBubble {
+    max-width: 90%;
+    padding: 9px 13px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.aiChatBubbleUser {
+    background: var(--bg-blue);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+}
+
+.aiChatBubbleAi {
+    background: #f3f0ff;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+}
+
+.aiLoading {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 12px 16px;
+}
+
+.aiLoading span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #9c5ff3;
+    animation: aiDotPulse 1.2s infinite ease-in-out;
+    display: inline-block;
+}
+
+.aiLoading span:nth-child(2) { animation-delay: 0.2s; }
+.aiLoading span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes aiDotPulse {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+
+.aiPanelFooter {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: #f5f5f5;
-    border: solid 1px #50505050;
+    gap: 8px;
+    padding: 14px 16px;
+    border-top: 1px solid #f0eeff;
+    background: #faf9ff;
+    flex-shrink: 0;
+}
+
+.aiInput {
+    flex: 1;
+    border: 1px solid #e0d9f7;
     border-radius: 8px;
-    padding: 10px 16px;
-    width: 100%;
+    padding: 9px 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+}
+
+.aiInput:focus {
+    border-color: #7c3aed;
+}
+
+.aiSendBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+    flex-shrink: 0;
+}
+
+.aiSendBtn:hover:not(:disabled) {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.aiSendBtn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+
+.aiFab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.aiFab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 24px rgba(124, 58, 237, 0.55);
 }
