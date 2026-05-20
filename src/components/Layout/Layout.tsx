@@ -42,7 +42,7 @@ const titles = {
     "/dev-seed": "Seed | CSF Treinamentos",
 };
 
-const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout"];
+const exceptions = ["/", "/login", "/register", "/forgot-password", "/logout", "/no-code-tool"];
 
 const exceptionsWithoutHeader = [...exceptions, "/anamnesis"];
 

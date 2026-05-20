@@ -1,5 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-import { User, Calendar, LogOut, MapPin, ChevronDown } from "lucide-react";
+import { User, Calendar, LogOut, MapPin, ChevronDown, LayoutDashboard } from "lucide-react";
 import { LogoHeaderDesktop } from "../../LogoHeaderDesktop/LogoHeaderDesktop";
 import styles from "./UserHeaderDesktop.module.css"
 import { useEffect, useRef, useState } from "react";
@@ -167,6 +167,11 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
                 {type?.includes("aluno") &&
                   <Link onClick={handleAnimatedClose} to="/edit-user/addresses">
                     <MapPin size={18} /> Endereços
+                  </Link>
+                }
+                {type?.includes("admin") &&
+                  <Link onClick={handleAnimatedClose} to="/no-code-tool">
+                    <LayoutDashboard size={18} /> Modificar site
                   </Link>
                 }
                 <div className={styles.divider} />

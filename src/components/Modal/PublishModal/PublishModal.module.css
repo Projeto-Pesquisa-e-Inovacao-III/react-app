@@ -1,0 +1,188 @@
+.overlayPublish {
+    z-index: 1002;
+    backdrop-filter: blur(10px);
+}
+
+.modalContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1003;
+    display: flex;
+    flex-direction: column;
+    width: 45%;
+    min-width: 320px;
+}
+
+.modalContainerMobile {
+    width: 90%;
+    padding: 24px;
+}
+
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--indigo, #093A5D);
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: #f1f5f9;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.buttonGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
+}
+
+@media (min-width: 640px) {
+    .buttonGroup {
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+    }
+}
+
+.confirmBtn {
+    flex: 1;
+    background-color: var(--indigo, #093A5D) !important;
+    color: white !important;
+    border: 2px solid var(--indigo, #093A5D) !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 48px !important;
+}
+
+.confirmBtn:hover:not(:disabled) {
+    background-color: #0b4570 !important;
+    border-color: #0b4570 !important;
+}
+
+.confirmBtn:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.cancelBtn {
+    flex: 1;
+    background-color: white !important;
+    color: #64748b !important;
+    border: 2px solid #e2e8f0 !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 48px !important;
+}
+
+.descriptionInput label{
+    font-size: 16px !important;
+}
+
+.nameInput input{
+    font-weight: 500;
+    color: #334155 !important;
+}
+
+.nameInput label{
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    color: black;
+
+}
+
+.cancelBtn:hover:not(:disabled) {
+    background-color: #f8fafc !important;
+}
+
+.cancelBtn:disabled {
+    opacity: 0.6 !important;
+    cursor: not-allowed !important;
+}
+
+.modalCard {
+    animation: modalEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.closing {
+    animation: modalLeave 0.18s ease-in forwards !important;
+}
+
+.backdropEnter {
+    animation: backdropEnter 0.25s ease-out forwards;
+}
+
+.closingBackdrop {
+    animation: backdropLeave 0.18s ease-in forwards !important;
+}
+
+@keyframes modalEnter {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes modalLeave {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
+    }
+}
+
+@keyframes backdropEnter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes backdropLeave {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
