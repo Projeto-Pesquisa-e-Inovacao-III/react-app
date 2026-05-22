@@ -18,7 +18,6 @@
 }
 
 .addCard {
-    width: 50%;
     border: 2px dashed #64748b;
     border-radius: 1.5rem;
     display: flex;
@@ -234,10 +233,6 @@
 }
 
 @media (max-width: 1536px) {
-    .addCard {
-        width: 50% !important;
-    }
-
     .packagesListWrapperDesktop {
         grid-template-columns: repeat(min(var(--pkg-cols, 4), 2), 1fr) !important;
     }
@@ -298,7 +293,7 @@
 @media (max-width: 1024px) {
     .addCard {
         max-width: unset !important;
-        width: 100%;
+        width: 100% !important;
     }
 
     .packagesListWrapperDesktop {
