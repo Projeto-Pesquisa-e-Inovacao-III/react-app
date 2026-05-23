@@ -58,6 +58,6 @@ export function getPersonalBuffer() {
 }
 
 export function getScheduleData() {
-    return api.get(`agendamentos/total-status`);
+    return api.get(`historico-agendamento/total-status`);
 }
     

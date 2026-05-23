@@ -31,6 +31,7 @@ const AddressManagement = lazy(() => import("./routes/EditUser/AddressManagement
 const ViewPersonalData = lazy(() => import("./routes/Personal/ViewPersonalData/ViewPersonalData"));
 const CreatePersonal = lazy(() => import("./routes/Admin/CreatePersonal/CreatePersonal"));
 const PackageSuccess = lazy(() => import("./routes/Packages/PackageSuccess/PackageSuccess"));
+const NoCodeTool = lazy(() => import("./routes/Personal/NoCodeTool/NoCodeTool"));
 
 export type Roles = "aluno" | "personal" | "admin";
 export type UserType = Roles;
@@ -105,6 +106,7 @@ function App() {
                 <Route path="/set-availability" element={<SetAvailability />} />
                 <Route path="/personal/check-schedule" element={<CheckSchedule />} />
                 <Route path="/create-personal" element={<CreatePersonal />} />
+                <Route path="/no-code-tool" element={<NoCodeTool />} />
               </Route>
             </Route>
 
