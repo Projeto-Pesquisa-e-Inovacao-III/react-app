@@ -238,8 +238,7 @@ div.fieldGroup div :global(select):focus,
     background-color: #ffffff;
     width: 100%;
     flex: 1;
-    border: 1px solid #d1d5db;
-    border-radius: 10px;
+    height: 52px !important;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
     transition: all 0.2s ease;
 }
@@ -255,8 +254,8 @@ div.fieldGroup div :global(select):focus,
     display: none !important;
 }
 
-.datePickerWrapper :global(.MuiInputBase-root) {
-    height: 50px;
+.datePickerWrapper :global(.MuiPickersInputBase-root) {
+    height: 100% !important;
 }
 
 .datePickerWrapper :global(.MuiInputBase-input) {
