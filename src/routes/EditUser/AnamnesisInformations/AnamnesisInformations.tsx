@@ -108,7 +108,7 @@ export default function AnamnesisInformations() {
   const MAX_HEIGHT_CM = 250;
   const MIN_WEIGHT_KG = 25;
   const MAX_WEIGHT_KG = 350;
-  const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
+  const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 250;
   const MAX_HEIGHT_CHARACTERS = 3;
   const MAX_WEIGHT_CHARACTERS = 3;
 
