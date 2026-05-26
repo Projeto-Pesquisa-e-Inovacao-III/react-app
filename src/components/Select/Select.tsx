@@ -28,7 +28,7 @@ type Props = {
   triggerWrapperClassName?: string;
   selectWrapperClassName?: string;
   containerClassName?: string;
-  
+
   clear?: boolean;
 }
 
@@ -128,7 +128,7 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
                     className={classNames(styles.optionItem, { [styles.disabled]: option.disabled })}
                     key={option.value}
                     onClick={() => {
-                      if(setSelectValue && !option.disabled) {
+                      if (setSelectValue && !option.disabled) {
                         setSelectValue({ icon: option.icon, text: option.label });
                       }
                       if (onSelectStatusChange) {

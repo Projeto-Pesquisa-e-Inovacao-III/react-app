@@ -68,7 +68,7 @@ const steps = [
     run: async (_ctx: Record<string, unknown>) => {
       const res = await api.post("/alunos/cadastro", {
         nome: "Fillipe",
-        sexo: "M",
+        sexo: "Masculino",
         dataNascimento: "2005-12-27",
         email: "joao.silva@example.com",
         senha: "123456789aA!",

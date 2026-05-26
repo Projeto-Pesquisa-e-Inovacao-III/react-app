@@ -15,6 +15,8 @@ import AvailabilitySkeleton from "./AvailabilitySkeleton/AvailabilitySkeleton";
 import { Info, Settings, CopyCheck, TriangleAlert } from "lucide-react";
 import classNames from "classnames";
 import InfoPersonalSchedulesModal from "../../../components/Modal/InfoPersonalSchedulesModal/InfoPersonalSchedulesModal";
+import useModal from "../../../hooks/useModal";
+import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 
 
 
@@ -221,6 +223,14 @@ export default function SetAvailability() {
     const feedbackTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const dirtySlotIds = useRef<Set<string>>(new Set());
     const dirtyDays = useRef<Set<string>>(new Set());
+    const [pendingBuffer, setPendingBuffer] = useState<string | null>(null);
+
+    const { openModal, setOpenModal, textModal, setTextModal } = useModal(null, { title: "", content: "" });
+
+    function handleErrorModalInfo(title: string, content: string) {
+        setTextModal({ title, content });
+        setOpenModal("error");
+    }
 
     const [globalManha, setGlobalManha] = useState({ start: "08:00", end: "12:00" });
     const [globalTarde, setGlobalTarde] = useState({ start: "13:00", end: "18:00" });
@@ -378,7 +388,7 @@ export default function SetAvailability() {
     }
 
     function handleSave() {
-        if (dirtySlotIds.current.size === 0 && dirtyDays.current.size === 0) return;
+        if (dirtySlotIds.current.size === 0 && dirtyDays.current.size === 0 && pendingBuffer === null) return;
 
         setSaveStatus("loading");
 
@@ -406,26 +416,32 @@ export default function SetAvailability() {
             promises.push(updateWorkDay(day));
         });
 
+        if (pendingBuffer !== null) {
+            promises.push(
+                updateBuffer(pendingBuffer).then(() => {
+                    queryClient.invalidateQueries({ queryKey: ["personalBuffer"] });
+                })
+            );
+        }
+
         Promise.all(promises)
             .then(() => {
                 dirtySlotIds.current.clear();
                 dirtyDays.current.clear();
+                setPendingBuffer(null);
                 showSuccess();
             })
-            .catch(() => {
+            .catch((error: any) => {
+                const message = error?.response?.data?.Exception || "Ocorreu um erro ao salvar as alterações.";
+                handleErrorModalInfo("Erro ao salvar", message);
                 handleCancel();
                 showError();
             });
     }
 
     function handleUpdateBuffer(value: string) {
-        setSaveStatus("loading");
-        updateBuffer(value)
-            .then(() => {
-                queryClient.invalidateQueries({ queryKey: ["personalBuffer"] });
-                showSuccess();
-            })
-            .catch(showError);
+        setPendingBuffer(value);
+        setHasUnsaved(true);
     }
 
     function handleCancel() {
@@ -433,6 +449,7 @@ export default function SetAvailability() {
         setSaveStatus("idle");
         dirtySlotIds.current.clear();
         dirtyDays.current.clear();
+        setPendingBuffer(null);
         if (getInitialCronogram.data) {
             const formatted: DaySchedule[] = DAYS_OF_WEEK.map((day) => {
                 const slots: TimeSlot[] = getInitialCronogram.data.filter(
@@ -478,7 +495,7 @@ export default function SetAvailability() {
                         </div>
                         <select
                             className={styles.select}
-                            value={personalBuffer.data ?? "0"}
+                            value={pendingBuffer ?? personalBuffer.data ?? "0"}
                             onChange={(e) => handleUpdateBuffer(e.target.value)}
                         >
                             <option value="15">15 min</option>
@@ -631,6 +648,13 @@ export default function SetAvailability() {
                         setSchedulesToInfoDay(null);
                         setDayIndexToToggle(null);
                     }}
+                />
+            )}
+            {openModal === "error" && (
+                <ErrorModal
+                    closeThen={() => setOpenModal(null)}
+                    title={textModal.title}
+                    content={textModal.content}
                 />
             )}
         </LocalizationProvider>

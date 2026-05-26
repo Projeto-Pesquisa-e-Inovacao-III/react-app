@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import useModalClose from '../../../hooks/useModalClose';
 import styles from "./ErrorModal.module.css";
 import useMobile from '../../../hooks/isMobile';
@@ -12,10 +12,6 @@ export default function ErrorModal({ closeThen, title, content }: { closeThen: R
     const { isClosing, handleAnimatedClose: handleCloseModal } = useModalClose({
         onClose: () => closeThen(false)
     });
-
-    useEffect(() => {
-        
-    }, []);
 
     const packagePageRef = useRef<HTMLDivElement>(null);
 

@@ -154,7 +154,7 @@ export default function ScheduleDetails() {
     }
 
     function handleWhatsAppClick() {
-        window.open(`https://api.whatsapp.com/send?phone=5511945584686&text=Ol%C3%A1%2C%20tudo%20bem%3F`, "_blank");
+        window.open(`https://api.whatsapp.com/send?phone=${appointment.data?.personal?.telefone?.numero}&text=Ol%C3%A1%2C%20tudo%20bem%3F`, "_blank");
     }
 
     function handleGoogleMapsClick() {
