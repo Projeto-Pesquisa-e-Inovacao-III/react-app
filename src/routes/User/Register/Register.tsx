@@ -71,7 +71,7 @@ export default function Register() {
         register.phone.length === 15 &&
         register.gender.trim() !== "" &&
         register.birthDate !== "" &&
-        dayjs().diff(dayjs(register.birthDate), 'year') >= 14 &&
+        dayjs().diff(dayjs(register.birthDate), 'year') >= 18 &&
         validation.validatePassword(register.password).startsWith("password válida") &&
         register.password === register.confirmPassword;
 
@@ -156,8 +156,8 @@ export default function Register() {
             setOpenModal("error");
             setLoading(false);
             return;
-        } else if (dayjs().diff(dayjs(register.birthDate), 'year') < 14) {
-            setModalInfo({ title: "Erro de validação", content: "Você deve ter pelo menos 14 anos para se cadastrar." });
+        } else if (dayjs().diff(dayjs(register.birthDate), 'year') < 18) {
+            setModalInfo({ title: "Erro de validação", content: "Você deve ter pelo menos 18 anos para se cadastrar." });
             setOpenModal("error");
             setLoading(false);
             return;
@@ -257,15 +257,15 @@ export default function Register() {
                                                         slotProps={{
                                                             field: { openPickerButtonPosition: 'start' },
                                                         }}
-                                                        maxDate={dayjs().subtract(14, 'year')}
+                                                        maxDate={dayjs().subtract(18, 'year')}
                                                         value={register.birthDate ? dayjs(register.birthDate) : null}
                                                         onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
                                                     />
                                                 </DemoContainer>
                                             </LocalizationProvider>
                                         </div>
-                                        {register.birthDate && dayjs().diff(dayjs(register.birthDate), 'year') < 14 && (
-                                            <span className={styles.inputErrorHint}>Você deve ter pelo menos 14 anos.</span>
+                                        {register.birthDate && dayjs().diff(dayjs(register.birthDate), 'year') < 18 && (
+                                            <span className={styles.inputErrorHint}>Você deve ter pelo menos 18 anos.</span>
                                         )}
                                     </div>
 
