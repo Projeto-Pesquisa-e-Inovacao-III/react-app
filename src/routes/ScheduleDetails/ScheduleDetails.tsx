@@ -2,9 +2,9 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { Ban, Building2, CalendarClock, CalendarDays, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, Send, Sparkles, UserX, X } from 'lucide-react';
+import { Ban, Building2, CalendarClock, CalendarDays, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, Sparkles, UserX, X } from 'lucide-react';
 import Button from '../../components/Button/Button';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
@@ -12,13 +12,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
-import useClickOutside from '../../hooks/useClickOutside';
 import NewEvent from '../../components/Modal/NewEvent/NewEvent';
 import ErrorModal from '../../components/Modal/ErrorModal/ErrorModal';
 import type { AbsenceAppointment } from '../../models/schedule';
 import Skeleton from 'react-loading-skeleton';
 import { TypeContext } from '../../App';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
+import { useAiPanel } from '../../hooks/useAiPanel';
+import AiPanel from '../../components/AiPanel/AiPanel';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
@@ -36,7 +37,6 @@ const STATUS_CONFIG: Record<string, { text: string; color: string; textColor?: s
 
 
 
-interface AiMessage { role: 'user' | 'ai'; text: string; }
 
 export default function ScheduleDetails() {
     const isMobile = useMobile();
@@ -69,33 +69,7 @@ export default function ScheduleDetails() {
     const [openModal, setOpenModal] = useState<modalTypes>(null);
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
-    const [aiPanelOpen, setAiPanelOpen] = useState(false);
-    const [isAiPanelClosing, setIsAiPanelClosing] = useState(false);
-    const [aiMessages, setAiMessages] = useState<AiMessage[]>([]);
-    const [aiLoading, setAiLoading] = useState(false);
-    const chatEndRef = useRef<HTMLDivElement>(null);
-    const aiPanelRef = useRef<HTMLDivElement>(null);
-
-    function closeAiPanel() {
-        setIsAiPanelClosing(true);
-        setTimeout(() => {
-            setAiPanelOpen(false);
-            setIsAiPanelClosing(false);
-        }, 280);
-    };
-
-    useClickOutside({
-        ref: aiPanelRef,
-        callback: () => {
-            if (aiPanelOpen && !isAiPanelClosing) {
-                closeAiPanel();
-            }
-        }
-    });
-
-    useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [aiMessages]);
+    const { aiPanelOpen, setAiPanelOpen, isAiPanelClosing, aiPanelRef, closeAiPanel } = useAiPanel();
 
     function handleSuccessModal(title: string, content: string) {
         setOpenModal("success");
@@ -194,7 +168,6 @@ export default function ScheduleDetails() {
     }
 
     const lastNote = appointment.data?.descricao || '"sla nois quebro o musculo dele"';
-    const studentName = appointment.data?.aluno?.nome || 'aluno';
 
     return (
         <>
@@ -275,7 +248,6 @@ export default function ScheduleDetails() {
                                     </div>
                                 </div>
 
-                                {/* Info column */}
                                 <div className={styles.infoColumn}>
                                     <div className={styles.typeAmbientRow}>
                                         <div className={styles.infoCard}>
@@ -290,20 +262,21 @@ export default function ScheduleDetails() {
                                                 {appointment.data?.endereco?.tipo?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                             </div>
                                         </div>
-                                        {/* AI trigger card */}
-                                        <button
-                                            className={classNames(styles.infoCard, styles.aiTriggerCard, { [styles.aiTriggerCardActive]: aiPanelOpen })}
-                                            onClick={() => {
-                                                if (aiPanelOpen) {
-                                                    closeAiPanel();
-                                                } else {
-                                                    setAiPanelOpen(true);
-                                                }
-                                            }}
-                                            title="Dica do Treinador IA"
-                                        >
-                                            <Sparkles size={28} className={styles.aiTriggerIcon} />
-                                        </button>
+                                        {(type?.type?.includes("personal") || type?.type?.includes("admin")) && (
+                                            <button
+                                                className={classNames(styles.infoCard, styles.aiTriggerCard, { [styles.aiTriggerCardActive]: aiPanelOpen })}
+                                                onClick={() => {
+                                                    if (aiPanelOpen) {
+                                                        closeAiPanel();
+                                                    } else {
+                                                        setAiPanelOpen(true);
+                                                    }
+                                                }}
+                                                title="Dica do Treinador IA"
+                                            >
+                                                <Sparkles size={28} className={styles.aiTriggerIcon} />
+                                            </button>
+                                        )}
                                     </div>
 
                                     <div className={styles.mapCard}>
@@ -372,75 +345,18 @@ export default function ScheduleDetails() {
                         )}
                     </div>
                 </div>
-
-                {(aiPanelOpen || isAiPanelClosing) && (
-                    <>
-                        <div className={classNames(styles.aiBackdrop, { [styles.aiBackdropExit]: isAiPanelClosing })} />
-                        <div ref={aiPanelRef} className={classNames(styles.aiPanel, { [styles.aiPanelMobile]: isMobile, [styles.aiPanelExit]: isAiPanelClosing })}>
-                        <div className={styles.aiPanelHeader}>
-                            <div className={styles.aiPanelHeaderLeft}>
-                                <div className={styles.aiIconBadge}>
-                                    <Sparkles size={18} />
-                                </div>
-                                <div>
-                                    <div className={styles.aiPanelTitle}>Dica do Treinador IA</div>
-                                    <div className={styles.aiPanelSubtitle}>Análise personalizada</div>
-                                </div>
-                            </div>
-                            <button className={styles.aiCloseBtn} onClick={closeAiPanel}>
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        <div className={styles.aiPanelBody}>
-                            <div className={styles.aiAnalysisSection}>
-                                <p className={styles.aiAnalysisLabel}>Análise do último treino:</p>
-                                <div className={styles.aiQuote}>
-                                    <em>"{lastNote}"</em>
-                                </div>
-                                {appointment.data?.analiseIa ? (
-                                    <>
-                                        <p className={styles.aiAnalysisText}>{appointment.data.analiseIa.intro}</p>
-                                        <ul className={styles.aiTipsList}>
-                                            {appointment.data.analiseIa.tips.map((tip: any, i: number) => (
-                                                <li key={i} className={styles.aiTipItem}>
-                                                    <span className={styles.aiTipDot} />
-                                                    <span><strong>{tip.title}</strong> {tip.text}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </>
-                                ) : (
-                                    <p className={styles.aiAnalysisText}>A IA está analisando os dados do treino para gerar dicas personalizadas. Volte em breve!</p>
-                                )}
-                            </div>
-
-                            {aiMessages.length > 0 && (
-                                <div className={styles.aiChat}>
-                                    {aiMessages.map((msg, i) => (
-                                        <div key={i} className={classNames(styles.aiChatBubble, { [styles.aiChatBubbleUser]: msg.role === 'user', [styles.aiChatBubbleAi]: msg.role === 'ai' })}>
-                                            {msg.text}
-                                        </div>
-                                    ))}
-                                    {aiLoading && (
-                                        <div className={classNames(styles.aiChatBubble, styles.aiChatBubbleAi, styles.aiLoading)}>
-                                            <span /><span /><span />
-                                        </div>
-                                    )}
-                                    <div ref={chatEndRef} />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    </>
-                )}
             </div>
 
-            {isMobile && !aiPanelOpen && (
-                <button className={styles.aiFab} onClick={() => setAiPanelOpen(true)}>
-                    <Sparkles size={22} color='#2e5580'/>
-                </button>
-            )}
+            <AiPanel
+                isOpen={aiPanelOpen}
+                isClosing={isAiPanelClosing}
+                isMobile={isMobile}
+                panelRef={aiPanelRef}
+                onClose={closeAiPanel}
+                onOpen={() => setAiPanelOpen(true)}
+                note={lastNote}
+                analiseIa={appointment.data?.analiseIa}
+            />
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
             {openModal === "conclude" && <TimerModal callSuccessModal={() => handleConcludeAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Concluir Agendamento" content="Tem certeza que deseja concluir o agendamento?" buttonTitle="Concluir agendamento" />}
