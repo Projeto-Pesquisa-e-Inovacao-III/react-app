@@ -38,6 +38,7 @@
     "react": "^19.1.1",
     "react-countdown-circle-timer": "^3.2.1",
     "react-dom": "^19.1.1",
+    "react-easy-crop": "^5.5.7",
     "react-loader-spinner": "^8.0.2",
     "react-loading-skeleton": "^3.5.0",
     "react-router-dom": "^7.9.1",

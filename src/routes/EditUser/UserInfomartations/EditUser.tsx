@@ -1,10 +1,9 @@
 import styles from "./EditUser.module.css";
 import Button from "../../../components/Button/Button.tsx";
-import { UserImg } from "../../../components/UserImg/UserImg.tsx";
 import { WhiteContainer } from "../../../components/WhiteContainer/WhiteContainer.tsx";
 import InputWithIcon from "../../../components/Inputs/InputWithIcon/InputWithIcon.tsx";
 import { IdCard, Phone, Upload, User } from "lucide-react";
-import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useReducer, useRef, useState } from "react";
 import useMobile from "../../../hooks/isMobile.tsx";
 import { findUserData, insertUserImage, removerUserImage, update, softDelete } from "../../../constants/user.ts";
 import type { UpdateUserDTO } from "../../../models/user.ts";
@@ -25,6 +24,9 @@ import SmallerButton from "../../../components/SmallerButton/SmallerButton.tsx";
 import { BASE_URL } from "../../../system.ts";
 import AsideEditUser from "../../../components/EditUser/AsideEditUser.tsx";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar.tsx";
+import Cropper from "react-easy-crop";
+import type { Area } from "react-easy-crop";
+import { getCroppedImg } from "../../../utils/cropImage.ts";
 type EditUserState = {
   firstName: string;
   lastName: string;
@@ -140,6 +142,15 @@ export default function EditUser() {
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
+  // Crop state
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+
+  const onCropComplete = useCallback((_croppedArea: Area, croppedPixels: Area) => {
+    setCroppedAreaPixels(croppedPixels);
+  }, []);
+
   const imagePreviewModal = useRef(null);
 
   useClickOutside({
@@ -157,17 +168,47 @@ export default function EditUser() {
 
   async function handleUpdateImage(event: React.ChangeEvent<HTMLInputElement>) {
     if (event.target.files && event.target.files[0]) {
-      setOpenModal("adjustAvatar");
-
       const file = event.target.files[0];
-
-      const formData = new FormData();
-      formData.append("imagem", file);
-
       const imageUrl = URL.createObjectURL(file);
 
+      // Reset crop state for the new image
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+      setCroppedAreaPixels(null);
+
       setPreviewImage(imageUrl);
+      setPreviewImageFormData(new FormData()); // will be built after crop
+      setOpenModal("adjustAvatar");
+    }
+  }
+
+  async function handleConfirmCrop() {
+    if (!previewImage || !croppedAreaPixels) return;
+
+    try {
+      const { blob, url } = await getCroppedImg(previewImage, croppedAreaPixels);
+
+      const formData = new FormData();
+      formData.append("imagem", blob, "avatar.jpg");
+
       setPreviewImageFormData(formData);
+      setPreviewImage(url);
+      setOpenModal(null);
+
+      // Directly upload the cropped image
+      insertUserImage(formData)
+        .then(async () => {
+          setUserImage(url);
+          setTextModal({ title: "Foto atualizada!", content: "Sua foto de perfil foi atualizada com sucesso." });
+          setOpenModal("success");
+        })
+        .catch((error) => {
+          console.error("Erro ao atualizar imagem do usuário:", error);
+          setTextModal({ title: "Houve um erro", content: error.response?.data?.Exception || "Não foi possível atualizar a foto." });
+          setOpenModal("error");
+        });
+    } catch (err) {
+      console.error("Erro ao processar imagem:", err);
     }
   }
 
@@ -421,7 +462,6 @@ export default function EditUser() {
                 isLoading={userInfo.isLoading}
                 label="CPF"
                 value={state.cpf}
-                onInputChange={(value: string) => dispatch({ type: "setCPF", payload: value })}
                 mask={cpfMask}
                 disabled={true}
                 maxLength={14}
@@ -584,57 +624,84 @@ export default function EditUser() {
 
       {openModal === "adjustAvatar" && (
         <>
-          <div className={`overlay z-auto!`}></div>
+          <div className="overlay z-40!"></div>
           <div
             ref={imagePreviewModal}
-            className="w-full p-5 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex justify-center items-center z-50"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[min(500px,95vw)] bg-white rounded-2xl shadow-2xl overflow-hidden"
           >
-            <div className={styles.profileSection + "max-w-full! max-h-full!"}>
-              <WhiteContainer containerClassName={styles.profileWhiteContainer} title="Foto de Perfil" titleMarginBottom={25} gap={30}>
-                {previewImage &&
-                  <UserImg
-                    classname={styles.userImg}
-                    Source={previewImage}
-                    Alt="foto"
-                  />
-                }
-                <div className={styles.atualizarFotoContainer}>
-                  <div>
-                    {/* <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} /> */}
-                    <Button
-                      typeButton="other"
-                      title="Confirmar"
-                      type="button"
-                      classNameVariable="buttonRemoveImage"
-                      onClick={() => {
-                        (type?.type?.includes("aluno") ? handleUpdateUserInfo : handleUpdatePersonalInfo)();
-                      }}
-                    />
-                  </div>
+            <div className="px-6 py-4 border-b border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-800">Ajustar Foto de Perfil</h2>
+              <p className="text-sm text-gray-500 mt-0.5">Mova e use o scroll para dar zoom na imagem</p>
+            </div>
 
-                  <div >
-                    <div>
-                      <input type="file" name="" accept="image/jpeg, image/png, image/jpg" id="upload-photo" onChange={(e) => handleUpdateImage(e)} style={{ display: "none" }} />
-                      {/* <input type="button" id="upload-photo" onClick={() => setOpenModal("adjustAvatar")} style={{ display: "none" }} /> */}
-                      <label htmlFor="upload-photo">
-                        <span>Mudar Foto</span>
-                      </label>
-                    </div>
-                  </div>
+            <div className="relative w-full" style={{ height: "340px", background: "#111" }}>
+              {previewImage && (
+                <Cropper
+                  image={previewImage}
+                  crop={crop}
+                  zoom={zoom}
+                  aspect={1}
+                  cropShape="round"
+                  showGrid={false}
+                  onCropChange={setCrop}
+                  onZoomChange={setZoom}
+                  onCropComplete={onCropComplete}
+                />
+              )}
+            </div>
 
-                  <div >
-                    <Button
-                      typeButton="other"
-                      title="Cancelar"
-                      type="button"
-                      classNameVariable="buttonRemoveImage"
-                      onClick={() => {
-                        setOpenModal(null);
-                      }}
-                    />
-                  </div>
-                </div>
-              </WhiteContainer>
+            <div className="px-6 pt-4 pb-2 flex items-center gap-3">
+              <span className="text-xs text-gray-400">−</span>
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={0.05}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+                className="w-full accent-indigo-600 cursor-pointer"
+              />
+              <span className="text-xs text-gray-400">+</span>
+            </div>
+
+            <div className="px-6 pb-6 pt-2 flex gap-3">
+              <Button
+                typeButton="other"
+                title="Confirmar"
+                type="button"
+                classNameVariable="buttonRemoveImage"
+                onClick={handleConfirmCrop}
+              />
+
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="image/jpeg, image/png, image/jpg"
+                  id="upload-photo-crop"
+                  onChange={(e) => handleUpdateImage(e)}
+                  style={{ display: "none" }}
+                />
+                <label htmlFor="upload-photo-crop" className="block">
+                  <span
+                    className="flex items-center justify-center w-full px-4 py-3 rounded-xl border-2 border-gray-300 bg-gray-50 text-gray-700 font-medium cursor-pointer hover:bg-gray-100 transition text-sm"
+                  >
+                    Mudar Foto
+                  </span>
+                </label>
+              </div>
+
+              <Button
+                typeButton="other"
+                title="Cancelar"
+                type="button"
+                classNameVariable="buttonRemoveImage"
+                onClick={() => {
+                  setPreviewImage("");
+                  setPreviewImageFormData(new FormData());
+                  setOpenModal(null);
+                }}
+                classNameDiv="bg-white!"
+              />
             </div>
           </div>
         </>

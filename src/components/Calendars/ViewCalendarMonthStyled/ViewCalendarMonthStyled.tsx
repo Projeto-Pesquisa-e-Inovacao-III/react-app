@@ -90,10 +90,6 @@ export default function ViewCalendarMonthStyled({ events, isMobile, isUserAuthor
             }
 
 
-            if (type?.type?.includes("aluno") && appointment && appointment.length > 1) {
-              nav(`/personal/check-schedule/?date=${clickedDate}`);
-              return
-            }
 
             if (appointment && appointment.length > 1) {
               clickDate?.(clickedDate);

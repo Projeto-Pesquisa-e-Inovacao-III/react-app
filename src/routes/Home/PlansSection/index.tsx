@@ -48,7 +48,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
         return pkg.tipoProduto === targetType && pkg.status === "ATIVO";
     });
 
-    const shouldUseCarousel = data?.length > 4
+    const shouldUseCarousel = isMobile ? data?.length > 3 : data?.length > 4;
 
     const slidesToRender = data;
 
@@ -109,7 +109,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             </button>
                         </div>
                     ) : (
-                        <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)` } : {}}>
+                        <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)`, alignItems: "flex-start" } : {}}>
                             {data?.map((pkg: Package) => (
                                 <div key={pkg.id}>
                                     <PlansCard

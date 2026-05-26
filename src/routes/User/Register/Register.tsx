@@ -49,7 +49,7 @@ export default function Register() {
 
     const passwordValidationData = useMemo(() => {
         if (!register.password) return null;
-        
+
         const currentErrors = validation.validatePassword(register.password) || "";
         const currentErrorsArray = currentErrors.split('\n').filter(m => m.trim() !== "");
         const passedErrors = allPasswordRules.filter(e => !currentErrorsArray.includes(e));
@@ -57,7 +57,7 @@ export default function Register() {
         const total = allPasswordRules.length;
         const passed = passedErrors.length;
         const pct = total === 0 ? 0 : Math.round((passed / total) * 100);
-        
+
         const color = pct < 50 ? "#ef4444" : pct < 100 ? "#f59e0b" : "#22c55e";
         const label = pct < 50 ? "Senha fraca" : pct < 100 ? "Quase completa..." : "Senha forte";
 
@@ -71,6 +71,7 @@ export default function Register() {
         register.phone.length === 15 &&
         register.gender.trim() !== "" &&
         register.birthDate !== "" &&
+        dayjs().diff(dayjs(register.birthDate), 'year') >= 14 &&
         validation.validatePassword(register.password).startsWith("password válida") &&
         register.password === register.confirmPassword;
 
@@ -152,6 +153,11 @@ export default function Register() {
 
         } else if (register.customerDocument && register.customerDocument.length !== 14) {
             setModalInfo({ title: "Erro de validação", content: "CPF inválido." });
+            setOpenModal("error");
+            setLoading(false);
+            return;
+        } else if (dayjs().diff(dayjs(register.birthDate), 'year') < 14) {
+            setModalInfo({ title: "Erro de validação", content: "Você deve ter pelo menos 14 anos para se cadastrar." });
             setOpenModal("error");
             setLoading(false);
             return;
@@ -251,12 +257,16 @@ export default function Register() {
                                                         slotProps={{
                                                             field: { openPickerButtonPosition: 'start' },
                                                         }}
-                                                        value={dayjs(register.birthDate)}
+                                                        maxDate={dayjs().subtract(14, 'year')}
+                                                        value={register.birthDate ? dayjs(register.birthDate) : null}
                                                         onChange={(date) => handleChange('birthDate', date ? dayjs(date).format("YYYY-MM-DD").toString() : "")}
                                                     />
                                                 </DemoContainer>
                                             </LocalizationProvider>
                                         </div>
+                                        {register.birthDate && dayjs().diff(dayjs(register.birthDate), 'year') < 14 && (
+                                            <span className={styles.inputErrorHint}>Você deve ter pelo menos 14 anos.</span>
+                                        )}
                                     </div>
 
                                     <div className={styles.fieldGroup} style={{ flex: 1 }}>
@@ -370,7 +380,7 @@ export default function Register() {
                                 <label htmlFor="terms-checkbox">Eu li e aceito os <Link to="/terms">termos de uso</Link></label>
                             </div>
 
-                            { !isFormValid && (
+                            {!isFormValid && (
                                 <div style={{ textAlign: "center", fontSize: "0.85rem", color: "#6b7280", marginTop: "10px" }}>
                                     Preencha corretamente todos os campos obrigatórios acima para liberar o cadastro.
                                 </div>
