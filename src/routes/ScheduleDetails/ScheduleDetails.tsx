@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { Ban, Building2, CalendarClock, CalendarDays, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, Sparkles, UserX, X } from 'lucide-react';
+import { Ban, Building2, CalendarClock, CalendarDays, CalendarX, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, Sparkles, UserX, X } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -169,6 +169,11 @@ export default function ScheduleDetails() {
 
     const lastNote = appointment.data?.descricao || '"sla nois quebro o musculo dele"';
 
+    const last3Appointments = appointments.data?.data
+        ?.filter((appt: any) => appt.status === "CONCLUIDO" && appt.id !== appointment.data?.id && (type?.type?.includes("aluno") ? appt.personal.id === appointment.data?.personal.id : appt.aluno.id === appointment.data?.aluno.id))
+        .sort((a: any, b: any) => new Date(b.dataInicio).getTime() - new Date(a.dataInicio).getTime())
+        .slice(0, 3) || [];
+
     return (
         <>
             <div className={styles.outerWrapper}>
@@ -197,7 +202,7 @@ export default function ScheduleDetails() {
                                         {type?.type?.includes("personal") ? (
                                             <Link className="cursor-pointer" style={{ textDecoration: 'none', color: 'inherit' }} to={`/users/view-user-data?id=${appointment.data?.aluno.id}`}>
                                                 <div className={styles.avatarSection}>
-                                                    <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-2xl!"} foto={appointment.data?.aluno?.avatarUrl} userName={appointment.data?.aluno?.nome} />
+                                                    <UserAvatar imgClassName="w-32! h-32!" withUsernameClassName={"w-32! h-32! text-4xl!"} foto={appointment.data?.aluno?.avatarUrl} userName={appointment.data?.aluno?.nome} />
                                                     <div className={styles.professionalName}>{!type?.type?.includes("aluno") ? appointment.data?.aluno?.nome : appointment.data?.personal?.nome}</div>
                                                     <div className={styles.professionalSub}>{!type?.type?.includes("aluno") ? "Aluno" : "Personal Trainer"}</div>
                                                 </div>
@@ -246,6 +251,44 @@ export default function ScheduleDetails() {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <h2 className={styles.lastSchedulesTitle}>Últimos 3 agendamentos</h2>
+                                    <div className={styles.lastSchedulesList}>
+                                        {appointments.isLoading ? (
+                                            <>
+                                                <Skeleton height={80} borderRadius={8} />
+                                                <Skeleton height={80} borderRadius={8} />
+                                                <Skeleton height={80} borderRadius={8} />
+                                            </>
+                                        ) : last3Appointments.length > 0 ? (
+                                            last3Appointments.map((appt: any, idx: number) => {
+                                                const dateStr = new Date(appt.dataInicio).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                                                const isOnline = appt.tipoAula === "ONLINE";
+                                                const typeClass = isOnline ? styles.badgeOnline : styles.badgePresencial;
+                                                return (
+                                                    <div key={idx} className={styles.lastScheduleCard}>
+                                                        <div className={styles.lastScheduleHeader}>
+                                                            <div className={styles.lastScheduleTitleRow}>
+                                                                <div className={styles.lastScheduleCircle}></div>
+                                                                <span className={styles.lastScheduleTitle}>{appt.treino?.nome || "Agendamento"} - {dateStr}</span>
+                                                            </div>
+                                                            <span className={classNames(styles.lastScheduleBadge, typeClass)}>
+                                                                {appt.tipoAula}
+                                                            </span>
+                                                        </div>
+                                                        <div className={styles.lastScheduleDesc}>
+                                                            {appt.descricao || "Sem observações"}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className={classNames(styles.lastScheduleCard, styles.lastScheduleEmpty)}>
+                                                <CalendarX size={24} className={styles.emptyIcon} />
+                                                <p>Nenhum agendamento anterior encontrado.</p>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className={styles.infoColumn}>
@@ -262,7 +305,7 @@ export default function ScheduleDetails() {
                                                 {appointment.data?.endereco?.tipo?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                             </div>
                                         </div>
-                                        {(type?.type?.includes("personal") || type?.type?.includes("admin")) && (
+                                        {appointment.data?.status === "APROVADO" && (type?.type?.includes("personal") || type?.type?.includes("admin")) && (
                                             <button
                                                 className={classNames(styles.infoCard, styles.aiTriggerCard, { [styles.aiTriggerCardActive]: aiPanelOpen })}
                                                 onClick={() => {
