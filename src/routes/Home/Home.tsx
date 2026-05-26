@@ -13,8 +13,7 @@ import NoCodeRenderer from "../../components/NoCodeRenderer/NoCodeRenderer";
 import { getNoCodeContent } from "../../services/noCodeService";
 import { splitNoCodeContent } from "../../utils/splitNoCodeContent";
 
-//todo: update images; 
-// remake header mobile; 
+//todo: update images;
 export default function Home() {
     const isMobile = useMobile();
     const Header = isMobile ? HeaderMobile : HeaderDesktop;

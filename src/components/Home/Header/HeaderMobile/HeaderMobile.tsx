@@ -47,9 +47,8 @@ export default function HeaderMobile() {
   };
 
   return (
-    <div ref={headerRef}>
-      <header className="fixed top-0 left-0 w-full z-50 bg-white text-black h-20 px-5 flex items-center justify-between border-b border-[#eee] shadow-sm">
-        {/* Burger Button (Left) */}
+    <div ref={headerRef} className="sticky top-0 z-50">
+      <header className="w-full bg-white text-black h-20 px-5 flex items-center justify-between border-b border-[#eee] shadow-sm">
         <div 
           className={styles.burgerButton}
           onClick={handleToggle}
@@ -59,12 +58,9 @@ export default function HeaderMobile() {
           <div className={classNames(styles.bar, { [styles.barActive]: burgerActive })}></div>
         </div>
 
-        {/* Logo (Center) */}
         <div className="absolute left-1/2 transform -translate-x-1/2">
           <LogoHeaderMobile />
         </div>
-
-        {/* Auth/Profile (Right) */}
         <div className="flex items-center">
           {verify ? (
             <Link to="/home" className="border border-gray-200 rounded-full overflow-hidden">
@@ -78,14 +74,12 @@ export default function HeaderMobile() {
         </div>
       </header>
 
-      {/* Dropdown Menu */}
       {burgerActive && (
         <nav className={classNames(
-          "fixed top-20 left-0 w-full bg-white text-[#1E1E1E] shadow-xl border-t border-[#eee] flex flex-col z-40 overflow-y-auto max-h-[calc(100vh-5rem)]",
+          "absolute top-full left-0 w-full bg-white text-[#1E1E1E] shadow-xl border-t border-[#eee] flex flex-col overflow-y-auto max-h-[calc(100vh-5rem)]",
           styles.dropdown,
           { [styles.dropdownClosing]: isClosing }
         )}>
-          {/* Greeting Header */}
           {verify && (
             <div className="bg-[#051128] text-white p-5 flex items-center gap-3">
               <div className="bg-[#ffffff20] p-2 rounded-full">
@@ -97,7 +91,6 @@ export default function HeaderMobile() {
             </div>
           )}
 
-          {/* Links List */}
           <div className="flex flex-col py-2">
             <a href="#main-section" onClick={handleAnimatedClose} className="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors">
               Inicio
