@@ -2,7 +2,14 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+}
+
+
+.labelRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .label {
@@ -11,136 +18,409 @@
     font-weight: 500;
 }
 
+.counter {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.counterAtLimit {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+
 .inputWrapper {
     width: 100%;
-    min-height: 44px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    min-height: 48px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
     background-color: #fff;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 16px;
-    column-gap: 8px;
-    align-items: start;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
     position: relative;
-    padding-right: 12px;
-    padding-left: 12px;
+    padding: 8px 10px;
+    cursor: text;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .inputWrapperWithIcon {
     padding-left: 40px;
 }
 
+.inputWrapperFocused {
+    border-color: var(--bg-blue, #3b82f6);
+    
+}
+
+.inputWrapperAtLimit {
+    border-color: #f59e0b;
+    background-color: #fffbeb;
+}
+
+.inputWrapperEditing {
+    border-color: var(--bg-blue);
+    align-items: center;
+}
+
+
 .inputIcon {
     display: inline-flex;
-    color: var(--muted-foreground);
+    color: var(--muted-foreground, #94a3b8);
     position: absolute;
     left: 12px;
-    top: 12px;
+    top: 14px;
 }
+
 
 .content {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     width: 100%;
     min-width: 0;
-    overflow: hidden;
     align-items: center;
 }
 
+
 .tagItem {
     display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
+    align-items: stretch;
     border: 1px solid #b6c0ce;
     border-radius: 999px;
     background-color: #e6edf5;
-    color: #0F172A;
+    overflow: hidden;
+    animation: tagIn 0.18s ease-out;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    max-width: 220px;
+}
+
+.tagItem:hover {
+    border-color: #94a3b8;
+    
+}
+
+
+.tagBody {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px 4px 10px;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    font-size: 14px;
-    line-height: 20px;
-    max-width: 100%;
-    animation: tagIn 0.2s ease-out;
-    transform-origin: center;
+    color: #0F172A;
+    font-size: 13px;
+    line-height: 1.4;
+    min-width: 0;
+    transition: background-color 0.15s ease;
+}
+
+.tagBody:hover {
+    background-color: #dbeafe;
 }
 
 .tagText {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 150px;
 }
 
-.removeIcon {
+.editHint {
+    display: inline-flex;
+    align-items: center;
+    color: #64748b;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    flex-shrink: 0;
+}
+
+.tagBody:hover .editHint {
+    opacity: 1;
+}
+
+
+.tagDivider {
+    width: 1px;
+    background-color: #b6c0ce;
+    flex-shrink: 0;
+    margin: 4px 0;
+}
+
+
+.removeButton {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 999px;
-    background-color: var(--bg-blue);
-    color: #fff;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #64748b;
+    transition: background-color 0.15s ease, color 0.15s ease;
     flex-shrink: 0;
+}
+
+.removeButton:hover {
+    background-color: #fde8e8;
+    color: #ef4444;
+}
+
+
+.tagShake {
+    animation: tagShake 0.45s ease !important;
+    border-color: #f59e0b !important;
+    background-color: #fef3c7 !important;
+}
+
+.tagRemoving {
+    animation: tagOut 0.18s ease-in forwards !important;
+}
+
+.inputArea {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 100px;
+    gap: 6px;
 }
 
 .inputText {
     flex: 1;
-    min-width: 120px;
+    min-width: 60px;
     border: none;
     outline: none;
-    font-size: .95rem;
+    font-size: 0.9rem;
     color: #0F172A;
     background-color: transparent;
-    padding: 12px;
-    padding-left: 0;
+    padding: 2px 0;
+    line-height: 1.6;
 }
 
 .inputText::placeholder {
-    color: #666;
+    color: #94a3b8;
 }
+
+
+.editingBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--bg-blue);
+    background-color: var(--carol-light);
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    animation: tagIn 0.15s ease-out;
+}
+
+
+.enterHint {
+    font-size: 11px;
+    color: #94a3b8;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    user-select: none;
+    animation: fadeIn 0.15s ease-out;
+}
+
+
+.limitMessage {
+    font-size: 12px;
+    color: #b45309;
+    font-style: italic;
+    padding: 2px 0;
+}
+
 
 .addButton {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     align-self: center;
-    width: 16px;
-    height: 16px;
+    height: 26px;
+    min-width: 26px;
+    padding: 0 6px;
     border-radius: 999px;
     border: none;
-    background-color: var(--bg-blue);
-    color: #fff;
+    background-color: #e2e8f0;
+    color: #64748b;
     font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
+    font-weight: 600;
     cursor: pointer;
     flex-shrink: 0;
-    transition: opacity 0.2s ease;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease, padding 0.2s ease, min-width 0.2s ease;
 }
 
 .addButton svg {
     display: block;
+    flex-shrink: 0;
+}
+
+
+.addButtonActive {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: none;
+    background-color: var(--bg-blue, #3b82f6);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.addButtonActive svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+.addButtonActive:hover {
+    background-color: var(--bg-blue-hover, #2563eb);
+    transform: scale(1.03);
+}
+
+.cancelButton {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1.5px solid #cbd5e1;
+    background-color: transparent;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.cancelButton:hover {
+    background-color: #f1f5f9;
+    color: #334155;
+    border-color: #94a3b8;
 }
 
 .addButton:disabled {
-    opacity: 0.45;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
-@keyframes tagIn {
-    from {
-        opacity: 0;
-        transform: translateY(4px) scale(0.95);
-    }
 
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+.actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    animation: fadeIn 0.15s ease-out;
+}
+
+.actionsLeft {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.actionsRight {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.footer {
+    min-height: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.charCounter {
+    font-size: 11px;
+    color: #94a3b8;
+    padding-right: 2px;
+    transition: color 0.2s ease;
+}
+
+.charCounterAtLimit {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.editingHint {
+    font-size: 11px;
+    color: var(--bg-blue);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.editingHint kbd {
+    background-color: var(--carol-light);
+    border-radius: 4px;
+    padding: 0 5px;
+    font-size: 10px;
+    font-family: inherit;
+    color: var(--bg-blue);
+}
+
+.editTip {
+    font-size: 11px;
+    color: #cbd5e1;
+    user-select: none;
+}
+
+
+@keyframes tagIn {
+    from { opacity: 0; transform: translateY(4px) scale(0.9); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tagOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes tagShake {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-5px); }
+    30%  { transform: translateX(5px); }
+    45%  { transform: translateX(-4px); }
+    60%  { transform: translateX(4px); }
+    75%  { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .tagItem {
+    .tagItem, .tagRemoving, .tagShake, .editingBadge, .enterHint {
         animation: none;
+    }
+}
+
+/* Em dispositivos touch (mobile), o hint de teclado é irrelevante */
+@media (hover: none) {
+    .enterHint {
+        display: none;
     }
 }

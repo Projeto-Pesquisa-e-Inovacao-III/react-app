@@ -108,7 +108,7 @@ export default function AnamnesisInformations() {
   const MAX_HEIGHT_CM = 250;
   const MIN_WEIGHT_KG = 25;
   const MAX_WEIGHT_KG = 350;
-  const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 500;
+  const MAX_OBJECTIVE_OBSERVATION_CHARACTERS = 250;
   const MAX_HEIGHT_CHARACTERS = 3;
   const MAX_WEIGHT_CHARACTERS = 3;
 
@@ -322,6 +322,24 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
+            <div id="levelOfActivity" className={classNames({ [styles.inputWrapper]: isMobile })}>
+
+              <div className={styles.personalDataTitle} id="personalDataTitle">
+                <div className="w-2 h-2 rounded-full bg-gray-700"></div>
+                <h3>Nível de atividade atual</h3>
+              </div>
+
+              <SelectableOption value="SEDENTARIO" subtitle="Pouco ou nenhum exercício, trabalho de escritório." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "SEDENTARIO"} onClick={(value) => {
+                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
+              }}>Sedentário</SelectableOption>
+              <SelectableOption value="ATIVO" subtitle="Exercício físico 3 a 5 dias por semana." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "ATIVO"} onClick={(value) => {
+                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
+              }}>Ativo ocasionalmente</SelectableOption>
+              <SelectableOption value="MUITO_ATIVO" subtitle="Treinos intensos diários ou trabalho físico pesado." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "MUITO_ATIVO"} onClick={(value) => {
+                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
+              }}>Ativo regularmente</SelectableOption>
+            </div>
+
             <div id="healthConditions" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
@@ -365,24 +383,21 @@ export default function AnamnesisInformations() {
               )}
             </div>
 
-            <div id="levelOfActivity" className={classNames({ [styles.inputWrapper]: isMobile })}>
-
-              <div className={styles.personalDataTitle} id="personalDataTitle">
+            <div id="healthObservations">
+              <div className={styles.personalDataTitle}>
                 <div className="w-2 h-2 rounded-full bg-gray-700"></div>
-                <h3>Nível de atividade atual</h3>
+                <h3>Observações de saúde (opcional)</h3>
               </div>
-
-              <SelectableOption value="SEDENTARIO" subtitle="Pouco ou nenhum exercício, trabalho de escritório." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "SEDENTARIO"} onClick={(value) => {
-                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
-              }}>Sedentário</SelectableOption>
-              <SelectableOption value="ATIVO" subtitle="Exercício físico 3 a 5 dias por semana." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "ATIVO"} onClick={(value) => {
-                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
-              }}>Ativo ocasionalmente</SelectableOption>
-              <SelectableOption value="MUITO_ATIVO" subtitle="Treinos intensos diários ou trabalho físico pesado." selectionType="radio" selected={anamnesisData.nivelDeAtividade === "MUITO_ATIVO"} onClick={(value) => {
-                updateFormField("nivelDeAtividade", value as AnamnesisData["nivelDeAtividade"]);
-              }}>Ativo regularmente</SelectableOption>
+              <TextareaWithIcon
+                id="observacaoSaude"
+                name="observacaoSaude"
+                placeholder="Adicione quaisquer observações relevantes sobre sua saúde..."
+                maxLength={500}
+                icon={<FileText />}
+                value={anamnesisData.observacaoSaude || ""}
+                onInputChange={(value: string) => updateFormField("observacaoSaude", value)}
+              />
             </div>
-
 
             <div id="routine" className={classNames({ [styles.inputWrapper]: isMobile })}>
               <div className={styles.personalDataTitle} id="personalDataTitle">
