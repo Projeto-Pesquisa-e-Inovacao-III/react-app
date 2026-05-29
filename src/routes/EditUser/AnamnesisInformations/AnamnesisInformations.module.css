@@ -48,10 +48,12 @@
   grid-template-columns: 1fr 1fr 1fr;
   align-items: start;
   grid-template-areas:
-    "personalData     personalData     personalData"
-    "healthConditions healthConditions healthConditions"
-    "levelOfActivity  levelOfActivity  levelOfActivity"
-    "routine          routine          routine";
+    "personalData         personalData         personalData"
+    "levelOfActivity      levelOfActivity      levelOfActivity"
+    "healthConditions     healthConditions     healthConditions"
+    "healthObservations   healthObservations   healthObservations"
+    "routine              routine              routine"
+    "footer               footer               footer";
 }
 
 .personalInfoGrid :global(#personalData) {
@@ -79,6 +81,13 @@
 
 .personalInfoGrid :global(#healthConditions) {
   grid-area: healthConditions;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfoGrid :global(#healthObservations) {
+  grid-area: healthObservations;
   gap: 10px;
   display: flex;
   flex-direction: column;
@@ -112,6 +121,7 @@
 }
 
 .footer {
+  grid-area: footer;
   width: 500px;
 }
 
