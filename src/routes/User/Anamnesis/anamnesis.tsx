@@ -41,6 +41,7 @@ type AnamnesisForm = {
     selectedConditions: string[];
     selectedActivityLevel: AnamnesisData["nivelDeAtividade"] | null;
     otherConditionTags: string[];
+    healthObservations: string;
     dailyRoutine: string;
     height: string;
     weight: string;
@@ -73,6 +74,7 @@ export default function Anamnesis() {
         selectedConditions: [],
         selectedActivityLevel: null,
         otherConditionTags: [],
+        healthObservations: "",
         dailyRoutine: "",
         height: "",
         weight: ""
@@ -191,7 +193,7 @@ export default function Anamnesis() {
                 ...otherConditions.map((situacao) => ({ situacao, tipo: "OUTRO" as const }))
             ],
             nivelDeAtividade: activityLevel,
-            observacaoSaude: normalizedObjectiveObservation.length > 0 ? normalizedObjectiveObservation : null
+            observacaoSaude: anamnesisForm.healthObservations.trim().length > 0 ? anamnesisForm.healthObservations.trim() : null
         };
     };
 
@@ -392,6 +394,38 @@ export default function Anamnesis() {
                             </div>
 
                             <div>
+                                <div className={classNames(styles.levelGroupHeader, {
+                                    [styles.levelGroupHeaderMobile]: isMobile
+                                })}>
+                                    <div className={classNames(styles.conditionGroupHeader, {
+                                        [styles.conditionGroupHeaderMobile]: isMobile
+                                    })}>
+                                        <Dumbbell />
+                                        <h1>Atividade Atual <span className={styles.requiredAsterisk}>*</span></h1>
+                                    </div>
+
+                                    <p className={styles.conditionGroupHeaderP}>
+                                        Selecione o nível de atividade física que melhor descreve sua rotina atual.
+                                    </p>
+                                </div>
+
+                                <div className={styles.levelGroup}>
+                                    <SelectableOption value="SEDENTARIO" subtitle="Não se exercita" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "SEDENTARIO"} onClick={(value) => {
+                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
+                                        setStepTwoError("");
+                                    }}>Sedentário</SelectableOption>
+                                    <SelectableOption value="ATIVO" subtitle="Exercita-se 1-2 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "ATIVO"} onClick={(value) => {
+                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
+                                        setStepTwoError("");
+                                    }}>Ativo ocasionalmente</SelectableOption>
+                                    <SelectableOption value="MUITO_ATIVO" subtitle="Exercita-se 3-5 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "MUITO_ATIVO"} onClick={(value) => {
+                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
+                                        setStepTwoError("");
+                                    }}>Ativo regularmente</SelectableOption>
+                                </div>
+                            </div>
+
+                            <div>
                                 <div className={classNames(styles.conditionGroupHeader, {
                                     [styles.conditionGroupHeaderMobile]: isMobile
                                 })}>
@@ -430,36 +464,19 @@ export default function Anamnesis() {
                                 </div>
                             )}
 
-                            <div>
-                                <div className={classNames(styles.levelGroupHeader, {
-                                    [styles.levelGroupHeaderMobile]: isMobile
-                                })}>
-                                    <div className={classNames(styles.conditionGroupHeader, {
-                                        [styles.conditionGroupHeaderMobile]: isMobile
-                                    })}>
-                                        <Dumbbell />
-                                        <h1>Atividade Atual <span className={styles.requiredAsterisk}>*</span></h1>
-                                    </div>
-
-                                    <p className={styles.conditionGroupHeaderP}>
-                                        Selecione o nível de atividade física que melhor descreve sua rotina atual.
-                                    </p>
-                                </div>
-
-                                <div className={styles.levelGroup}>
-                                    <SelectableOption value="SEDENTARIO" subtitle="Não se exercita" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "SEDENTARIO"} onClick={(value) => {
-                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
-                                    }}>Sedentário</SelectableOption>
-                                    <SelectableOption value="ATIVO" subtitle="Exercita-se 1-2 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "ATIVO"} onClick={(value) => {
-                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
-                                    }}>Ativo ocasionalmente</SelectableOption>
-                                    <SelectableOption value="MUITO_ATIVO" subtitle="Exercita-se 3-5 vezes por semana" selectionType="radio" selected={anamnesisForm.selectedActivityLevel === "MUITO_ATIVO"} onClick={(value) => {
-                                        updateFormField("selectedActivityLevel", value as AnamnesisData["nivelDeAtividade"]);
-                                        setStepTwoError("");
-                                    }}>Ativo regularmente</SelectableOption>
-                                </div>
+                            <div className={classNames(styles.observacoesGroup, {
+                                [styles.observacoesGroupMobile]: isMobile
+                            })}>
+                                <p>Observações de saúde (Opcional)</p>
+                                <TextareaWithIcon
+                                    name="observacaoSaude"
+                                    id="observacaoSaude"
+                                    placeholder="Adicione quaisquer observações relevantes sobre sua saúde..."
+                                    maxLength={MAX_DAILY_ROUTINE_CHARACTERS}
+                                    value={anamnesisForm.healthObservations}
+                                    icon={<FileText />}
+                                    onInputChange={(value: string) => updateFormField("healthObservations", value)}
+                                />
                             </div>
 
                             <div className={classNames(styles.observacoesGroup, {
