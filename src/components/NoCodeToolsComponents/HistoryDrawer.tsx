@@ -131,8 +131,8 @@ export default function HistoryDrawer({
     setDeletingId(id);
     try {
       await deleteNoCodeContent(id);
-      await queryClient.invalidateQueries({ queryKey: ["noCodeHistory"] });
       onDelete?.(id);
+      window.location.reload();
     } finally {
       setDeletingId(null);
       setDeleteConfirmId(null);

@@ -9,7 +9,7 @@ import { findUserData, insertUserImage, removerUserImage, update, softDelete } f
 import type { UpdateUserDTO } from "../../../models/user.ts";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal.tsx";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal.tsx";
-import { cellphoneMask, cpfMask } from "../../../utils/mascara.ts";
+import { cellphoneMask } from "../../../utils/mascara.ts";
 import { TypeContext } from "../../../App.tsx";
 import type { PersonalDTO } from "../../../models/personal.ts";
 import { editPersonalProfile } from "../../../constants/personal.ts";
@@ -30,7 +30,6 @@ import { getCroppedImg } from "../../../utils/cropImage.ts";
 type EditUserState = {
   firstName: string;
   lastName: string;
-  cpf: string;
   cref: string;
   phone: string;
   gender: string;
@@ -63,7 +62,6 @@ type EditUserAction =
   | { type: "hydrateForm"; payload: UserDataResponse }
   | { type: "setFirstName"; payload: string }
   | { type: "setLastName"; payload: string }
-  | { type: "setCPF"; payload: string }
   | { type: "setCREF"; payload: string }
   | { type: "setPhone"; payload: string }
   | { type: "setGender"; payload: string }
@@ -77,8 +75,6 @@ function reducer(state: EditUserState, action: EditUserAction): EditUserState {
       return { ...state, firstName: action.payload };
     case "setLastName":
       return { ...state, lastName: action.payload };
-    case "setCPF":
-      return { ...state, cpf: action.payload };
     case "setCREF":
       return { ...state, cref: action.payload };
     case "setPhone":
@@ -95,7 +91,6 @@ function reducer(state: EditUserState, action: EditUserAction): EditUserState {
       return {
         ...state,
         firstName: action.payload.nome,
-        cpf: action.payload.cpf ?? "",
         cref: action.payload.cref ?? "",
         phone: action.payload.telefones?.[0]?.numeroCompleto ?? "",
         gender: action.payload.sexo ?? "",
@@ -110,7 +105,6 @@ function reducer(state: EditUserState, action: EditUserAction): EditUserState {
 const initialEditUserState: EditUserState = {
   firstName: "",
   lastName: "",
-  cpf: "",
   cref: "",
   phone: "",
   gender: "",
@@ -142,7 +136,6 @@ export default function EditUser() {
   const [previewImage, setPreviewImage] = useState<string>("");
   const [previewImageFormData, setPreviewImageFormData] = useState<FormData>(new FormData());
 
-  // Crop state
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
@@ -171,13 +164,12 @@ export default function EditUser() {
       const file = event.target.files[0];
       const imageUrl = URL.createObjectURL(file);
 
-      // Reset crop state for the new image
       setCrop({ x: 0, y: 0 });
       setZoom(1);
       setCroppedAreaPixels(null);
 
       setPreviewImage(imageUrl);
-      setPreviewImageFormData(new FormData()); // will be built after crop
+      setPreviewImageFormData(new FormData()); 
       setOpenModal("adjustAvatar");
     }
   }
@@ -195,7 +187,6 @@ export default function EditUser() {
       setPreviewImage(url);
       setOpenModal(null);
 
-      // Directly upload the cropped image
       insertUserImage(formData)
         .then(async () => {
           setUserImage(url);
@@ -388,7 +379,7 @@ export default function EditUser() {
         }
 
         <div className={styles.personalInfo}>
-          <WhiteContainer title="Informações Pessoais" icon={<User size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={styles.personalInfoGrid} gap={20}>
+          <WhiteContainer title="Informações Pessoais" icon={<User size={22} />} titleFontSize={20} titleClassName={"font-bold! flex! items-center gap-3"} contentClassName={classNames(styles.personalInfoGrid, { [styles.alunoGrid]: type?.type?.includes("aluno") })} gap={20}>
             <div className={styles.fotoArea} >
               <div className={classNames("flex gap-8 items-center", { ["flex flex-col text-center gap-8 items-center"]: isMobile })}>
                 <div className="bg-gray-300 flex items-center rounded-full ">
@@ -451,24 +442,11 @@ export default function EditUser() {
               isLoading={userInfo.isLoading}
               value={state.firstName}
               onInputChange={(value: string) => dispatch({ type: "setFirstName", payload: value })}
-              maxLength={100}
+              maxLength={60}
             ></InputWithIcon>
-            {type?.type?.includes("aluno") ? (
+            {type?.type?.includes("aluno") ? null : (
               <InputWithIcon
-                id="cpf"
-                type="text"
-                placeholder="Digite seu CPF"
-                icon={<IdCard />}
-                isLoading={userInfo.isLoading}
-                label="CPF"
-                value={state.cpf}
-                mask={cpfMask}
-                disabled={true}
-                maxLength={14}
-              />
-            ) : (
-              <InputWithIcon
-                id="cpf"
+                id="cref"
                 type="text"
                 placeholder="Digite seu CREF"
                 icon={<IdCard />}
