@@ -296,17 +296,15 @@ export default function Toolbox({ onPreview, onError }: { onPreview: () => void,
         )}
       </div>
 
-      {!selected && (
-        <div className="p-4 border-t border-white/10 bg-black/20">
-          <button
-            onClick={onPreview}
-            className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors"
-          >
-            <Eye size={16} />
-            Visualizar Página
-          </button>
-        </div>
-      )}
+      <div className="p-4 border-t border-white/10 bg-black/20">
+        <button
+          onClick={onPreview}
+          className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white py-2.5 rounded-xl text-sm font-semibold transition-colors"
+        >
+          <Eye size={16} />
+          Visualizar Página
+        </button>
+      </div>
     </div>
   );
 }
