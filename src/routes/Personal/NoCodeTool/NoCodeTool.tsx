@@ -193,7 +193,7 @@ function NoCodeToolInner() {
                     const file = base64ToFile(value, `upload_${nodeId}_${propName}.png`);
                     const section = displayName === 'Seção' ? 'Seção' : 'Imagem';
                     const { url } = await uploadNoCodeImage(file, section);
-                    props[propName] = `${BASE_URL}/usuarios/foto/${url}`;
+                    props[propName] = url.startsWith('http') ? url : `${BASE_URL}/usuarios/foto/${url}`;
                     hasImages = true;
                   }
                 }
@@ -213,12 +213,16 @@ function NoCodeToolInner() {
 
               // Small delay to ensure DB consistency before refetch
               await new Promise(resolve => setTimeout(resolve, 500));
-              
-              await queryClient.invalidateQueries({ queryKey: ["noCodeContent"] });
+
+              // Invalidate in background — a refetch failure should not cancel the success modal
+              queryClient.invalidateQueries({ queryKey: ["noCodeContent"] }).catch((err) => {
+                console.warn("Background refetch failed after publish:", err);
+              });
+
               resetPublish();
               setOpenModal("success");
-            } catch (err) {
-              console.error(err);
+            } catch (err: unknown) {
+              console.error("[NoCodeTool] publish error:", err);
               resetPublish();
               setOpenModal("error");
             }
