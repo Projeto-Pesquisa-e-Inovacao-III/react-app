@@ -131,6 +131,7 @@ export default function HistoryDrawer({
     setDeletingId(id);
     try {
       await deleteNoCodeContent(id);
+      await queryClient.invalidateQueries({ queryKey: ["noCodeHistory"] });
       onDelete?.(id);
       window.location.reload();
     } finally {
@@ -236,15 +237,14 @@ export default function HistoryDrawer({
                       isConfirmingDelete
                         ? "rgba(239,68,68,0.08)"
                         : isHovered
-                        ? "rgba(12,98,145,0.18)"
-                        : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${
-                      isConfirmingDelete
+                          ? "rgba(12,98,145,0.18)"
+                          : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${isConfirmingDelete
                         ? "rgba(239,68,68,0.35)"
                         : isHovered
-                        ? "rgba(12,98,145,0.5)"
-                        : "rgba(255,255,255,0.07)"
-                    }`,
+                          ? "rgba(12,98,145,0.5)"
+                          : "rgba(255,255,255,0.07)"
+                      }`,
                   }}
                 >
                   {/* Date + action icons row */}
