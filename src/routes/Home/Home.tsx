@@ -18,7 +18,7 @@ export default function Home() {
     const isMobile = useMobile();
     const Header = isMobile ? HeaderMobile : HeaderDesktop;
 
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['noCodeContent'],
         queryFn: getNoCodeContent,
         refetchOnWindowFocus: false,
@@ -30,6 +30,8 @@ export default function Home() {
         try { return splitNoCodeContent(data.content); }
         catch { return null; }
     }, [data?.content]);
+
+    if (isLoading) return null;
 
     return (
         <>
