@@ -2,6 +2,7 @@ import { CardFilterCheckSchedule } from "../../../components/CheckSchedule/CardF
 import styles from "./CheckSchedule.module.css"
 import { useContext, useEffect, useState } from "react";
 import TimerModal from "../../../components/Modal/TimerModal/TimerModal";
+import ConcludeAppointmentModal from "../../../components/Modal/ConcludeAppointmentModal/ConcludeAppointmentModal";
 import SuccessModal from "../../../components/Modal/SuccessModal/SuccessModal";
 import useMobile from "../../../hooks/isMobile";
 import RegisterAbsenceModal from "../../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal";
@@ -189,8 +190,8 @@ export function CheckSchedule() {
         });
     }
 
-    async function handleConcludeAppointment(id: number) {
-        await concludeAppointment(id).then(async (res) => {
+    async function handleConcludeAppointment(id: number, data: { resumo: string; grupoMuscular: string[] }) {
+        await concludeAppointment(id, data).then(async (res) => {
             console.log("Agendamento concluído:", res);
             await handleInvalidateQueries();
             handleSuccessModal("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
@@ -845,11 +846,15 @@ export function CheckSchedule() {
                 )
             }
 
-            {openModal === "concludeAppointment" && <TimerModal callSuccessModal={() => handleConcludeAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Concluir Agendamento" content="Tem certeza que deseja concluir o agendamento?" buttonTitle="Concluir agendamento" />}
+            {(openModal === "concludeAppointment" || openModal === "conclude") && (
+                <ConcludeAppointmentModal
+                    isMobile={isMobile}
+                    closeThen={() => setOpenModal(null)}
+                    onSubmit={(data) => handleConcludeAppointment(appointmentId, data)}
+                />
+            )}
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
-
-            {openModal === "conclude" && <TimerModal callSuccessModal={() => handleConcludeAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Concluir Agendamento" content="Tem certeza que deseja concluir o agendamento?" buttonTitle="Concluir agendamento" />}
 
             {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
 
