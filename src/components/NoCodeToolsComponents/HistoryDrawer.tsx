@@ -131,6 +131,7 @@ export default function HistoryDrawer({
     setDeletingId(id);
     try {
       await deleteNoCodeContent(id);
+      await queryClient.invalidateQueries({ queryKey: ["noCodeHistory"] });
       onDelete?.(id);
       window.location.reload();
     } finally {
@@ -218,12 +219,14 @@ export default function HistoryDrawer({
           )}
 
           {!isLoading &&
-            items.map((item) => {
+            items.map((item, index) => {
+              const isCurrent = index === 0;
               const isRestoring = restoringId === item.id;
               const isHovered = previewItem?.id === item.id;
               const isRenaming = renamingId === item.id;
               const isConfirmingDelete = deleteConfirmId === item.id;
               const isDeleting = deletingId === item.id;
+              console.log(index)
 
               return (
                 <div
@@ -234,21 +237,29 @@ export default function HistoryDrawer({
                   style={{
                     background:
                       isConfirmingDelete
-                        ? "rgba(239,68,68,0.08)"
+                        ? "#ef444414"
                         : isHovered
-                        ? "rgba(12,98,145,0.18)"
-                        : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${
-                      isConfirmingDelete
-                        ? "rgba(239,68,68,0.35)"
+                          ? isCurrent
+                            ? "#0c629159"
+                            : "#0c62912e"
+                          : isCurrent
+                            ? "#0c63922e"
+                            : "#ffffff0a",
+                    border: `1px solid ${isConfirmingDelete
+                        ? "#0c6291ff"
                         : isHovered
-                        ? "rgba(12,98,145,0.5)"
-                        : "rgba(255,255,255,0.07)"
-                    }`,
+                          ? isCurrent
+                            ? "#0c6291cc"
+                            : "#0c629180"
+                          : isCurrent
+                            ? "#0c629180"
+                            : "#0c629114"
+                      }`,
                   }}
                 >
                   {/* Date + action icons row */}
                   <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
                     <span
                       className="text-xs font-mono"
                       style={{ color: "rgba(255,255,255,0.4)" }}
@@ -259,6 +270,19 @@ export default function HistoryDrawer({
                         { locale: ptBR }
                       )}
                     </span>
+                    {isCurrent && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                        style={{
+                          background: "#0c629114",
+                          color: "#82adc5",
+                          border: "1px solid rgba(12,98,145,0.5)",
+                        }}
+                      >
+                        Atual
+                      </span>
+                    )}
+                    </div>
 
                     {/* Action icons — shown on hover, hidden when confirming delete */}
                     {!isConfirmingDelete && !isRenaming && (
@@ -394,7 +418,7 @@ export default function HistoryDrawer({
                   )}
 
                   {/* Restore button — hidden when confirming delete or renaming */}
-                  {!isConfirmingDelete && !isRenaming && (
+                  {!isConfirmingDelete && !isRenaming && !isCurrent && (
                     <button
                       onClick={() => handleRestore(item)}
                       disabled={isBusy}
