@@ -271,7 +271,7 @@ function NoCodeToolInner() {
                       is={EditableText}
                       tag="h1"
                       text="Bem-vindo a CSF Treinamentos"
-                      className="text-7xl w-[53.2%] font-poppins font-bold uppercase text-left text-white"
+                      className="text-8xl text-[5.5rem] w-[53.2%] font-poppins font-bold uppercase text-left text-white animate-hero-1"
                     />
                     <Element
                       is={EditableText}
