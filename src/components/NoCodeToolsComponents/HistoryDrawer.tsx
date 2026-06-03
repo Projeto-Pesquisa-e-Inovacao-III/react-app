@@ -219,12 +219,14 @@ export default function HistoryDrawer({
           )}
 
           {!isLoading &&
-            items.map((item) => {
+            items.map((item, index) => {
+              const isCurrent = index === 0;
               const isRestoring = restoringId === item.id;
               const isHovered = previewItem?.id === item.id;
               const isRenaming = renamingId === item.id;
               const isConfirmingDelete = deleteConfirmId === item.id;
               const isDeleting = deletingId === item.id;
+              console.log(index)
 
               return (
                 <div
@@ -237,18 +239,27 @@ export default function HistoryDrawer({
                       isConfirmingDelete
                         ? "rgba(239,68,68,0.08)"
                         : isHovered
-                          ? "rgba(12,98,145,0.18)"
-                          : "rgba(255,255,255,0.04)",
+                          ? isCurrent
+                            ? "rgba(34,197,94,0.22)"
+                            : "rgba(12,98,145,0.18)"
+                          : isCurrent
+                            ? "rgba(34,197,94,0.10)"
+                            : "rgba(255,255,255,0.04)",
                     border: `1px solid ${isConfirmingDelete
                         ? "rgba(239,68,68,0.35)"
                         : isHovered
-                          ? "rgba(12,98,145,0.5)"
-                          : "rgba(255,255,255,0.07)"
+                          ? isCurrent
+                            ? "rgba(34,197,94,0.6)"
+                            : "rgba(12,98,145,0.5)"
+                          : isCurrent
+                            ? "rgba(34,197,94,0.35)"
+                            : "rgba(255,255,255,0.07)"
                       }`,
                   }}
                 >
                   {/* Date + action icons row */}
                   <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
                     <span
                       className="text-xs font-mono"
                       style={{ color: "rgba(255,255,255,0.4)" }}
@@ -259,6 +270,19 @@ export default function HistoryDrawer({
                         { locale: ptBR }
                       )}
                     </span>
+                    {isCurrent && (
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                        style={{
+                          background: "rgba(34,197,94,0.18)",
+                          color: "#4ade80",
+                          border: "1px solid rgba(34,197,94,0.4)",
+                        }}
+                      >
+                        Atual
+                      </span>
+                    )}
+                    </div>
 
                     {/* Action icons — shown on hover, hidden when confirming delete */}
                     {!isConfirmingDelete && !isRenaming && (
@@ -394,7 +418,7 @@ export default function HistoryDrawer({
                   )}
 
                   {/* Restore button — hidden when confirming delete or renaming */}
-                  {!isConfirmingDelete && !isRenaming && (
+                  {!isConfirmingDelete && !isRenaming && !isCurrent && (
                     <button
                       onClick={() => handleRestore(item)}
                       disabled={isBusy}
