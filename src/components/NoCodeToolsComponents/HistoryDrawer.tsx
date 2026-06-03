@@ -237,23 +237,23 @@ export default function HistoryDrawer({
                   style={{
                     background:
                       isConfirmingDelete
-                        ? "rgba(239,68,68,0.08)"
+                        ? "#ef444414"
                         : isHovered
                           ? isCurrent
-                            ? "rgba(34,197,94,0.22)"
-                            : "rgba(12,98,145,0.18)"
+                            ? "#0c629159"
+                            : "#0c62912e"
                           : isCurrent
-                            ? "rgba(34,197,94,0.10)"
-                            : "rgba(255,255,255,0.04)",
+                            ? "#0c63922e"
+                            : "#ffffff0a",
                     border: `1px solid ${isConfirmingDelete
-                        ? "rgba(239,68,68,0.35)"
+                        ? "#0c6291ff"
                         : isHovered
                           ? isCurrent
-                            ? "rgba(34,197,94,0.6)"
-                            : "rgba(12,98,145,0.5)"
+                            ? "#0c6291cc"
+                            : "#0c629180"
                           : isCurrent
-                            ? "rgba(34,197,94,0.35)"
-                            : "rgba(255,255,255,0.07)"
+                            ? "#0c629180"
+                            : "#0c629114"
                       }`,
                   }}
                 >
@@ -274,9 +274,9 @@ export default function HistoryDrawer({
                       <span
                         className="text-xs px-2 py-0.5 rounded-full font-semibold"
                         style={{
-                          background: "rgba(34,197,94,0.18)",
-                          color: "#4ade80",
-                          border: "1px solid rgba(34,197,94,0.4)",
+                          background: "#0c629114",
+                          color: "#82adc5",
+                          border: "1px solid rgba(12,98,145,0.5)",
                         }}
                       >
                         Atual
