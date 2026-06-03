@@ -9,8 +9,8 @@ export function rescheduleAppointment(data: ScheduleReschedule) {
     return api.put("/agendamentos/reagendar", data);
 }
 
-export function concludeAppointment(id: number) {
-    return api.put(`/agendamentos/${id}/confirmar-conclusao`);
+export function concludeAppointment(id: number, data: { resumo: string; grupoMuscular: string[] }) {
+    return api.put(`/agendamentos/${id}/confirmar-conclusao`, data);
 }
 
 export function refuseAppointment(id: number) {
