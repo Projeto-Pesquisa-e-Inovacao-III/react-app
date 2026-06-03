@@ -316,7 +316,6 @@ export default function ScheduleDetails() {
                 <div className={classNames(styles.buttons, { [styles.buttonsMobile]: isMobile, [styles.buttonsActionsPersonal]: appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" && buttonsActionsCondition })}>
                     {type?.type?.includes("personal") && buttonsActionsCondition && appointment.data?.status === "PENDENTE_PERSONAL_CONCLUIR" &&
                         <>
-
                             <div className={styles.buttonAbsence}>
                                 {appointment.isLoading ? (
                                     <Skeleton width="100%" height={40} />
