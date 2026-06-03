@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import classNames from "classnames";
-import { Check, RefreshCw, X, MapPin, Calendar, Clock } from "lucide-react";
+import { Check, ClipboardCheck, RefreshCw, UserX, X, MapPin, Calendar, Clock } from "lucide-react";
 import styles from "./AppointmentCard.module.css";
 import { TypeContext } from "../../App";
 import { useContext } from "react";
@@ -20,7 +20,6 @@ const STATUS_CONFIG = {
 
 const PENDING_STATUSES = [
   "PENDENTE_PERSONAL_APROVACAO",
-  "PENDENTE_PERSONAL_CONCLUIR",
 ];
 
 const PENDING = [
@@ -41,10 +40,12 @@ type Props = {
   onConfirm?: () => void;
   onReschedule?: () => void;
   onCancel?: () => void;
+  onConclude?: () => void;
+  onRegisterAbsence?: () => void;
 };
 
 export function AppointmentCard(props: Props) {
-  const { isMobile = false, onConfirm, onReschedule, onCancel } = props;
+  const { isMobile = false, onConfirm, onReschedule, onCancel, onConclude, onRegisterAbsence } = props;
   const nav = useNavigate();
   const typeContext = useContext(TypeContext);
 
@@ -193,6 +194,25 @@ export function AppointmentCard(props: Props) {
           >
             <X size={12} />
             Cancelar
+          </button>
+        </div>
+      )}
+
+      {(props.status === "PENDENTE_PERSONAL_CONCLUIR" && typeContext?.type?.includes("personal")) && (
+        <div className={styles.sessionCardActions}>
+          <button
+            className={classNames(styles.actionBtn, styles.actionConfirm)}
+            onClick={stopPropagation(onConclude)}
+          >
+            <ClipboardCheck size={12} />
+            Concluir aula
+          </button>
+          <button
+            className={classNames(styles.actionBtn, styles.actionCancel)}
+            onClick={stopPropagation(onRegisterAbsence)}
+          >
+            <UserX size={12} />
+            Registrar ausência
           </button>
         </div>
       )}
