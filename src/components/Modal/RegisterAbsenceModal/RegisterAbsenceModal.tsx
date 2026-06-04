@@ -6,13 +6,14 @@ import styles from './RegisterAbsenceModal.module.css'
 import Button from '../../Button/Button';
 
 type Props = {
+    isMobile?: boolean;
     closeThen: React.Dispatch<React.SetStateAction<boolean>>;
     callSuccessModal?: () => void;
     onSubmit: (data: { type: string; description: string; }) => void;
 }
 
 
-export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSubmit }: Props) {
+export default function RegisterAbsenceModal({ isMobile, closeThen, callSuccessModal, onSubmit }: Props) {
     const [changeSelectType, setChangeSelectType] = useState<string>("Aluno");
     const [justified, setJustified] = useState<boolean>(false);
     const [description, setDescription] = useState("");
@@ -40,6 +41,7 @@ export default function RegisterAbsenceModal({ closeThen, callSuccessModal, onSu
             <div className={classNames(styles.modal, {
                 [styles.modalCard]: !isClosing,
                 [styles.closing]: isClosing,
+                [styles.mobileModal]: isMobile,
             })}>
                 <h2 className={styles.title}>Registrar ausência</h2>
 
