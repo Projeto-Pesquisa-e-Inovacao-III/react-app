@@ -191,7 +191,7 @@ export default function ConcludeAppointmentModal({ isMobile, closeThen, onSubmit
                         classNameVariable={styles.btnSend} 
                         onClick={handleSend}
                         loading={loading}
-                        classNameDiv="w-1/3"
+                        classNameDiv={isMobile ? "w-full!" : "w-1/3"}
                     />
                     <Button 
                         typeButton='other' 

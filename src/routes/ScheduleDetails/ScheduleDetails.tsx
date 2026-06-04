@@ -409,7 +409,7 @@ export default function ScheduleDetails() {
                 {openModal === "error" && <ErrorModal closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
 
                 {openModal === "registerAbsence" &&
-                    <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
+                    <RegisterAbsenceModal isMobile={isMobile} closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
                 }
 
                 {openModal === "reschedule" && (
