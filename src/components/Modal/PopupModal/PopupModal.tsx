@@ -1,4 +1,4 @@
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import useModalClose from "../../../hooks/useModalClose";
 import { TypeContext } from "../../../App";
 import styles from "./PopupModal.module.css";
@@ -38,6 +38,12 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
     const type = typeContext?.type;
     const popupRef = useRef<HTMLDivElement>(null);
     const closingAction = useRef<"close" | "newEvent">("close");
+
+    const [backdropReady, setBackdropReady] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => setBackdropReady(true), 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     const { isClosing, handleAnimatedClose } = useModalClose({
         onClose: () => {
@@ -179,7 +185,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                     [styles.backdropEnter]: !isClosing,
                     [styles.closingBackdrop]: isClosing,
                 })}
-                onClick={handleAnimatedClose}
+                onClick={backdropReady ? handleAnimatedClose : undefined}
             />
             <div ref={popupRef} className={classnames(styles.popupModal, {
                 [styles.popupEnter]: !isClosing,
