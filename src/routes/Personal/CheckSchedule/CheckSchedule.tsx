@@ -864,7 +864,7 @@ export function CheckSchedule() {
 
             {
                 openModal === "registerAbsence" &&
-                <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
+                <RegisterAbsenceModal isMobile={isMobile} closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
             }
         </>
     )

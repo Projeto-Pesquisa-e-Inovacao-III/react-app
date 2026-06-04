@@ -289,6 +289,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
             )}
             {openModal === "registerAbsence" && (
                 <RegisterAbsenceModal
+                    isMobile={isMobile}
                     closeThen={() => setOpenModal(null)}
                     onSubmit={registerAbsenceAppointment}
                 />

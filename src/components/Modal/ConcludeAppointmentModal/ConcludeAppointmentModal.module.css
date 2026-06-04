@@ -106,7 +106,7 @@
 }
 
 .btnSend {
-    background-color: #13b850 !important;
+    background-color: #1dac51 !important;
     color: white !important;
     border: none !important;
     padding: 10px 20px !important;
@@ -142,6 +142,16 @@
 
 .closingBackdrop {
     animation: backdropLeave 0.18s ease-in forwards !important;
+}
+
+@media (max-width: 768px) {
+    .buttons {
+        flex-direction: column;
+    }
+    .btnSend,
+    .btnCancel {
+        width: 100%;
+    }
 }
 
 @keyframes modalEnter {
