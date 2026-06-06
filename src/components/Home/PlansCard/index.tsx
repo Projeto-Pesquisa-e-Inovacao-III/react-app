@@ -5,7 +5,8 @@ import benefitStyles from "../../PackageCard/BenefitList/BenefitList.module.css"
 import cardStyles from "./PlansCard.module.css";
 import classNames from "classnames";
 import useMobile from "../../../hooks/isMobile";
-const MAX_VISIBLE_BENEFITS = 3;
+
+const MAX_VISIBLE_BENEFITS = 4;
 const MAX_VISIBLE_BENEFITS_MOBILE = 4;
 
 interface PlansCardProps {
@@ -14,12 +15,28 @@ interface PlansCardProps {
   price: string;
   benefits?: string[];
   isLoggedIn: boolean;
+  controlledExpanded?: boolean;
+  onToggle?: () => void;
+  uniformHeight?: number;
 }
 
-export default function PlansCard({ description, content, price, benefits, isLoggedIn }: PlansCardProps) {
+export default function PlansCard({
+  description,
+  content,
+  price,
+  benefits,
+  isLoggedIn,
+  controlledExpanded,
+  onToggle,
+  uniformHeight,
+}: PlansCardProps) {
   const isMobile = useMobile();
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [internalExpanded, setInternalExpanded] = useState(false);
+
+  const isControlled = onToggle !== undefined;
+  const isExpanded = isControlled ? (controlledExpanded ?? false) : internalExpanded;
+  const toggle = isControlled ? onToggle : () => setInternalExpanded((prev) => !prev);
 
   const visibleBenefits = isExpanded
     ? (benefits ?? [])
@@ -27,11 +44,15 @@ export default function PlansCard({ description, content, price, benefits, isLog
 
   const hasMore = (benefits?.length ?? 0) > MAX_VISIBLE_BENEFITS;
 
+  const cardStyle = !isExpanded && uniformHeight ? { minHeight: `${uniformHeight}px` } : undefined;
+
   return (
     <div
+      data-plancard
       className={classNames(cardStyles.card, { [cardStyles.cardExpanded]: isExpanded })}
+      style={cardStyle}
     >
-      <div className="p-5 flex flex-col justify-between h-full">
+      <div className="p-5 flex flex-col justify-between flex-1">
         <div>
           <div className="bg-indigo p-5 rounded-md text-white text-xl">
             {content}
@@ -57,7 +78,7 @@ export default function PlansCard({ description, content, price, benefits, isLog
             {hasMore && (
               <li className={benefitStyles.benefitToggle}>
                 <button
-                  onClick={() => setIsExpanded(prev => !prev)}
+                  onClick={toggle}
                   className={benefitStyles.benefitToggleButton}
                 >
                   {isExpanded ? "Ver menos" : "Ver mais"}
