@@ -10,6 +10,7 @@ import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/Re
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
+import ConcludeAppointmentModal from '../../components/Modal/ConcludeAppointmentModal/ConcludeAppointmentModal';
 import SuccessModal from '../../components/Modal/SuccessModal/SuccessModal';
 import { startOfDay } from 'date-fns';
 import NewEvent from '../../components/Modal/NewEvent/NewEvent';
@@ -125,9 +126,9 @@ export default function ScheduleDetails() {
         } catch (error) { console.error("Erro ao registrar a ausência:", error); }
     }
 
-    async function handleConcludeAppointment(id: number) {
+    async function handleConcludeAppointment(id: number, data: { resumo: string; grupoMuscular: string[] }) {
         try {
-            await concludeAppointment(id);
+            await concludeAppointment(id, data);
             await handleActionSuccess("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
         } catch (error) { console.error("Erro ao concluir o agendamento:", error); }
     }
@@ -402,12 +403,18 @@ export default function ScheduleDetails() {
             />
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
-            {openModal === "conclude" && <TimerModal callSuccessModal={() => handleConcludeAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Concluir Agendamento" content="Tem certeza que deseja concluir o agendamento?" buttonTitle="Concluir agendamento" />}
+            {openModal === "conclude" && (
+                    <ConcludeAppointmentModal
+                        isMobile={isMobile}
+                        closeThen={() => setOpenModal(null)}
+                        onSubmit={(data) => handleConcludeAppointment(appointmentId, data)}
+                    />
+                )}
             {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
             {openModal === "cancel" && <TimerModal callSuccessModal={() => cancelAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Cancelar agendamento" content="Tem certeza que deseja Cancelar o agendamento?" buttonTitle="Cancelar agendamento" isDelete={true} />}
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
             {openModal === "error" && <ErrorModal closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
-            {openModal === "registerAbsence" && <RegisterAbsenceModal closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />}
+            {openModal === "registerAbsence" && <RegisterAbsenceModal isMobile={isMobile} closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />}
             {openModal === "reschedule" && (
                 <NewEvent
                     isMobile={isMobile}

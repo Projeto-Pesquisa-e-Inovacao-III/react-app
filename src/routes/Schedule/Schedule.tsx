@@ -9,7 +9,7 @@ import CalendarWeek from "../../components/Calendars/CalendarWeek/CalendarWeek";
 import { TypeContext } from "../../App";
 import classnames from "classnames";
 import useMobile from "../../hooks/isMobile";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptUserAppointment, appointmentAtCalendar, findPersonalRequests, findUserAppointments, getPersonalList, refuseAppointment } from "../../constants/schedule";
 import { useDisabledDays } from "../../hooks/useDisabledDays";
@@ -48,6 +48,7 @@ export default function Schedule() {
     const isMobile = useMobile();
 
     const type = useContext(TypeContext);
+    const navigate = useNavigate();
 
     const [openModal, setOpenModal] = useState<ModalType>(null);
 
@@ -301,6 +302,8 @@ export default function Schedule() {
                                                     setSelectedEventId(event?.agendamentoId);
                                                     handleOpenRescheduleRequestModal(event?.agendamentoId, true);
                                                 }}
+                                                onConclude={() => navigate(`/schedule-details?id=${event?.agendamentoId}`)}
+                                                onRegisterAbsence={() => navigate(`/schedule-details?id=${event?.agendamentoId}`)}
                                                 isMobile={isMobile}
                                             />
                                         </div>
@@ -342,6 +345,8 @@ uf	"SP" */}
                                             setSelectedEventId(event?.agendamentoId);
                                             handleOpenRescheduleRequestModal(event?.agendamentoId);
                                         }}
+                                        onConclude={() => navigate(`/schedule-details?id=${event?.agendamentoId}`)}
+                                        onRegisterAbsence={() => navigate(`/schedule-details?id=${event?.agendamentoId}`)}
                                         type={event?.tipoAula || "Não informado"}
                                         date={event?.data ? format(parse(event.data.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
                                         time={`${event?.data ? event.data.split("T")[1]?.substring(0, 5) || "" : ""} - ${event?.datafim ? event.datafim.split("T")[1]?.substring(0, 5) || "" : ""}`}

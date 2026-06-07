@@ -154,9 +154,18 @@
   grid-template-areas:
     "foto foto foto foto"
     "nome nome genero genero"
-    "cpf cpf telefone telefone"
+    "cref cref telefone telefone"
     "footer footer footer footer"
 
+  ;
+}
+
+.alunoGrid {
+  grid-template-areas:
+    "foto foto foto foto"
+    "nome nome genero genero"
+    "telefone telefone telefone telefone"
+    "footer footer footer footer"
   ;
 }
 
@@ -189,8 +198,8 @@
   grid-area: sobreNome;
 }
 
-.personalInfoGrid :global(#cpf) {
-  grid-area: cpf;
+.personalInfoGrid :global(#cref) {
+  grid-area: cref;
 }
 
 .personalInfoGrid :global(#genero) {

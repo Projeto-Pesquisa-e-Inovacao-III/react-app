@@ -1,8 +1,5 @@
-import { Card, CardContent, Typography } from "@mui/material";
-
 import styles from "./KPICards.module.css";
 import classNames from "classnames";
-import Skeleton from "react-loading-skeleton";
 
 type Props = {
     isMobile: boolean;
@@ -21,26 +18,48 @@ export default function KPICards({
     title,
     isFull = false,
 }: Props) {
-    
+
+    const isCompactMobile = isMobile && !isFull;
+
     return (
         <div
-            className={classNames(styles.kpiCardDashboard, { [styles.full]: isFull }, { [styles.kpiMobile]: isMobile && isFull })}
+            className={classNames(
+                styles.kpiCardDashboard,
+                { [styles.kpiMobile]: isMobile && isFull },
+                { [styles.kpiCardMobileCompact]: isCompactMobile }
+            )}
         >
-            <Card>
-                <CardContent>
-                    <div className={styles.wrapperDetailsKpiDashboard}>
-                        {isMobile && !isFull && (
-                            <div className={styles.iconKpiDashboard}>{icon}</div>
+            <div className={styles.card}>
+                <div className={isFull ? styles.cardContent : styles.cardContentColumn}>
+
+                    {/* Texto */}
+                    <div className={styles.cardContentColumn} style={{ flex: 1 }}>
+                        {isFull && (
+                            title
+                                ? <p className={styles.kpiTitle}>{title}</p>
+                                : <div className={styles.skeletonTitle} />
                         )}
-                        {isFull && <Typography variant="h5">{title ?? <Skeleton width={100} height={20} />}</Typography>}
-                        <Typography variant="h4">{value ?? <Skeleton width={100} height={20} />}</Typography>
-                        {isMobile && (
-                            <Typography variant="body1">{description ?? <Skeleton width={100} height={20} />}</Typography>
+
+                        {value !== undefined
+                            ? <p className={styles.kpiValue}>{value}</p>
+                            : <div className={styles.skeletonValue} />
+                        }
+
+                        {isMobile && !isFull && (
+                            description
+                                ? <p className={styles.kpiDescription}>{description}</p>
+                                : <div className={styles.skeletonTitle} />
                         )}
                     </div>
-                    {isFull && <div className={styles.iconKpiDashboard}>{icon}</div>}
-                </CardContent>
-            </Card>
+
+                    {/* Ícone */}
+                    {(isFull || isCompactMobile) && (
+                        <div className={styles.iconWrapper}>
+                            {icon}
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

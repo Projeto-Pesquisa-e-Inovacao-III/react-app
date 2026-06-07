@@ -1,4 +1,4 @@
-import { useRef, useState, useContext } from "react";
+import { useRef, useState, useContext, useEffect } from "react";
 import useModalClose from "../../../hooks/useModalClose";
 import { TypeContext } from "../../../App";
 import styles from "./PopupModal.module.css";
@@ -6,7 +6,7 @@ import useClickOutside from "../../../hooks/useClickOutside";
 import SmallerButton from "../../SmallerButton/SmallerButton";
 import classnames from "classnames";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptUserAppointment, findPersonalRequests, refuseAppointment } from "../../../constants/schedule";
+import { acceptUserAppointment, concludeAppointment, findPersonalRequests, refuseAppointment, reportAbsencePersonal } from "../../../constants/schedule";
 import { parseISO, startOfDay, endOfDay, format, parse } from "date-fns";
 import { AppointmentCard } from "../../AppointmentCard/AppointmentCard";
 import { ptBR } from "date-fns/locale";
@@ -21,6 +21,11 @@ import ErrorModal from "../ErrorModal/ErrorModal";
 import NewEvent from "../NewEvent/NewEvent";
 import { usePagination } from "../../../hooks/usePagination";
 import PaginatedList from "../../PaginatedList/PaginatedList";
+import ConcludeAppointmentModal from "../ConcludeAppointmentModal/ConcludeAppointmentModal";
+import RegisterAbsenceModal from "../RegisterAbsenceModal/RegisterAbsenceModal";
+import type { AbsenceAppointment } from "../../../models/schedule";
+
+type PopupModalTypes = modalTypes | "conclude" | "registerAbsence";
 type PopupModalProps = {
     closeThen: () => void;
     date: string;
@@ -33,6 +38,12 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
     const type = typeContext?.type;
     const popupRef = useRef<HTMLDivElement>(null);
     const closingAction = useRef<"close" | "newEvent">("close");
+
+    const [backdropReady, setBackdropReady] = useState(false);
+    useEffect(() => {
+        const timer = setTimeout(() => setBackdropReady(true), 0);
+        return () => clearTimeout(timer);
+    }, []);
 
     const { isClosing, handleAnimatedClose } = useModalClose({
         onClose: () => {
@@ -78,17 +89,14 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
     }
 
-    const {
-        openModal,
-        setOpenModal,
-        textModal,
-        setTextModal
-    } = useModal(null, { title: "", content: "" })
+    const { textModal, setTextModal } = useModal(null, { title: "", content: "" });
+
+    const [openModal, setOpenModal] = useState<PopupModalTypes>(null);
 
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
 
-    function handleModal(id: number, type: modalTypes) {
+    function handleModal(id: number, type: PopupModalTypes) {
         setAppointmentId(id);
         setOpenModal(type);
     }
@@ -123,6 +131,37 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
         setOpenModal("success");
     }
 
+    async function handleConcludeAppointment(id: number, data: { resumo: string; grupoMuscular: string[] }) {
+        try {
+            await concludeAppointment(id, data);
+            await handleInvalidateQueries();
+            setTextModal({ title: "Aula Concluída", content: "A aula foi concluída com sucesso." });
+            setOpenModal("success");
+        } catch (error) {
+            console.error("Erro ao concluir a aula:", error);
+            setTextModal({ title: "Erro ao concluir", content: "Ocorreu um erro ao concluir a aula." });
+            setOpenModal("error");
+        }
+    }
+
+    async function registerAbsenceAppointment(data: { type: string; description: string }) {
+        const payload: AbsenceAppointment = {
+            idAgendamento: appointmentId,
+            tipoUsuario: data.type,
+            descricaoCancelamento: data.description || ""
+        };
+        try {
+            await reportAbsencePersonal(payload);
+            await handleInvalidateQueries();
+            setTextModal({ title: "Ausência Registrada", content: "A ausência foi registrada com sucesso." });
+            setOpenModal("success");
+        } catch (error) {
+            console.error("Erro ao registrar a ausência:", error);
+            setTextModal({ title: "Erro ao registrar", content: "Ocorreu um erro ao registrar a ausência." });
+            setOpenModal("error");
+        }
+    }
+
     function handleErrorModalInfo(title: string, description: string) {
         setTextModal({ title, content: description });
         setOpenModal("error");
@@ -146,7 +185,7 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                     [styles.backdropEnter]: !isClosing,
                     [styles.closingBackdrop]: isClosing,
                 })}
-                onClick={handleAnimatedClose}
+                onClick={backdropReady ? handleAnimatedClose : undefined}
             />
             <div ref={popupRef} className={classnames(styles.popupModal, {
                 [styles.popupEnter]: !isClosing,
@@ -187,6 +226,8 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                                 onConfirm={() => handleModal(agendamento.agendamentoId, "accept")}
                                 onCancel={() => handleModal(agendamento.agendamentoId, "decline")}
                                 onReschedule={() => handleModal(agendamento.agendamentoId, "reschedule")}
+                                onConclude={() => handleModal(agendamento.agendamentoId, "conclude")}
+                                onRegisterAbsence={() => handleModal(agendamento.agendamentoId, "registerAbsence")}
                                 type={agendamento.tipoAula}
                                 date={agendamento.dataInicio ? format(parse(agendamento.dataInicio.split("T")[0], "yyyy-MM-dd", new Date()), "dd/MM/yyyy", { locale: ptBR }) : ""}
                                 time={`${agendamento.dataInicio ? agendamento.dataInicio.split("T")[1]?.substring(0, 5) || "" : ""} - ${agendamento.dataFim ? agendamento.dataFim.split("T")[1]?.substring(0, 5) || "" : ""}`}
@@ -239,6 +280,20 @@ export default function PopupModal({ closeThen, date, onNewEvent }: Readonly<Pop
                     </>
                 )
             }
+            {openModal === "conclude" && (
+                <ConcludeAppointmentModal
+                    isMobile={isMobile}
+                    closeThen={() => setOpenModal(null)}
+                    onSubmit={(data) => handleConcludeAppointment(appointmentId, data)}
+                />
+            )}
+            {openModal === "registerAbsence" && (
+                <RegisterAbsenceModal
+                    isMobile={isMobile}
+                    closeThen={() => setOpenModal(null)}
+                    onSubmit={registerAbsenceAppointment}
+                />
+            )}
             {openModal === "success" && <SuccessModal title={textModal.title} content={textModal.content} closeThen={handleClosePopup} isMobile={isMobile} />}
             {openModal === "error" && <ErrorModal title={textModal.title} content={textModal.content} closeThen={handleClosePopup} />}
         </>

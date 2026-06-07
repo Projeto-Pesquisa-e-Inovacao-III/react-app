@@ -8,6 +8,7 @@ type Props = {
     paddingTop?: string;
     paddingBottom?: string;
     className?: string;
+    id?: string;
 };
 
 export function EditableSection({
@@ -17,6 +18,7 @@ export function EditableSection({
     paddingTop = '80px',
     paddingBottom = '80px',
     className = '',
+    id = '',
 }: Props) {
     const {
         connectors: { connect },
@@ -34,6 +36,7 @@ export function EditableSection({
             ref={(ref) => {
                 if (ref) connect(ref);
             }}
+            id={id || undefined}
             className={`${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291]' : ''}`}
             style={style}
         >
@@ -50,6 +53,7 @@ EditableSection.craft = {
         paddingTop: '80px',
         paddingBottom: '80px',
         className: '',
+        id: '',
     },
     rules: {
         canDrag: () => false,

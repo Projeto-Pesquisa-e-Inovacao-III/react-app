@@ -91,7 +91,12 @@
   background: #0a3a5c;
   color: white !important;
   border-radius: 50%;
-  padding: 2px 8px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 .wrapperCalendar :global(.fc-daygrid-day:hover) {
@@ -151,7 +156,12 @@
     background: black;
     color: white !important;
     border-radius: 50%;
-    padding: 5px 9px;
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
 
   .wrapperCalendar :global(.fc-daygrid-day-top) {

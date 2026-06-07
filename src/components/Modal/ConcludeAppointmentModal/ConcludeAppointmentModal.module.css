@@ -1,0 +1,187 @@
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 40%;
+    max-width: 90%;
+    transform: translate(-50%, -50%);
+}
+
+.mobileModal {
+    width: 95%;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.title {
+    margin: 0;
+    color: var(--indigo, #093a5d);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.fieldGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.requiredAsterisk {
+    color: #e53e3e;
+    margin-left: 2px;
+}
+
+.suggestionsContainer {
+    margin-top: 6px;
+}
+
+.suggestionsTitle {
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 6px 0;
+    font-weight: 500;
+}
+
+.suggestionsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.muscleBadge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    background-color: #f7fafc;
+    color: #4a5568;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.muscleBadge:hover {
+    background-color: #edf2f7;
+    border-color: #cbd5e0;
+}
+
+.muscleBadgeSelected {
+    background-color: var(--indigo, #093a5d);
+    color: white;
+    border-color: var(--indigo, #093a5d);
+}
+
+.muscleBadgeSelected:hover {
+    background-color: #0b4570;
+    border-color: #0b4570;
+}
+
+.errorMessage {
+    color: #e53e3e;
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btnSend {
+    background-color: #1dac51 !important;
+    color: white !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    width: 100% !important;
+}
+
+.btnCancel {
+    background-color: #e2e8f0 !important;
+    color: #475569 !important;
+    border: none !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+}
+
+.modalCard {
+    animation: modalEnter 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.closing {
+    animation: modalLeave 0.18s ease-in forwards !important;
+}
+
+.backdropEnter {
+    animation: backdropEnter 0.25s ease-out forwards;
+}
+
+.closingBackdrop {
+    animation: backdropLeave 0.18s ease-in forwards !important;
+}
+
+@media (max-width: 768px) {
+    .buttons {
+        flex-direction: column;
+    }
+    .btnSend,
+    .btnCancel {
+        width: 100%;
+    }
+}
+
+@keyframes modalEnter {
+    from { 
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
+    }
+    to { 
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes modalLeave {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 8px)) scale(0.92);
+    }
+}
+
+@keyframes backdropEnter {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes backdropLeave {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
