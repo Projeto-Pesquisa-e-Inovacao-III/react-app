@@ -124,11 +124,11 @@ export default function AiPanel({
             )}
 
             {/* FAB — visível no mobile quando o painel está fechado */}
-            {isMobile && !isOpen && onOpen && (
+            {/* isMobile && !isOpen && onOpen && (
                 <button className={styles.aiFab} onClick={onOpen} aria-label="Abrir dicas do Treinador IA">
                     <Sparkles size={22} color="#2e5580" />
                 </button>
-            )}
+            ) */}
         </>
     );
 }

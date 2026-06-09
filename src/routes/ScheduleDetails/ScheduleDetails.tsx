@@ -329,7 +329,7 @@ export default function ScheduleDetails() {
                                                 {appointment.data?.endereco?.tipo?.toLowerCase()?.replace(/^\w/, (c: string) => c.toUpperCase())}
                                             </div>
                                         </div>
-                                        {appointment.data?.status === "APROVADO" && (type?.type?.includes("personal") || type?.type?.includes("admin")) && (
+                                        {/* {appointment.data?.status === "APROVADO" && (type?.type?.includes("personal") || type?.type?.includes("admin")) && (
                                             <button
                                                 className={classNames(styles.infoCard, styles.aiTriggerCard, { [styles.aiTriggerCardActive]: aiPanelOpen })}
                                                 onClick={() => {
@@ -343,7 +343,7 @@ export default function ScheduleDetails() {
                                             >
                                                 <Sparkles size={28} className={styles.aiTriggerIcon} />
                                             </button>
-                                        )}
+                                        )} */}
                                     </div>
 
                                     <div className={styles.mapCard}>
