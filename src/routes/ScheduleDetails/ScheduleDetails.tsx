@@ -7,7 +7,7 @@ import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
-import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
+import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, getAppointmentResumes, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import TimerModal from '../../components/Modal/TimerModal/TimerModal';
 import ConcludeAppointmentModal from '../../components/Modal/ConcludeAppointmentModal/ConcludeAppointmentModal';
@@ -21,6 +21,8 @@ import { TypeContext } from '../../App';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
 import { useAiPanel } from '../../hooks/useAiPanel';
 import AiPanel from '../../components/AiPanel/AiPanel';
+import { usePagination } from '../../hooks/usePagination';
+import PaginatedList from '../../components/PaginatedList/PaginatedList';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
@@ -56,6 +58,18 @@ export default function ScheduleDetails() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
     });
+
+    const alunoId = appointment.data?.aluno?.id;
+
+    const { page: resumesPage, goToPage: goToResumesPage, animClass: resumesAnimClass } = usePagination(0);
+
+    const resumos = useQuery({
+        queryKey: ["appointmentResumes", alunoId, resumesPage],
+        queryFn: () => getAppointmentResumes(alunoId!, resumesPage, 1),
+        enabled: !!alunoId,
+    });
+
+    const paginationInfo = resumos.data?.data?.page ?? null;
 
     const [buttonsActionsCondition, setButtonsActionsCondition] = useState<boolean>(false);
     const location = useLocation();
@@ -170,10 +184,7 @@ export default function ScheduleDetails() {
 
     const lastNote = appointment.data?.descricao || '"sla nois quebro o musculo dele"';
 
-    const last3Appointments = appointments.data?.data
-        ?.filter((appt: any) => appt.status === "CONCLUIDO" && appt.id !== appointment.data?.id && (type?.type?.includes("aluno") ? appt.personal.id === appointment.data?.personal.id : appt.aluno.id === appointment.data?.aluno.id))
-        .sort((a: any, b: any) => new Date(b.dataInicio).getTime() - new Date(a.dataInicio).getTime())
-        .slice(0, 3) || [];
+    const last3Appointments: any[] = resumos.data?.data?.content ?? [];
 
     return (
         <>
@@ -253,43 +264,55 @@ export default function ScheduleDetails() {
                                         </div>
                                     </div>
 
-                                    <h2 className={styles.lastSchedulesTitle}>Últimos 3 agendamentos</h2>
-                                    <div className={styles.lastSchedulesList}>
-                                        {appointments.isLoading ? (
-                                            <>
-                                                <Skeleton height={80} borderRadius={8} />
-                                                <Skeleton height={80} borderRadius={8} />
-                                                <Skeleton height={80} borderRadius={8} />
-                                            </>
-                                        ) : last3Appointments.length > 0 ? (
-                                            last3Appointments.map((appt: any, idx: number) => {
-                                                const dateStr = new Date(appt.dataInicio).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                                                const isOnline = appt.tipoAula === "ONLINE";
-                                                const typeClass = isOnline ? styles.badgeOnline : styles.badgePresencial;
+                                    <h2 className={styles.lastSchedulesTitle}>Resumos anteriores (máx. 3)</h2>
+                                    {resumos.isLoading || (!!alunoId && resumos.isFetching && !resumos.data) ? (
+                                        <div className={styles.lastSchedulesList}>
+                                            <Skeleton height={120} borderRadius={8} />
+                                        </div>
+                                    ) : last3Appointments.length > 0 ? (
+                                        <PaginatedList
+                                            key={resumesPage}
+                                            page={resumesPage}
+                                            animClass={resumesAnimClass}
+                                            pagination={paginationInfo}
+                                            includeNavMargin={!isMobile}
+                                            onPageChange={goToResumesPage}
+                                            listClassName={styles.lastSchedulesList}
+                                            alwaysShowPagination
+                                        >
+                                            {last3Appointments.map((item: any, idx: number) => {
+                                                const dateStr = item.agendamento?.data
+                                                    ? new Date(item.agendamento.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                                    : '--';
+                                                const muscles: string[] = item.grupoMuscular ?? [];
                                                 return (
-                                                    <div key={idx} className={styles.lastScheduleCard}>
+                                                    <div key={item.id ?? idx} className={styles.lastScheduleCard}>
                                                         <div className={styles.lastScheduleHeader}>
                                                             <div className={styles.lastScheduleTitleRow}>
                                                                 <div className={styles.lastScheduleCircle}></div>
-                                                                <span className={styles.lastScheduleTitle}>{appt.treino?.nome || "Agendamento"} - {dateStr}</span>
+                                                                <span className={styles.lastScheduleTitle}>{dateStr}</span>
                                                             </div>
-                                                            <span className={classNames(styles.lastScheduleBadge, typeClass)}>
-                                                                {appt.tipoAula}
-                                                            </span>
+                                                            {muscles.length > 0 && (
+                                                                <span className={classNames(styles.lastScheduleBadge, styles.badgePresencial)}>
+                                                                    {muscles.map((m) => m.charAt(0) + m.slice(1).toLowerCase()).join(', ')}
+                                                                </span>
+                                                            )}
                                                         </div>
                                                         <div className={styles.lastScheduleDesc}>
-                                                            {appt.descricao || "Sem observações"}
+                                                            {item.resumo || "Sem observações"}
                                                         </div>
                                                     </div>
                                                 );
-                                            })
-                                        ) : (
+                                            })}
+                                        </PaginatedList>
+                                    ) : (
+                                        <div className={styles.lastSchedulesList}>
                                             <div className={classNames(styles.lastScheduleCard, styles.lastScheduleEmpty)}>
                                                 <CalendarX size={24} className={styles.emptyIcon} />
                                                 <p>Nenhum agendamento anterior encontrado.</p>
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className={styles.infoColumn}>

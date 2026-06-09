@@ -256,7 +256,7 @@ function NoCodeToolInner() {
                   is={EditableSection}
                   canvas
                   className="relative flex flex-col justify-center h-dvh bg-cover bg-center overflow-hidden"
-                  backgroundImage="/Home/bgImageMainRight-3.jpg"
+                  backgroundImage="/Home/bg-1-1-EDIT.jpg"
                 >
                   <div
                     className="absolute inset-0 pointer-events-none"

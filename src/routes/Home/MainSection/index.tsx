@@ -6,7 +6,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
             className={
                 isMobile
                     ? "flex flex-col justify-center p-5"
-                    : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bg-1-1.png')] bg-cover bg-center overflow-hidden"
+                    : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bg-1-1-EDIT.jpg')] bg-cover bg-center overflow-hidden"
             }
         >
                 {/* Overlay azul diagonal — apenas desktop */}
