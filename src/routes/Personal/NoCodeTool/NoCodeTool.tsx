@@ -104,13 +104,6 @@ function NoCodeToolInner() {
     });
   }, [isPreviewMode, actions]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
-        <span className="text-xl">Carregando conteúdo...</span>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">
@@ -219,10 +212,12 @@ function NoCodeToolInner() {
                 console.warn("Background refetch failed after publish:", err);
               });
 
+              setTextModal({ title: "", content: "" });
               resetPublish();
               setOpenModal("success");
             } catch (err: unknown) {
               console.error("[NoCodeTool] publish error:", err);
+              setTextModal({ title: "", content: "" });
               resetPublish();
               setOpenModal("error");
             }
@@ -232,14 +227,20 @@ function NoCodeToolInner() {
 
       {openModal === "success" && (
         <SuccessModal
-          closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
+          closeThen={(() => {
+            setOpenModal(null);
+            setTextModal({ title: "", content: "" });
+          }) as React.Dispatch<React.SetStateAction<boolean>>}
           title={textModal.title || "Página publicada com sucesso!"}
           content={textModal.content || "As modificações foram salvas e estão disponíveis."}
         />
       )}
       {openModal === "error" && (
         <ErrorModal
-          closeThen={(() => setOpenModal(null)) as React.Dispatch<React.SetStateAction<boolean>>}
+          closeThen={(() => {
+            setOpenModal(null);
+            setTextModal({ title: "", content: "" });
+          }) as React.Dispatch<React.SetStateAction<boolean>>}
           title={textModal.title || "Erro ao publicar"}
           content={textModal.content || "Não foi possível salvar as modificações. Tente novamente."}
         />
@@ -256,15 +257,10 @@ function NoCodeToolInner() {
                   is={EditableSection}
                   canvas
                   className="relative flex flex-col justify-center h-dvh bg-cover bg-center overflow-hidden"
-                  backgroundImage="/Home/bgImageMainRight-3.jpg"
+                  backgroundImage="/Home/bg-1-1-EDIT.jpg"
                 >
                   <div
                     className="absolute inset-0 pointer-events-none"
-                    style={{
-                      background: "linear-gradient(165deg, rgba(26, 97, 141, 1) 0%, rgba(6, 14, 25, 1) 69%)",
-                      clipPath: "polygon(0 0, 43.3% 0, 57% 45%, 41% 100%, 0 100%)",
-                      zIndex: 1,
-                    }}
                   />
                   <Element is={Container} canvas className="relative w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20" style={{ zIndex: 2 }}>
                     <Element

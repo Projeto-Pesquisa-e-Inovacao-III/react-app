@@ -67,3 +67,9 @@ export async function findAppointmentById(id: number) {
 export function getPersonalList() {
     return api.get(`/personais`);
 }
+
+export function getAppointmentResumes(alunoId: number, page = 0, size = 3) {
+    return api.get(`/agendamentos/${alunoId}/resumos`, {
+        params: { page, size },
+    });
+}

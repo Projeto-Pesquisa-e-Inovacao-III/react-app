@@ -135,7 +135,7 @@ export default function ConcludeAppointmentModal({ isMobile, closeThen, onSubmit
                         name="resumo"
                         id="resumo"
                         placeholder="Descreva brevemente como foi a aula, desempenho do aluno, etc."
-                        maxLength={500}
+                        maxLength={200}
                         value={resumo}
                         icon={<FileText />}
                         onInputChange={(value: string) => {

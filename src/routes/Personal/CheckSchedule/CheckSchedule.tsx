@@ -14,7 +14,7 @@ import { TypeContext } from "../../../App";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, Sparkles, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -25,6 +25,8 @@ import Skeleton from "react-loading-skeleton";
 import UserAvatar from "../../../components/UserAvatar/UserAvatar";
 import { getScheduleData } from "../../../constants/personal";
 import classNames from "classnames";
+import { useAiPanel } from "../../../hooks/useAiPanel";
+import AiPanel from "../../../components/AiPanel/AiPanel";
 
 type modalTypes = "reschedule" | "accept" | "concludeAppointment" | "conclude" | "decline" | "success" | "registerAbsence" | "error" | null;
 
@@ -38,6 +40,8 @@ export function CheckSchedule() {
     const [appointmentId, setAppointmentId] = useState<number>(0);
 
     const [clickedDate, setClickedDate] = useState<string>("");
+
+    const { aiPanelOpen, setAiPanelOpen, isAiPanelClosing, aiPanelRef, closeAiPanel } = useAiPanel();
 
 
     function handleModal(id: number, type: modalTypes) {
@@ -719,6 +723,20 @@ export function CheckSchedule() {
                                                                 >
                                                                     <CalendarClock className="text-blue-500" />
                                                                 </button>
+{/* 
+                                                                {(type?.includes("personal") || type?.includes("admin")) && (
+                                                                    <button
+                                                                        className={styles.button}
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            setAppointmentId(card.agendamentoId);
+                                                                            setAiPanelOpen(true);
+                                                                        }}
+                                                                        title="Dica do Treinador IA"
+                                                                    >
+                                                                        <Sparkles className="text-blue-400" />
+                                                                    </button>
+                                                                )} */}
                                                             </div>
                                                         </td>
                                                     )}
@@ -866,6 +884,16 @@ export function CheckSchedule() {
                 openModal === "registerAbsence" &&
                 <RegisterAbsenceModal isMobile={isMobile} closeThen={() => setOpenModal(null)} onSubmit={registerAbsenceAppointment} />
             }
+            <AiPanel
+                isOpen={aiPanelOpen}
+                isClosing={isAiPanelClosing}
+                isMobile={isMobile}
+                panelRef={aiPanelRef}
+                onClose={closeAiPanel}
+                onOpen={() => setAiPanelOpen(true)}
+                note={appointment.data?.descricao}
+                analiseIa={appointment.data?.analiseIa}
+            />
         </>
     )
 }

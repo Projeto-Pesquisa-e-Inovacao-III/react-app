@@ -16,7 +16,9 @@ type PaginatedListProps = {
     pagination?: PaginationInfo | null;
     onPageChange: (newPage: number) => void;
     listClassName?: string;
+    includeNavMargin?: boolean;
     buttonDisabledClass?: string;
+    alwaysShowPagination?: boolean;
     children: ReactNode;
 };
 
@@ -26,7 +28,9 @@ export default function PaginatedList({
     pagination,
     onPageChange,
     listClassName = "",
+    includeNavMargin = true,
     buttonDisabledClass = "bg-gray-400! cursor-auto!",
+    alwaysShowPagination = false,
     children,
 }: Readonly<PaginatedListProps>) {
     const isFirst = page === 0;
@@ -60,8 +64,8 @@ export default function PaginatedList({
                 {children}
             </div>
 
-            {pagination && pagination.totalPages > 1 && (
-                <div className={styles.navButtons}>
+            {pagination && (alwaysShowPagination || pagination.totalPages > 1) && (
+                <div className={styles.navButtons} style={{ marginTop: includeNavMargin ? "20px" : "0px" }}>
                     <SmallerButton
                         icon={<ChevronLeft />}
                         classname={`${styles.navButton} ${isFirst ? buttonDisabledClass : ""}`}

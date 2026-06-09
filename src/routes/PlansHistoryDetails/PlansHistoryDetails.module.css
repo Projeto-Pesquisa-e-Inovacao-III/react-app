@@ -5,6 +5,9 @@
     background-color: transparent;
     position: relative;
     animation: fadeIn 0.35s ease;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
 }
 
 @keyframes fadeIn {

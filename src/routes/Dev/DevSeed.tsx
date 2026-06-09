@@ -151,9 +151,9 @@ const steps = [
   },
   {
     label: "Logout",
-    description: "POST /logout",
+    description: "POST /usuarios/logout",
     run: async (_ctx: Record<string, unknown>) => {
-      const res = await api.post("/logout");
+      const res = await api.post("/usuarios/logout");
       return res.data;
     },
   },

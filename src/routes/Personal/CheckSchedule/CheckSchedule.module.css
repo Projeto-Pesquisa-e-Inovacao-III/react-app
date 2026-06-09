@@ -135,11 +135,6 @@
     text-align: right;
 }
 
-.actionsWrapperApprove {
-    justify-content: flex-start !important;
-    gap: 5rem !important;
-}
-
 .actionsWrapper {
     display: flex;
     justify-content: space-between;
@@ -445,5 +440,6 @@
         background-color: #4b5563 !important;
         border-radius: 8px;
     }
+
 
 }

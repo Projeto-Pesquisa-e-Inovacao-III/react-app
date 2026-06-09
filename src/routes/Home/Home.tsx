@@ -12,6 +12,7 @@ import useMobile from "../../hooks/isMobile";
 import NoCodeRenderer from "../../components/NoCodeRenderer/NoCodeRenderer";
 import { getNoCodeContent } from "../../services/noCodeService";
 import { splitNoCodeContent } from "../../utils/splitNoCodeContent";
+import PageLoader from "../../components/PageLoader/PageLoader";
 
 //todo: update images;
 export default function Home() {
@@ -31,7 +32,7 @@ export default function Home() {
         catch { return null; }
     }, [data?.content]);
 
-    if (isLoading) return null;
+    if (isLoading) return <PageLoader />;
 
     return (
         <>
