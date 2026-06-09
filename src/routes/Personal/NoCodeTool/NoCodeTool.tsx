@@ -91,7 +91,7 @@ function NoCodeToolInner() {
 
   const resetPublish = () => setPublish({ isOpen: false, isSaving: false });
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['noCodeContent'],
     queryFn: getNoCodeContent,
     refetchOnWindowFocus: false,
