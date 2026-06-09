@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import PlansCard from "../../../components/Home/PlansCard";
 import { useQuery } from "@tanstack/react-query";
 import { getPackages } from "../../../constants/home";
 import { isAuthenticated } from "../../../constants/user";
 import useEmblaCarousel from "embla-carousel-react";
-import classNames from "classnames";
 
 interface Benefit {
     valor: string;
@@ -22,6 +21,10 @@ interface Package {
 
 export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     const [isPackagesSelected, setIsPackagesSelected] = useState(true);
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [expandedPkgId, setExpandedPkgId] = useState<string | null>(null);
+    const [uniformHeight, setUniformHeight] = useState<number | undefined>(undefined);
+    const containerRef = useRef<HTMLElement>(null);
 
     const packages = useQuery({
         queryKey: ['packages'],
@@ -29,87 +32,167 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
         select: (res) => res.data,
     });
 
-    
-
     const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
     useEffect(() => {
         const checkAuth = async () => {
             const auth = await isAuthenticated();
-            
             setIsUserAuthenticated(auth.data.autentificado);
         };
         checkAuth();
     }, []);
 
     const rawData = Array.isArray(packages.data) ? packages.data : [];
-
     const data = rawData.filter((pkg: Package) => {
         const targetType = isPackagesSelected ? "PACOTE" : "ADICIONAL";
         return pkg.tipoProduto === targetType && pkg.status === "ATIVO";
     });
 
-    const shouldUseCarousel = isMobile ? data?.length > 3 : data?.length > 4;
-
-    const slidesToRender = data;
+    const shouldUseCarousel = isMobile ? data?.length >= 1 : data?.length > 4;
 
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { align: "start", loop: true, skipSnaps: false },
+        { 
+            align: isMobile ? "center" : "start", 
+            loop: false, 
+            skipSnaps: false,
+            containScroll: "trimSnaps"
+        },
         []
     );
 
-    const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
-    const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
+    useEffect(() => {
+        if (!emblaApi) return;
+        emblaApi.reInit({
+            align: isMobile ? "center" : "start",
+            loop: false,
+            skipSnaps: false,
+            containScroll: "trimSnaps"
+        });
+    }, [emblaApi, isMobile]);
 
+    const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+    const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+    const onSelect = useCallback(() => {
+        if (!emblaApi) return;
+        setSelectedIndex(emblaApi.selectedScrollSnap());
+    }, [emblaApi]);
+
+    useEffect(() => {
+        if (!emblaApi) return;
+        emblaApi.on("select", onSelect);
+        onSelect();
+        return () => { emblaApi.off("select", onSelect); };
+    }, [emblaApi, onSelect]);
+
+    useEffect(() => {
+        setExpandedPkgId(null);
+        setUniformHeight(undefined);
+        setSelectedIndex(0);
+        emblaApi?.scrollTo(0, true);
+    }, [isPackagesSelected, emblaApi]);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setUniformHeight(undefined);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    useEffect(() => {
+        document.fonts?.ready?.then(() => {
+            setUniformHeight(undefined);
+        });
+    }, []);
+
+    useLayoutEffect(() => {
+        if (!containerRef.current || !data?.length || expandedPkgId !== null || uniformHeight !== undefined) return;
+        const cards = Array.from(containerRef.current.querySelectorAll('[data-plancard]')) as HTMLElement[];
+        const maxH = Math.max(...cards.map((el) => el.offsetHeight));
+        if (maxH > 0) setUniformHeight(maxH);
+    }, [data, isPackagesSelected, expandedPkgId, isMobile, uniformHeight]);
 
     return (
-        <section id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
+        <section ref={containerRef} id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
             <div className={`${!isMobile ? "ml-20 mr-20" : ""}`}>
                 <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
-                <div className="flex justify-center mt-10  mb-10">
+                <div className="flex justify-center mt-10 mb-10">
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>
-                {/* <div className="grid grid-cols-[repeat(auto-fit,minmax(400px,1fr))] gap-8"> */}
                 <div>
                     {shouldUseCarousel ? (
-                        <div className="flex items-center gap-3 w-full">
-                            <button
-                                onClick={scrollPrev}
-                                className="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-2xl flex items-center justify-center hover:opacity-80 transition"
-                            >
-                                ‹
-                            </button>
+                        <div>
+                            <div className="flex items-center gap-3 w-full">
+                                {!isMobile && (
+                                    <button
+                                        onClick={scrollPrev}
+                                        className="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-2xl flex items-center justify-center hover:opacity-80 transition"
+                                    >
+                                        ‹
+                                    </button>
+                                )}
 
-                            <div className="flex-1 min-w-0 w-0">
-                                <div className="overflow-hidden" ref={emblaRef}>
-                                    <div className="flex">
-                                        {slidesToRender?.map((pkg: Package, i: number) => (
-                                            <div
-                                                key={`slide-${i}-${pkg.id}`}
-                                                className="flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%] box-border px-3"
-                                            >
-                                                <PlansCard
-                                                    description={pkg.periodo}
-                                                    content={pkg.titulo}
-                                                    price={`R$ ${pkg.preco}`}
-                                                    benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
-                                                    isLoggedIn={isUserAuthenticated}
-                                                />
-                                            </div>
-                                        ))}
+                                <div className="flex-1 min-w-0 w-0">
+                                    <div className="overflow-hidden" ref={emblaRef}>
+                                        <div className="flex items-start">
+                                            {data?.map((pkg: Package, i: number) => (
+                                                <div
+                                                    key={`slide-${i}-${pkg.id}`}
+                                                    className={`box-border px-3 ${isMobile ? "flex-[0_0_88%]" : "flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%]"}`}
+                                                >
+                                                    <PlansCard
+                                                        description={pkg.periodo}
+                                                        content={pkg.titulo}
+                                                        price={`R$ ${pkg.preco}`}
+                                                        benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
+                                                        isLoggedIn={isUserAuthenticated}
+                                                        controlledExpanded={expandedPkgId === pkg.id}
+                                                        onToggle={() => setExpandedPkgId(expandedPkgId === pkg.id ? null : pkg.id)}
+                                                        uniformHeight={uniformHeight}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
+
+                                {!isMobile && (
+                                    <button
+                                        onClick={scrollNext}
+                                        className="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-2xl flex items-center justify-center hover:opacity-80 transition"
+                                    >
+                                        ›
+                                    </button>
+                                )}
                             </div>
 
-                            <button
-                                onClick={scrollNext}
-                                className="flex-shrink-0 w-10 h-10 rounded-full bg-white text-black text-2xl flex items-center justify-center hover:opacity-80 transition"
-                            >
-                                ›
-                            </button>
+                            {isMobile && (
+                                <div className="flex justify-center gap-2 mt-5">
+                                    {data?.map((_: Package, i: number) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => emblaApi?.scrollTo(i)}
+                                            style={{
+                                                width: selectedIndex === i ? "20px" : "8px",
+                                                height: "8px",
+                                                borderRadius: "9999px",
+                                                background: selectedIndex === i ? "#ffffff" : "rgba(255,255,255,0.4)",
+                                                border: "none",
+                                                padding: 0,
+                                                cursor: "pointer",
+                                                transition: "all 0.25s ease",
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ) : (
-                        <div className={classNames("", [{ "grid gap-4": !shouldUseCarousel }])} style={!shouldUseCarousel ? { gridTemplateColumns: `repeat(${data?.length}, 1fr)`, alignItems: "flex-start" } : {}}>
+                        <div
+                            className="grid gap-4"
+                            style={{ gridTemplateColumns: `repeat(${data?.length}, 1fr)`, alignItems: "start" }}
+                        >
                             {data?.map((pkg: Package) => (
                                 <div key={pkg.id}>
                                     <PlansCard
@@ -118,6 +201,9 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                         price={`R$ ${pkg.preco}`}
                                         benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
                                         isLoggedIn={isUserAuthenticated}
+                                        controlledExpanded={expandedPkgId === pkg.id}
+                                        onToggle={() => setExpandedPkgId(expandedPkgId === pkg.id ? null : pkg.id)}
+                                        uniformHeight={uniformHeight}
                                     />
                                 </div>
                             ))}
@@ -126,6 +212,6 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                 </div>
 
             </div>
-        </section >
+        </section>
     );
 }
