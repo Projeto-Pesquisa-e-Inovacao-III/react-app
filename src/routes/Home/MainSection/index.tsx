@@ -6,18 +6,13 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
             className={
                 isMobile
                     ? "flex flex-col justify-center p-5"
-                    : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bgImageMainRight-3.jpg')] bg-cover bg-center overflow-hidden"
+                    : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bg-1-1-EDIT.jpg')] bg-cover bg-center overflow-hidden"
             }
         >
                 {/* Overlay azul diagonal — apenas desktop */}
                 {!isMobile && (
                     <div
                         className="absolute inset-0 pointer-events-none"
-                        style={{
-                            background: "linear-gradient(165deg, rgba(26, 97, 141, 1) 0%, rgba(6, 14, 25, 1) 69%)",
-                            clipPath: "polygon(0 0, 43.3% 0, 57% 45%, 41% 100%, 0 100%)",
-                            zIndex: 1,
-                        }}
                     />
                 )}
 

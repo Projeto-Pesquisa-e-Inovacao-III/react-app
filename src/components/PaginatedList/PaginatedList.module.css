@@ -51,7 +51,7 @@
     transition: all 0.2s ease;
 }
 
-.pageButton:hover {
+.pageButton:not(.activePage):hover {
     background-color: #f0f7ff !important;
 }
 

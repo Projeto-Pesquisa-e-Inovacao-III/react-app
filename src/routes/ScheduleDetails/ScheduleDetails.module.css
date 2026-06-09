@@ -1,3 +1,9 @@
+.outerWrapper {
+    display: block;
+    width: 100%;
+}
+
+
 .container {
     background-color: #ffffff;
     position: relative;
@@ -6,7 +12,8 @@
     flex-direction: column;
     justify-content: space-between;
     height: auto;
-    border-radius: 8px;
+    border-radius: 12px;
+    min-width: 0;
 
     -webkit-box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
     box-shadow: 2px 5px 12px -5px rgba(0, 0, 0, 0.77);
@@ -19,7 +26,7 @@
 .container .title {
     font-size: 30px;
     font-weight: 500;
-    padding: 24px 0;
+    padding: 6px 0;
     padding-bottom: 0;
     display: flex;
     align-items: center;
@@ -37,10 +44,8 @@
     font-weight: 500;
 }
 
-
 .container .contentRow {
     padding: 12px 0;
-
 }
 
 .contentDetails {
@@ -68,7 +73,6 @@
 .textWithIcon {
     display: flex;
     gap: 12px;
-
 }
 
 .container span {
@@ -76,12 +80,9 @@
     gap: 10px;
 }
 
-
 .content h2 {
     padding-bottom: 24px;
 }
-
-
 
 .content span,
 .contentRow span {
@@ -94,7 +95,6 @@
     border: none;
     margin: 12px 0;
 }
-
 
 .contentRow .cardDetails {
     display: flex;
@@ -109,21 +109,18 @@
 
 .paymentMethodMobile {
     margin-top: 20px;
-
 }
 
 .cardDetails,
 .paymentMethod,
 .orderDetails {
     min-width: 300px;
-
 }
 
 @media (max-width: 400px) {
     .paymentMethodMobile h2 {
         width: min-content;
     }
-
 
     .cardDetails,
     .paymentMethod,
@@ -312,12 +309,14 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    height: fit-content;
 }
 
 .typeAmbientRow {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr auto;
     gap: 12px;
+    align-items: stretch;
 }
 
 .infoCard {
@@ -343,6 +342,35 @@
 .infoCardValue {
     font-size: 18px;
     font-weight: 500;
+}
+
+.aiTriggerCard {
+    background: none;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    border: 1.5px solid #e0e0e0;
+}
+
+.aiTriggerCard:hover {
+    background: #ccdcff;
+    border-color: var(--bg-blue);
+    transform: scale(1.05);
+}
+
+.aiTriggerCardActive {
+    border-color: var(--bg-blue);
+}
+
+.aiTriggerCardActive .aiTriggerIcon {
+    color: #ffffff;
+}
+
+.aiTriggerIcon {
+    color: var(--bg-blue);
+    transition: color 0.2s;
 }
 
 .mapCard {
@@ -399,6 +427,12 @@
         flex-direction: column;
     }
 
+    .aiTriggerCard {
+        flex-direction: row;
+        min-width: auto;
+        gap: 10px;
+    }
+
     .buttonsGrid {
         grid-template-columns: 1fr;
         flex-direction: column-reverse;
@@ -407,8 +441,8 @@
 
 .dateTimeRow {
     display: flex;
+    flex-direction: column;
     gap: 12px;
-    flex-wrap: wrap;
 }
 
 .bottomRow {
@@ -421,15 +455,20 @@
     .bottomRow {
         grid-template-columns: 1fr;
     }
+
+    .outerWrapperWithPanel {
+        grid-template-columns: 1fr;
+    }
 }
 
 .dateTimeCard {
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #f5f5f5;
+    border: solid 1px #50505050;
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 14px 16px;
+    width: 100%;
 }
 
 .dateTimeLabel {
@@ -462,19 +501,106 @@
     gap: 12px;
 }
 
-.dateTimeRow {
+.lastSchedulesTitle {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.lastSchedulesList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.lastScheduleCard {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.dateTimeCard {
+.lastScheduleHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lastScheduleTitleRow {
     display: flex;
     align-items: center;
-    gap: 10px;
-    background: #f5f5f5;
-    border: solid 1px #50505050;
-    border-radius: 8px;
-    padding: 10px 16px;
-    width: 100%;
+    gap: 8px;
+}
+
+.lastScheduleCircle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: transparent;
+}
+
+.lastScheduleTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.lastScheduleBadge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    background: #e5e7eb;
+    color: #4b5563;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.badgeOnline {
+    background: #e5e7eb !important;
+    color: #4b5563 !important;
+}
+
+.badgePresencial {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+    margin-left: 20px;
+}
+
+.lastScheduleDesc {
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+    margin-left: 20px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.lastScheduleEmpty {
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    gap: 12px;
+    color: #888;
+    background: #fafafa;
+    border: 1px dashed #e0e0e0;
+}
+
+.lastScheduleEmpty p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.emptyIcon {
+    color: #b0b0b0;
 }

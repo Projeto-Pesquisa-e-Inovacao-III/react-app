@@ -539,7 +539,7 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                                     {!isMobile && (
                                         <div className="flex gap-5 mb-2!">
                                             <div className={styles.inputContainer}>
-                                                <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" maxLength={3} value={packageInfo.quantity} onInputChange={(value: string) => {
+                                                <InputWithIcon id="quantity" classNameInput="bg-gray-100! rounded-xl border-none!" icon={<CalendarSync size={50} color='#093a5d' />} label="Quantidade de aulas" type="number" maxLength={2} value={packageInfo.quantity} onInputChange={(value: string) => {
                                                     setPackageInfo({ ...packageInfo, quantity: Number(value) });
                                                     if (value) setFieldErrors(prev => ({ ...prev, quantity: undefined }));
                                                 }} />

@@ -1,0 +1,63 @@
+.lastScheduleCard {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.lastScheduleHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.lastScheduleTitleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lastScheduleCircle {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    background-color: transparent;
+}
+
+.lastScheduleTitle {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.lastScheduleBadge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    background: #e5e7eb;
+    color: #4b5563;
+    max-width: 100%;
+    word-break: break-word;
+}
+
+.badgePresencial {
+    background: #dbeafe !important;
+    color: #1e40af !important;
+}
+
+.lastScheduleDesc {
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+    margin-left: 20px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}

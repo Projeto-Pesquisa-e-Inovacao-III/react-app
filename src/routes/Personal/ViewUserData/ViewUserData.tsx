@@ -7,13 +7,17 @@ import { getById } from "../../../constants/user";
 import { differenceInYears, parse } from "date-fns";
 import Skeleton from "react-loading-skeleton";
 import { getAnamnesisById } from "../../../constants/anamnesis";
-import { Calendar, Mail, Phone, ArrowLeft, Dumbbell } from "lucide-react";
+import { Calendar, Mail, Phone, ArrowLeft, Dumbbell, CalendarX, FileText } from "lucide-react";
 import { useContext } from "react";
 import { TypeContext } from "../../../App";
 import AdminActionsCard from "../../../components/AdminActionsCard/AdminActionsCard";
 import ProfileCard from "../../../components/ProfileCard/ProfileCard";
 import MetricCard from "../../../components/MetricCard/MetricCard";
 import OverviewCardPackageStatus from "../../../components/Overview/OverviewCardPackageStatus/OverviewCardPackageStatus";
+import { getAppointmentResumes } from "../../../constants/schedule";
+import { usePagination } from "../../../hooks/usePagination";
+import PaginatedList from "../../../components/PaginatedList/PaginatedList";
+import SummaryCard from "../../../components/SummaryCard/SummaryCard";
 
 export default function ViewUserData() {
     const isMobile = useMobile();
@@ -55,6 +59,17 @@ export default function ViewUserData() {
     const isSedentario = anamnesis.data?.nivelDeAtividade === "SEDENTARIO";
     const roles: string[] = user.data?.roles || [];
     const nav = useNavigate();
+
+    const { page: resumesPage, goToPage: goToResumesPage, animClass: resumesAnimClass } = usePagination(0);
+
+    const resumos = useQuery({
+        queryKey: ["appointmentResumes", userId, resumesPage],
+        queryFn: () => getAppointmentResumes(Number(userId!), resumesPage, 3),
+        enabled: !!userId && (type?.type?.includes("admin") || type?.type?.includes("personal")),
+    });
+
+    const paginationInfo = resumos.data?.data?.page ?? null;
+    const last3Appointments: any[] = resumos.data?.data?.content ?? [];
 
     function handleBack() {
         nav(-1);
@@ -199,6 +214,53 @@ export default function ViewUserData() {
                                     </div>
                                 </div>
                             </div>
+
+
+                            {(type?.type?.includes("admin") || type?.type?.includes("personal")) && (
+                                <div className={styles.healthCard}>
+                                    <h2 className={styles.sectionTitle}>
+                                        <span className={styles.sectionIconCircle}><FileText size={10} /></span> Resumos anteriores
+                                    </h2>
+                                    {resumos.isLoading || (!!userId && resumos.isFetching && !resumos.data) ? (
+                                        <div className={styles.lastSchedulesList}>
+                                            <Skeleton height={120} borderRadius={8} />
+                                        </div>
+                                    ) : last3Appointments.length > 0 ? (
+                                        <PaginatedList
+                                            key={resumesPage}
+                                            page={resumesPage}
+                                            animClass={resumesAnimClass}
+                                            pagination={paginationInfo}
+                                            includeNavMargin={!isMobile}
+                                            onPageChange={goToResumesPage}
+                                            listClassName={styles.lastSchedulesList}
+                                            alwaysShowPagination
+                                        >
+                                            {last3Appointments.map((item: any, idx: number) => {
+                                                const dateStr = item.agendamento?.data
+                                                    ? new Date(item.agendamento.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                                                    : '--';
+                                                const muscles: string[] = item.grupoMuscular ?? [];
+                                                return (
+                                                    <SummaryCard
+                                                        key={item.id ?? idx}
+                                                        dateStr={dateStr}
+                                                        muscles={muscles}
+                                                        resumo={item.resumo}
+                                                    />
+                                                );
+                                            })}
+                                        </PaginatedList>
+                                    ) : (
+                                        <div className={styles.lastSchedulesList}>
+                                            <div className={styles.lastScheduleEmpty}>
+                                                <CalendarX size={24} className={styles.emptyIcon} />
+                                                <p>Nenhum agendamento anterior encontrado.</p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             {isAdmin && userId && (
                                 <AdminActionsCard

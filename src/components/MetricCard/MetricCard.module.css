@@ -5,6 +5,8 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .metricLabel {
@@ -33,4 +35,7 @@
     font-weight: 600;
     color: #e2e8f0;
     line-height: 1.4;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
 }
