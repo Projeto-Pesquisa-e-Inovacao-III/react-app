@@ -8,7 +8,6 @@ import {
   Pencil,
   Trash2,
   Check,
-  AlertTriangle,
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -20,6 +19,8 @@ import {
 } from "../../services/noCodeService";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import useMobile from "../../hooks/isMobile";
+import TimerModal from "../Modal/TimerModal/TimerModal";
 
 interface HistoryDrawerProps {
   isOpen: boolean;
@@ -37,6 +38,7 @@ export default function HistoryDrawer({
   onDelete,
 }: HistoryDrawerProps) {
   const queryClient = useQueryClient();
+  const isMobile = useMobile();
   const [page, setPage] = useState(0);
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [previewItem, setPreviewItem] = useState<NoCodeResponse | null>(null);
@@ -225,7 +227,6 @@ export default function HistoryDrawer({
               const isHovered = previewItem?.id === item.id;
               const isRenaming = renamingId === item.id;
               const isConfirmingDelete = deleteConfirmId === item.id;
-              const isDeleting = deletingId === item.id;
               console.log(index)
 
               return (
@@ -366,55 +367,13 @@ export default function HistoryDrawer({
                   )}
 
                   {/* Description */}
-                  {item.description && !isConfirmingDelete && (
+                  {item.description && (
                     <span
                       className="text-xs leading-relaxed line-clamp-2"
                       style={{ color: "rgba(255,255,255,0.45)" }}
                     >
                       {item.description}
                     </span>
-                  )}
-
-                  {/* Delete confirmation banner */}
-                  {isConfirmingDelete && (
-                    <div className="flex flex-col gap-2 mt-1">
-                      <div className="flex items-center gap-1.5 text-red-400 text-xs font-medium">
-                        <AlertTriangle size={12} />
-                        Apagar esta versão permanentemente?
-                      </div>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => confirmDelete(item.id)}
-                          disabled={isDeleting}
-                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-all duration-200"
-                          style={{
-                            background: "rgba(239,68,68,0.25)",
-                            color: "#f87171",
-                            border: "1px solid rgba(239,68,68,0.4)",
-                            opacity: isDeleting ? 0.6 : 1,
-                          }}
-                        >
-                          {isDeleting ? (
-                            <RotateCcw size={11} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={11} />
-                          )}
-                          {isDeleting ? "Apagando…" : "Confirmar"}
-                        </button>
-                        <button
-                          onClick={() => setDeleteConfirmId(null)}
-                          disabled={isDeleting}
-                          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg font-semibold transition-all duration-200"
-                          style={{
-                            background: "rgba(255,255,255,0.06)",
-                            color: "rgba(255,255,255,0.6)",
-                            border: "1px solid rgba(255,255,255,0.12)",
-                          }}
-                        >
-                          Cancelar
-                        </button>
-                      </div>
-                    </div>
                   )}
 
                   {/* Restore button — hidden when confirming delete or renaming */}
@@ -470,6 +429,18 @@ export default function HistoryDrawer({
           </div>
         )}
       </div>
+
+      {deleteConfirmId && (
+        <TimerModal
+          isDelete={true}
+          callSuccessModal={(() => confirmDelete(deleteConfirmId)) as React.Dispatch<React.SetStateAction<boolean>>}
+          isMobile={isMobile}
+          closeThen={() => setDeleteConfirmId(null)}
+          title="Excluir Versão"
+          content="Tem certeza de que deseja apagar esta versão permanentemente?"
+          buttonTitle="Apagar"
+        />
+      )}
     </>
   );
 }

@@ -184,7 +184,7 @@ export default function Toolbox({ onPreview, onError }: { onPreview: () => void,
                     {selected.displayName === 'Texto' && (
                       <>
                         <TextareaInput label="Conteúdo do Texto" value={selected.props.text ?? ''} onChange={(v) => setProp('text', v)} />
-                        <SelectInput
+                        {/* <SelectInput
                           label="Tag HTML"
                           value={selected.props.tag ?? 'p'}
                           onChange={(v) => setProp('tag', v)}
@@ -194,6 +194,25 @@ export default function Toolbox({ onPreview, onError }: { onPreview: () => void,
                             { value: 'h3', label: 'Título 3 (H3)' },
                             { value: 'p', label: 'Parágrafo (P)' },
                             { value: 'span', label: 'Texto Simples (SPAN)' },
+                          ]}
+                        /> */}
+                        <SelectInput
+                          label="Tamanho da fonte"
+                          value={selected.props.fontSize ?? ''}
+                          onChange={(v) => setProp('fontSize', v)}
+                          options={[
+                            { value: '', label: 'Padrão' },
+                            { value: '12px', label: 'Muito Pequeno (12px)' },
+                            { value: '14px', label: 'Pequeno (14px)' },
+                            { value: '16px', label: 'Normal (16px)' },
+                            { value: '20px', label: 'Médio (20px)' },
+                            { value: '24px', label: 'Grande (24px)' },
+                            { value: '32px', label: 'Extra Grande (32px)' },
+                            { value: '48px', label: 'Gigante (48px)' },
+                            { value: '64px', label: 'Titânico (64px)' },
+                            { value: '80px', label: 'Colossal (80px)' },
+                            { value: '96px', label: 'Gargantuesco (96px)' },
+                            { value: '128px', label: 'Astronômico (128px)' },
                           ]}
                         />
                         {/* <ColorInput label="Cor do Texto" value={selected.props.color ?? ''} onChange={(v) => setProp('color', v)} /> */}

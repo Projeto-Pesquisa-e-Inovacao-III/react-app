@@ -5,7 +5,7 @@ import useMobile from '../../hooks/isMobile';
 import { Ban, Building2, CalendarClock, CalendarDays, CalendarX, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, UserX, X } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 import RegisterAbsenceModal from '../../components/Modal/RegisterAbsenceModal/RegisterAbsenceModal';
 import { acceptUserAppointment, appointmentAtCalendar, concludeAppointment, findAppointmentById, getAppointmentResumes, refuseAppointment, reportAbsencePersonal } from '../../constants/schedule';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -23,6 +23,7 @@ import { useAiPanel } from '../../hooks/useAiPanel';
 import AiPanel from '../../components/AiPanel/AiPanel';
 import { usePagination } from '../../hooks/usePagination';
 import PaginatedList from '../../components/PaginatedList/PaginatedList';
+import SummaryCard from '../../components/SummaryCard/SummaryCard';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
 
@@ -46,13 +47,27 @@ export default function ScheduleDetails() {
     const queryClient = useQueryClient();
     const type = useContext(TypeContext);
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
 
     const appointment = useQuery({
         queryKey: ['appointmentDetails'],
         queryFn: () => findAppointmentById(Number(searchParams.get('id'))),
         enabled: !!searchParams.get('id'),
         select: (res) => res.data,
+        retry: (failureCount, error: any) => {
+            if (error?.response?.status === 400) return false;
+            return failureCount < 3;
+        }
     });
+
+    useEffect(() => {
+        if (appointment.isError) {
+            const error = appointment.error as any;
+            if (error?.response?.status === 400 || error?.response?.status === 404) {
+                navigate('/home');
+            }
+        }
+    }, [appointment.isError, appointment.error, navigate]);
 
     const appointments = useQuery({
         queryKey: ["appointmentsAtCalendar"],
@@ -264,7 +279,9 @@ export default function ScheduleDetails() {
                                         </div>
                                     </div>
 
-                                    <h2 className={styles.lastSchedulesTitle}>Resumos anteriores (máx. 3)</h2>
+                                    {(type?.type?.includes("admin") || type?.type?.includes("personal")) && (
+                                        <>
+                                            <h2 className={styles.lastSchedulesTitle}>Resumos anteriores (máx. 3)</h2>
                                     {resumos.isLoading || (!!alunoId && resumos.isFetching && !resumos.data) ? (
                                         <div className={styles.lastSchedulesList}>
                                             <Skeleton height={120} borderRadius={8} />
@@ -286,22 +303,12 @@ export default function ScheduleDetails() {
                                                     : '--';
                                                 const muscles: string[] = item.grupoMuscular ?? [];
                                                 return (
-                                                    <div key={item.id ?? idx} className={styles.lastScheduleCard}>
-                                                        <div className={styles.lastScheduleHeader}>
-                                                            <div className={styles.lastScheduleTitleRow}>
-                                                                <div className={styles.lastScheduleCircle}></div>
-                                                                <span className={styles.lastScheduleTitle}>{dateStr}</span>
-                                                            </div>
-                                                            {muscles.length > 0 && (
-                                                                <span className={classNames(styles.lastScheduleBadge, styles.badgePresencial)}>
-                                                                    {muscles.map((m) => m.charAt(0) + m.slice(1).toLowerCase()).join(', ')}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                        <div className={styles.lastScheduleDesc}>
-                                                            {item.resumo || "Sem observações"}
-                                                        </div>
-                                                    </div>
+                                                    <SummaryCard
+                                                        key={item.id ?? idx}
+                                                        dateStr={dateStr}
+                                                        muscles={muscles}
+                                                        resumo={item.resumo}
+                                                    />
                                                 );
                                             })}
                                         </PaginatedList>
@@ -312,6 +319,8 @@ export default function ScheduleDetails() {
                                                 <p>Nenhum agendamento anterior encontrado.</p>
                                             </div>
                                         </div>
+                                    )}
+                                        </>
                                     )}
                                 </div>
 
