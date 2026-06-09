@@ -38,7 +38,6 @@ export default function HistoryDrawer({
   onDelete,
 }: HistoryDrawerProps) {
   const queryClient = useQueryClient();
-  const isMobile = useMobile();
   const [page, setPage] = useState(0);
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [previewItem, setPreviewItem] = useState<NoCodeResponse | null>(null);
@@ -434,7 +433,7 @@ export default function HistoryDrawer({
         <TimerModal
           isDelete={true}
           callSuccessModal={(() => confirmDelete(deleteConfirmId)) as React.Dispatch<React.SetStateAction<boolean>>}
-          isMobile={isMobile}
+          isMobile={false}
           closeThen={() => setDeleteConfirmId(null)}
           title="Excluir Versão"
           content="Tem certeza de que deseja apagar esta versão permanentemente?"

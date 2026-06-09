@@ -723,7 +723,7 @@ export function CheckSchedule() {
                                                                 >
                                                                     <CalendarClock className="text-blue-500" />
                                                                 </button>
-
+{/* 
                                                                 {(type?.includes("personal") || type?.includes("admin")) && (
                                                                     <button
                                                                         className={styles.button}
@@ -736,7 +736,7 @@ export function CheckSchedule() {
                                                                     >
                                                                         <Sparkles className="text-blue-400" />
                                                                     </button>
-                                                                )}
+                                                                )} */}
                                                             </div>
                                                         </td>
                                                     )}

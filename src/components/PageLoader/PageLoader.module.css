@@ -4,7 +4,7 @@
     align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: #f8fafc;
+    background-color: var(--bg-blue);
     position: fixed;
     top: 0;
     left: 0;
@@ -12,7 +12,7 @@
 }
 
 .skeletonIcon {
-    color: #2e5580;
+    color: #c9c9c9;
     animation: skeletonPulse 1.5s ease-in-out infinite;
 }
 

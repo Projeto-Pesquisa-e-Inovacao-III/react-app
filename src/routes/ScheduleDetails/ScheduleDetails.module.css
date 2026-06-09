@@ -573,6 +573,7 @@
 .badgePresencial {
     background: #dbeafe !important;
     color: #1e40af !important;
+    margin-left: 20px;
 }
 
 .lastScheduleDesc {

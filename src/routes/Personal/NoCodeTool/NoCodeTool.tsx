@@ -104,13 +104,6 @@ function NoCodeToolInner() {
     });
   }, [isPreviewMode, actions]);
 
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#051128] text-white flex-col gap-3">
-        <span className="text-xl">Carregando conteúdo...</span>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">

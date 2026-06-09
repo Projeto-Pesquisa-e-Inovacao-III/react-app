@@ -21,8 +21,7 @@ import { TypeContext } from '../../App';
 import UserAvatar from '../../components/UserAvatar/UserAvatar';
 import { useAiPanel } from '../../hooks/useAiPanel';
 import AiPanel from '../../components/AiPanel/AiPanel';
-import { usePagination } from '../../hooks/usePagination';
-import PaginatedList from '../../components/PaginatedList/PaginatedList';
+
 import SummaryCard from '../../components/SummaryCard/SummaryCard';
 
 type modalTypes = "reschedule" | "accept" | "conclude" | "decline" | "success" | "registerAbsence" | "cancel" | "error" | null;
@@ -76,15 +75,13 @@ export default function ScheduleDetails() {
 
     const alunoId = appointment.data?.aluno?.id;
 
-    const { page: resumesPage, goToPage: goToResumesPage, animClass: resumesAnimClass } = usePagination(0);
-
     const resumos = useQuery({
-        queryKey: ["appointmentResumes", alunoId, resumesPage],
-        queryFn: () => getAppointmentResumes(alunoId!, resumesPage, 1),
+        queryKey: ["appointmentResumes", alunoId],
+        queryFn: () => getAppointmentResumes(alunoId!, 0, 3),
         enabled: !!alunoId,
     });
 
-    const paginationInfo = resumos.data?.data?.page ?? null;
+    const last3Appointments: any[] = resumos.data?.data?.content ?? [];
 
     const [buttonsActionsCondition, setButtonsActionsCondition] = useState<boolean>(false);
     const location = useLocation();
@@ -159,6 +156,7 @@ export default function ScheduleDetails() {
         try {
             await concludeAppointment(id, data);
             await handleActionSuccess("Agendamento Concluído", "O agendamento foi concluído com sucesso.");
+            await queryClient.invalidateQueries({ queryKey: ['appointmentResumes'] });
         } catch (error) { console.error("Erro ao concluir o agendamento:", error); }
     }
 
@@ -198,8 +196,6 @@ export default function ScheduleDetails() {
     }
 
     const lastNote = appointment.data?.descricao || '"sla nois quebro o musculo dele"';
-
-    const last3Appointments: any[] = resumos.data?.data?.content ?? [];
 
     return (
         <>
@@ -281,22 +277,13 @@ export default function ScheduleDetails() {
 
                                     {(type?.type?.includes("admin") || type?.type?.includes("personal")) && (
                                         <>
-                                            <h2 className={styles.lastSchedulesTitle}>Resumos anteriores (máx. 3)</h2>
+                                            <h2 className={styles.lastSchedulesTitle}>Resumos anteriores</h2>
                                     {resumos.isLoading || (!!alunoId && resumos.isFetching && !resumos.data) ? (
                                         <div className={styles.lastSchedulesList}>
                                             <Skeleton height={120} borderRadius={8} />
                                         </div>
                                     ) : last3Appointments.length > 0 ? (
-                                        <PaginatedList
-                                            key={resumesPage}
-                                            page={resumesPage}
-                                            animClass={resumesAnimClass}
-                                            pagination={paginationInfo}
-                                            includeNavMargin={!isMobile}
-                                            onPageChange={goToResumesPage}
-                                            listClassName={styles.lastSchedulesList}
-                                            alwaysShowPagination
-                                        >
+                                        <div className={styles.lastSchedulesList}>
                                             {last3Appointments.map((item: any, idx: number) => {
                                                 const dateStr = item.agendamento?.data
                                                     ? new Date(item.agendamento.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
@@ -311,7 +298,7 @@ export default function ScheduleDetails() {
                                                     />
                                                 );
                                             })}
-                                        </PaginatedList>
+                                        </div>
                                     ) : (
                                         <div className={styles.lastSchedulesList}>
                                             <div className={classNames(styles.lastScheduleCard, styles.lastScheduleEmpty)}>
