@@ -19,7 +19,6 @@ import {
 } from "../../services/noCodeService";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import useMobile from "../../hooks/isMobile";
 import TimerModal from "../Modal/TimerModal/TimerModal";
 
 interface HistoryDrawerProps {
