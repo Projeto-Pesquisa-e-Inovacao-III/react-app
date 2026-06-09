@@ -30,7 +30,7 @@ export default function AiPanel({
     isMobile,
     panelRef,
     onClose,
-    onOpen,
+    // onOpen,
     note,
     analiseIa,
 }: AiPanelProps) {

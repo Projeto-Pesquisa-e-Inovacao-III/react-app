@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import GoBackButton from '../../components/GoBackButton/GoBackButton';
 import styles from './ScheduleDetails.module.css';
 import useMobile from '../../hooks/isMobile';
-import { Ban, Building2, CalendarClock, CalendarDays, CalendarX, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, Sparkles, UserX, X } from 'lucide-react';
+import { Ban, Building2, CalendarClock, CalendarDays, CalendarX, Check, ClipboardCheck, Clock, MapPin, MessageSquare, Navigation, UserX, X } from 'lucide-react';
 import Button from '../../components/Button/Button';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -427,12 +427,12 @@ export default function ScheduleDetails() {
 
             {openModal === "accept" && <TimerModal callSuccessModal={() => acceptAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Aceitar Agendamento" content="Tem certeza que deseja aceitar o agendamento?" buttonTitle="Aceitar agendamento" />}
             {openModal === "conclude" && (
-                    <ConcludeAppointmentModal
-                        isMobile={isMobile}
-                        closeThen={() => setOpenModal(null)}
-                        onSubmit={(data) => handleConcludeAppointment(appointmentId, data)}
-                    />
-                )}
+                <ConcludeAppointmentModal
+                    isMobile={isMobile}
+                    closeThen={() => setOpenModal(null)}
+                    onSubmit={(data) => handleConcludeAppointment(appointmentId, data)}
+                />
+            )}
             {openModal === "decline" && <TimerModal callSuccessModal={() => declineAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Recusar agendamento" content="Tem certeza que deseja Recusar o agendamento?" buttonTitle="Recusar agendamento" isDelete={true} />}
             {openModal === "cancel" && <TimerModal callSuccessModal={() => cancelAppointment(appointmentId)} isMobile={isMobile} closeThen={() => setOpenModal(null)} title="Cancelar agendamento" content="Tem certeza que deseja Cancelar o agendamento?" buttonTitle="Cancelar agendamento" isDelete={true} />}
             {openModal === "success" && <SuccessModal isMobile={isMobile} closeThen={() => setOpenModal(null)} title={successModalInfo?.title} content={successModalInfo?.content} />}
