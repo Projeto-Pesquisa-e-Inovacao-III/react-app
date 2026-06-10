@@ -57,6 +57,20 @@ function extractAddressFields(address: Address) {
   };
 }
 
+const TIPO_LEGACY_MAP: Record<string, string> = {
+  "Presencial": "PRESENCIAL",
+  "Academia": "PRESENCIAL",
+  "ACADEMIA": "PRESENCIAL",
+  "Casa": "RESIDENCIAL",
+  "Residencial": "RESIDENCIAL",
+  "Parque/Academia": "FUNCIONAL",
+  "Funcional": "FUNCIONAL",
+};
+
+function normalizeTipo(tipo: string): string {
+  return TIPO_LEGACY_MAP[tipo] ?? tipo;
+}
+
 function getAddressIcon(tipo: string) {
   const lower = (tipo ?? "").toLowerCase();
   if (lower.includes("trabalho") || lower.includes("work")) return <Briefcase size={18} />;
@@ -128,7 +142,7 @@ export default function AddressManagement() {
     setEditingAddress(address);
     const { logradouro, bairro, cidade, estado, cepId } = extractAddressFields(address);
     setForm({
-      tipo: address.tipo || "",
+      tipo: normalizeTipo(address.tipo || ""),
       cep: cepId,
       logradouro,
       numero: address.numero || "",

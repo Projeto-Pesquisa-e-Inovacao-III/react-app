@@ -27,7 +27,11 @@ export default function RowWithHeaderTitle(props: RowWithHeaderTitleProps) {
             {dataToRender.map((plan, index: number) => (
                 <div 
                 key={props.isLoading ? `skeleton-${index}` : `${(plan as RowItem)?.headerTitle}-${index}`} 
-                className={classNames(styles.rowCard, {[styles.typeClassPresencial]: (plan as RowItem)?.title === 'PRESENCIAL'})}>
+                className={classNames(styles.rowCard, {
+                    [styles.typeClassPresencial]: (plan as RowItem)?.title === 'PRESENCIAL',
+                    [styles.typeClassResidencial]: (plan as RowItem)?.title === 'RESIDENCIAL',
+                    [styles.typeClassFuncional]: (plan as RowItem)?.title === 'FUNCIONAL'
+                })}>
                     <div className={classNames(styles.rowHeader)}>
                         <p>
                             {props.isLoading ? (

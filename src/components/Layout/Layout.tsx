@@ -87,7 +87,7 @@ export default function Layout() {
 
     useEffect(() => {
         if (isLoggedIn.data?.autentificado) {
-            const backendType = isLoggedIn.data.user.roles;
+            const backendType = isLoggedIn.data.user?.roles || [];
             setType(backendType.map((item: string) => item.toLowerCase()));
         }
     }, [isLoggedIn.data]);

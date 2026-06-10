@@ -75,13 +75,13 @@ export default function Login() {
       navToAnamnesis();
 
     } catch (err) {
-      
+
     }
 
   }, [nav]);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit(e?: React.FormEvent | React.KeyboardEvent | KeyboardEvent) {
+    e?.preventDefault();
     setLoading(true);
 
     try {
@@ -113,15 +113,17 @@ export default function Login() {
   }
 
   useEffect(() => {
+    if (!import.meta.env.DEV) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "[") {
-        
-        handleAutoFill("EdsonArantes@email.com", "fmc123456");
+        handleAutoFill();
       }
+
       if (e.key === "]") {
-        
-        handleAutoFill("rodolfo.abrantes@personal.com", "fmc123456");
+        handleAutoFill3();
       }
+
+
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -142,16 +144,20 @@ export default function Login() {
             <div className={styles.welcomeMessage}>
               <h1>Bem-vindo</h1>
             </div>
-            <form onSubmit={handleSubmit}>
-              <button className={styles.btnAutoFill} onClick={() => handleAutoFill("joao.silva@example.com", "123456789aA!")}>
-                AUTO PREENCHER
-              </button>
-              <button className={styles.btnAutoFill} onClick={handleAutoFill2}>
-                AUTO PREENCHER 2
-              </button>
-              <button className={styles.btnAutoFill} onClick={handleAutoFill3}>
-                AUTO PREENCHER DONO
-              </button>
+            <form onSubmit={handleSubmit} onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(e) }}>
+              {import.meta.env.DEV && (
+                <>
+                  <button type="button" className={styles.btnAutoFill} onClick={() => handleAutoFill("joao.silva@example.com", "123456789aA!")}>
+                    AUTO PREENCHER
+                  </button>
+                  <button type="button" className={styles.btnAutoFill} onClick={handleAutoFill2}>
+                    AUTO PREENCHER 2
+                  </button>
+                  <button type="button" className={styles.btnAutoFill} onClick={handleAutoFill3}>
+                    AUTO PREENCHER DONO
+                  </button>
+                </>
+              )}
               <div className={styles.wrapperInputsLoginPage}>
                 <InputWithIcon value={loginInfo.email} type={"email"} placeholder={"seu@email.com"} onInputChange={(email: string) => setLoginInfo({ ...loginInfo, email })} icon={<Mail />} />
                 <InputWithIcon value={loginInfo.password} type={"password"} isPassword={true} placeholder={"Sua senha"} onInputChange={(password: string) => setLoginInfo({ ...loginInfo, password })} icon={<Lock />} />
@@ -159,14 +165,16 @@ export default function Login() {
               {/*todo: temp!!!! */}
               <input hidden type="text" onKeyDown={(e) => {
                 if (e.key === "[") {
-                  handleAutoFill("EdsonArantes@email.com", "fmc123456");
+                  handleAutoFill();
                 }
 
                 if (e.key === "]") {
-                  handleAutoFill("EdsonArantes@email.com", "fmc123456");
+                  handleAutoFill3();
                 }
 
               }} />
+
+
               <div className={styles.configLogin}>
                 <Link to="/forgot-password">Esqueceu sua senha?</Link>
               </div>
