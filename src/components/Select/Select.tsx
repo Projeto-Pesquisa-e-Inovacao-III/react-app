@@ -70,6 +70,13 @@ export default function Select({ id, openSelectId, setOpenSelectId, onSelectStat
     }
   }, [defaultValue]);
 
+  useEffect(() => {
+    if (selectStatusValue !== undefined) {
+      const option = values?.find(opt => opt.value === selectStatusValue);
+      setSelectValue({ icon: option?.icon, text: option?.label || "" });
+    }
+  }, [selectStatusValue, values]);
+
   return (
     <div className={containerClassName}>
       {label && <span className={`${styles.label} ${labelClassName || ""}`} onClick={() => setOpenSelectId(isOpen ? null : id)}>{label}</span>}
