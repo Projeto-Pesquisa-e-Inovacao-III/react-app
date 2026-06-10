@@ -17,6 +17,7 @@ import useModal from "../../../hooks/useModal";
 import HistoryDrawer from "../../../components/NoCodeToolsComponents/HistoryDrawer";
 import EditableAccordion from "../../../components/NoCodeToolsComponents/EditableAccordion";
 import { BASE_URL } from "../../../system";
+import PageLoader from "../../../components/PageLoader/PageLoader";
 
 function base64ToFile(base64: string, filename: string): File {
   const arr = base64.split(',');
@@ -91,7 +92,7 @@ function NoCodeToolInner() {
 
   const resetPublish = () => setPublish({ isOpen: false, isSaving: false });
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['noCodeContent'],
     queryFn: getNoCodeContent,
     refetchOnWindowFocus: false,
@@ -104,6 +105,7 @@ function NoCodeToolInner() {
     });
   }, [isPreviewMode, actions]);
 
+  if (isLoading) return <PageLoader />;
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-[#051128]">
