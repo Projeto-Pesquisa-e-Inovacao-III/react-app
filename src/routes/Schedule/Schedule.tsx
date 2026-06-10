@@ -110,6 +110,7 @@ export default function Schedule() {
             handleSuccessModalInfo("Agendamento cancelado", "O agendamento foi cancelado com sucesso.");
             queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
+            queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointmentsMobile'] });
         }).catch((error) => {
             console.error("Erro ao cancelar o agendamento:", error);
             handleErrorModalInfo("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
@@ -195,6 +196,7 @@ export default function Schedule() {
             handleSuccessModalInfo("Agendamento Aceito", "O agendamento foi aceito com sucesso.");
             await queryClient.invalidateQueries({ queryKey: ['appointmentDetails'] });
             await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
+            await queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointmentsMobile'] });
             await queryClient.invalidateQueries({ queryKey: ['appointmentsAtCalendar'] });
             await queryClient.invalidateQueries({ queryKey: ['userAppointments'] });
         }).catch((error) => {
@@ -307,10 +309,11 @@ export default function Schedule() {
                                                 isMobile={isMobile}
                                             />
                                         </div>
-                                        <div ref={loadMoreRef} />
                                     </div>
                                 );
                             })}
+                            
+                            {appointmentsUser.length > 0 && <div ref={loadMoreRef} style={{ height: "1px" }} />}
 
                             {/* agendamentoId	1
 agendamentoStatus	"APROVADO"

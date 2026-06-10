@@ -91,8 +91,8 @@ export function CheckSchedule() {
         loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointmentsMobile", filterStatus, filterTypeClass, studentName, selectedDateRange.start, selectedDateRange.end, linesPerPageValue],
-        queryFn: () => findPersonalRequests(
-            page,
+        queryFn: (pageParam) => findPersonalRequests(
+            pageParam,
             linesPerPageValue,
             selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
             selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
@@ -152,9 +152,9 @@ export function CheckSchedule() {
 
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-        await queryClient.refetchQueries({ queryKey: ["personal-requests"] });
-        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointments"] });
-        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
+        await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         await queryClient.invalidateQueries({ queryKey: ["dataKpi"] });
 
@@ -417,14 +417,11 @@ export function CheckSchedule() {
                                 }
                             </div>
                         ) : (
-                            (appointmentsList ?? []).map((card) => (
+                            <>
+                                {(appointmentsList ?? []).map((card) => (
 
-                                <Link className={styles.link} to={`/schedule-details?id=${card.agendamentoId}`}>
-                                    <div className={styles.mobileCardWrapper}
-                                        key={card.agendamentoId}
-                                        ref={loadMoreRef}
-
-                                    >
+                                <Link className={styles.link} to={`/schedule-details?id=${card.agendamentoId}`} key={card.agendamentoId}>
+                                    <div className={styles.mobileCardWrapper}>
                                         <div className={styles.mobileCard}>
 
                                             <div className={styles.mobileCardHeader}
@@ -579,8 +576,9 @@ export function CheckSchedule() {
 
                                     </div>
                                 </Link>
-                            ))
-
+                            ))}
+                            <div ref={loadMoreRef} style={{ height: "1px" }} />
+                            </>
                         )}
                     </>
                 )}
