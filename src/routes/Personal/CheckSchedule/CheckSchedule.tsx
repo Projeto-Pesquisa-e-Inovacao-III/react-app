@@ -12,7 +12,7 @@ import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
