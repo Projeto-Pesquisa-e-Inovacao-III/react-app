@@ -12,7 +12,7 @@ import NewEvent from "../../../components/Modal/NewEvent/NewEvent";
 import ErrorModal from "../../../components/Modal/ErrorModal/ErrorModal";
 import { TypeContext } from "../../../App";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { endOfDay, format, isAfter, parseISO, startOfDay } from "date-fns";
+import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
 import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
@@ -541,7 +541,7 @@ export function CheckSchedule() {
                                                     </>
                                                 )}
 
-                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && startOfDay(new Date()) >= startOfDay(parseISO(card.dataInicio)) && (
                                                     <>
                                                         <button
                                                             className={styles.button}
@@ -741,7 +741,7 @@ export function CheckSchedule() {
                                                         </td>
                                                     )}
 
-                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && startOfDay(new Date()) >= startOfDay(parseISO(card.dataInicio)) && (
                                                         <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
                                                             <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
                                                                 <button
