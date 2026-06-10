@@ -103,6 +103,10 @@ export function CheckSchedule() {
         enable: isMobile,
     });
 
+    useEffect(() => {
+        handlePaginationChange(0);
+    }, [selectedDateRange.start, selectedDateRange.end, filterStatus, filterTypeClass, studentName]);
+
     const { data: userRescheduleAppointments, isLoading: isLoadingAppointments } =
         useQuery<PaginatedResponse<CheckSchedule>>({
             queryKey: ["userRescheduleAppointments", linesPerPageValue, page, selectedDateRange.end, filterStatus, filterTypeClass, studentName],
@@ -723,7 +727,7 @@ export function CheckSchedule() {
                                                                 >
                                                                     <CalendarClock className="text-blue-500" />
                                                                 </button>
-{/* 
+                                                                {/* 
                                                                 {(type?.includes("personal") || type?.includes("admin")) && (
                                                                     <button
                                                                         className={styles.button}

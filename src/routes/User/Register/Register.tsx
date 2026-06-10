@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"; // Removi useReducer
+import { useState, useMemo, useEffect } from "react"; // Removi useReducer
 import { Lock, Mail, Phone, User, IdCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import * as userService from "../../../constants/user";
@@ -188,6 +188,19 @@ export default function Register() {
                 setLoading(false);
             });
     }
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "[") {
+                handleAutoFill2();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
 
     return (
         <>
@@ -389,6 +402,12 @@ export default function Register() {
                             )}
 
                             <Button typeButton="other" type="submit" title="Criar conta →" loading={loading} classNameVariable={styles.btnCad} disabled={!isFormValid} />
+
+                            <input hidden type="text" onKeyDown={(e) => {
+                                if (e.key === "[") {
+                                    handleAutoFill2();
+                                }
+                            }} />
                         </form>
 
                         <span className={styles.loginLink}>
