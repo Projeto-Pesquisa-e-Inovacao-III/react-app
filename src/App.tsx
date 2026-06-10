@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import 'react-loading-skeleton/dist/skeleton.css';
 import { useState, createContext, lazy, Suspense } from "react";
 import Layout from "./components/Layout/Layout";
 import { PrivateRoute } from "./components/Layout/PrivateRoute";

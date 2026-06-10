@@ -75,7 +75,7 @@ export default function NewEvent({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
         type: "PRESENCIAL",
-        location: "ACADEMIA"
+        location: "PRESENCIAL"
     });
 
     useEffect(() => {
@@ -281,7 +281,7 @@ export default function NewEvent({
         const validLocationOptions = LOCATION_OPTIONS[form.type] || [];
         const finalLocation = validLocationOptions.some(opt => opt.value === form.location)
             ? form.location
-            : (validLocationOptions[0]?.value || "ACADEMIA");
+            : (validLocationOptions[0]?.value || "PRESENCIAL");
 
         const payload: Schedule = {
             data: `${form.date}T${form.startHour}`,

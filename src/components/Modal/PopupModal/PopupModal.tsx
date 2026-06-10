@@ -13,7 +13,6 @@ import { ptBR } from "date-fns/locale";
 import useMobile from "../../../hooks/isMobile";
 import { Calendar, X } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css';
 import useModal, { type modalTypes } from "../../../hooks/useModal";
 import TimerModal from "../TimerModal/TimerModal";
 import SuccessModal from "../SuccessModal/SuccessModal";

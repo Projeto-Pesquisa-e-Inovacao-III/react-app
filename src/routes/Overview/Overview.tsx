@@ -312,13 +312,13 @@ export function Overview() {
         refetchOnWindowFocus: false,
     })
 
-    const isTypeLoading = type?.type === undefined;
+    const isTypeLoading = type?.type === undefined || type?.type === null;
 
     const isLoadingCalendar =
         isTypeLoading ||
-            appointments.isPending ||
-            type?.type?.includes("aluno") ? personalList.isPending : personalId.isPending ||
-        isLoadingDisabledDays
+        appointments.isPending ||
+        (type?.type?.includes("aluno") ? personalList.isPending : personalId.isPending) ||
+        isLoadingDisabledDays;
 
 
 

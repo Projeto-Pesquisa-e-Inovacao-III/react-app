@@ -59,7 +59,7 @@ const steps = [
         status: "ATIVO",
         tipoProduto: "ADICIONAL",
         tipoAula: "FUNCIONAL",
-        quantidadeAula: 4,
+        quantidadeAula: 12,
         periodo: "1 mês",
         duracaoMes: 1,
       });
@@ -83,7 +83,7 @@ const steps = [
         status: "ATIVO",
         tipoProduto: "ADICIONAL",
         tipoAula: "RESIDENCIAL",
-        quantidadeAula: 4,
+        quantidadeAula: 12,
         periodo: "1 mês",
         duracaoMes: 1,
       });
