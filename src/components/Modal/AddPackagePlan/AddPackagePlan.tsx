@@ -287,8 +287,8 @@ export default function AddPackagePlan({ onClose, title, packageValues, packageC
                 })} ref={packageCard}>
 
 
-                    {!isMobile && (
-                        <button onClick={handleAutoFill} className="border-2 absolute!">Auto Preencher</button>
+                    {!isMobile && import.meta.env.DEV && (
+                        <button type="button" onClick={handleAutoFill} className="border-2 absolute!">Auto Preencher</button>
                     )}
 
                     <div className={styles.formContainer}>

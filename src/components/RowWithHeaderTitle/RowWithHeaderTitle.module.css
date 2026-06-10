@@ -2,6 +2,15 @@
     border-left: 8px solid var(--bg-blue) !important;
 }
 
+.typeClassResidencial {
+    border-left: 8px solid var(--bg-orange) !important;
+}
+
+.typeClassFuncional {
+    border-left: 8px solid var(--carol) !important;
+}
+
+
 .rowCard {
     border: 1px solid #eee;
     background-color: #fff;

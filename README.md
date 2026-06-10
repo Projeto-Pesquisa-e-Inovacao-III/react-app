@@ -55,13 +55,7 @@ O **CSF Treinamentos** é uma aplicação web projetada para centralizar a gest�
    yarn install
    ```
 
-3. **Configuração de Variáveis de Ambiente:**
-   Crie um arquivo `.env` na raiz do projeto com base no `.env.example`:
-   ```env
-   VITE_BASE_URL="URL_DA_SUA_API"
-   ```
-
-4. **Inicie o servidor de desenvolvimento:**
+3. **Inicie o servidor de desenvolvimento:**
    ```bash
    npm run dev
    # ou

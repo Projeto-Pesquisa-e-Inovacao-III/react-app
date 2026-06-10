@@ -205,10 +205,12 @@ export default function Register() {
                             <p>Preencha os dados abaixo e comece sua jornada conosco.</p>
                         </div>
 
-                        <div className="flex gap-2">
-                            <button className="border" onClick={handleAutoFill}>Auto Preencher 1</button>
-                            <button className="border" onClick={handleAutoFill2}>Auto Preencher 2</button>
-                        </div>
+                        {import.meta.env.DEV && (
+                            <div className="flex gap-2">
+                                <button type="button" className="border" onClick={handleAutoFill}>Auto Preencher 1</button>
+                                <button type="button" className="border" onClick={handleAutoFill2}>Auto Preencher 2</button>
+                            </div>
+                        )}
 
                         <form onSubmit={handleSubmit}>
 

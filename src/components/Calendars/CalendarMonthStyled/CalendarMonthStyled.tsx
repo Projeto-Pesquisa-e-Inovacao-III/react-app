@@ -72,7 +72,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             
             if (disabledDays?.includes(weekday)) return
             
-            if (clickedDate <= today || (!hasClassTomorrow && info.dateStr === tomorrowDate)) return
+            if (clickedDate <= today || (hasClassTomorrow === false && info.dateStr === tomorrowDate)) return
 
             setNewEventDate(info.dateStr)
           }}
@@ -81,7 +81,7 @@ export default function CalendarMonthStyled({ clickedDate, clickedDateStr, creat
             const weekday = arg.date.toLocaleDateString("pt-BR", { weekday: "long" }).toLowerCase().split("-")[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
             const now = new Date().toLocaleDateString("pt-BR").split("/").reverse().join("-");
-            if (dateStr < now || dateStr === now || (!hasClassTomorrow && dateStr === tomorrowDate) || disabledDays?.includes(weekday)) return [styles.disabledDay];
+            if (dateStr < now || dateStr === now || (hasClassTomorrow === false && dateStr === tomorrowDate) || disabledDays?.includes(weekday)) return [styles.disabledDay];
 
             if (dateStr === newEventDate || (dateStr === clickedDateStr && !newEventDate)) return [styles.selectedDay];
 

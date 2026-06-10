@@ -148,7 +148,7 @@ export const DateTimeStep: React.FC<DateTimeStepProps> = ({
                                 createdEvents={insertedEvents}
                                 eventToReschedule={clickedDate ? `${clickedDate.split("T")[0]}` : undefined}
                                 isMobile={isMobile}
-                                hasClassTomorrow={availabilityHoursTomorrow?.data?.length > 0}
+                                hasClassTomorrow={availabilityHoursTomorrow ? availabilityHoursTomorrow?.data?.length > 0 : undefined}
                                 tomorrowDate={tomorrow}
                                 disabledDays={disabledDays}
                             />

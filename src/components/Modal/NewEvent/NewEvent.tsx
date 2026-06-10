@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import styles from './NewEvent.module.css';
 import classnames from 'classnames';
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -75,13 +75,12 @@ export default function NewEvent({
         date: clickedDate || "",
         startHour: undefined as string | undefined,
         type: "PRESENCIAL",
-        location: "ACADEMIA"
+        location: "PRESENCIAL"
     });
 
     useEffect(() => {
         const options = LOCATION_OPTIONS[form.type];
         if (options && options.length > 0) {
-            // If current location is not valid for the new type, reset to the first option
             if (!options.some(opt => opt.value === form.location)) {
                 setForm(prev => prev.location === options[0].value ? prev : { ...prev, location: options[0].value });
             }
@@ -183,32 +182,38 @@ export default function NewEvent({
         select: (res) => res.data,
     });
 
-    const addressInitialized = useRef(false);
-
     useEffect(() => {
-        if (!addressInitialized.current && addresses.isSuccess && addresses.data?.length) {
-            addressInitialized.current = true;
-            // Pick the last address that matches the current event type; fall back to the absolute last
-            const matchingAddresses = addresses.data.filter(
-                (a: any) => a?.tipo?.toUpperCase() === form.type?.toUpperCase()
+        if (!addresses.isSuccess || !addresses.data?.length) return;
+
+        setUi(prev => {
+            if (prev.selectedAddress?.tipo?.toUpperCase() === form.type?.toUpperCase()) return prev;
+
+            const matching = (addresses.data as any[]).filter(
+                (a) => a?.tipo?.toUpperCase() === form.type?.toUpperCase()
             );
-            const last = matchingAddresses.length > 0 ? matchingAddresses.at(-1) : addresses.data.at(-1);
-            // Only pre-select if it truly matches the current type
-            if (last?.tipo?.toUpperCase() === form.type?.toUpperCase()) {
-                setUi(prev => ({ ...prev, selectDefault: last?.id ?? "", selectedAddress: last }));
-                if (last?.cep?.cep) {
-                    setAddressData({
-                        postalCode: cepMask(last.cep.cep),
-                        address: `${last.cep.logradouro} - ${last.cep.bairro}`,
-                        city: last.cep.localidade,
-                        state: last.cep.uf,
-                        number: last.numero,
-                        complement: last.complemento
-                    });
-                }
+            const last = matching.at(-1) ?? null;
+
+            if (last?.cep?.cep) {
+                setAddressData({
+                    postalCode: cepMask(last.cep.cep),
+                    address: `${last.cep.logradouro} - ${last.cep.bairro}`,
+                    city: last.cep.localidade,
+                    state: last.cep.uf,
+                    number: last.numero,
+                    complement: last.complemento
+                });
+            } else if (!last) {
+                setAddressData({ postalCode: "", address: "", city: "", state: "", number: "", complement: "" });
             }
-        }
-    }, [addresses.isSuccess, addresses.data, setAddressData]);
+
+            return {
+                ...prev,
+                selectDefault: last?.id ?? "",
+                selectedAddress: last,
+            };
+        });
+    }, [form.type, addresses.isSuccess, addresses.data]);
+
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
@@ -276,7 +281,7 @@ export default function NewEvent({
         const validLocationOptions = LOCATION_OPTIONS[form.type] || [];
         const finalLocation = validLocationOptions.some(opt => opt.value === form.location)
             ? form.location
-            : (validLocationOptions[0]?.value || "ACADEMIA");
+            : (validLocationOptions[0]?.value || "PRESENCIAL");
 
         const payload: Schedule = {
             data: `${form.date}T${form.startHour}`,
