@@ -541,7 +541,7 @@ export function CheckSchedule() {
                                                     </>
                                                 )}
 
-                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                {card.status === "PENDENTE_PERSONAL_CONCLUIR" && startOfDay(new Date()) >= startOfDay(parseISO(card.dataInicio)) && (
                                                     <>
                                                         <button
                                                             className={styles.button}
@@ -741,7 +741,7 @@ export function CheckSchedule() {
                                                         </td>
                                                     )}
 
-                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && isAfter(new Date(), parseISO(card.dataInicio)) && (
+                                                    {card.status === "PENDENTE_PERSONAL_CONCLUIR" && startOfDay(new Date()) >= startOfDay(parseISO(card.dataInicio)) && (
                                                         <td className={classNames(styles.actionsCell)} onClick={(e) => e.stopPropagation()}>
                                                             <div className={classNames(styles.actionsWrapper, styles.actionsWrapperApprove)}>
                                                                 <button
