@@ -44,6 +44,54 @@ const steps = [
     },
   },
   {
+    label: "Criar Adicional FUNCIONAL",
+    description: "POST /produtos-exibicoes (ADICIONAL / FUNCIONAL)",
+    run: async (ctx: Record<string, unknown>) => {
+      const res = await api.post("/produtos-exibicoes", {
+        titulo: "Adicional Funcional",
+        subtitulo: "Aulas funcionais ao ar livre",
+        beneficios: [
+          { valor: "Aulas em parques e espaços abertos" },
+          { valor: "Treino funcional personalizado" },
+          { valor: "Flexibilidade de local" },
+        ],
+        preco: 300.0,
+        status: "ATIVO",
+        tipoProduto: "ADICIONAL",
+        tipoAula: "FUNCIONAL",
+        quantidadeAula: 4,
+        periodo: "1 mês",
+        duracaoMes: 1,
+      });
+      ctx.adicionalFuncionalId = res.data?.id;
+      return res.data;
+    },
+  },
+  {
+    label: "Criar Adicional RESIDENCIAL",
+    description: "POST /produtos-exibicoes (ADICIONAL / RESIDENCIAL)",
+    run: async (ctx: Record<string, unknown>) => {
+      const res = await api.post("/produtos-exibicoes", {
+        titulo: "Adicional Residencial",
+        subtitulo: "Aulas em domicílio",
+        beneficios: [
+          { valor: "Personal no seu endereço" },
+          { valor: "Sem deslocamento" },
+          { valor: "Horário flexível" },
+        ],
+        preco: 350.0,
+        status: "ATIVO",
+        tipoProduto: "ADICIONAL",
+        tipoAula: "RESIDENCIAL",
+        quantidadeAula: 4,
+        periodo: "1 mês",
+        duracaoMes: 1,
+      });
+      ctx.adicionalResidencialId = res.data?.id;
+      return res.data;
+    },
+  },
+  {
     label: "Cadastrar Personal",
     description: "POST /controle/admin/dev/usuarios/personal",
     run: async (_ctx: Record<string, unknown>) => {
@@ -124,12 +172,37 @@ const steps = [
     },
   },
   {
-    label: "Criar Agendamento",
-    description: "POST /agendamentos",
+    label: "Contratar Adicional FUNCIONAL",
+    description: "POST /produtos-contratados (FUNCIONAL)",
+    run: async (ctx: Record<string, unknown>) => {
+      const idProdutoExibicao = (ctx.adicionalFuncionalId as number) ?? 2;
+      const res = await api.post("/produtos-contratados", {
+        idProdutoExibicao,
+      });
+      return res.data;
+    },
+  },
+  {
+    label: "Contratar Adicional RESIDENCIAL",
+    description: "POST /produtos-contratados (RESIDENCIAL)",
+    run: async (ctx: Record<string, unknown>) => {
+      const idProdutoExibicao = (ctx.adicionalResidencialId as number) ?? 3;
+      const res = await api.post("/produtos-contratados", {
+        idProdutoExibicao,
+      });
+      return res.data;
+    },
+  },
+  {
+    label: "Criar Agendamento PRESENCIAL",
+    description: "POST /agendamentos (PRESENCIAL)",
     run: async (_ctx: Record<string, unknown>) => {
+      const data = new Date();
+      data.setDate(data.getDate() + 2);
+      data.setHours(10, 0, 0, 0);
       const res = await api.post("/agendamentos", {
-        data: "2026-06-06T17:33:48.047Z",
-        descricao: "Alteração de endereço e atualização de dados",
+        data: data.toISOString(),
+        descricao: "Aula presencial na academia",
         novoEndereco: {
           numero: "1234",
           complemento: "Apto 101",
@@ -149,6 +222,66 @@ const steps = [
       return res.data;
     },
   },
+  {
+    label: "Criar Agendamento FUNCIONAL",
+    description: "POST /agendamentos (FUNCIONAL)",
+    run: async (_ctx: Record<string, unknown>) => {
+      const data = new Date();
+      data.setDate(data.getDate() + 3);
+      data.setHours(9, 0, 0, 0);
+      const res = await api.post("/agendamentos", {
+        data: data.toISOString(),
+        descricao: "Aula funcional ao ar livre",
+        novoEndereco: {
+          numero: "S/N",
+          complemento: "",
+          unidade: "",
+          tipo: "FUNCIONAL",
+          cep: {
+            id: "01310-100",
+            logradouro: "Avenida Paulista",
+            bairro: "Bela Vista",
+            localidade: "São Paulo",
+            uf: "SP",
+          },
+        },
+        personalId: 1,
+        tipoAulaProdutoContratado: "FUNCIONAL",
+      });
+      return res.data;
+    },
+  },
+  {
+    label: "Criar Agendamento RESIDENCIAL",
+    description: "POST /agendamentos (RESIDENCIAL)",
+    run: async (_ctx: Record<string, unknown>) => {
+      const data = new Date();
+      data.setDate(data.getDate() + 4);
+      data.setHours(8, 0, 0, 0);
+      const res = await api.post("/agendamentos", {
+        data: data.toISOString(),
+        descricao: "Aula residencial em domicílio",
+        novoEndereco: {
+          numero: "456",
+          complemento: "Casa",
+          unidade: "",
+          tipo: "RESIDENCIAL",
+          cep: {
+            id: "01414-001",
+            logradouro: "Rua Haddock Lobo",
+            bairro: "Cerqueira César",
+            localidade: "São Paulo",
+            uf: "SP",
+          },
+        },
+        personalId: 1,
+        tipoAulaProdutoContratado: "RESIDENCIAL",
+      });
+      return res.data;
+    },
+  },
+
+
   {
     label: "Logout",
     description: "POST /usuarios/logout",
