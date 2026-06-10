@@ -6,7 +6,6 @@ export type Schedule = {
     novoEndereco: {
         numero: string,
         complemento: string,
-        unidade: string,
         tipo: string,
         cep: {
             id: string,

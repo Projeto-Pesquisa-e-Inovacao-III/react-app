@@ -113,7 +113,6 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (!import.meta.env.DEV) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "[") {
         handleAutoFill();
@@ -122,8 +121,6 @@ export default function Login() {
       if (e.key === "]") {
         handleAutoFill3();
       }
-
-
     };
 
     window.addEventListener("keydown", handleKeyDown);

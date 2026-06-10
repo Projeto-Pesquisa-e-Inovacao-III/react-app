@@ -289,7 +289,6 @@ export default function NewEvent({
             novoEndereco: {
                 numero: addressData.number,
                 complemento: addressData.complement,
-                unidade: "",
                 tipo: finalLocation,
                 cep: { id: addressData.postalCode, logradouro: addressData.address, bairro: "", localidade: addressData.city, uf: addressData.state }
             },
