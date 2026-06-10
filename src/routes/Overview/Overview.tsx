@@ -204,14 +204,14 @@ export function Overview() {
         queryKey: ["total", "actualPlan"],
         queryFn: () => actualPlan(),
         refetchOnWindowFocus: false,
-        enabled: type?.type?.includes("aluno")
+        enabled: !!type?.type?.includes("aluno")
     });
 
     const classBalanceQuery = useQuery({
         queryKey: ["totalByClassType"],
         queryFn: () => getTotalByClassType(),
         refetchOnWindowFocus: false,
-        enabled: type?.type?.includes("aluno")
+        enabled: !!type?.type?.includes("aluno")
     });
 
     
@@ -232,7 +232,7 @@ export function Overview() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: type?.type?.includes("aluno")
+        enabled: !!type?.type?.includes("aluno")
     });
 
     const personalId = useQuery({
@@ -240,7 +240,7 @@ export function Overview() {
         queryFn: () => findUserData(),
         select: (res) => res.data,
         refetchOnWindowFocus: false,
-        enabled: !type?.type?.includes("aluno")
+        enabled: !!type?.type && !type?.type?.includes("aluno")
     });
 
     const targetId = type?.type?.includes("personal") && !personalId.isLoading && !personalList.isLoading ? personalId.data?.id : personalList.data?.content?.[0]?.id;
