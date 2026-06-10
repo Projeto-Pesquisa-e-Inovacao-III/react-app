@@ -256,6 +256,8 @@ div.fieldGroup div :global(select):focus,
 
 .datePickerWrapper :global(.MuiPickersInputBase-root) {
     height: 100% !important;
+    overflow-y: hidden;
+    align-items: center;
 }
 
 .datePickerWrapper :global(.MuiInputBase-input) {
