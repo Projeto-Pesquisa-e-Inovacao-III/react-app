@@ -34,7 +34,7 @@ function base64ToFile(base64: string, filename: string): File {
 
 function sanitizeContent(content: string): string {
   return content.replace(
-    /(?:\/api)?\/api\/usuarios\/foto\/\/?(?:images\/)?([^"'\s]+)/g,
+    /(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
     (_match, filename) => `${BASE_URL}/usuarios/foto/${filename}`
   );
 }
@@ -195,7 +195,8 @@ function NoCodeToolInner() {
                     const file = base64ToFile(value, `upload_${nodeId}_${propName}.png`);
                     const section = displayName === 'Seção' ? 'Seção' : 'Imagem';
                     const { url } = await uploadNoCodeImage(file, section);
-                    props[propName] = url.startsWith('http') ? url : `${BASE_URL}/usuarios/foto/${url}`;
+                    const filename = url.includes('/') ? url.split('/').pop() : url;
+                    props[propName] = url.startsWith('http') ? url : `${BASE_URL}/usuarios/foto/${filename}`;
                     hasImages = true;
                   }
                 }
