@@ -43,16 +43,16 @@ function sanitizeContent(content: string): string {
 }
 
 function sanitizeNode(obj: Record<string, unknown>): void {
-  if (!obj || typeof obj !== "object") return;
+  if (!obj || typeof obj !== 'object') return;
 
   for (const key of Object.keys(obj)) {
     const val = obj[key];
-    if (typeof val === "string") {
+    if (typeof val === 'string') {
       obj[key] = val.replace(
-        /(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
+        /(?<![:\w])(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
         (_match, filename) => `${BASE_URL}/usuarios/foto/${filename}`
       );
-    } else if (typeof val === "object") {
+    } else if (typeof val === 'object') {
       sanitizeNode(val as Record<string, unknown>);
     }
   }
