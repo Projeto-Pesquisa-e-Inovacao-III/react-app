@@ -33,7 +33,6 @@ import {
     validateStepTwo
 } from "./validations";
 import styles from "./anamnesis.module.css";
-import { LogoHeaderDesktop } from "../../../components/LogoHeaderDesktop/LogoHeaderDesktop";
 import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile/LogoHeaderMobile";
 
 

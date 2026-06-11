@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { api } from "../../system";
 import styles from "./DevSeed.module.css";
-import { LogoWhiteBig } from "../../components/LogoWhiteBig/LogoWhiteBig";
-import { LogoHeaderDesktop } from "../../components/LogoHeaderDesktop/LogoHeaderDesktop";
 import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
@@ -334,8 +332,6 @@ export default function DevSeed() {
   const contratosAgendamentosIndices = steps
     .map((s, i) => (s.label.includes("Contratar") || s.label.includes("Agendamento") || s.label.includes("Anamnese") ? i : -1))
     .filter((i) => i !== -1);
-
-  const hasContratosAgendamentos = contratosAgendamentosIndices.every((i) => selectedSteps[i]);
 
   const toggleContratosAgendamentos = (select: boolean) => {
     setSelectedSteps((prev) => {
