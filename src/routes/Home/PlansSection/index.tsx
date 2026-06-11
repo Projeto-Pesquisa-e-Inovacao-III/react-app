@@ -14,6 +14,7 @@ interface Package {
     tipoProduto: string;
     status: string;
     periodo: string;
+    quantidadeAula: string;
     titulo: string;
     preco: number;
     beneficios: Benefit[];
@@ -142,7 +143,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                                                     className={`box-border px-3 ${isMobile ? "flex-[0_0_88%]" : "flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_25%]"}`}
                                                 >
                                                     <PlansCard
-                                                        description={pkg.periodo}
+                                                        description={pkg.quantidadeAula}
                                                         content={pkg.titulo}
                                                         price={`R$ ${pkg.preco}`}
                                                         benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
@@ -196,7 +197,7 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
                             {data?.map((pkg: Package) => (
                                 <div key={pkg.id}>
                                     <PlansCard
-                                        description={pkg.periodo}
+                                        description={pkg.quantidadeAula}
                                         content={pkg.titulo}
                                         price={`R$ ${pkg.preco}`}
                                         benefits={pkg.beneficios.map((b: Benefit) => b.valor)}
