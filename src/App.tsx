@@ -53,6 +53,7 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<PageLoader />}>
           <Routes>
+              <Route path="/dev-seed" element={<DevSeed />} />
 
             <Route element={<Layout />}>
               <Route path="/" element={<Home />} />
@@ -62,7 +63,6 @@ function App() {
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/logout" element={<Logout />} />
               {/* TODO: remover antes do deploy final */}
-              <Route path="/dev-seed" element={<DevSeed />} />
             </Route>
 
             <Route element={<PrivateRoute />}>
