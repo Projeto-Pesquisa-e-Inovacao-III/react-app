@@ -193,45 +193,49 @@ function NoCodeToolInner() {
               const serialized = query.serialize();
               const parsed = JSON.parse(serialized);
 
-              // Step 1: create the NoCode record first so the API can associate images with it
+              // Step 1: cria o registro inicial
               const created = await createNoCodeContent({
                 content: serialized,
                 modificationName,
                 description,
               });
 
-              // Step 2: upload base64 images now that a NoCode record exists
-              let hasImages = false;
+              // Step 2: processa imagens e sanitiza URLs no parsed
               for (const nodeId in parsed) {
                 const node = parsed[nodeId];
+                if (!node?.props) continue;
+
                 const props = node.props;
                 const displayName = node.displayName;
 
-                const imageProps = ['src', 'backgroundImage'];
-                for (const propName of imageProps) {
+                for (const propName of ['src', 'backgroundImage']) {
                   const value = props[propName];
-                  if (typeof value === 'string' && value.startsWith('data:image')) {
+                  if (!value || typeof value !== 'string') continue;
+
+                  if (value.startsWith('data:image')) {
                     const file = base64ToFile(value, `upload_${nodeId}_${propName}.png`);
                     const section = displayName === 'Seção' ? 'Seção' : 'Imagem';
                     const { url } = await uploadNoCodeImage(file, section);
                     const filename = url.includes('/') ? url.split('/').pop() : url;
                     props[propName] = url.startsWith('http') ? url : `${BASE_URL}/usuarios/foto/${filename}`;
-                    hasImages = true;
+
+                  } else if (value.includes('/api/usuarios/foto/')) {
+                    props[propName] = value.replace(
+                      /(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
+                      (_match, filename) => `${BASE_URL}/usuarios/foto/${filename}`
+                    );
                   }
                 }
               }
 
-              // Step 3: if images were uploaded, update the record with the final URLs
-              if (hasImages) {
-                const finalJson = JSON.stringify(parsed);
-                console.log("Updating record with final JSON (server URLs):", finalJson);
-                await updateNoCodeContent({
-                  id: created.id,
-                  content: finalJson,
-                  modificationName,
-                  description,
-                });
-              }
+              // Step 3: sempre atualiza com o JSON final limpo
+              const finalJson = JSON.stringify(parsed);
+              await updateNoCodeContent({
+                id: created.id,
+                content: finalJson,
+                modificationName,
+                description,
+              });
 
               // Small delay to ensure DB consistency before refetch
               await new Promise(resolve => setTimeout(resolve, 500));
