@@ -47,7 +47,7 @@ export default function HeaderDesktop() {
                     <a href="#about-section">Quem sou?</a>
                     <a href="#services-section">Bora treinar!</a>
                     <a href="#plans-section">Pacotes de Consultoria</a>
-                    <Link to="/dev-seed" className="border border-white">dev/seed</Link>
+                    <Link to="/dev-seed" className="border border-[#093a5d] text-[#093a5d] absolute right-0">dev/seed</Link>
                 </nav>
 
                 <div className="text-lg flex gap-2">
