@@ -32,6 +32,13 @@ function base64ToFile(base64: string, filename: string): File {
   return new File([u8arr], filename, { type: mime });
 }
 
+function sanitizeContent(content: string): string {
+  return content.replace(
+    /\/api\/usuarios\/foto\/\/images\/([^"'\s]+)/g,
+    (_match, filename) => `${BASE_URL}/api/usuarios/foto/${filename}`
+  );
+}
+
 const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
 
 function EditorActions({ onPreview, onPublishClick, onHistoryClick }: {
@@ -188,7 +195,7 @@ function NoCodeToolInner() {
                     const file = base64ToFile(value, `upload_${nodeId}_${propName}.png`);
                     const section = displayName === 'Seção' ? 'Seção' : 'Imagem';
                     const { url } = await uploadNoCodeImage(file, section);
-                    props[propName] = url.startsWith('http') ? url : `${BASE_URL}/usuarios/foto/${url}`;
+                    props[propName] = url.startsWith('http') ? url : `${BASE_URL}/api/usuarios/foto/${url}`;
                     hasImages = true;
                   }
                 }
@@ -251,7 +258,7 @@ function NoCodeToolInner() {
       <div className="flex flex-1 overflow-hidden relative">
         <div className="flex-1 overflow-y-auto" style={{ minWidth: 0 }}>
           <div className="min-h-full">
-            <Frame data={data?.content}>
+            <Frame data={data?.content ? sanitizeContent(data.content) : undefined}>
               <Element is={Container} canvas className="w-full">
 
                 {/* section 1: Hero / Main */}
