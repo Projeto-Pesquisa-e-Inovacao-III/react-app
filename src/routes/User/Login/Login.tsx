@@ -8,6 +8,7 @@ import GoBackButton from "../../../components/GoBackButton/GoBackButton";
 import Button from "../../../components/Button/Button";
 import { LogoWhiteBig } from "../../../components/LogoWhiteBig/LogoWhiteBig";
 import styles from './Login.module.css';
+import PageLoader from '../../../components/PageLoader/PageLoader';
 import useMobile from "../../../hooks/isMobile";
 import { useQuery } from "@tanstack/react-query";
 import { isAuthenticated } from "../../../constants/user";
@@ -41,6 +42,7 @@ export default function Login() {
   const [loginInfo, setLoginInfo] = useState(initialLoginState);
 
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
 
 
   function handleAutoFill(email?: string, password?: string) {
@@ -61,23 +63,24 @@ export default function Login() {
     return;
   }
 
-  async function navToAnamnesis() {
+  async function navToAnamnesis(): Promise<boolean> {
     const isAuthenticated = await userService.isAuthenticated();
     const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
     if (ativoAnamnese === false) {
       nav("/anamnesis");
-      return;
+      return true;
     }
+    return false;
   }
 
   useEffect(() => {
-    try {
-      navToAnamnesis();
-
-    } catch (err) {
-
-    }
-
+    (async () => {
+      try {
+        await navToAnamnesis();
+      } catch (err) {
+        // not authenticated yet, stay on login page
+      }
+    })();
   }, [nav]);
 
   async function handleSubmit(e?: React.FormEvent | React.KeyboardEvent | KeyboardEvent) {
@@ -88,15 +91,18 @@ export default function Login() {
       const res = await userService.login(loginInfo.email, loginInfo.password);
 
       if (res.status === 200) {
+        setLoading(false);
+        setRedirecting(true);
         try {
-          await navToAnamnesis();
+          const wentToAnamnesis = await navToAnamnesis();
+          if (!wentToAnamnesis) {
+            nav("/home");
+          }
         } catch {
-          navToHome();
-          return;
+          nav("/home");
+        } finally {
+          setRedirecting(false);
         }
-
-        nav("/home");
-
       }
     } catch (err) {
       console.error("Login error:", err);
@@ -126,6 +132,10 @@ export default function Login() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
+
+  if (redirecting) {
+    return <PageLoader />;
+  }
 
   return (
     <>
