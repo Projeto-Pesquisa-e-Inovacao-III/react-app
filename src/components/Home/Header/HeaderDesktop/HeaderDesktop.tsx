@@ -78,7 +78,7 @@ export default function HeaderDesktop() {
 
                             {openModal && (
                                 <div
-                                    className={`absolute top-[60px] right-0 bg-white rounded-xl shadow-xl border border-black/5 w-52 z-50
+                                    className={`absolute top-[60px] right-0 bg-white rounded-xl shadow-xl border border-black/5 w-72 z-50
                                         origin-top-right
                                         ${isClosing
                                             ? "animate-[modalLeave_0.2s_ease-in_forwards]"
@@ -106,7 +106,7 @@ export default function HeaderDesktop() {
                                             to="/home"
                                             className="flex items-center gap-3 px-4 py-3 text-[#334155] text-[15px] font-medium rounded-lg no-underline hover:bg-slate-100 hover:text-slate-900 transition-all duration-200"
                                         >
-                                            <Home size={18} /> Visão geral
+                                            <Home size={30} /> Visão geral
                                         </Link>
                                         <div className="h-px bg-slate-200 my-2" />
                                         <Link
@@ -114,7 +114,7 @@ export default function HeaderDesktop() {
                                             to="/logout"
                                             className="flex items-center gap-3 px-4 py-3 text-red-500 text-[15px] font-medium rounded-lg no-underline hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                                         >
-                                            <LogOut size={18} /> Sair
+                                            <LogOut size={30} /> Sair
                                         </Link>
                                     </div>
                                 </div>
