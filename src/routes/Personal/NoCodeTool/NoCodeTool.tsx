@@ -33,10 +33,29 @@ function base64ToFile(base64: string, filename: string): File {
 }
 
 function sanitizeContent(content: string): string {
-  return content.replace(
-    /(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
-    (_match, filename) => `${BASE_URL}/usuarios/foto/${filename}`
-  );
+  try {
+    const parsed = JSON.parse(content);
+    sanitizeNode(parsed);
+    return JSON.stringify(parsed);
+  } catch {
+    return content;
+  }
+}
+
+function sanitizeNode(obj: Record<string, unknown>): void {
+  if (!obj || typeof obj !== "object") return;
+
+  for (const key of Object.keys(obj)) {
+    const val = obj[key];
+    if (typeof val === "string") {
+      obj[key] = val.replace(
+        /(?:\/api)?\/api\/usuarios\/foto\/(?:.+\/)?([^"'\s\/]+)/g,
+        (_match, filename) => `${BASE_URL}/usuarios/foto/${filename}`
+      );
+    } else if (typeof val === "object") {
+      sanitizeNode(val as Record<string, unknown>);
+    }
+  }
 }
 
 const TOOLBAR_BTN_CLASS = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-colors";
