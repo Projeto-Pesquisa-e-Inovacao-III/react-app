@@ -73,8 +73,8 @@ export function Packages() {
 
         setOpenModal("loadingPagBank");
         buyProductExhibition(id).then((response) => {
-            window.location.href = response.data;
-
+            window.open(response.data, "_blank");
+            setOpenModal(null);
         }).catch((error) => {
             console.error("Erro ao comprar o pacote:", error);
             handleErrorModalInfos("Erro na Compra", error.response?.data?.Exception || "Ocorreu um erro ao tentar comprar o pacote.");
