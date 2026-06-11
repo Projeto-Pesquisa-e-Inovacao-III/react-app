@@ -66,7 +66,7 @@ export function useInfinitePagination<T>(
                 query.fetchNextPage();
             }
         }), {
-            rootMargin: '100px',
+            rootMargin: '300px',
         });
 
         observer.observe(loadMoreRef.current);
