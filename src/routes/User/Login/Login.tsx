@@ -57,12 +57,6 @@ export default function Login() {
     setLoginInfo({ email: "fabio.admin@email.com", password: "admin123" });
   }
 
-
-  function navToHome() {
-    nav("/home");
-    return;
-  }
-
   async function navToAnamnesis(): Promise<boolean> {
     const isAuthenticated = await userService.isAuthenticated();
     const ativoAnamnese: boolean = isAuthenticated.data.ativoAnamnese;
