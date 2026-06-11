@@ -45,7 +45,7 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
 
       {customImageUrl || resolvedImage || foto ?
         <UserImg
-          Source={customImageUrl ?? (foto ? `${BASE_URL}/usuarios/foto${foto}` : resolvedImage ?? "")} Height={216}
+          Source={customImageUrl ?? (foto ? `${BASE_URL}/usuarios${foto}` : resolvedImage ?? "")} Height={216}
           Width={216}
           Alt="foto"
           classname={imgClassName}
