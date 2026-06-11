@@ -14,7 +14,7 @@ import { TypeContext } from "../../../App";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { endOfDay, format, parseISO, startOfDay } from "date-fns";
 import CheckScheduleKpis from "../../../components/CheckSchedule/CheckScheduleKpis/CheckScheduleKpis";
-import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
+import { CalendarClock, CalendarX, ChevronLeft, ChevronRight, ChevronUp, CircleCheck, CircleX, MapPin, RefreshCwIcon, User, UserRound, UserX } from "lucide-react";
 import TableHeader from "../../../components/CheckSchedule/Table/TableHeader";
 import { useInfinitePagination, type PaginatedResponse } from "../../../hooks/useInfinitePagination";
 import type { AbsenceAppointment, CheckSchedule } from "../../../models/schedule";
@@ -85,14 +85,21 @@ export function CheckSchedule() {
     const [filterStatus, setFilterStatus] = useState<string>("");
     const [filterTypeClass, setFilterTypeClass] = useState<string>("");
     const [studentName, setStudentName] = useState<string>("");
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setShowScrollTop(window.scrollY > 200);
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const {
         data: infinitePaginationMobile,
         loadMoreRef,
     } = useInfinitePagination<CheckSchedule>({
         queryKey: ["userRescheduleAppointmentsMobile", filterStatus, filterTypeClass, studentName, selectedDateRange.start, selectedDateRange.end, linesPerPageValue],
-        queryFn: () => findPersonalRequests(
-            page,
+        queryFn: (pageParam) => findPersonalRequests(
+            pageParam,
             linesPerPageValue,
             selectedDateRange.start ? format(startOfDay(parseISO(selectedDateRange.start)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
             selectedDateRange.end ? format(endOfDay(parseISO(selectedDateRange.end)), "yyyy-MM-dd'T'HH:mm:ss") : undefined,
@@ -585,6 +592,17 @@ export function CheckSchedule() {
                         )}
                     </>
                 )}
+
+                {isMobile && showScrollTop && (
+                    <button
+                        className={styles.scrollToTopBtn}
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                        aria-label="Voltar ao topo"
+                    >
+                        <ChevronUp size={22} />
+                    </button>
+                )}
+
 
 
                 {!isMobile && (
