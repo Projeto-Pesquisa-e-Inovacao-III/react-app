@@ -114,9 +114,9 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
             </div>
           )}
 
-          {import.meta.env.DEV && (
-            <NavLink to="/dev-seed" className={`${navLinkClass} border border-white`} onClick={handleNavClick}>dev/seed</NavLink>
-          )}
+
+          <NavLink to="/dev-seed" className={`${navLinkClass} border-[#093a5d] text-[#093a5d] absolute right-0`} onClick={handleNavClick}>dev/seed</NavLink>
+
 
         </nav>
 

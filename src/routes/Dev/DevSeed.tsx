@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { api } from "../../system";
 import styles from "./DevSeed.module.css";
+import { LogoHeaderMobile } from "../../components/LogoHeaderMobile/LogoHeaderMobile";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
 
 // ─── Step Definitions ────────────────────────────────────────────────────────
 
@@ -294,7 +297,7 @@ const steps = [
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type StepStatus = "idle" | "running" | "success" | "error";
+type StepStatus = "idle" | "running" | "success" | "error" | "skipped";
 
 interface StepState {
   status: StepStatus;
@@ -308,8 +311,37 @@ export default function DevSeed() {
   const [stepStates, setStepStates] = useState<StepState[]>(
     steps.map(() => ({ status: "idle", response: null, error: null }))
   );
+  const [selectedSteps, setSelectedSteps] = useState<boolean[]>(
+    steps.map(() => true)
+  );
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
+
+  const toggleStep = (index: number) => {
+    setSelectedSteps((prev) => {
+      const next = [...prev];
+      next[index] = !next[index];
+      return next;
+    });
+  };
+
+  const toggleAll = (select: boolean) => {
+    setSelectedSteps(steps.map(() => select));
+  };
+
+  const contratosAgendamentosIndices = steps
+    .map((s, i) => (s.label.includes("Contratar") || s.label.includes("Agendamento") || s.label.includes("Anamnese") ? i : -1))
+    .filter((i) => i !== -1);
+
+  const toggleContratosAgendamentos = (select: boolean) => {
+    setSelectedSteps((prev) => {
+      const next = [...prev];
+      contratosAgendamentosIndices.forEach((i) => {
+        next[i] = select;
+      });
+      return next;
+    });
+  };
 
   const updateStep = (index: number, patch: Partial<StepState>) => {
     setStepStates((prev) => {
@@ -328,6 +360,11 @@ export default function DevSeed() {
     const ctx: Record<string, unknown> = {};
 
     for (let i = 0; i < steps.length; i++) {
+      if (!selectedSteps[i]) {
+        updateStep(i, { status: "skipped" });
+        continue;
+      }
+
       updateStep(i, { status: "running" });
       try {
         const data = await steps[i].run(ctx);
@@ -351,76 +388,104 @@ export default function DevSeed() {
     if (s === "idle") return <span className={styles.iconIdle}>○</span>;
     if (s === "running") return <span className={styles.iconRunning}>◌</span>;
     if (s === "success") return <span className={styles.iconSuccess}>✓</span>;
+    if (s === "skipped") return <span className={styles.iconSkipped}>-</span>;
     return <span className={styles.iconError}>✕</span>;
   };
 
   const successCount = stepStates.filter((s) => s.status === "success").length;
   const errorCount = stepStates.filter((s) => s.status === "error").length;
+  const skippedCount = stepStates.filter((s) => s.status === "skipped").length;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.header}>
-        <div className={styles.badge}>DEV ONLY</div>
-        <h1 className={styles.title}>Seed de Dados</h1>
-        <p className={styles.subtitle}>
-          Executa todos os requests de setup em sequência. Remover antes do deploy final.
-        </p>
-        <button
-          className={styles.runBtn}
-          onClick={runAll}
-          disabled={running}
-        >
-          {running ? (
-            <>
-              <span className={styles.spinner} /> Executando…
-            </>
-          ) : done ? (
-            "▶ Executar Novamente"
-          ) : (
-            "▶ Executar Seed"
-          )}
-        </button>
-
-        {done && (
-          <div className={styles.summary}>
-            <span className={styles.summarySuccess}>✓ {successCount} ok</span>
-            {errorCount > 0 && (
-              <span className={styles.summaryError}>✕ {errorCount} erro(s)</span>
-            )}
+    <>
+      
+      <div className={styles.page}>
+        <div className={styles.header}>
+          <div className={styles.badge}>DEV ONLY</div>
+          <div className="flex justify-center">
+            <div className="flex flex-col items-center border border-red fixed top-1 bg-red-100">
+              <Link to="/home" className="underline">Voltar para o site</Link>
+              <LogoHeaderMobile />
+            </div>
           </div>
-        )}
-      </div>
+          <h1 className={styles.title}>Seed de Dados</h1>
+          <p className={styles.subtitle}>
+            Executa todos os requests de setup em sequência. Remover antes do deploy final.
+          </p>
 
-      <div className={styles.steps}>
-        {steps.map((step, i) => {
-          const state = stepStates[i];
-          return (
-            <div
-              key={i}
-              className={`${styles.stepCard} ${styles[`card_${state.status}`]}`}
-            >
-              <div className={styles.stepHeader}>
-                <span className={styles.stepNumber}>{i + 1}</span>
-                {statusIcon(state.status)}
-                <div className={styles.stepInfo}>
-                  <span className={styles.stepLabel}>{step.label}</span>
-                  <span className={styles.stepDesc}>{step.description}</span>
-                </div>
-              </div>
+          <div className={styles.controls}>
+            <button className={styles.controlBtn} onClick={() => toggleAll(true)} disabled={running}>Selecionar Todos</button>
+            {/* <button className={styles.controlBtn} onClick={() => toggleAll(false)} disabled={running}>Desmarcar Todos</button> */}
+            <button className={classNames(styles.controlBtn)} onClick={() => toggleContratosAgendamentos(false)} disabled={running}>Desmarcar Anamnese, Pacotes e Agendamentos</button>
+          </div>
 
-              {state.status === "success" && state.response !== null && (
-                <pre className={styles.responseBox}>
-                  {JSON.stringify(state.response, null, 2)}
-                </pre>
+          <button
+            className={styles.runBtn}
+            onClick={runAll}
+            disabled={running}
+          >
+            {running ? (
+              <>
+                <span className={styles.spinner} /> Executando…
+              </>
+            ) : done ? (
+              "▶ Executar Novamente"
+            ) : (
+              "▶ Executar Seed"
+            )}
+          </button>
+
+          {done && (
+            <div className={styles.summary}>
+              <span className={styles.summarySuccess}>✓ {successCount} ok</span>
+              {errorCount > 0 && (
+                <span className={styles.summaryError}>✕ {errorCount} erro(s)</span>
               )}
-
-              {state.status === "error" && (
-                <pre className={styles.errorBox}>{state.error}</pre>
+              {skippedCount > 0 && (
+                <span className={styles.summarySkipped}>- {skippedCount} ignorado(s)</span>
               )}
             </div>
-          );
-        })}
+          )}
+        </div>
+
+        <div className={styles.steps}>
+          {steps.map((step, i) => {
+            const state = stepStates[i];
+            return (
+              <div
+                key={i}
+                className={`${styles.stepCard} ${styles[`card_${state.status}`]}`}
+              >
+                <div className={styles.stepHeader}>
+                  <input
+                    type="checkbox"
+                    checked={selectedSteps[i]}
+                    onChange={() => toggleStep(i)}
+                    disabled={running}
+                    className={styles.checkbox}
+                  />
+                  <span className={styles.stepNumber}>{i + 1}</span>
+                  {statusIcon(state.status)}
+                  <div className={styles.stepInfo}>
+                    <span className={styles.stepLabel}>{step.label}</span>
+                    <span className={styles.stepDesc}>{step.description}</span>
+                  </div>
+                </div>
+
+                {state.status === "success" && state.response !== null && (
+                  <pre className={styles.responseBox}>
+                    {JSON.stringify(state.response, null, 2)}
+                  </pre>
+                )}
+
+                {state.status === "error" && (
+                  <pre className={styles.errorBox}>{state.error}</pre>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

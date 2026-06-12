@@ -60,20 +60,22 @@ export function useInfinitePagination<T>(
 
     const loadMoreRef = useCallback((node: HTMLElement | null) => {
         if (query.isFetchingNextPage) return;
-        
+
         if (observer.current) observer.current.disconnect();
 
-        if (node) {
-            observer.current = new IntersectionObserver(entries => {
-                if (entries[0].isIntersecting && query.hasNextPage) {
-                    query.fetchNextPage();
-                }
-            }, {
-                rootMargin: '100px',
-            });
-            observer.current.observe(node);
-        }
-    }, [query.isFetchingNextPage, query.hasNextPage, query.fetchNextPage]);
+        if (!node) return;
+
+        const newObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                query.fetchNextPage();
+            }
+        }, {
+            rootMargin: '300px',
+        });
+
+        newObserver.observe(node);
+        observer.current = newObserver;
+    }, [query.fetchNextPage, query.hasNextPage]);
 
     return {
         ...query,

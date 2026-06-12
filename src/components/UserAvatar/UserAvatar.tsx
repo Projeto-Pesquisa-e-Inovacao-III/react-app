@@ -37,15 +37,17 @@ export default function UserAvatar({ foto, userName, useUserImage, useUsername =
     return name.charAt(0).toUpperCase()
   }
   const resolvedImage = useUserImage ? userImage.data : undefined;
+  const cleanFoto = foto?.replace(/^"|"$/g, '');
+  const fotoFilename = cleanFoto?.split('/').pop();
 
   return (
     <div className={classNames(styles.userAvatar, { [styles.withUsername]: useUsername })}>
       {useUsername && !isLoading && <p className={styles.username}>{userName}</p>}
       {useUsername && isLoading && <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />}
 
-      {customImageUrl || resolvedImage || foto ?
+      {customImageUrl || resolvedImage || fotoFilename ?
         <UserImg
-          Source={customImageUrl ?? (foto ? `${BASE_URL}/usuarios/foto/${foto}` : resolvedImage ?? "")} Height={216}
+          Source={customImageUrl ?? (fotoFilename ? `${BASE_URL}/usuarios/foto/${fotoFilename}` : resolvedImage ?? "")} Height={216}
           Width={216}
           Alt="foto"
           classname={imgClassName}

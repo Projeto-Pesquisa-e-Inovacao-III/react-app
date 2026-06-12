@@ -33,6 +33,7 @@ import {
     validateStepTwo
 } from "./validations";
 import styles from "./anamnesis.module.css";
+import { LogoHeaderMobile } from "../../../components/LogoHeaderMobile/LogoHeaderMobile";
 
 
 type AnamnesisForm = {
@@ -280,13 +281,15 @@ export default function Anamnesis() {
                 [styles.containerAnamnesisMobile]: isMobile
             })}
         >
-            <div className={classNames(styles.wrapperRegisterElements, {
+            <div className={classNames(styles.wrapperRegisterElements, "relative", {
                 [styles.wrapperRegisterElementsMobile]: isMobile
             })}>
+                <div className="absolute top-4 left-0 w-full flex justify-center">
+                    <LogoHeaderMobile />
+                </div>
                 <div className={classNames(styles.anamnesisElements, {
                     [styles.anamnesisElementsMobile]: isMobile
                 })}>
-                    {/* Responsabilidade: etapa 1 (dados pessoais e objetivo). */}
                     {step === 1 && (
                         <>
                             <AnamnesisProgressLine step={1} form={anamnesisForm} />

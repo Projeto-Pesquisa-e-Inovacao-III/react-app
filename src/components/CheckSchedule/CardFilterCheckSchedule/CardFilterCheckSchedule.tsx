@@ -74,6 +74,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             values={[
                                 { label: "Pendente personal", value: "PENDENTE_PERSONAL_APROVACAO" },
                                 { label: "Pendente aluno", value: "PENDENTE_CLIENTE_APROVACAO" },
+                                { label: "Pendente conclusão", value: "PENDENTE_PERSONAL_CONCLUIR" },
                                 { label: "Aprovado", value: "APROVADO" },
                                 { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
                             ]}
@@ -208,6 +209,7 @@ export function CardFilterCheckSchedule({ onSearchChange, onSelectStatusChange, 
                             values={[
                                 { label: "Pendente personal", value: "PENDENTE_PERSONAL_APROVACAO" },
                                 { label: "Pendente aluno", value: "PENDENTE_CLIENTE_APROVACAO" },
+                                { label: "Pendente conclusão", value: "PENDENTE_PERSONAL_CONCLUIR" },
                                 { label: "Aprovado", value: "APROVADO" },
                                 { label: "Rejeitado", value: "CANCELADO_PERSONAL" },
                             ]}
