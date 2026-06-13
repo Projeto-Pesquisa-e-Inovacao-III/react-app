@@ -61,6 +61,9 @@ export default function Schedule() {
     const queryClient = useQueryClient();
 
     const isTypeReady = type !== null && type.type !== null;
+    const isPersonal = isTypeReady && !type?.type?.includes("aluno");
+
+    const [weekRange, setWeekRange] = useState<{ start: string; end: string } | null>(null);
 
     function handleSuccessModalInfo(title: string, description: string) {
         setModalInfo({ title, description });
@@ -111,6 +114,7 @@ export default function Schedule() {
             queryClient.invalidateQueries({ queryKey: ["userAppointments"] });
             queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointments'] });
             queryClient.invalidateQueries({ queryKey: ['userRescheduleAppointmentsMobile'] });
+            queryClient.invalidateQueries({ queryKey: ['calendarWeekAppointments'] });
         }).catch((error) => {
             console.error("Erro ao cancelar o agendamento:", error);
             handleErrorModalInfo("Erro ao cancelar o agendamento", error.response?.data?.Exception || "Ocorreu um erro ao cancelar o agendamento.");
@@ -136,8 +140,16 @@ export default function Schedule() {
         queryKey: ["appointmentsAtCalendar"],
         queryFn: () => appointmentAtCalendar(),
         refetchOnWindowFocus: false,
-        enabled: isTypeReady
+        enabled: isTypeReady && !isPersonal,
     })
+
+    // For personal: fetch appointments filtered by the visible week
+    const weekAppointments = useQuery({
+        queryKey: ["calendarWeekAppointments", weekRange?.start, weekRange?.end],
+        queryFn: () => findPersonalRequests(0, undefined, weekRange!.start, weekRange!.end).then(res => res.data.content),
+        refetchOnWindowFocus: false,
+        enabled: isPersonal && !!weekRange,
+    });
 
     const userAppointments = useQuery({
         queryKey: ["userAppointments"],
@@ -156,6 +168,7 @@ export default function Schedule() {
     } = useInfinitePagination<RescheduleAppointment>({
         queryKey: ["userRescheduleAppointments"],
         queryFn: (page) => findPersonalRequests(page).then(res => res.data),
+        enable: isTypeReady,
     });
 
     const appointmentsUser: RescheduleAppointment[] =
@@ -232,10 +245,11 @@ export default function Schedule() {
                 </div>
             ) : !type?.type?.includes("aluno") ? (
                 <CalendarWeek
-                    insertedEvents={appointmentsUser || []}
+                    insertedEvents={weekAppointments.data || []}
                     openModal={() => setOpenModal("newEvent")}
                     isMobile={isMobile}
-                    isLoading={appointments.isLoading}
+                    isLoading={weekAppointments.isLoading && !!weekRange}
+                    onWeekChange={(start, end) => setWeekRange({ start, end })}
                 />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>

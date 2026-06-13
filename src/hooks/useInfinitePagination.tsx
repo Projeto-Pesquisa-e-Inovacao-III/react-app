@@ -45,7 +45,7 @@ export function useInfinitePagination<T>(
         queryKey,
         queryFn: ({ pageParam = 0 }) => queryFn(pageParam),
         initialPageParam: 0,
-        enabled: enable && enable,
+        enabled: enable ?? true,
         getNextPageParam:
             getNextPageParam ??
             ((lastPage) => {
