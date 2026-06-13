@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useCallback } from "react";
 export type PaginatedResponse<T> = {
     content: T[];
     page: {
