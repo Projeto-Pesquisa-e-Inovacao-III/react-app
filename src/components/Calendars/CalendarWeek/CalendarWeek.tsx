@@ -14,6 +14,7 @@ type CalendarWeekProps = {
     openModal: React.Dispatch<React.SetStateAction<boolean>>;
     isLoading: boolean;
     onWeekChange?: (start: string, end: string) => void;
+    initialDate?: string;
 };
 
 type EventType = {
@@ -24,7 +25,7 @@ type EventType = {
 
 };
 
-export default function CalendarWeek({ insertedEvents, isMobile, isLoading, onWeekChange }: CalendarWeekProps) {
+export default function CalendarWeek({ insertedEvents, isMobile, isLoading, onWeekChange, initialDate }: CalendarWeekProps) {
 
     // i could use just a react-query to get the events
     const [events, setEvents] = useState<EventType[]>([]);
@@ -95,6 +96,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading, onWe
                         <FullCalendar
                             plugins={[dayGridPlugin, timeGridPlugin]}
                             initialView="timeGridWeek"
+                            initialDate={initialDate || undefined}
                             locale={"pt-br"}
                             height="auto"
                             expandRows={true}

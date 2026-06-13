@@ -64,6 +64,7 @@ export default function Schedule() {
     const isPersonal = isTypeReady && !type?.type?.includes("aluno");
 
     const [weekRange, setWeekRange] = useState<{ start: string; end: string } | null>(null);
+    const calendarInitialDate = sessionStorage.getItem("calendarWeekDate") || undefined;
 
     function handleSuccessModalInfo(title: string, description: string) {
         setModalInfo({ title, description });
@@ -149,6 +150,7 @@ export default function Schedule() {
         queryFn: () => findPersonalRequests(0, undefined, weekRange!.start, weekRange!.end).then(res => res.data.content),
         refetchOnWindowFocus: false,
         enabled: isPersonal && !!weekRange,
+        staleTime: 5 * 60 * 1000,
     });
 
     const userAppointments = useQuery({
@@ -223,6 +225,7 @@ export default function Schedule() {
         queryFn: getPersonalList,
         select: (res) => res.data,
         refetchOnWindowFocus: false,
+        enabled: !isPersonal
     });
 
     const targetId = personalList.data?.content?.[0]?.id;
@@ -249,7 +252,11 @@ export default function Schedule() {
                     openModal={() => setOpenModal("newEvent")}
                     isMobile={isMobile}
                     isLoading={weekAppointments.isLoading && !!weekRange}
-                    onWeekChange={(start, end) => setWeekRange({ start, end })}
+                    initialDate={calendarInitialDate}
+                    onWeekChange={(start, end) => {
+                        sessionStorage.setItem("calendarWeekDate", start);
+                        setWeekRange({ start, end });
+                    }}
                 />
             ) : (
                 <div className={classnames(styles.userViewSchedule, { [styles.mobile]: isMobile })}>
@@ -328,20 +335,6 @@ export default function Schedule() {
                             })}
                             
                             {appointmentsUser.length > 0 && <div ref={loadMoreRef} style={{ height: "1px" }} />}
-
-                            {/* agendamentoId	1
-agendamentoStatus	"APROVADO"
-data	"2026-04-29T08:00:00"
-datafim	"2026-04-29T09:00:00"
-personalNome	"Fábio"
-alunoNome	"Fillipe"
-caminhoFoto	null
-tipoAula	"PRESENCIAL"
-endereco	Object { numero: "312", bairro: "Cerqueira César", cidade: "São Paulo", … }
-numero	"312"
-bairro	"Cerqueira César"
-cidade	"São Paulo"
-uf	"SP" */}
 
                             {userAppointments.data?.map((event, index) => (
                                 <div className={styles.appointmentCard} key={`${event.agendamentoId}-${index}`}>
