@@ -13,6 +13,8 @@ type CalendarWeekProps = {
     isMobile: boolean;
     openModal: React.Dispatch<React.SetStateAction<boolean>>;
     isLoading: boolean;
+    onWeekChange?: (start: string, end: string) => void;
+    initialDate?: string;
 };
 
 type EventType = {
@@ -23,7 +25,7 @@ type EventType = {
 
 };
 
-export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: CalendarWeekProps) {
+export default function CalendarWeek({ insertedEvents, isMobile, isLoading, onWeekChange, initialDate }: CalendarWeekProps) {
 
     // i could use just a react-query to get the events
     const [events, setEvents] = useState<EventType[]>([]);
@@ -94,6 +96,7 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
                         <FullCalendar
                             plugins={[dayGridPlugin, timeGridPlugin]}
                             initialView="timeGridWeek"
+                            initialDate={initialDate || undefined}
                             locale={"pt-br"}
                             height="auto"
                             expandRows={true}
@@ -106,6 +109,14 @@ export default function CalendarWeek({ insertedEvents, isMobile, isLoading }: Ca
                             dayHeaderFormat={{ weekday: `${isMobile ? 'short' : 'long'}` }}
                             businessHours={true}
                             events={events}
+                            datesSet={(dateInfo) => {
+                                if (onWeekChange) {
+                                    onWeekChange(
+                                        format(dateInfo.start, "yyyy-MM-dd'T'HH:mm:ss"),
+                                        format(dateInfo.end, "yyyy-MM-dd'T'HH:mm:ss")
+                                    );
+                                }
+                            }}
                             headerToolbar={{
                                 start: "",
                                 center: "title",

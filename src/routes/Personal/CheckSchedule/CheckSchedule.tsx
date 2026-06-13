@@ -159,9 +159,9 @@ export function CheckSchedule() {
 
     async function handleInvalidateQueries() {
         await queryClient.invalidateQueries({ queryKey: ["appointmentDetails"] });
-        await queryClient.refetchQueries({ queryKey: ["personal-requests"] });
-        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointments"] });
-        await queryClient.refetchQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
+        await queryClient.invalidateQueries({ queryKey: ["personal-requests"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointments"] });
+        await queryClient.invalidateQueries({ queryKey: ["userRescheduleAppointmentsMobile"] });
         await queryClient.invalidateQueries({ queryKey: ["appointmentsAtCalendar"] });
         await queryClient.invalidateQueries({ queryKey: ["dataKpi"] });
 

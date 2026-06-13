@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRef, useEffect } from "react";
+import { useRef, useCallback } from "react";
 export type PaginatedResponse<T> = {
     content: T[];
     page: {
@@ -39,13 +39,13 @@ export function useInfinitePagination<T>(
 
     { queryKey, queryFn, enable, getNextPageParam }: UseInfinitePaginationProps<T>) {
 
-    const loadMoreRef = useRef<HTMLDivElement | null>(null);
+    const observer = useRef<IntersectionObserver | null>(null);
 
     const query = useInfiniteQuery({
         queryKey,
         queryFn: ({ pageParam = 0 }) => queryFn(pageParam),
         initialPageParam: 0,
-        enabled: enable && enable,
+        enabled: enable ?? true,
         getNextPageParam:
             getNextPageParam ??
             ((lastPage) => {
@@ -58,20 +58,23 @@ export function useInfinitePagination<T>(
         refetchOnWindowFocus: false
     });
 
-    useEffect(() => {
-        if (!loadMoreRef.current || !query.hasNextPage) return;
+    const loadMoreRef = useCallback((node: HTMLElement | null) => {
+        if (query.isFetchingNextPage) return;
 
-        const observer = new IntersectionObserver((entries => {
+        if (observer.current) observer.current.disconnect();
+
+        if (!node) return;
+
+        const newObserver = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 query.fetchNextPage();
             }
-        }), {
+        }, {
             rootMargin: '300px',
         });
 
-        observer.observe(loadMoreRef.current);
-
-        return () => observer.disconnect();
+        newObserver.observe(node);
+        observer.current = newObserver;
     }, [query.fetchNextPage, query.hasNextPage]);
 
     return {
