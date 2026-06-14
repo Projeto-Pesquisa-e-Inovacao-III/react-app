@@ -3,8 +3,8 @@ import { ChevronDown } from "lucide-react";
 
 export default function FAQSection({ isMobile = false }: { isMobile: boolean }) {
     return (
-        <section id="faq" className="scroll-mt-20 bg-indigo pt-16 pb-16 p-5">
-            <div className={`text-black bg-white rounded-2xl shadow-2xl p-8 max-w-5xl mx-auto ${!isMobile ? "mt-4" : ""}`}>
+        <section id="faq" className={`scroll-mt-20 bg-indigo pt-16 pb-16 ${isMobile ? "p-5" : "px-16"}`}>
+            <div className={`text-black bg-white rounded-2xl shadow-2xl p-8 max-w-[1600px] mx-auto ${!isMobile ? "mt-4" : ""}`}>
                 <h2 className="text-oxford-blue text-4xl font-bold text-center mb-10 font-poppins">Perguntas Frequentes</h2>
 
                 <div className="flex flex-col gap-3">

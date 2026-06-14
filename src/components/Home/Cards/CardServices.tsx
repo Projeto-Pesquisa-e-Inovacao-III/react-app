@@ -27,7 +27,7 @@ export default function CardServices({ bgColor, color, title, content, image, is
           <div className="w-[550px] shrink-0 overflow-hidden relative group h-auto min-h-[400px]">
             <img className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105" src={image} alt={title} />
           </div>
-          <div className={`flex-1 text-center ${color ? color : "text-white"} flex justify-center items-center flex-col p-16 relative backdrop-blur-sm bg-white/5`}>
+          <div className={`flex-1 text-center ${color ? color : "text-white"} flex justify-center items-center flex-col p-12 relative backdrop-blur-sm bg-white/5`}>
             <h1 className="text-4xl font-bold mb-6 leading-tight drop-shadow-md">{title}</h1>
             <p className="text-2xl leading-relaxed opacity-95">{content}</p>
           </div>

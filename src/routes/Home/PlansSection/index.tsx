@@ -114,8 +114,8 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, [data, isPackagesSelected, expandedPkgId, isMobile, uniformHeight]);
 
     return (
-        <section ref={containerRef} id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-16 pb-16 ${isMobile ? "mt-10" : ""}`}>
-            <div className={`${!isMobile ? "max-w-7xl mx-auto" : ""}`}>
+        <section ref={containerRef} id="plans-section" className={`scroll-mt-20 bg-indigo ${isMobile ? "p-5 mt-10" : "px-16"} pt-16 pb-16`}>
+            <div className={`${!isMobile ? "max-w-[1600px] mx-auto" : ""}`}>
                 <h2 className={`text-white font-black font-poppins text-center ${isMobile ? "text-3xl" : "text-5xl tracking-wide"} drop-shadow-md`}>Escolha o melhor pacote para você</h2>
                 <div className="flex justify-center mt-10 mb-12">
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>

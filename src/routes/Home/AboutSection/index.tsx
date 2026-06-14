@@ -4,15 +4,15 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
     return (
         <section
             id="about-section"
-            className={`scroll-mt-20 bg-oxford-blue flex justify-center p-5 ${isMobile ? 'pt-14 pb-14' : 'pt-24 pb-24'
+            className={`scroll-mt-20 bg-oxford-blue flex justify-center ${isMobile ? 'p-5 pt-14 pb-14' : 'px-16 pt-20 pb-20'
                 }`}
         >
             <div
-                className={`font-poppins w-full max-w-7xl flex ${isMobile ? 'flex-col items-center gap-8' : 'flex-row items-center justify-between mx-auto gap-16'
+                className={`font-poppins w-full max-w-[1600px] flex ${isMobile ? 'flex-col items-center gap-8' : 'flex-row items-center justify-between mx-auto gap-16'
                     }`}
             >
-                <div className={`${isMobile ? 'w-full px-4' : 'w-1/2 flex justify-end'}`}>
-                    <img className="rounded-2xl shadow-2xl shadow-black/60 object-cover" src="/Home/about-2.png" alt="Fábio Bernardes" />
+                <div className={`${isMobile ? 'w-full px-4' : 'w-1/2 flex'}`}>
+                    <img className="rounded-2xl shadow-2xl shadow-black/60 object-cover max-h-[500px]" src="/Home/about-2.png" alt="Fábio Bernardes" />
                 </div>
 
                 <div
@@ -36,7 +36,7 @@ export default function AboutSection({ isMobile }: { isMobile: boolean }) {
 
                     {!isMobile && (
                         <div className="mt-4">
-                            <ButtonHome to="#plans-section" title="Conheça os pacotes disponíveis" classname="bg-gigant-orange text-white hover:bg-orange-600 shadow-lg px-8 py-4 text-xl rounded-xl font-bold transition-all" />
+                            <ButtonHome to="#plans-section" title="Conheça os pacotes disponíveis" classname="bg-gigant-orange text-white hover:bg-orange-600 shadow-lg px-6 py-2.5 text-lg rounded-lg font-bold transition-all w-fit min-w-[280px] mt-0!" />
                         </div>
                     )}
                 </div>

@@ -4,9 +4,9 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
   return (
     <section
       id={isMobile ? "services-section-mobile" : "services-section"}
-      className={`scroll-mt-20 ${isMobile ? "mt-10 mb-10" : "mt-10"} p-5`}
+      className={`scroll-mt-20 ${isMobile ? "mt-10 mb-10 p-5" : "px-16 mt-10"}`}
     >
-      <div className={isMobile ? "" : "max-w-7xl mx-auto"}>
+      <div className={isMobile ? "" : "max-w-[1600px] mx-auto"}>
         <div
           className={`${
             isMobile
@@ -35,7 +35,7 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
         />
 
         <CardServices
-          bgColor={`${isMobile ? "gradient-white-with-blue-bar-mobile" : "gradient-white-with-blue-bar"}`}
+          bgColor="bg-white"
           color="text-oxford-blue"
           title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
           content="Sua saúde é um presente que pode inspirar a todos ao seu redor, especialmente a sua família! Com nosso suporte, você encontrará o equilíbrio perfeito para se cuidar e motivar seus entes queridos a adotarem hábitos saudáveis."
