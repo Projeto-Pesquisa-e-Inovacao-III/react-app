@@ -39,7 +39,7 @@ export default function HeaderDesktop() {
     return (
         <>
             <header className="w-full fixed top-0 bg-oxford-blue/95 backdrop-blur-md text-white z-50 h-20 flex justify-center border-b border-white/10">
-                <div className="w-full max-w-[1600px] px-16 flex items-center justify-between">
+                <div className="w-full max-w-[1600px] flex items-center justify-between">
                     <Link to="/" className="hover:opacity-80 transition-opacity">
                         <LogoHeaderDesktop />
                     </Link>

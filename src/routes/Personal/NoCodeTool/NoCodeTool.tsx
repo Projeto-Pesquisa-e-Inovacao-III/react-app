@@ -293,30 +293,32 @@ function NoCodeToolInner() {
                   backgroundImage="/Home/bg-1-1-EDIT.jpg"
                 >
                   <div
-                    className="absolute inset-0 pointer-events-none"
+                    className="absolute inset-0 bg-gradient-to-r from-[#051128]/60 via-[#051128]/20 to-transparent pointer-events-none"
                   />
-                  <Element is={Container} canvas className="relative w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20" style={{ zIndex: 2 }}>
-                    <Element
-                      is={EditableText}
-                      tag="h1"
-                      text="Bem-vindo a CSF Treinamentos"
-                      className="text-8xl text-[5.5rem] w-[53.2%] font-poppins font-bold uppercase text-left text-white"
-                    />
-                    <Element
-                      is={EditableText}
-                      tag="p"
-                      text="A jornada para uma vida mais ativa e saudável começa aqui. Orientação profissional adaptada à sua rotina e necessidade."
-                      className="text-2xl w-[53.2%] text-left font-montserrat text-white"
-                    />
-                    <Element is={Container} canvas className="w-2/4 h-1/3!">
+                  <Element is={Container} canvas className="w-full max-w-[1600px] mx-auto px-16 relative flex items-center h-full" style={{ zIndex: 2 }}>
+                    <Element is={Container} canvas className="w-full flex flex-col justify-center items-start gap-8">
                       <Element
-                        is={EditableButton}
-                        title="Entre em contato"
-                        href="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
-                        bgColor="#f26430"
-                        textColor="#ffffff"
-                        className="w-[53.2%] h-full! mt-3! rounded-2xl! text-xl"
+                        is={EditableText}
+                        tag="h1"
+                        text="Bem-vindo à CSF Treinamentos"
+                        className="text-8xl text-[5.5rem] max-w-4xl font-poppins font-black uppercase text-left text-white leading-[1.05] tracking-tight"
                       />
+                      <Element
+                        is={EditableText}
+                        tag="p"
+                        text="A jornada para uma vida mais ativa e saudável começa aqui. Orientação profissional adaptada à sua rotina e necessidade."
+                        className="text-2xl max-w-2xl text-left font-montserrat text-gray-200 leading-relaxed opacity-90"
+                      />
+                      <Element is={Container} canvas className="mt-6">
+                        <Element
+                          is={EditableButton}
+                          title="Entre em contato"
+                          href="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
+                          bgColor="#f26430"
+                          textColor="#ffffff"
+                          className="bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl shadow-gigant-orange/30 text-white rounded-xl text-xl px-10 py-4 font-bold w-fit min-w-[300px]"
+                        />
+                      </Element>
                     </Element>
                   </Element>
                 </Element>
@@ -329,43 +331,42 @@ function NoCodeToolInner() {
                   backgroundColor="#051128"
                   paddingTop="80px"
                   paddingBottom="80px"
-                  className="scroll-mt-20 flex justify-center px-5"
+                  className="scroll-mt-20 flex justify-center px-16"
                 >
-                  <Element is={Container} canvas className="font-poppins w-full flex ml-20 mr-20">
-                    <Element is={Container} canvas className="w-2/4 not-2xl:w-full">
+                  <Element is={Container} canvas className="font-poppins w-full max-w-[1600px] flex items-center justify-between mx-auto gap-16">
+                    <Element is={Container} canvas className="w-1/2 flex justify-end">
                       <Element
                         is={EditableImage}
                         src="/Home/about-2.png"
                         alt="Foto de Fábio Bernardes"
-                        className="rounded-lg w-full"
+                        className="rounded-2xl shadow-2xl shadow-black/60 object-cover max-h-[500px] w-full"
                       />
                     </Element>
-                    <Element is={Container} canvas className="text-white flex flex-col justify-evenly ml-20 w-2xl max-w-3xl">
+                    <Element is={Container} canvas className="text-white flex flex-col w-1/2 max-w-2xl">
                       <Element
                         is={EditableText}
                         tag="h1"
                         text="Quem sou?"
-                        className="text-3xl font-bold mb-5 mt-3 uppercase"
+                        className="font-black mb-6 mt-3 text-gigant-orange text-5xl uppercase tracking-wider"
                       />
-                      <Element is={Container} canvas className="text-2xl w-fit whitespace-pre-line">
+                      <Element is={Container} canvas className="text-2xl leading-relaxed text-gray-200 w-fit whitespace-pre-line mb-10">
                         <Element is={EditableText} tag="span" text="Sou " />
-                        <Element is={EditableText} tag="span" text="Fábio Bernardes" className="text-gigant-orange font-semibold" color="#f26430" />
+                        <Element is={EditableText} tag="span" text="Fábio Bernardes" className="text-white font-bold" />
                         <Element is={EditableText} tag="span" text=", professor de Educação Física e Personal Trainer apaixonado por transformar vidas através do movimento." />
-                      </Element>
-                      <Element is={Container} canvas className="text-2xl w-fit">
+                        {"\n\n"}
                         <Element is={EditableText} tag="span" text="Além de " />
-                        <Element is={EditableText} tag="span" text="profissional" className="text-gigant-orange font-semibold" color="#f26430" />
+                        <Element is={EditableText} tag="span" text="profissional" className="text-white font-bold" />
                         <Element is={EditableText} tag="span" text=", sou marido e pai, e entendo na prática os desafios de conciliar uma rotina agitada com o " />
-                        <Element is={EditableText} tag="span" text="cuidado da saúde" className="text-gigant-orange font-semibold" color="#f26430" />
+                        <Element is={EditableText} tag="span" text="cuidado da saúde" className="text-white font-bold" />
                         <Element is={EditableText} tag="span" text=". É por isso que minha consultoria foi desenvolvida para se adaptar aos seus objetivos." />
                       </Element>
                       <Element
                         is={EditableButton}
                         title="Conheça os pacotes disponíveis"
                         href="#plans-section"
-                        bgColor="#ffffff"
-                        textColor="#000000"
-                        className="flex justify-center items-center min-h-12 w-[53.2%] mt-10 font-semibold rounded-md"
+                        bgColor="#f26430"
+                        textColor="#ffffff"
+                        className="bg-gigant-orange text-white hover:bg-orange-600 shadow-lg px-6 py-2.5 text-lg rounded-lg font-bold transition-all w-fit min-w-[280px]"
                       />
                     </Element>
                   </Element>
@@ -378,92 +379,92 @@ function NoCodeToolInner() {
                   id="services-section"
                   paddingTop="40px"
                   paddingBottom="40px"
-                  className="scroll-mt-20 mt-10 px-5 bg-[#e5e7eb]!"
+                  className="scroll-mt-20 mt-10 px-16 bg-[#e5e7eb]!"
                 >
-                  <Element is={Container} canvas className="ml-20 mr-20">
-                    <Element is={Container} canvas className="flex justify-center items-center uppercase border-amber-600 wrapper-content mb-10">
+                  <Element is={Container} canvas className="max-w-[1600px] mx-auto">
+                    <Element is={Container} canvas className="flex justify-center items-center uppercase mb-16 mt-8">
                       <Element
                         is={EditableText}
                         tag="h1"
                         text="Bora treinar com quem entende e se importa"
-                        className="ml-auto mr-auto mt-0 mb-0 font-bebas leading-none text-8xl text-center border-b-8 line-clamp-1"
+                        className="mx-auto font-bebas tracking-wide text-7xl text-center text-oxford-blue drop-shadow-sm"
                       />
                     </Element>
 
                     {/* card 1 — text left, image right (isReverse) */}
-                    <Element is={Container} canvas className="bg-indigo flex flex-row-reverse gap-1 mb-10 rounded-lg overflow-hidden">
-                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden p-10 bg-white flex items-center justify-center h-auto">
+                    <Element is={Container} canvas className="bg-indigo flex flex-row-reverse gap-0 mb-12 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:-translate-y-1 duration-300">
+                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden relative h-auto min-h-[400px]">
                         <Element
                           is={EditableImage}
                           src="/Home/bg-1-2.jpg"
                           alt="Serviço 1"
-                          className="w-full h-[420px] object-cover object-center rounded-xl"
+                          className="absolute inset-0 w-full h-full object-cover object-center"
                         />
                       </Element>
-                      <Element is={Container} canvas className="flex-1 text-center text-white flex justify-center items-center flex-col p-12 pb-20 pt-20 pl-12 pr-12">
+                      <Element is={Container} canvas className="flex-1 text-center text-white flex justify-center items-center flex-col p-12 relative backdrop-blur-sm bg-white/5">
                         <Element
                           is={EditableText}
                           tag="h1"
                           text="Um guia para a saúde em todas as idades"
-                          className="text-4xl font-bold mb-4"
+                          className="text-4xl font-bold mb-6 leading-tight drop-shadow-md"
                         />
                         <Element
                           is={EditableText}
                           tag="p"
                           text="Da infância à melhor idade, a saúde é nossa prioridade em cada etapa! Com um olhar atento às necessidades de cada um, oferecemos orientação personalizada para crianças, jovens, adultos e idosos."
-                          className="text-2xl"
+                          className="text-2xl leading-relaxed opacity-95"
                         />
                       </Element>
                     </Element>
 
-                    {/* card 2 — image left, text right, white + blue right bar */}
-                    <Element is={Container} canvas className="gradient-white-with-blue-bar flex flex-row gap-1 mb-10 rounded-lg overflow-hidden">
-                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden p-10 bg-white flex items-center justify-center h-auto">
+                    {/* card 2 — image left, text right (solid white) */}
+                    <Element is={Container} canvas className="bg-white flex flex-row gap-0 mb-12 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:-translate-y-1 duration-300">
+                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden relative h-auto min-h-[400px]">
                         <Element
                           is={EditableImage}
                           src="/Home/cardImage2.png"
                           alt="Serviço 2"
-                          className="w-full h-[420px] object-cover object-center rounded-xl"
+                          className="absolute inset-0 w-full h-full object-cover object-center"
                         />
                       </Element>
-                      <Element is={Container} canvas className="flex-1 text-center text-oxford-blue flex justify-center items-center flex-col p-12 pb-20 pt-20 pl-12 pr-24!">
+                      <Element is={Container} canvas className="flex-1 text-center text-oxford-blue flex justify-center items-center flex-col p-12">
                         <Element
                           is={EditableText}
                           tag="h1"
                           text="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
-                          className="text-4xl font-bold mb-4"
+                          className="text-4xl font-bold mb-6 leading-tight"
                         />
                         <Element
                           is={EditableText}
                           tag="p"
                           text="Sua saúde é um presente que pode inspirar a todos ao seu redor, especialmente a sua família! Com nosso suporte, você encontrará o equilíbrio perfeito para se cuidar e motivar seus entes queridos a adotarem hábitos saudáveis."
-                          className="text-2xl"
+                          className="text-2xl leading-relaxed"
                         />
                       </Element>
                     </Element>
 
                     {/* card 3 — text left, image right (isReverse) */}
-                    <Element is={Container} canvas className="bg-indigo flex flex-row-reverse gap-1 mb-10 rounded-lg overflow-hidden">
-                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden p-10 bg-white flex items-center justify-center h-auto">
+                    <Element is={Container} canvas className="bg-indigo flex flex-row-reverse gap-0 mb-12 rounded-3xl overflow-hidden shadow-2xl transition-transform hover:-translate-y-1 duration-300">
+                      <Element is={Container} canvas className="w-[550px] shrink-0 overflow-hidden relative h-auto min-h-[400px]">
                         <Element
                           is={EditableImage}
                           src="/Home/cardImage3.png"
                           alt="Serviço 3"
-                          className="w-full h-[420px] object-cover object-center rounded-xl"
+                          className="absolute inset-0 w-full h-full object-cover object-center"
                         />
                       </Element>
-                      <Element is={Container} canvas className="flex-1 text-center text-white flex justify-center items-center flex-col p-12 pb-20 pt-20 pl-12 pr-12">
+                      <Element is={Container} canvas className="flex-1 text-center text-white flex justify-center items-center flex-col p-12 relative backdrop-blur-sm bg-white/5">
                         <Element
                           is={EditableText}
                           tag="h1"
                           text="Muito além do físico: um treinador que cuida de você"
-                          className="text-4xl font-bold mb-4"
+                          className="text-4xl font-bold mb-6 leading-tight drop-shadow-md"
                         />
                         <Element
                           is={EditableText}
                           tag="p"
                           text="Aqui, você encontra um personal que realmente se importa com o seu bem-estar completo, da mente ao corpo. Venha treinar em um ambiente acolhedor, onde seus objetivos são levados a sério e seu progresso é celebrado a cada passo."
-                          className="text-2xl"
+                          className="text-2xl leading-relaxed opacity-95"
                         />
                       </Element>
                     </Element>
@@ -475,19 +476,19 @@ function NoCodeToolInner() {
                   is={EditableSection}
                   canvas
                   backgroundColor="#093A5D"
-                  paddingTop="40px"
-                  paddingBottom="40px"
-                  className="px-5"
+                  paddingTop="64px"
+                  paddingBottom="64px"
+                  className="px-16"
                 >
 
-                  <Element is={Container} canvas className="text-black bg-white rounded-lg p-5 ml-20 mr-20">
+                  <Element is={Container} canvas className="text-black bg-white rounded-2xl shadow-2xl p-8 max-w-[1600px] mx-auto mt-4">
                     <Element
                       is={EditableText}
                       tag="h2"
                       text="Perguntas Frequentes"
-                      className="text-black text-2xl mb-5"
+                      className="text-oxford-blue text-4xl font-bold text-center mb-10 font-poppins"
                     />
-                    <Element is={Container} canvas>
+                    <Element is={Container} canvas className="flex flex-col gap-3">
                       <Element
                         is={EditableAccordion}
                         title="A consultoria é totalmente online?"
