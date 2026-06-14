@@ -48,7 +48,7 @@ export default function HeaderMobile() {
 
   return (
     <div ref={headerRef} className="sticky top-0 z-50">
-      <header className="w-full bg-oxford-blue text-white h-20 px-6 flex items-center justify-between border-b border-white/10 shadow-lg">
+      <header className="w-full bg-oxford-blue/90 backdrop-blur-md text-white h-20 px-6 flex items-center justify-between border-b border-white/10 shadow-lg">
         <div 
           className={classNames(styles.burgerButton, "!text-white")}
           onClick={handleToggle}

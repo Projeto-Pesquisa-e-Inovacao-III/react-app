@@ -44,145 +44,125 @@ export default function UserHeaderDesktop({ userName, type, isLoading }: Props) 
   });
 
   //verificar se o link está ativo para adicionar a classe active
-  const navLinkClass = ({ isActive }: { isActive: boolean }) => isActive ? `${styles.navLink} ${styles.active}` : styles.navLink;
-  const [menuOpen, setMenuOpen] = useState(false);
+  const navLinkClass = ({ isActive }: { isActive: boolean }) => 
+    `hover:text-gigant-orange transition-colors font-medium text-[15px] ${isActive ? 'text-gigant-orange' : 'text-white'}`;
 
-  const handleNavClick = () => setMenuOpen(false);
+  const menuOpen = false;
+
+
   return (
     <>
-      <header className={styles.userHeaderDesktop}>
-        <nav className={styles.nav}>
-          <Link to="/"><LogoHeaderDesktop /></Link>
+      <header className="w-full relative top-0 bg-oxford-blue/95 backdrop-blur-md text-white z-50 h-20 flex justify-center border-b border-white/10 shadow-lg">
+        <div className="w-full px-24 flex items-center justify-between">
+          <nav className="flex items-center gap-12 h-full">
+            <Link to="/" className="hover:opacity-80 transition-opacity">
+              <LogoHeaderDesktop />
+            </Link>
 
-          {isLoading && (
-            <div className="flex">
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-              <Skeleton width={120} height={20} style={{ margin: '0 10px' }} />
-            </div>
-          )}
+            {isLoading && (
+              <div className="flex gap-4">
+                <Skeleton width={100} height={20} baseColor="#1e293b" highlightColor="#334155" />
+                <Skeleton width={100} height={20} baseColor="#1e293b" highlightColor="#334155" />
+                <Skeleton width={100} height={20} baseColor="#1e293b" highlightColor="#334155" />
+              </div>
+            )}
 
-          {!isLoading && type && (
+            {!isLoading && type && (
+              <div className={`flex items-center gap-8 font-poppins ${menuOpen ? styles.navOpen : ''}`}>
+                {type.includes('personal') && !type.includes('admin') && (
+                  <>
+                    <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+                    <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+                    <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
+                    <NavLink to="/set-availability" className={navLinkClass}>Disponibilidade</NavLink>
+                    <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+                    <NavLink to="/users" className={navLinkClass}>Alunos</NavLink>
+                  </>
+                )}
 
-            <div className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ''}`}>
+                {type.includes('admin') && (
+                  <>
+                    <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+                    <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+                    <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+                    <NavLink to="/dashboard" className={navLinkClass}>Dashboard</NavLink>
+                    <NavLink to="/personal/check-schedule" className={navLinkClass}>Solicitações</NavLink>
+                    <NavLink to="/users" className={navLinkClass}>Usuários</NavLink>
+                    <NavLink to="/create-personal" className={navLinkClass}>Criar personal</NavLink>
+                  </>
+                )}
 
-              {type.includes('personal') && !type.includes('admin') && (
-                <>
-                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
-                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
-                  <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
-                  <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>
-                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
-                  <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Alunos</NavLink>
-                </>
-              )}
+                {type.includes('aluno') && (
+                  <>
+                    <NavLink to="/home" className={navLinkClass}>Início</NavLink>
+                    <NavLink to="/schedule" className={navLinkClass}>Agenda</NavLink>
+                    <NavLink to="/packages" className={navLinkClass}>Pacotes</NavLink>
+                    <NavLink to="/plans-history" className={navLinkClass}>Histórico de compras</NavLink>
+                    <NavLink to="/schedule-history" className={navLinkClass}>Histórico de agendamentos</NavLink>
+                  </>
+                )}
+              </div>
+            )}
+          </nav>
 
-              {type.includes('admin') && (
-                <>
-                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
-                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
-                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
-                  <NavLink to="/dashboard" className={navLinkClass} onClick={handleNavClick}>Dashboard</NavLink>
-                  <NavLink to="/personal/check-schedule" className={navLinkClass} onClick={handleNavClick}>Solicitações</NavLink>
-                  <NavLink to="/users" className={navLinkClass} onClick={handleNavClick}>Usuários</NavLink>
-                  <NavLink to="/create-personal" className={navLinkClass} onClick={handleNavClick}>Criar personal</NavLink>
-                  {type.includes('personal') && <NavLink to="/set-availability" className={navLinkClass} onClick={handleNavClick}>Disponibilidade</NavLink>}
-                </>
-              )}
+          <div ref={userRef} className="flex items-center gap-6">
+            <div
+              onClick={() => {
+                if (openHeaderModal && !isClosing) {
+                  handleAnimatedClose();
+                } else if (!openHeaderModal) {
+                  setOpenHeaderModal(true);
+                }
+              }}
+              className="cursor-pointer hover:bg-white/10 p-1.5 rounded-full transition-colors relative"
+              style={{ position: 'relative' }}
+            >
+              <UserAvatar
+                userName={userName}
+                useUsername
+                useUserImage
+                isLoading={isLoading}
+                rightIcon={
+                  <ChevronDown
+                    className={`transition-transform duration-300 ${openHeaderModal && !isClosing ? "rotate-180" : ""}`}
+                    size={20}
+                  />
+                }
+              />
 
-              {type.includes('aluno') && (
-                <>
-                  <NavLink to="/home" className={navLinkClass} onClick={handleNavClick}>Início</NavLink>
-                  <NavLink to="/schedule" className={navLinkClass} onClick={handleNavClick}>Agenda</NavLink>
-                  <NavLink to="/packages" className={navLinkClass} onClick={handleNavClick}>Pacotes</NavLink>
-                  <NavLink to="/plans-history" className={navLinkClass} onClick={handleNavClick}>Histórico de compras</NavLink>
-                  <NavLink to="/schedule-history" className={navLinkClass} onClick={handleNavClick}>Histórico de agendamentos</NavLink>
-                </>
-              )}
-
-
-
-              {menuOpen && (
-                <div className={styles.navOtherLinks}>
-                  <NavLink to="/edit-user" className={navLinkClass} onClick={handleNavClick}>Editar informações</NavLink>
-                  <NavLink to="/logout" className={navLinkClass} onClick={handleNavClick}>Sair</NavLink>
+              {openHeaderModal && (
+                <div
+                  className={`absolute top-[60px] right-0 bg-white rounded-xl shadow-2xl border border-black/5 w-64 z-50 origin-top-right
+                    ${isClosing ? styles.modalLeave : styles.modalEnter}`}
+                >
+                  <div className="flex flex-col p-2">
+                    <Link onClick={handleAnimatedClose} to="/edit-user" className="flex items-center gap-3 px-4 py-3 text-slate-600 text-[15px] font-medium rounded-lg hover:bg-slate-50 hover:text-oxford-blue transition-all">
+                      <User size={20} className="text-oxford-blue" /> Editar perfil
+                    </Link>
+                    {(type?.includes("personal") || (type?.includes("admin") && type?.includes("personal"))) &&
+                      <Link onClick={handleAnimatedClose} to="/set-availability" className="flex items-center gap-3 px-4 py-3 text-slate-600 text-[15px] font-medium rounded-lg hover:bg-slate-50 hover:text-oxford-blue transition-all">
+                        <Calendar size={20} className="text-oxford-blue" /> Disponibilidade
+                      </Link>
+                    }
+                    {type?.includes("aluno") &&
+                      <Link onClick={handleAnimatedClose} to="/edit-user/addresses" className="flex items-center gap-3 px-4 py-3 text-slate-600 text-[15px] font-medium rounded-lg hover:bg-slate-50 hover:text-oxford-blue transition-all">
+                        <MapPin size={20} className="text-oxford-blue" /> Endereços
+                      </Link>
+                    }
+                    {type?.includes("admin") &&
+                      <Link onClick={handleAnimatedClose} to="/no-code-tool" className="flex items-center gap-3 px-4 py-3 text-slate-600 text-[15px] font-medium rounded-lg hover:bg-slate-50 hover:text-oxford-blue transition-all">
+                        <LayoutDashboard size={20} className="text-oxford-blue" /> Modificar site
+                      </Link>
+                    }
+                    <div className="h-px bg-slate-100 my-1" />
+                    <Link className="flex items-center gap-3 px-4 py-3 text-red-500 text-[15px] font-medium rounded-lg hover:bg-red-50 hover:text-red-600 transition-all" onClick={handleAnimatedClose} to="/logout">
+                      <LogOut size={20} /> Sair
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>
-          )}
-
-
-          <NavLink to="/dev-seed" className={`${navLinkClass} border-[#093a5d] text-[#093a5d] absolute right-0`} onClick={handleNavClick}>dev/seed</NavLink>
-
-
-        </nav>
-
-        <div ref={userRef} className={styles.authLinks}>
-
-          <div
-            onClick={() => {
-              if (openHeaderModal && !isClosing) {
-                handleAnimatedClose();
-              } else if (!openHeaderModal) {
-                setOpenHeaderModal(true);
-              }
-            }}
-            className={styles.userAvatarHeaderDesktop}
-          >
-            <UserAvatar
-              userName={userName}
-              useUsername
-              useUserImage
-              isLoading={isLoading}
-              rightIcon={
-                <ChevronDown
-                  className={`${styles.avatarChevron} ${openHeaderModal && !isClosing ? styles.rotated : ''}`}
-                  size={20}
-                />
-              }
-            />
           </div>
-          <button
-            className={styles.burgerButton}
-            onClick={() => setMenuOpen(prev => !prev)}
-            aria-label="Menu"
-          >
-            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
-            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
-            <span className={`${styles.burgerLine} ${menuOpen ? styles.open : ''}`} />
-          </button>
-
-          {openHeaderModal && (
-            <div className={`${styles.headerModalDesktop} ${isClosing ? styles.closing : ''}`}>
-              <div className={styles.headerModalContentDesktop}>
-                <Link onClick={handleAnimatedClose} to="/edit-user">
-                  <User size={18} /> Editar perfil
-                </Link>
-                {(type?.includes("personal") || (type?.includes("admin") && type?.includes("personal"))) &&
-                  <Link onClick={handleAnimatedClose} to="/set-availability">
-                    <Calendar size={18} /> Ajustar disponibilidade
-                  </Link>
-                }
-                {type?.includes("aluno") &&
-                  <Link onClick={handleAnimatedClose} to="/edit-user/addresses">
-                    <MapPin size={18} /> Endereços
-                  </Link>
-                }
-                {type?.includes("admin") &&
-                  <Link onClick={handleAnimatedClose} to="/no-code-tool">
-                    <LayoutDashboard size={18} /> Modificar site
-                  </Link>
-                }
-                <div className={styles.divider} />
-                <Link className={styles.logoutLink} onClick={handleAnimatedClose} to="/logout">
-                  <LogOut size={18} /> Sair
-                </Link>
-              </div>
-            </div>
-          )}
         </div>
       </header>
     </>
