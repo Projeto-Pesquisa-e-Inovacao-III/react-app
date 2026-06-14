@@ -114,10 +114,10 @@ export default function PlansSection({ isMobile }: { isMobile: boolean }) {
     }, [data, isPackagesSelected, expandedPkgId, isMobile, uniformHeight]);
 
     return (
-        <section ref={containerRef} id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-10 pb-10 ${isMobile ? "mt-10" : ""}`}>
-            <div className={`${!isMobile ? "ml-20 mr-20" : ""}`}>
-                <h2 className="text-white font-bold text-3xl">Escolha o melhor pacote para você</h2>
-                <div className="flex justify-center mt-10 mb-10">
+        <section ref={containerRef} id="plans-section" className={`scroll-mt-20 bg-indigo p-5 pt-16 pb-16 ${isMobile ? "mt-10" : ""}`}>
+            <div className={`${!isMobile ? "max-w-7xl mx-auto" : ""}`}>
+                <h2 className={`text-white font-black font-poppins text-center ${isMobile ? "text-3xl" : "text-5xl tracking-wide"} drop-shadow-md`}>Escolha o melhor pacote para você</h2>
+                <div className="flex justify-center mt-10 mb-12">
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-l-lg ${isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(true)}>Pacotes</button>
                     <button className={`cursor-pointer transition-all duration-150 border border-white font-semibold py-2 px-4 rounded-r-lg ${!isPackagesSelected ? "bg-white text-black" : "bg-transparent text-white"}`} onClick={() => setIsPackagesSelected(false)}>Adicionais</button>
                 </div>

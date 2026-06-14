@@ -3,11 +3,12 @@ import { ChevronDown } from "lucide-react";
 
 export default function FAQSection({ isMobile = false }: { isMobile: boolean }) {
     return (
-        <section id="faq" className="scroll-mt-20 bg-indigo pt-10 pb-10 p-5">
-            <div className={`text-black bg-white rounded-lg p-5 ${!isMobile ? "ml-20 mr-20" : ""}`}>
-                <h2 className="text-black text-2xl mb-5">Perguntas Frequentes</h2>
+        <section id="faq" className="scroll-mt-20 bg-indigo pt-16 pb-16 p-5">
+            <div className={`text-black bg-white rounded-2xl shadow-2xl p-8 max-w-5xl mx-auto ${!isMobile ? "mt-4" : ""}`}>
+                <h2 className="text-oxford-blue text-4xl font-bold text-center mb-10 font-poppins">Perguntas Frequentes</h2>
 
-                <Accordion>
+                <div className="flex flex-col gap-3">
+                    <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel1-content"
@@ -20,7 +21,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion>
+                <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel2-content"
@@ -33,7 +34,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion>
+                <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel3-content"
@@ -47,7 +48,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion>
+                <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel3-content"
@@ -60,7 +61,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion>
+                <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel3-content"
@@ -73,7 +74,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
-                <Accordion>
+                <Accordion className="rounded-xl! shadow-sm! border border-gray-100! before:hidden">
                     <AccordionSummary
                         expandIcon={<ChevronDown />}
                         aria-controls="panel3-content"
@@ -87,6 +88,7 @@ export default function FAQSection({ isMobile = false }: { isMobile: boolean }) 
                     </AccordionDetails>
                 </Accordion>
 
+                </div>
             </div>
         </section>
 

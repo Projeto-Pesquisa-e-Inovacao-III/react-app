@@ -9,30 +9,30 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                     : "relative flex flex-col justify-center h-dvh bg-[url('/Home/bg-1-1-EDIT.jpg')] bg-cover bg-center overflow-hidden"
             }
         >
-                {/* Overlay azul diagonal — apenas desktop */}
+                {/* Overlay azul escuro/gradiente — apenas desktop */}
                 {!isMobile && (
                     <div
-                        className="absolute inset-0 pointer-events-none"
+                        className="absolute inset-0 bg-gradient-to-r from-[#051128]/90 via-[#051128]/60 to-transparent pointer-events-none"
                     />
                 )}
 
                 {isMobile ? (
                     <>
                         <div>
-                            <h1 className="text-3xl font-bold mb-3 uppercase animate-hero-1">
-                                Bem-vindo ao csf Treinamentos
+                            <h1 className="text-4xl font-extrabold mb-4 uppercase animate-hero-1 text-oxford-blue leading-tight tracking-tight">
+                                Bem-vindo à <span className="text-gigant-orange">CSF</span> Treinamentos
                             </h1>
-                            <p className="mb-8 animate-hero-2">
+                            <p className="mb-8 animate-hero-2 text-lg text-gray-700 leading-relaxed">
                                 A Consultoria Saúde Fitness é especializada em oferecer atendimento
                                 personalizado em academias, residências e também ao ar livre para
-                                pessoas{" "}
+                                pessoas de{" "}
                                 <span className="text-gigant-orange font-semibold">
                                     todas as idades
                                 </span>
                                 .
                             </p>
                             <img
-                                className="w-full animate-hero-3"
+                                className="w-full animate-hero-3 rounded-2xl shadow-xl mb-6"
                                 src="/Home/bgImageMobileMain.png"
                                 alt="Imagem principal mobile"
                             />
@@ -41,26 +41,26 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                             href="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mx-auto mt-5 bg-oxford-blue min-h-12 w-3/4 text-white rounded-md font-poppins font-semibold text-lg flex items-center justify-center animate-hero-3"
+                            className="mx-auto mt-2 bg-gigant-orange hover:bg-orange-600 transition-colors shadow-lg min-h-[56px] w-full max-w-sm text-white rounded-xl font-poppins font-bold text-lg flex items-center justify-center animate-hero-3"
                         >
                             Entre em contato
                         </a>
                     </>
                 ) : (
                     <div
-                        className="relative w-fit flex flex-col justify-center items-start gap-5 ml-20 mr-20"
+                        className="relative w-fit flex flex-col justify-center items-start gap-6 ml-24 mr-20"
                         style={{ zIndex: 2 }}
                     >
-                        <h1 className="text-8xl text-[5.5rem] w-[53.2%] font-poppins font-bold uppercase text-left text-white animate-hero-1">
-                            Bem-vindo a csf Treinamentos
+                        <h1 className="text-8xl text-[5.5rem] w-[60%] font-poppins font-black uppercase text-left text-white animate-hero-1 leading-[1.1] drop-shadow-lg tracking-tight">
+                            Bem-vindo à <br/><span className="text-gigant-orange">CSF</span> Treinamentos
                         </h1>
-                        <p className="text-2xl w-[53.2%] text-left font-montserrat text-white animate-hero-2">
+                        <p className="text-2xl w-[55%] text-left font-montserrat text-gray-200 animate-hero-2 leading-relaxed drop-shadow-md">
                             A jornada para uma vida mais ativa e saudável começa aqui. Orientação
-                            profissional adaptada à sua rotina e necessidade
+                            profissional adaptada à sua rotina e necessidade.
                         </p>
-                        <div className="w-2/4 h-1/3! animate-hero-3">
+                        <div className="w-2/4 h-1/3! animate-hero-3 mt-4">
                             <ButtonHome
-                                classname="mt-3! h-full! bg-gigant-orange text-white! rounded-2xl! text-xl"
+                                classname="h-full! bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl shadow-gigant-orange/30 text-white! rounded-2xl! text-2xl px-10 py-4 font-bold"
                                 to="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
                                 title="Entre em contato"
                             />
