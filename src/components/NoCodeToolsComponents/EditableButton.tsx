@@ -28,7 +28,7 @@ export default function EditableButton({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center justify-center min-h-[56px] px-10 py-4 font-bold rounded-xl cursor-pointer transition-all hover:bg-orange-600 shadow-xl shadow-orange-500/20 ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''} ${className}`}
+            className={`inline-flex items-center justify-center min-h-[56px] px-10 py-4 font-bold rounded-xl cursor-pointer transition-all hover:bg-orange-600 shadow-xl ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''} ${className}`}
             style={{ backgroundColor: bgColor, color: textColor }}
             onClick={(e) => e.preventDefault()}
         >
