@@ -58,7 +58,7 @@ export default function HomeSection({ isMobile }: { isMobile: boolean }) {
                             </p>
                             <div className="animate-hero-3 mt-6">
                                 <ButtonHome
-                                    classname="bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl shadow-gigant-orange/30 text-white! rounded-xl! text-xl px-10 py-4 font-bold w-fit min-w-[300px] mt-0!"
+                                    classname="bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl text-white! rounded-xl! text-xl px-10 py-4 font-bold w-fit min-w-[300px] mt-0!"
                                     to="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
                                     title="Entre em contato"
                                 />

@@ -316,7 +316,7 @@ function NoCodeToolInner() {
                           href="https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F"
                           bgColor="#f26430"
                           textColor="#ffffff"
-                          className="bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl shadow-gigant-orange/30 text-white rounded-xl text-xl px-10 py-4 font-bold w-fit min-w-[300px]"
+                          className="bg-gigant-orange hover:bg-orange-600 transition-all shadow-xl text-white rounded-xl text-xl px-10 py-4 font-bold w-fit min-w-[300px]"
                         />
                       </Element>
                     </Element>
