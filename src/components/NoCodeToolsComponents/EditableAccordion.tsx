@@ -23,7 +23,7 @@ export default function EditableAccordion({
             ref={(ref: HTMLElement | null) => {
                 if (ref) connect(drag(ref));
             }}
-            className={`${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''}`}
+            className={`rounded-xl! shadow-sm! border border-gray-100! before:hidden ${className} ${selected ? 'outline outline-2 outline-dashed outline-[#0C6291] outline-offset-2' : ''}`}
         >
             <AccordionSummary expandIcon={<ChevronDown />}>
                 <h3>{title}</h3>
