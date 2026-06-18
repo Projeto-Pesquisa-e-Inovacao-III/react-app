@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-oxford-blue: #051128;
+  --color-indigo: #093A5D;
+  --color-lapis-lazuli: #0C6291;
+  --color-carol: #82adc5;
+  --color-carol-light: #b6d0dd;
+  --color-gigant-orange: #f26430;
+  --color-bg-blue: #093A5D;
+  --color-bg-orange: #F26430;
+  --color-bg-green: #4BB543;
+}
+
+
 :root {
 
   font-family: Poppins;
