@@ -98,16 +98,16 @@ jobs:
         run: |
           echo "Baixando a nova imagem..."
           sudo docker pull $APP_IMAGE
-          
+
           echo "Parando o container antigo..."
           sudo docker stop $CONTAINER_NAME || true
           sudo docker rm $CONTAINER_NAME || true
-          
+
           echo "Iniciando o novo container..."
           sudo docker run -d \
             --name $CONTAINER_NAME \
             --restart unless-stopped \
-            -p 80:8080 \
+            -p 3000:8080 \
             $APP_IMAGE
             
           echo "Deploy do Frontend concluído com sucesso!"
