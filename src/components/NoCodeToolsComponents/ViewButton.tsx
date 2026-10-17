@@ -11,7 +11,7 @@ type Props = {
 export default function ViewButton({
     title = 'Entre em contato',
     href = 'https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F',
-    bgColor = '#E05C00',
+    bgColor = '#f26430',
     textColor = '#ffffff',
     className = '',
 }: Props) {
@@ -27,7 +27,7 @@ export default function ViewButton({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className={`inline-flex items-center justify-center min-h-12 px-8 font-semibold rounded-md transition-opacity hover:opacity-90 ${className}`}
+            className={`inline-flex items-center justify-center min-h-[56px] px-10 py-4 font-bold rounded-xl transition-all hover:bg-orange-600 shadow-xl ${className}`}
             style={{ backgroundColor: bgColor, color: textColor }}
         >
             {title}
@@ -40,7 +40,7 @@ ViewButton.craft = {
     props: {
         title: 'Entre em contato',
         href: 'https://api.whatsapp.com/send?phone=5511945584686&text=Olá%2C%20tudo%20bem%3F',
-        bgColor: '#E05C00',
+        bgColor: '#f26430',
         textColor: '#ffffff',
         className: '',
     },

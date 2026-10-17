@@ -306,3 +306,11 @@
         border-top: 3px solid rgba(255, 255, 255, 0.2);
     }
 }
+
+.modalEnter {
+    animation: modalEnter 0.2s ease-out forwards;
+}
+
+.modalLeave {
+    animation: modalLeave 0.2s ease-in forwards;
+}

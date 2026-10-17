@@ -4,24 +4,24 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
   return (
     <section
       id={isMobile ? "services-section-mobile" : "services-section"}
-      className={`scroll-mt-20 ${isMobile ? "mt-10 mb-10" : "mt-10"} p-5`}
+      className={`scroll-mt-20 ${isMobile ? "mt-10 mb-10 p-5" : "px-16 mt-10"}`}
     >
-      <div className={isMobile ? "" : "ml-20 mr-20"}>
+      <div className={isMobile ? "" : "max-w-[1600px] mx-auto"}>
         <div
           className={`${
             isMobile
-              ? "border-b-4 uppercase"
-              : "flex justify-center items-center uppercase border-amber-600 wrapper-content mb-10"
+              ? "mb-10 px-2"
+              : "flex justify-center items-center uppercase mb-16 mt-8"
           }`}
         >
           <h1
-            className={`ml-auto mr-auto mt-0 mb-0 font-bebas leading-none ${
+            className={`mx-auto font-bebas tracking-wide ${
               isMobile
-                ? "text-5xl text-left text-oxford-blue border-b-4"
-                : "text-8xl text-center border-b-8 line-clamp-1"
+                ? "text-5xl text-center text-oxford-blue leading-tight"
+                : "text-7xl text-center text-oxford-blue drop-shadow-sm"
             }`}
           >
-            Bora treinar com quem entende e se importa
+            Bora treinar com quem <span className="text-gigant-orange">entende</span> e se importa
           </h1>
         </div>
 
@@ -35,7 +35,7 @@ export default function ServicesSection({ isMobile }: { isMobile: boolean }) {
         />
 
         <CardServices
-          bgColor={`${isMobile ? "gradient-white-with-blue-bar-mobile" : "gradient-white-with-blue-bar"}`}
+          bgColor="bg-white"
           color="text-oxford-blue"
           title="Cuidando da sua saúde e inspirando sua família a fazer o mesmo"
           content="Sua saúde é um presente que pode inspirar a todos ao seu redor, especialmente a sua família! Com nosso suporte, você encontrará o equilíbrio perfeito para se cuidar e motivar seus entes queridos a adotarem hábitos saudáveis."
