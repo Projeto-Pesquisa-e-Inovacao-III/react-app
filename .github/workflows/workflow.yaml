@@ -76,7 +76,7 @@ jobs:
 
   deploy-azure:
     runs-on: [self-hosted]
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/develop'
     needs: continuous-integration
     steps:
       - name: Docker preflight
